@@ -1,7 +1,7 @@
 -- ==============================================================
 -- SCHEMA_LIVE.sql — dump do schema do projeto canônico
 -- Projeto: doufsxqlfjyuvxuezpln
--- Gerado em: 2026-11-25T17:20:19.389Z
+-- Gerado em: 2026-11-25T20:55:49.510Z
 -- Fonte: supabase db dump --linked
 -- ==============================================================
 
@@ -23417,6 +23417,49 @@ ALTER FUNCTION "public"."fn_enrich_properties_batch"("p_supplier_code" "text", "
 
 COMMENT ON FUNCTION "public"."fn_enrich_properties_batch"("p_supplier_code" "text", "p_batch_size" integer, "p_force" boolean) IS 'v3 (jun/2026): suporte XBZ via Nome+Descricao concat. 
 STRICKER usa Properties. XBZ usa Nome+Descricao. Filtra propriedades custom XBZ no check de existência.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_ensure_history_partitions"("p_months_ahead" integer DEFAULT 3) RETURNS integer
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+DECLARE
+  v_created integer := 0;
+  v_i integer;
+  v_month date;
+  v_name text;
+BEGIN
+  FOR v_i IN 0..p_months_ahead LOOP
+    v_month := (date_trunc('month', now()) + make_interval(months => v_i))::date;
+    v_name := 'supplier_products_raw_history_p' || to_char(v_month, 'YYYY_MM');
+
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_class WHERE relname = v_name AND relnamespace = 'public'::regnamespace
+    ) THEN
+      EXECUTE format(
+        'CREATE TABLE public.%I PARTITION OF public.supplier_products_raw_history FOR VALUES FROM (%L) TO (%L)',
+        v_name, v_month, (v_month + interval '1 month')::date
+      );
+      -- RLS é por relação e NÃO é herdada: a partição nasce protegida, com as mesmas
+      -- duas policies das irmãs (paridade 2026-09-03). Sem isto, cada mês o cron
+      -- reabriria o achado `rls_disabled_in_public` do Supabase.
+      EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', v_name);
+      EXECUTE format('CREATE POLICY hist_all_service ON public.%I FOR ALL TO service_role USING (true) WITH CHECK (true)', v_name);
+      EXECUTE format('CREATE POLICY hist_select_admin ON public.%I FOR SELECT TO authenticated USING (public.is_admin_or_above((SELECT auth.uid())))', v_name);
+      v_created := v_created + 1;
+    END IF;
+  END LOOP;
+
+  RETURN v_created;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."fn_ensure_history_partitions"("p_months_ahead" integer) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_ensure_history_partitions"("p_months_ahead" integer) IS 'Cria partições mensais faltantes de supplier_products_raw_history (chave: captured_at), do mês atual até p_months_ahead meses à frente. Idempotente. Criada em 20260916193000 para E25 do PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md. Chamada diariamente via cron supplier-history-partition-maintenance (job separado supplier-history-default-partition-alert cobre o caso de falha desta manutenção).';
 
 
 
@@ -60187,21 +60230,18 @@ ALTER FUNCTION "public"."get_edge_anon_key"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."get_edge_function_secret"("_name" "text") RETURNS "text"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'vault', 'public'
+    SET "search_path" TO 'vault', 'public', 'pg_temp'
     AS $$
 DECLARE
   _secret text;
 BEGIN
   IF _name NOT IN (
     'WEBHOOK_DISPATCHER_SECRET',
-    'WEBHOOK_DISPATCHER_URL',
-    'WEBHOOK_SECRET',
     'CONNECTIONS_AUTO_TEST_SECRET',
     'CRON_SECRET',
     'HASH_PRODUCT_IMAGES_CRON_SECRET',
     'GENERATE_BLURHASHES_CRON_SECRET',
-    'BACKFILL_DIM_CRON_SECRET',
-    'ASIA_INGESTION_CRON_SECRET'
+    'BACKFILL_DIM_CRON_SECRET'
   ) THEN
     RAISE EXCEPTION 'Nome de secret nao autorizado: %', _name
       USING ERRCODE = 'insufficient_privilege';
@@ -87807,6 +87847,24 @@ COMMENT ON TABLE "public"."supplier_products_raw_history" IS 'Versões anteriore
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_default" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "raw_id" "uuid",
+    "supplier_id" "uuid",
+    "supplier_reference" character varying,
+    "content_hash" "text",
+    "raw_data" "jsonb",
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."supplier_products_raw_history_default" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."supplier_products_raw_history_default" IS 'Rede de segurança E25: recebe linhas de supplier_products_raw_history com captured_at fora de qualquer partição mensal criada. Não deveria nunca acumular linhas se o cron supplier-history-partition-maintenance estiver funcionando. Monitorada pelo cron supplier-history-default-partition-alert (RAISE EXCEPTION se count > 0 — falha nativa e visível em cron.job_run_details, sem passar por fn_cron_safe_run).';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_08" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "raw_id" "uuid",
@@ -92669,7 +92727,7 @@ CREATE OR REPLACE VIEW "public"."v_tabela_preco_gravacao_oficial_public" WITH ("
 ALTER VIEW "public"."v_tabela_preco_gravacao_oficial_public" OWNER TO "postgres";
 
 
-COMMENT ON VIEW "public"."v_tabela_preco_gravacao_oficial_public" IS 'Tabela de preco de gravacao oficial (SECURITY DEFINER). NAO religar security_invoker=true nem re-expor a tabela base ao anon: exigiria GRANT em 37 colunas. Regressao de 2026-11-22 revertida pela 20261122180000.';
+COMMENT ON VIEW "public"."v_tabela_preco_gravacao_oficial_public" IS 'Tabela de preco de gravacao oficial (SECURITY DEFINER). NAO religar security_invoker=true nem re-expor a tabela base ao anon: exigiria GRANT em 37 colunas. Regressao de 2026-11-22 revertida pela 20261122180000. Projecao conferida em pg_attribute (20261125150000): custo_setup, markup_percent, custo_aplicacao, custo_termo_transferencia, custo_queima_forno e faturamento_minimo NAO estao na view; custo_setup_por_cor e custo_manuseio_por_peca ESTAO, porem sao BOOLEAN (flags "cobra taxa por cor?" e "cobra taxa de manuseio por peca?"), nao valores em R$. O texto de 20260717173348 afirmava que as duas estavam excluidas - era falso.';
 
 
 
@@ -97513,6 +97571,10 @@ ALTER TABLE ONLY "public"."magazine_public_view_events" ATTACH PARTITION "public
 
 
 
+ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_default" DEFAULT;
+
+
+
 ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2026_08" FOR VALUES FROM ('2026-08-01 00:00:00+00') TO ('2026-09-01 00:00:00+00');
 
 
@@ -100192,6 +100254,11 @@ ALTER TABLE ONLY "public"."supplier_packagings"
 
 ALTER TABLE ONLY "public"."supplier_products_raw_history"
     ADD CONSTRAINT "supplier_products_raw_history_pkey1" PRIMARY KEY ("id", "captured_at");
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history_default"
+    ADD CONSTRAINT "supplier_products_raw_history_default_pkey" PRIMARY KEY ("id", "captured_at");
 
 
 
@@ -103978,6 +104045,10 @@ ALTER INDEX "public"."magazine_public_view_events_pkey" ATTACH PARTITION "public
 
 
 ALTER INDEX "public"."idx_mag_view_events_token_hash" ATTACH PARTITION "public"."magazine_public_view_events_default_token_hash_viewed_at_idx";
+
+
+
+ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_default_pkey";
 
 
 
@@ -110507,6 +110578,10 @@ CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history" TO 
 
 
 
+CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_default" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
 CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2026_08" TO "service_role" USING (true) WITH CHECK (true);
 
 
@@ -110576,6 +110651,10 @@ CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p202
 
 
 CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+
+
+
+CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_default" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -113222,6 +113301,9 @@ ALTER TABLE "public"."supplier_products_raw" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."supplier_products_raw_history" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."supplier_products_raw_history_default" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."supplier_products_raw_history_p2026_08" ENABLE ROW LEVEL SECURITY;
@@ -116779,6 +116861,11 @@ GRANT ALL ON FUNCTION "public"."fn_enrich_pen_categories"("p_supplier_id" "uuid"
 
 REVOKE ALL ON FUNCTION "public"."fn_enrich_properties_batch"("p_supplier_code" "text", "p_batch_size" integer, "p_force" boolean) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_enrich_properties_batch"("p_supplier_code" "text", "p_batch_size" integer, "p_force" boolean) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."fn_ensure_history_partitions"("p_months_ahead" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_ensure_history_partitions"("p_months_ahead" integer) TO "service_role";
 
 
 
@@ -124961,6 +125048,12 @@ GRANT ALL ON TABLE "public"."supplier_packagings" TO "service_role";
 
 GRANT SELECT,MAINTAIN ON TABLE "public"."supplier_products_raw_history" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_products_raw_history" TO "service_role";
+
+
+
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_default" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_default" TO "authenticated";
+GRANT ALL ON TABLE "public"."supplier_products_raw_history_default" TO "service_role";
 
 
 
