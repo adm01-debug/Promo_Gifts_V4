@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "31d96d8d3fbfd6ae4308a62ceb5268e446da1193",
+  "sha": "51afdbd1ad7f61b1ec7bb894709ce21becd82c33",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 19:31 UTC",
+  "generated_at": "2026-11-25 19:43 UTC",
   "files_total": 11210,
   "code_files": 9197,
   "code_lines": 1305220
@@ -564997,10 +564997,19 @@
   }
  },
  "git": {
-  "sha": "31d96d8d3fbfd6ae4308a62ceb5268e446da1193",
+  "sha": "51afdbd1ad7f61b1ec7bb894709ce21becd82c33",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "51afdbd",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "docs(ledger): dispensa medida de 3 migrations de cron e de allowlist (#4110)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "31d96d8",
     "date": "2026-11-25",
@@ -565298,19 +565307,6 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "bf0575d",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(db): revoga SELECT de anon nas 13 tabelas internas de public (QA etapa 008) (#4065)",
-    "files": [
-     ".security/anon-tables-baseline.json",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
-     "supabase/rollbacks/20261125120000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -565319,15 +565315,15 @@
     19
    ],
    [
-    "docs/qa/05-PROGRESSO.md",
-    4
-   ],
-   [
     "package-lock.json",
     3
    ],
    [
     "package.json",
+    3
+   ],
+   [
+    "docs/qa/05-PROGRESSO.md",
     3
    ],
    [
@@ -565340,14 +565336,6 @@
    ],
    [
     "supabase/migrations-snapshot/SNAPSHOT_META.json",
-    2
-   ],
-   [
-    ".security/anon-tables-baseline.json",
-    2
-   ],
-   [
-    "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
     2
    ],
    [
@@ -565392,6 +565380,14 @@
    ],
    [
     "scripts/check-migration-receipts.mjs",
+    1
+   ],
+   [
+    "tests/scripts/check-migration-receipts.test.mjs",
+    1
+   ],
+   [
+    "supabase/migrations/20261125180000_fix_comment_v_tabela_gravacao_publica.sql",
     1
    ]
   ]
