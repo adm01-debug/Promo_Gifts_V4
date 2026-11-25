@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `2fbd19fd1a` · branch `main` · 2026-11-25 12:57 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `8c250b004d` · branch `main` · 2026-11-25 13:24 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -1214,7 +1214,7 @@ Middleware matcher (Next.js): nenhum
 |---|---|---|---|
 | grant | PUBLIC | execute | `claim_webhook_delivery`, `release_webhook_delivery_lock`, `cleanup_stale_webhook_locks`, `fn_cron_guard`, `classification_audit.apply_high_confidence_suggestions` |
 | grant | PUBLIC, anon | execute | `fn_audit_role_changes`, `fn_auto_classify_kit_product`, `fn_auto_classify_packing`, `fn_auto_classify_product_image`, `fn_auto_criar_equivalencia_spot`, `fn_auto_link_eco_material`, `fn_auto_link_feminine_color`, `fn_auto_set_same_supplier`, `fn_auto_vincular_cor_variante`, `fn_block_unauthorized_product_deactivation`, `fn_category_copywriting_updated`, `fn_color_equiv_clear_primary_on_inactive`, `fn_color_equiv_ensure_primary`, `fn_color_equiv_ensure_primary_stmt`, `fn_cor_generate_slug` … +91 |
-| grant | anon | execute | `get_quote_token_by_value`, `submit_quote_response`, `fn_should_apply_kill_switch`, `fn_log_search_analytics`, `is_org_owner_or_admin`, `is_org_owner_or_admin`, `mcp_kv_get`, `mcp_kv_set`, `mcp_kv_try_lock`, `fn_get_reposicao_listing`, `fn_get_reposicao_metrics`, `fn_get_replenishment_stats`, `fn_xbz_enqueue_videos`, `get_favorite_list_counts`, `get_favorite_list_counts` … +54 |
+| grant | anon | execute | `get_quote_token_by_value`, `submit_quote_response`, `fn_should_apply_kill_switch`, `fn_log_search_analytics`, `is_org_owner_or_admin`, `is_org_owner_or_admin`, `mcp_kv_get`, `mcp_kv_set`, `mcp_kv_try_lock`, `fn_get_reposicao_listing`, `fn_get_reposicao_metrics`, `fn_get_replenishment_stats`, `fn_xbz_enqueue_videos`, `get_favorite_list_counts`, `get_favorite_list_counts` … +55 |
 | grant | anon | insert | `kill_switch_hits` |
 | grant | anon | insert, update, delete, references, trigger | `external_connections` |
 | grant | anon | maintain | `external_connections` |
@@ -1281,7 +1281,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | anon | delete, insert, update, trigger, references | `anon_catalog_grant_audit_log` |
 | revoke | anon | delete, trigger, truncate | `supplier_products_raw` |
 | revoke | anon | delete, update, trigger, references | `frontend_telemetry`, `frontend_telemetry` |
-| revoke | anon | execute | `fn_magazine_public_token`, `public`, `can_access_quote`, `org_has_any_members`, `org_has_any_members`, `create_organization_with_owner`, `get_quote_token_by_value`, `public`, `fn_purge_spr_history`, `fn_process_raw_v2`, `fn_dryrun_raw_v2`, `fn_purge_spr_history`, `reconcile_cf_image_status`, `fn_get_reposicao_listing`, `fn_get_replenishment_stats` … +25 |
+| revoke | anon | execute | `fn_magazine_public_token`, `public`, `can_access_quote`, `org_has_any_members`, `org_has_any_members`, `create_organization_with_owner`, `get_quote_token_by_value`, `public`, `fn_purge_spr_history`, `fn_process_raw_v2`, `fn_dryrun_raw_v2`, `fn_purge_spr_history`, `reconcile_cf_image_status`, `fn_get_reposicao_listing`, `fn_get_replenishment_stats` … +26 |
 | revoke | anon | insert, update, delete | `workspace_notifications`, `workspace_notifications`, `product_badge_definitions`, `color_synonym_map` |
 | revoke | anon | insert, update, delete, references, trigger | `external_connections` |
 | revoke | anon | insert, update, delete, truncate | `products` |
