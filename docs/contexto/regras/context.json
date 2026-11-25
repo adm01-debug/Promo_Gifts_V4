@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "b0ceb1ef6d25b0878f23c5667a2e40d2130685fc",
+  "sha": "3ea746a1ff6639dec13cc10f652e02fa2fcd0cd3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 20:05 UTC",
+  "generated_at": "2026-11-25 20:07 UTC",
   "files_total": 11210,
   "code_files": 9197,
-  "code_lines": 1305220
+  "code_lines": 1305231
  },
  "version": "1.3.2",
- "facts_hash": "ee03d115ae729368",
+ "facts_hash": "7345ab5293e9445d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -154039,7 +154039,7 @@
   {
    "module": "supabase/migrations",
    "files": 3136,
-   "lines": 228588,
+   "lines": 228599,
    "tables": [
     "...",
     "admin_audit_log",
@@ -538134,7 +538134,7 @@
   },
   "supabase/migrations/20261027230000_cleanup_get_edge_function_secret_allowlist.sql": {
    "path": "supabase/migrations/20261027230000_cleanup_get_edge_function_secret_allowlist.sql",
-   "lines": 89,
+   "lines": 100,
    "uses_service_role": true
   },
   "supabase/migrations/20261027233000_add_xbz_image_uploader_secret_to_allowlist.sql": {
@@ -564997,10 +564997,20 @@
   }
  },
  "git": {
-  "sha": "b0ceb1ef6d25b0878f23c5667a2e40d2130685fc",
+  "sha": "3ea746a1ff6639dec13cc10f652e02fa2fcd0cd3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "3ea746a",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(migration): allowlist do dispatcher com pg_temp no search_path (E066) (#4111)",
+    "files": [
+     "supabase/migrations/20261027230000_cleanup_get_edge_function_secret_allowlist.sql",
+     "supabase/rollbacks/20261027230000_rollback.sql"
+    ]
+   },
    {
     "sha": "b0ceb1e",
     "date": "2026-11-25",
@@ -565298,23 +565308,12 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "33f0130",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(db): tripwire da 20261125120000 declara pg_temp no search_path (E066) (#4070)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    19
+    18
    ],
    [
     "package-lock.json",
@@ -565322,10 +565321,6 @@
    ],
    [
     "package.json",
-    3
-   ],
-   [
-    "docs/qa/05-PROGRESSO.md",
     3
    ],
    [
@@ -565347,6 +565342,18 @@
    [
     "supabase/migrations-snapshot/SNAPSHOT_META.json",
     2
+   ],
+   [
+    "docs/qa/05-PROGRESSO.md",
+    2
+   ],
+   [
+    "supabase/migrations/20261027230000_cleanup_get_edge_function_secret_allowlist.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261027230000_rollback.sql",
+    1
    ],
    [
     "supabase/baseline/20261125173000_cron_jobs.json",
@@ -565382,14 +565389,6 @@
    ],
    [
     "scripts/drift-baseline.mjs",
-    1
-   ],
-   [
-    "tests/scripts/drift-baseline.test.mjs",
-    1
-   ],
-   [
-    "scripts/check-migration-receipts.mjs",
     1
    ]
   ]

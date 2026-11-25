@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(migration): allowlist do dispatcher com pg_temp no search_path (E066) (#4111)",
    "chore(main): release gifts-store 1.20.1 (#4091)",
    "docs(ledger): dispensa medida de 3 migrations de cron e de allowlist (#4110)",
    "docs(ledger): reconhece as 22 migrations sem aplicação com evidência do canônico (#4108)",
-   "fix: snapshot de cron jobs com os jobs da E25 (destrava o drift E037) (#4106)",
-   "docs(e25): registra a aplicacao em producao e resolve o risco em prod-readiness (#4104)"
+   "fix: snapshot de cron jobs com os jobs da E25 (destrava o drift E037) (#4106)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

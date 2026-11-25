@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b0ceb1ef6d25b0878f23c5667a2e40d2130685fc",
+  "commit": "3ea746a1ff6639dec13cc10f652e02fa2fcd0cd3",
   "branch": "main",
-  "data_commit": "2026-11-25T17:02:46-03:00",
+  "data_commit": "2026-11-25T17:06:29-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3ea746a",
+    "data": "2026-11-25",
+    "assunto": "fix(migration): allowlist do dispatcher com pg_temp no search_path (E066) (#4111)"
+   },
    {
     "sha": "b0ceb1e",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "513be5a",
     "data": "2026-11-25",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261125131000 (#4077)"
-   },
-   {
-    "sha": "8c250b0",
-    "data": "2026-11-25",
-    "assunto": "fix: restaura EXECUTE de anon no helper de RLS e reconcilia tripwire v5 (#4076)"
    }
   ],
-  "arquivos_mudados_7d": 579,
+  "arquivos_mudados_7d": 581,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -168,11 +168,11 @@
     "mudancas": 92
    },
    {
-    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 87
+    "pasta": "src/pages/quotes",
+    "mudancas": 86
    },
    {
-    "pasta": "src/pages/quotes",
+    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
     "mudancas": 86
    },
    {
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 87
+    "mudancas": 86
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
