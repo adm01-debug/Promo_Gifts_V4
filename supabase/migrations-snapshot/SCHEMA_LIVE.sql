@@ -1,7 +1,7 @@
 -- ==============================================================
 -- SCHEMA_LIVE.sql — dump do schema do projeto canônico
 -- Projeto: doufsxqlfjyuvxuezpln
--- Gerado em: 2026-11-25T15:49:25.481Z
+-- Gerado em: 2026-11-25T17:20:19.389Z
 -- Fonte: supabase db dump --linked
 -- ==============================================================
 
@@ -32448,6 +32448,45 @@ ALTER FUNCTION "public"."fn_mark_removed_from_spot"("p_current_skus" "text"[]) O
 
 
 COMMENT ON FUNCTION "public"."fn_mark_removed_from_spot"("p_current_skus" "text"[]) IS 'Marca como removidos os SKUs que não estão mais na API SPOT.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_market_intelligence_macro"("p_days" integer DEFAULT 30, "p_supplier_id" "uuid" DEFAULT NULL::"uuid") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO ''
+    AS $$
+  SELECT COALESCE(
+    jsonb_agg(
+      jsonb_build_object(
+        'summary_date', a.summary_date,
+        'supplier_id', a.supplier_id,
+        'stock_close', a.stock_close,
+        'units_depleted', a.units_depleted,
+        'units_restocked', a.units_restocked
+      )
+      ORDER BY a.summary_date, a.supplier_id
+    ),
+    '[]'::jsonb
+  )
+  FROM (
+    SELECT
+      s.summary_date,
+      s.supplier_id,
+      SUM(COALESCE(s.stock_close, 0))::bigint     AS stock_close,
+      SUM(COALESCE(s.units_depleted, 0))::bigint  AS units_depleted,
+      SUM(COALESCE(s.units_restocked, 0))::bigint AS units_restocked
+    FROM public.stock_daily_summary s
+    WHERE s.summary_date >= CURRENT_DATE - LEAST(GREATEST(COALESCE(p_days, 30), 1), 366)
+      AND (p_supplier_id IS NULL OR s.supplier_id = p_supplier_id)
+    GROUP BY s.summary_date, s.supplier_id
+  ) a
+$$;
+
+
+ALTER FUNCTION "public"."fn_market_intelligence_macro"("p_days" integer, "p_supplier_id" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_market_intelligence_macro"("p_days" integer, "p_supplier_id" "uuid") IS 'Inteligencia de mercado macro: stock_daily_summary somado por (summary_date, supplier_id) nos ultimos p_days (1..366), filtro opcional por fornecedor. SECURITY INVOKER (respeita RLS). Consumida por useMarketIntelligenceMacro.';
 
 
 
@@ -79076,6 +79115,7 @@ CREATE TABLE IF NOT EXISTS "public"."crm_callback_events" (
     "result" "text" NOT NULL,
     "error_message" "text",
     "received_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"(),
     CONSTRAINT "crm_callback_events_event_type_chk" CHECK (("event_type" = ANY (ARRAY['approved'::"text", 'rejected'::"text", 'order_created'::"text", 'sent_to_client'::"text", 'expired'::"text"]))),
     CONSTRAINT "crm_callback_events_result_chk" CHECK (("result" = ANY (ARRAY['applied'::"text", 'duplicate_ignored'::"text", 'error'::"text"])))
 );
@@ -79085,6 +79125,10 @@ ALTER TABLE "public"."crm_callback_events" OWNER TO "postgres";
 
 
 COMMENT ON TABLE "public"."crm_callback_events" IS 'Auditoria + chave de idempotência dos callbacks recebidos do CRM Promo Champions V2 via edge function receive-crm-callback.';
+
+
+
+COMMENT ON COLUMN "public"."crm_callback_events"."updated_at" IS 'Ultima alteracao da linha, mantida por trg_crm_callback_events_updated_at. NULL = nunca alterada desde 2026-11-19, quando a coluna foi criada. Fecha a intencao de 20260706223316, que nao pode ser aplicada (ver cabecalho da 20261119110500).';
 
 
 
@@ -102888,6 +102932,10 @@ CREATE INDEX "idx_sds_cenario_a" ON "public"."stock_daily_summary" USING "btree"
 
 
 
+CREATE INDEX "idx_sds_summary_date_supplier" ON "public"."stock_daily_summary" USING "btree" ("summary_date", "supplier_id") INCLUDE ("stock_close", "units_depleted", "units_restocked");
+
+
+
 CREATE INDEX "idx_sds_variant_id" ON "public"."stock_daily_summary" USING "btree" ("variant_id");
 
 
@@ -104727,6 +104775,10 @@ CREATE OR REPLACE TRIGGER "trg_cover_materials_updated_at" BEFORE UPDATE ON "pub
 
 
 CREATE OR REPLACE TRIGGER "trg_cover_types_updated_at" BEFORE UPDATE ON "public"."cover_types" FOR EACH ROW EXECUTE FUNCTION "public"."fn_update_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_crm_callback_events_updated_at" BEFORE UPDATE ON "public"."crm_callback_events" FOR EACH ROW EXECUTE FUNCTION "public"."set_updated_at"();
 
 
 
@@ -117771,6 +117823,12 @@ GRANT ALL ON FUNCTION "public"."fn_mark_removed_from_spot"("p_current_skus" "tex
 
 
 
+REVOKE ALL ON FUNCTION "public"."fn_market_intelligence_macro"("p_days" integer, "p_supplier_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_market_intelligence_macro"("p_days" integer, "p_supplier_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_market_intelligence_macro"("p_days" integer, "p_supplier_id" "uuid") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."fn_master_classify_product"("p_name" "text", "p_product_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_master_classify_product"("p_name" "text", "p_product_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_master_classify_product"("p_name" "text", "p_product_id" "uuid") TO "service_role";
@@ -123914,6 +123972,7 @@ GRANT ALL ON TABLE "public"."mv_product_cards" TO "service_role";
 
 GRANT ALL ON TABLE "public"."mv_product_compositions" TO "service_role";
 GRANT SELECT ON TABLE "public"."mv_product_compositions" TO "authenticated";
+GRANT SELECT ON TABLE "public"."mv_product_compositions" TO "anon";
 
 
 

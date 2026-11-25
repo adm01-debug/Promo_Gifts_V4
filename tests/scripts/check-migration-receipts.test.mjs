@@ -125,3 +125,94 @@ describe('check-migration-receipts — regressão com versão canônica', () => 
     expect(result.status).toBe(1);
   });
 });
+
+// ─── Fail-open: linha de recibo que declara a migration FORA de produção ───
+//
+// hasReceiptForVersion() aceitava qualquer linha sem a palavra "pendente".
+// Com isso, `registrada-sem-aplicar` e `aguardando_merge` — que declaram a
+// migration não aplicada — funcionavam como comprovante: uma versão aplicada
+// no banco cujo recibo estivesse nesses status dava verde para sempre e o
+// ledger ficava defasado sem ninguém ver. Medido no ledger real antes da
+// correção: 21 versões cujo único registro é não-final passavam no gate.
+describe('hasReceiptForVersion — status não-final não conta como recibo', () => {
+  /** Roda o gate com uma única linha de recibo para 20261130120000. */
+  function checkStatus(status) {
+    const { scriptPath, logPath, root } = setupSandbox();
+    writeFileSync(
+      logPath,
+      `# Ledger\n\n## 2026-11-30\n\n| \`20261130120000\` | \`hash\` | — | deploy | E15 | 2026-11-30 | evidência | ${status} |\n`,
+    );
+    const fromFile = join(root, 'versions.json');
+    writeFileSync(fromFile, JSON.stringify(['20261130120000']));
+    return run(scriptPath, [`--from-file=${fromFile}`]);
+  }
+
+  const statusNaoFinais = [
+    'aguardando_merge',
+    'registrada-sem-aplicar',
+    'registrada sem aplicar',
+    'pendente',
+    'pendente — aplicar via `db-apply-migration.yml` após merge',
+    '**pendente — não aplicada**',
+    'não aplicada',
+    'a aplicar via db-apply-migration.yml após merge do PR #2646',
+    'previsto para 2026-12-01',
+  ];
+
+  for (const status of statusNaoFinais) {
+    it(`exit 1 com status "${status}"`, () => {
+      const result = checkStatus(status);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toMatch(/sem recibo/);
+    });
+  }
+
+  const statusFinais = [
+    'aplicada',
+    '**aplicada** (ledger de produção); recibo retroativo',
+    'já aplicada em produção; conserto só vale para replay do zero, não vai a produção',
+    'arquivo corrigido (URL pa→pb, REGRA #1); SQL aplicado em produção antes de E15',
+    '✅ aplicado',
+    // 475 linhas do ledger usam este status de recibo retroativo — não pode virar falso negativo.
+    'n/d (não capturado retroativamente; ver E07 — verificação por objeto)',
+  ];
+
+  for (const status of statusFinais) {
+    it(`exit 0 com status "${status.slice(0, 40)}"`, () => {
+      const result = checkStatus(status);
+
+      expect(result.status).toBe(0);
+    });
+  }
+
+  it('exit 0 quando o pré-registro não-final convive com a linha "aplicada"', () => {
+    const { scriptPath, logPath, root } = setupSandbox();
+    writeFileSync(
+      logPath,
+      '# Ledger\n\n## 2026-11-30\n\n' +
+        '| `20261130120000` | `registrada-sem-aplicar` | pré-registro |\n' +
+        '| `20261130120000` | `aplicada` | recibo E15 |\n',
+    );
+    const fromFile = join(root, 'versions.json');
+    writeFileSync(fromFile, JSON.stringify(['20261130120000']));
+
+    const result = run(scriptPath, [`--from-file=${fromFile}`]);
+
+    expect(result.status).toBe(0);
+  });
+
+  it('exit 1 quando só existe o pré-registro não-final da versão', () => {
+    const { scriptPath, logPath, root } = setupSandbox();
+    writeFileSync(
+      logPath,
+      '# Ledger\n\n## 2026-11-30\n\n| `20261130120000` | `registrada-sem-aplicar` | pré-registro |\n',
+    );
+    const fromFile = join(root, 'versions.json');
+    writeFileSync(fromFile, JSON.stringify(['20261130120000']));
+
+    const result = run(scriptPath, [`--from-file=${fromFile}`]);
+
+    expect(result.status).toBe(1);
+  });
+});
