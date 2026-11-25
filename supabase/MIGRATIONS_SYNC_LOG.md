@@ -1667,6 +1667,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261119110500` | `627c73cfc852719099293953e231bc3c9df63a98c640db6f1e152ad801b5c687` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug (autorizado via /goal: termina o trabalho abandonado de 20260706223316 - carimbo de ultima alteracao em crm_callback_events)) | E15 | 2026-11-25 16:05:57 UTC | job post-check da run 45650896713 confirmou a version no ledger | aplicada |
 | `20261125173000` | `40707ac7c4468748df4c9dae60f4a92e8835b05fd77783de18d57b5287c355c7` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug (mandato /goal)) | E15 | 2026-11-25 17:03:36 UTC | job post-check da run 45660461919 confirmou a version no ledger | aplicada |
 | `20260916193000` | `d78129ee88a4295f10d4d47369526638a631859240075727dc3926ecb8ddd916` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-25 18:46:09 UTC | job post-check da run 45678339110 confirmou a version no ledger | aplicada |
+| `20261108230000` | `73174dd8978ed1d0f44fdc76d2c60aba1add07b0bf728bee263bafe24ec921d2` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-25 20:12:44 UTC | job post-check da run 45692395050 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
