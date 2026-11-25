@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e557288df0147a8b37a5120a1625f81875077069",
+  "commit": "020fab799bf6c44007c069709478cf003e13ef04",
   "branch": "main",
-  "data_commit": "2026-11-25T09:19:56-03:00",
+  "data_commit": "2026-11-25T09:28:55-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "020fab7",
+    "data": "2026-11-25",
+    "assunto": "chore(deps): bump do grupo production-minor-patch (10 pacotes) sobre a main atual (#4067)"
+   },
+   {
+    "sha": "a7d3044",
+    "data": "2026-11-25",
+    "assunto": "chore: remove da baseline as 13 tabelas cujo grant anon foi revogado (#4075)"
+   },
    {
     "sha": "e557288",
     "data": "2026-11-25",
@@ -121,16 +131,6 @@
     "sha": "2e83b04",
     "data": "2026-11-24",
     "assunto": "fix: canonicaliza internal.managed_schema_dictionary criada direto em produção (#4048)"
-   },
-   {
-    "sha": "7e66b07",
-    "data": "2026-11-24",
-    "assunto": "docs: enterra o draft E40 com o SHA arquivado em refs/agents-archive (#4050)"
-   },
-   {
-    "sha": "53f9c04",
-    "data": "2026-11-24",
-    "assunto": "docs: registra o cleanup das 7 branches obsoletas e como recupera-las (#4046)"
    }
   ],
   "arquivos_mudados_7d": 648,
@@ -203,15 +203,15 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 29
+    "mudancas": 30
    },
    {
     "arquivo": "package.json",
-    "mudancas": 24
+    "mudancas": 25
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 18
+    "mudancas": 19
    },
    {
     "arquivo": "CHANGELOG.md",

@@ -361,11 +361,11 @@
   "dependencias": 76,
   "dev_dependencias": 44,
   "principais": {
-   "@supabase/supabase-js": "^2.119.0",
-   "@tanstack/react-query": "^5.107.1",
+   "@supabase/supabase-js": "^2.119.2",
+   "@tanstack/react-query": "^5.108.2",
    "@tanstack/react-virtual": "^3.14.26",
    "date-fns": "4.4.0",
-   "framer-motion": "^14.13.0",
+   "framer-motion": "^14.14.0",
    "react": "^19.3.1",
    "react-day-picker": "^10.0.2",
    "react-dom": "^19.3.1",
@@ -373,7 +373,7 @@
    "react-hook-form": "^7.92.0",
    "react-hot-toast": "^2.6.1",
    "react-markdown": "^10.1.0",
-   "react-router-dom": "^7.18.5",
+   "react-router-dom": "^7.18.6",
    "recharts": "^2.10.3",
    "zod": "^4.6.7",
    "zustand": "^5.1.0"
@@ -4664,22 +4664,22 @@
    {
     "pacote": "@elevenlabs/react",
     "servico": "ElevenLabs",
-    "versao": "^1.22.0"
+    "versao": "^1.23.1"
    },
    {
     "pacote": "@tanstack/react-query",
     "servico": "react-query",
-    "versao": "^5.107.1"
+    "versao": "^5.108.2"
    },
    {
     "pacote": "@sentry/react",
     "servico": "Sentry",
-    "versao": "^11.12.0"
+    "versao": "^11.16.0"
    },
    {
     "pacote": "@supabase/supabase-js",
     "servico": "Supabase",
-    "versao": "^2.119.0"
+    "versao": "^2.119.2"
    },
    {
     "pacote": "zod",

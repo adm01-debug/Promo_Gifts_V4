@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "e557288df0147a8b37a5120a1625f81875077069",
+  "sha": "020fab799bf6c44007c069709478cf003e13ef04",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 12:23 UTC",
+  "generated_at": "2026-11-25 12:34 UTC",
   "files_total": 11200,
   "code_files": 9188,
   "code_lines": 1304070
  },
  "version": "1.3.2",
- "facts_hash": "04847d783f81243f",
+ "facts_hash": "4c4ed1cea2dcae5b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -22,12 +22,12 @@
     "in": "package.json"
    },
    "@supabase/supabase-js": {
-    "version": "^2.119.0",
+    "version": "^2.119.2",
     "role": "Supabase (DB/Auth/Storage/Functions)",
     "in": "package.json"
    },
    "@tanstack/react-query": {
-    "version": "^5.107.1",
+    "version": "^5.108.2",
     "role": "Cache/fetch de dados (TanStack Query)",
     "in": "package.json"
    },
@@ -42,7 +42,7 @@
     "in": "package.json"
    },
    "lucide-react": {
-    "version": "1.72.0",
+    "version": "1.77.0",
     "role": "Ícones Lucide",
     "in": "package.json"
    },
@@ -57,7 +57,7 @@
     "in": "package.json"
    },
    "react-router-dom": {
-    "version": "^7.18.5",
+    "version": "^7.18.6",
     "role": "Roteamento (React Router)",
     "in": "package.json"
    },
@@ -564046,10 +564046,30 @@
   }
  },
  "git": {
-  "sha": "e557288df0147a8b37a5120a1625f81875077069",
+  "sha": "020fab799bf6c44007c069709478cf003e13ef04",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "020fab7",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore(deps): bump do grupo production-minor-patch (10 pacotes) sobre a main atual (#4067)",
+    "files": [
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "a7d3044",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore: remove da baseline as 13 tabelas cujo grant anon foi revogado (#4075)",
+    "files": [
+     ".security/anon-tables-baseline.json",
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
    {
     "sha": "e557288",
     "date": "2026-11-25",
@@ -564343,37 +564363,20 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "18075a9",
-    "date": "2026-11-24",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261124120000 (#4041)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "a0daeda",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: fecha a superficie de custo do anon sem mascarar as views de compras (#4039)",
-    "files": [
-     "docs/coordenacao/conflitos-semanticos.md",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261124140000_close_anon_cost_surface.sql",
-     "supabase/rollbacks/20261124140000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    11
+    "docs/qa/05-PROGRESSO.md",
+    9
    ],
    [
-    "docs/qa/05-PROGRESSO.md",
-    8
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    9
+   ],
+   [
+    ".security/anon-tables-baseline.json",
+    3
    ],
    [
     "src/lib/fetch-print-areas.ts",
@@ -564384,11 +564387,15 @@
     3
    ],
    [
-    "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
+    "package-lock.json",
     2
    ],
    [
-    ".security/anon-tables-baseline.json",
+    "package.json",
+    2
+   ],
+   [
+    "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
     2
    ],
    [
@@ -564412,18 +564419,6 @@
     2
    ],
    [
-    "docs/coordenacao/conflitos-semanticos.md",
-    2
-   ],
-   [
-    "package-lock.json",
-    1
-   ],
-   [
-    "package.json",
-    1
-   ],
-   [
     "supabase/rollbacks/20261125120000_rollback.sql",
     1
    ],
@@ -564445,6 +564440,10 @@
    ],
    [
     "docs/agentes/resgates/2026-11-18-recibo-adjudicacao.md",
+    1
+   ],
+   [
+    "src/components/mockup/__tests__/MockupLayoutButtons.test.tsx",
     1
    ]
   ]
