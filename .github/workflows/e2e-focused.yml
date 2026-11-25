@@ -10,7 +10,7 @@ on:
   # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   schedule:
     # E89 — segunda-feira 02:00 UTC
-    - cron: '0 2 * * 1' # E89 — segunda 02:00 UTC
+    - cron: '7 2 * * 1' # E89 — segunda 02:07 UTC · E19: minuto :00 proibido
   workflow_dispatch:
     inputs:
       suite:
