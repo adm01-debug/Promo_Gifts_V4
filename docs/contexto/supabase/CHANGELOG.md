@@ -2,6 +2,13 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-25 14:19 UTC
+
+- **functions** alterado (2): `public.fn_product_active_for_rls(p_id uuid)`, `public.fn_verify_anon_catalog_grants()`
+- **lints** adicionado (1): `rpc_anon_executable:public.fn_product_active_for_rls(p_id uuid)`
+- **migrations** adicionado (1): `20261125131000_tripwire_anon_v5_reconcilia`
+- **views** alterado (3): `public.v_compras_catalogo`, `public.v_compras_precos_faixa`, `public.v_compras_precos_variante`
+
 ## 2026-11-25 12:29 UTC
 
 - **functions** alterado (3): `classification_audit.apply_high_confidence_suggestions(p_dry_run boolean, p_min_matches integer)`, `public.fn_verify_anon_catalog_grants()`, `public.has_role(_user_id uuid, _role app_role)`

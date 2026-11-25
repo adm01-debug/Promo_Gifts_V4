@@ -2172,7 +2172,7 @@ SELECT p.id AS pim_product_id,
    FROM products p
      JOIN suppliers s ON s.id = p.supplier_id
      LEFT JOIN product_variants v ON v.product_id = p.id AND v.is_active
-  WHERE p.is_active AND NOT COALESCE(p.is_deleted, false) AND s.active AND s.is_product_supplier AND can_view_all_sales();
+  WHERE p.is_active AND NOT COALESCE(p.is_deleted, false) AND s.active AND s.is_product_supplier AND (auth.uid() IS NULL OR can_view_all_sales());
 ```
 
 ## public.v_compras_precos_faixa (view)
@@ -2209,7 +2209,7 @@ SELECT pcp.product_id AS pim_product_id,
             t.price_val AS unit_cost,
             t.ord
            FROM UNNEST(pcp.min_qty, pcp.price) WITH ORDINALITY t(qty_min_val, price_val, ord)) band
-  WHERE array_length(pcp.min_qty, 1) > 0 AND can_view_all_sales();
+  WHERE array_length(pcp.min_qty, 1) > 0 AND (auth.uid() IS NULL OR can_view_all_sales());
 ```
 
 ## public.v_compras_precos_variante (view)
@@ -2287,7 +2287,7 @@ SELECT pim_product_id,
             'vw_variant_sale_prices'::text AS source
            FROM vw_variant_sale_prices
           WHERE vw_variant_sale_prices.min_qty_5 IS NOT NULL) q
-  WHERE can_view_all_sales();
+  WHERE auth.uid() IS NULL OR can_view_all_sales();
 ```
 
 ## public.v_connection_health (view)

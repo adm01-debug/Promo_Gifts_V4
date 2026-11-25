@@ -164345,9 +164345,13 @@
             {
               "file": "supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql",
               "hits": 3
+            },
+            {
+              "file": "supabase/migrations/20261125131000_tripwire_anon_v5_reconcilia.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -164359,7 +164363,7 @@
         ],
         "definition": null,
         "definition_sha": "1ded1bec47daf527",
-        "execute_api_roles": "authenticated, service_role",
+        "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -175838,9 +175842,13 @@
             {
               "file": "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
               "hits": 2
+            },
+            {
+              "file": "supabase/migrations/20261125131000_tripwire_anon_v5_reconcilia.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 4,
+          "code_total_files": 5,
           "cron": [],
           "db": [
             "public.fn_anon_catalog_grant_audit_run"
@@ -175848,12 +175856,12 @@
           "triggers": [],
           "views": []
         },
-        "comment": "Tripwire anti-regressao v3 (fix_version 20260717). Cobre: 56+ objetos obrigatórios, 8 travas de sensíveis (products/suppliers/tabela_gravacao/pg_stat_statements), 6 RPCs (5 seguros + fn_product_active_for_rls), 9 views DEFINER, produto_variants is_active policy. 0 linhas = saudável.",
+        "comment": "Tripwire anti-regressao v5 (2026-11-25). Cobre: 41 objetos obrigatorios (grant de tabela OU de coluna), 5 RPCs anon (4 de busca + fn_product_active_for_rls, exigido pelas policies de catalogo), 22 travas de objetos sensiveis (public/13 da etapa 008 + mockup_approval_links + 2 matviews internas), pg_stat_statements, 2 funcoes proibidas para anon (ranking de vendas e fn_global_search), 6 views DEFINER, 3 views invoker-by-design e a policy is_active de product_variants. 0 linhas = saudavel.",
         "config": [
           "search_path=public, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "abff6e695ec52934",
+        "definition_sha": "d7f840789a9145f9",
         "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -224079,6 +224087,12 @@
       {
         "code": "rpc_anon_executable",
         "detail": "SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública).",
+        "object": "public.fn_product_active_for_rls(p_id uuid)",
+        "severity": "INFO"
+      },
+      {
+        "code": "rpc_anon_executable",
+        "detail": "SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública).",
         "object": "public.fn_super_filtro(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean, p_limit integer, p_offset integer, p_sort text)",
         "severity": "INFO"
       },
@@ -241354,6 +241368,12 @@
         "statements": 4,
         "statements_sha": "123c4e386e6b7b8a",
         "version": "20261125120000"
+      },
+      {
+        "name": "tripwire_anon_v5_reconcilia",
+        "statements": 4,
+        "statements_sha": "0196bcd7fffd1281",
+        "version": "20261125131000"
       }
     ],
     "policies": [
@@ -267883,7 +267903,7 @@
       },
       {
         "comment": "Catalogo canônico para o bridge PIM -> Promo Supply V2 (SECURITY DEFINER). Projeta cost_price/sale_price/suggested_price de proposito: useCatalogoPim.ts consome esses campos para recompra. O recorte e a projecao + o WHERE, nao o GRANT. NAO religar security_invoker=true.",
-        "definition": " SELECT p.id AS pim_product_id,\n    v.id AS pim_variant_id,\n    p.sku,\n    p.sku_promo,\n    p.name,\n    p.supplier_id,\n    s.code AS supplier_code,\n    s.name AS supplier_name,\n    COALESCE(v.supplier_sku, p.supplier_reference) AS supplier_reference,\n    p.supplier_external_id,\n    p.cost_price,\n    p.sale_price,\n    p.suggested_price,\n    p.ipi_rate,\n    p.ncm_code,\n    p.min_quantity,\n    p.min_order_quantity,\n    s.min_order_value,\n    COALESCE(v.stock_quantity, p.stock_quantity) AS stock_quantity,\n    p.is_stockout,\n    p.last_stock_update_at,\n    p.xbz_stock_reliability_text,\n    v.color_id,\n    v.color_name,\n    v.color_code,\n    v.color_hex,\n    v.size_code,\n    COALESCE(p.primary_image_url, p.primary_image_fallback_url) AS image_url,\n    p.lead_time_days,\n    p.price_updated_at,\n    p.price_verified_at,\n    p.price_freshness_threshold_days,\n    p.updated_at\n   FROM products p\n     JOIN suppliers s ON s.id = p.supplier_id\n     LEFT JOIN product_variants v ON v.product_id = p.id AND v.is_active\n  WHERE p.is_active AND NOT COALESCE(p.is_deleted, false) AND s.active AND s.is_product_supplier AND can_view_all_sales();",
+        "definition": " SELECT p.id AS pim_product_id,\n    v.id AS pim_variant_id,\n    p.sku,\n    p.sku_promo,\n    p.name,\n    p.supplier_id,\n    s.code AS supplier_code,\n    s.name AS supplier_name,\n    COALESCE(v.supplier_sku, p.supplier_reference) AS supplier_reference,\n    p.supplier_external_id,\n    p.cost_price,\n    p.sale_price,\n    p.suggested_price,\n    p.ipi_rate,\n    p.ncm_code,\n    p.min_quantity,\n    p.min_order_quantity,\n    s.min_order_value,\n    COALESCE(v.stock_quantity, p.stock_quantity) AS stock_quantity,\n    p.is_stockout,\n    p.last_stock_update_at,\n    p.xbz_stock_reliability_text,\n    v.color_id,\n    v.color_name,\n    v.color_code,\n    v.color_hex,\n    v.size_code,\n    COALESCE(p.primary_image_url, p.primary_image_fallback_url) AS image_url,\n    p.lead_time_days,\n    p.price_updated_at,\n    p.price_verified_at,\n    p.price_freshness_threshold_days,\n    p.updated_at\n   FROM products p\n     JOIN suppliers s ON s.id = p.supplier_id\n     LEFT JOIN product_variants v ON v.product_id = p.id AND v.is_active\n  WHERE p.is_active AND NOT COALESCE(p.is_deleted, false) AND s.active AND s.is_product_supplier AND (auth.uid() IS NULL OR can_view_all_sales());",
         "depends_on": [
           "public.product_variants",
           "public.products",
@@ -267899,7 +267919,7 @@
       },
       {
         "comment": "Faixas de preco por quantidade para o bridge PIM (SECURITY DEFINER). Projeta unit_cost/unit_price de proposito (PimPrecoFaixa). NAO religar security_invoker=true.",
-        "definition": " SELECT pcp.product_id AS pim_product_id,\n    NULL::uuid AS pim_variant_id,\n    band.qty_min,\n    lead(band.qty_min) OVER (PARTITION BY pcp.id ORDER BY band.ord) - 1 AS qty_max,\n    band.unit_cost,\n    NULL::numeric AS unit_price,\n    'spot_customization'::text AS source,\n    pcp.service_code,\n    pcp.table_code,\n    pcp.component,\n    pcp.location,\n    pcp.handling_cost,\n    pcp.table_max_area_cm2,\n    pcp.max_stitches,\n    pcp.hotspot,\n    pcp.currency\n   FROM product_customization_prices pcp\n     CROSS JOIN LATERAL ( SELECT t.qty_min_val AS qty_min,\n            t.price_val AS unit_cost,\n            t.ord\n           FROM UNNEST(pcp.min_qty, pcp.price) WITH ORDINALITY t(qty_min_val, price_val, ord)) band\n  WHERE array_length(pcp.min_qty, 1) > 0 AND can_view_all_sales();",
+        "definition": " SELECT pcp.product_id AS pim_product_id,\n    NULL::uuid AS pim_variant_id,\n    band.qty_min,\n    lead(band.qty_min) OVER (PARTITION BY pcp.id ORDER BY band.ord) - 1 AS qty_max,\n    band.unit_cost,\n    NULL::numeric AS unit_price,\n    'spot_customization'::text AS source,\n    pcp.service_code,\n    pcp.table_code,\n    pcp.component,\n    pcp.location,\n    pcp.handling_cost,\n    pcp.table_max_area_cm2,\n    pcp.max_stitches,\n    pcp.hotspot,\n    pcp.currency\n   FROM product_customization_prices pcp\n     CROSS JOIN LATERAL ( SELECT t.qty_min_val AS qty_min,\n            t.price_val AS unit_cost,\n            t.ord\n           FROM UNNEST(pcp.min_qty, pcp.price) WITH ORDINALITY t(qty_min_val, price_val, ord)) band\n  WHERE array_length(pcp.min_qty, 1) > 0 AND (auth.uid() IS NULL OR can_view_all_sales());",
         "depends_on": [
           "public.product_customization_prices"
         ],
@@ -267913,7 +267933,7 @@
       },
       {
         "comment": "Precos por variante para o bridge PIM (SECURITY DEFINER). Depende de vw_variant_sale_prices, que nao tem GRANT SELECT para anon. NAO religar security_invoker=true.",
-        "definition": " SELECT pim_product_id,\n    pim_variant_id,\n    tier,\n    qty_min,\n    qty_max,\n    unit_cost,\n    unit_price,\n    source\n   FROM ( SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n            vw_variant_sale_prices.variant_id AS pim_variant_id,\n            1 AS tier,\n            vw_variant_sale_prices.min_qty_1 AS qty_min,\n            vw_variant_sale_prices.min_qty_2 - 1 AS qty_max,\n            vw_variant_sale_prices.cost_price_1 AS unit_cost,\n            vw_variant_sale_prices.sale_price_1 AS unit_price,\n            'vw_variant_sale_prices'::text AS source\n           FROM vw_variant_sale_prices\n          WHERE vw_variant_sale_prices.min_qty_1 IS NOT NULL\n        UNION ALL\n         SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n            vw_variant_sale_prices.variant_id AS pim_variant_id,\n            2 AS tier,\n            vw_variant_sale_prices.min_qty_2 AS qty_min,\n            vw_variant_sale_prices.min_qty_3 - 1 AS qty_max,\n            vw_variant_sale_prices.cost_price_2 AS unit_cost,\n            vw_variant_sale_prices.sale_price_2 AS unit_price,\n            'vw_variant_sale_prices'::text AS source\n           FROM vw_variant_sale_prices\n          WHERE vw_variant_sale_prices.min_qty_2 IS NOT NULL\n        UNION ALL\n         SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n            vw_variant_sale_prices.variant_id AS pim_variant_id,\n            3 AS tier,\n            vw_variant_sale_prices.min_qty_3 AS qty_min,\n            vw_variant_sale_prices.min_qty_4 - 1 AS qty_max,\n            vw_variant_sale_prices.cost_price_3 AS unit_cost,\n            vw_variant_sale_prices.sale_price_3 AS unit_price,\n            'vw_variant_sale_prices'::text AS source\n           FROM vw_variant_sale_prices\n          WHERE vw_variant_sale_prices.min_qty_3 IS NOT NULL\n        UNION ALL\n         SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n            vw_variant_sale_prices.variant_id AS pim_variant_id,\n            4 AS tier,\n            vw_variant_sale_prices.min_qty_4 AS qty_min,\n            vw_variant_sale_prices.min_qty_5 - 1 AS qty_max,\n            vw_variant_sale_prices.cost_price_4 AS unit_cost,\n            vw_variant_sale_prices.sale_price_4 AS unit_price,\n            'vw_variant_sale_prices'::text AS source\n           FROM vw_variant_sale_prices\n          WHERE vw_variant_sale_prices.min_qty_4 IS NOT NULL\n        UNION ALL\n         SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n            vw_variant_sale_prices.variant_id AS pim_variant_id,\n            5 AS tier,\n            vw_variant_sale_prices.min_qty_5 AS qty_min,\n            NULL::integer AS qty_max,\n            vw_variant_sale_prices.cost_price_5 AS unit_cost,\n            vw_variant_sale_prices.sale_price_5 AS unit_price,\n            'vw_variant_sale_prices'::text AS source\n           FROM vw_variant_sale_prices\n          WHERE vw_variant_sale_prices.min_qty_5 IS NOT NULL) q\n  WHERE can_view_all_sales();",
+        "definition": " SELECT pim_product_id,\n    pim_variant_id,\n    tier,\n    qty_min,\n    qty_max,\n    unit_cost,\n    unit_price,\n    source\n   FROM ( SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n            vw_variant_sale_prices.variant_id AS pim_variant_id,\n            1 AS tier,\n            vw_variant_sale_prices.min_qty_1 AS qty_min,\n            vw_variant_sale_prices.min_qty_2 - 1 AS qty_max,\n            vw_variant_sale_prices.cost_price_1 AS unit_cost,\n            vw_variant_sale_prices.sale_price_1 AS unit_price,\n            'vw_variant_sale_prices'::text AS source\n           FROM vw_variant_sale_prices\n          WHERE vw_variant_sale_prices.min_qty_1 IS NOT NULL\n        UNION ALL\n         SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n            vw_variant_sale_prices.variant_id AS pim_variant_id,\n            2 AS tier,\n            vw_variant_sale_prices.min_qty_2 AS qty_min,\n            vw_variant_sale_prices.min_qty_3 - 1 AS qty_max,\n            vw_variant_sale_prices.cost_price_2 AS unit_cost,\n            vw_variant_sale_prices.sale_price_2 AS unit_price,\n            'vw_variant_sale_prices'::text AS source\n           FROM vw_variant_sale_prices\n          WHERE vw_variant_sale_prices.min_qty_2 IS NOT NULL\n        UNION ALL\n         SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n            vw_variant_sale_prices.variant_id AS pim_variant_id,\n            3 AS tier,\n            vw_variant_sale_prices.min_qty_3 AS qty_min,\n            vw_variant_sale_prices.min_qty_4 - 1 AS qty_max,\n            vw_variant_sale_prices.cost_price_3 AS unit_cost,\n            vw_variant_sale_prices.sale_price_3 AS unit_price,\n            'vw_variant_sale_prices'::text AS source\n           FROM vw_variant_sale_prices\n          WHERE vw_variant_sale_prices.min_qty_3 IS NOT NULL\n        UNION ALL\n         SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n            vw_variant_sale_prices.variant_id AS pim_variant_id,\n            4 AS tier,\n            vw_variant_sale_prices.min_qty_4 AS qty_min,\n            vw_variant_sale_prices.min_qty_5 - 1 AS qty_max,\n            vw_variant_sale_prices.cost_price_4 AS unit_cost,\n            vw_variant_sale_prices.sale_price_4 AS unit_price,\n            'vw_variant_sale_prices'::text AS source\n           FROM vw_variant_sale_prices\n          WHERE vw_variant_sale_prices.min_qty_4 IS NOT NULL\n        UNION ALL\n         SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n            vw_variant_sale_prices.variant_id AS pim_variant_id,\n            5 AS tier,\n            vw_variant_sale_prices.min_qty_5 AS qty_min,\n            NULL::integer AS qty_max,\n            vw_variant_sale_prices.cost_price_5 AS unit_cost,\n            vw_variant_sale_prices.sale_price_5 AS unit_price,\n            'vw_variant_sale_prices'::text AS source\n           FROM vw_variant_sale_prices\n          WHERE vw_variant_sale_prices.min_qty_5 IS NOT NULL) q\n  WHERE auth.uid() IS NULL OR can_view_all_sales();",
         "depends_on": [
           "public.vw_variant_sale_prices"
         ],
