@@ -429,7 +429,6 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.mv_media_health | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.mv_product_cards | authenticated | SELECT |
 | public.mv_product_cards | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.mv_product_compositions | anon | SELECT |
 | public.mv_product_compositions | authenticated | SELECT |
 | public.mv_product_compositions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.mv_product_intelligence | authenticated | SELECT |

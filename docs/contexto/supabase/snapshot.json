@@ -199490,12 +199490,6 @@
           "table": "mv_product_cards"
         },
         {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "mv_product_compositions"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "SELECT",
           "schema": "public",

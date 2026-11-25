@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-25 15:18 UTC
+
+- **grants** removido (1): `public.mv_product_compositions:anon`
+
 ## 2026-11-25 14:19 UTC
 
 - **functions** alterado (2): `public.fn_product_active_for_rls(p_id uuid)`, `public.fn_verify_anon_catalog_grants()`
