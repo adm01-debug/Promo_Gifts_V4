@@ -1661,6 +1661,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261125074200` | `ba3e1a2b19b9dee538911df6d3d45eaafef2bdb8414fb07df3e0568e0a727fd2` | — | Copilot (Management API Supabase /database/query) | E15 | 2026-11-25 10:44:00 UTC | anon=false authenticated=false service_role=true | aplicada — hotfix via Management API antes do merge; PR #4064 |
 | `20261125120000` | `c03b1e516cfe6f2d8d7f687b911012e01447f0d175472c0fdd08170fe1655cdd` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @JoaquimAtaides) | E15 | 2026-11-25 12:05:18 UTC | job post-check da run 45609989922 confirmou a version no ledger | aplicada |
 | `20261125131000` | `a3fbab8cfe9edcda546440c555b8c541147ed6a295dc84f306e780d2ffad1ed8` | — | Copilot (sessão de 2026-11-25; dono autorizou DDL no chat — objetivo #24) | E15 | previsto 2026-11-25 | dry-run medido em produção dentro de BEGIN..ROLLBACK: tripwire v5 = 0 achado, anon EXECUTE em fn_product_active_for_rls = true; rollback restaura v4 com 11 achados | aguardando_merge |
+| `20261125131000` | `3b6b1baa03c96fe2ba1c747e79b83f6917b72d90c40481046998428c93d0317c` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-25 13:24:33 UTC | job post-check da run 45623101508 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
