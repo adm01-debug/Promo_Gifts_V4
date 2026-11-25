@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2bbfb0bfbf38118a5325278ffdff0094e96e5049",
+  "commit": "446d8672f56652455e72693be52a74f532694c93",
   "branch": "main",
-  "data_commit": "2026-11-25T18:25:42-03:00",
+  "data_commit": "2026-11-25T18:41:40-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "446d867",
+    "data": "2026-11-25",
+    "assunto": "chore: refresh do snapshot de cron jobs (144 jobs) (#4125)"
+   },
    {
     "sha": "2bbfb0b",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "1b03dfa",
     "data": "2026-11-25",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261125173000 (#4094)"
-   },
-   {
-    "sha": "4eae35f",
-    "data": "2026-11-25",
-    "assunto": "fix: corrige approved-by do indice de stock_daily_summary (#4092) (#4093)"
    }
   ],
-  "arquivos_mudados_7d": 573,
+  "arquivos_mudados_7d": 558,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -258,10 +258,6 @@
     "mudancas": 6
    },
    {
-    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    "mudancas": 5
-   },
-   {
     "arquivo": "scripts/automation.config.json",
     "mudancas": 5
    },
@@ -290,6 +286,10 @@
     "mudancas": 4
    },
    {
+    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
+    "mudancas": 4
+   },
+   {
     "arquivo": "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
     "mudancas": 4
    },
@@ -301,16 +301,16 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 244
+    "commits": 245
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 56
+    "commits": 55
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 11280,
+  "arquivos_total": 11281,
   "arquivos_codigo": 5682,
   "linhas_codigo": 1077287,
   "rotas": 141,

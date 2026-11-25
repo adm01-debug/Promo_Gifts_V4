@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "2bbfb0bfbf38118a5325278ffdff0094e96e5049",
+  "sha": "446d8672f56652455e72693be52a74f532694c93",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 21:26 UTC",
-  "files_total": 11210,
+  "generated_at": "2026-11-25 21:56 UTC",
+  "files_total": 11211,
   "code_files": 9197,
   "code_lines": 1305231
  },
@@ -565067,10 +565067,19 @@
   }
  },
  "git": {
-  "sha": "2bbfb0bfbf38118a5325278ffdff0094e96e5049",
+  "sha": "446d8672f56652455e72693be52a74f532694c93",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "446d867",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore: refresh do snapshot de cron jobs (144 jobs) (#4125)",
+    "files": [
+     "supabase/baseline/20261125220000_cron_jobs.json"
+    ]
+   },
    {
     "sha": "2bbfb0b",
     "date": "2026-11-25",
@@ -565366,18 +565375,6 @@
      "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql",
      "supabase/rollbacks/20261125160000_rollback.sql"
     ]
-   },
-   {
-    "sha": "b290d2f",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "chore(main): release gifts-store 1.20.0 (#3983)",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
@@ -565399,19 +565396,15 @@
    ],
    [
     "package-lock.json",
-    3
+    2
    ],
    [
     "package.json",
-    3
-   ],
-   [
-    ".release-please-manifest.json",
     2
    ],
    [
-    "CHANGELOG.md",
-    2
+    "supabase/baseline/20261125220000_cron_jobs.json",
+    1
    ],
    [
     "supabase/baseline/20261125180000_baseline_schema.sql",
@@ -565427,6 +565420,14 @@
    ],
    [
     "supabase/rollbacks/20261027230000_rollback.sql",
+    1
+   ],
+   [
+    ".release-please-manifest.json",
+    1
+   ],
+   [
+    "CHANGELOG.md",
     1
    ],
    [
@@ -565455,10 +565456,6 @@
    ],
    [
     "scripts/append-migration-receipt.mjs",
-    1
-   ],
-   [
-    "tests/scripts/append-migration-receipt.test.mjs",
     1
    ]
   ]
