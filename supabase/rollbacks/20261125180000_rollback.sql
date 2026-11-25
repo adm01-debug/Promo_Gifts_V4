@@ -1,4 +1,4 @@
--- Rollback de 20261125150000_fix_comment_v_tabela_gravacao_publica.sql
+-- Rollback de 20261125180000_fix_comment_v_tabela_gravacao_publica.sql
 --
 -- Devolve o texto VIVO antes desta migration, gravado por
 -- 20261122180000_restore_definer_views_p06_e_compras.sql (linha 111).
