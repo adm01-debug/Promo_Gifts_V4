@@ -86,6 +86,33 @@ function escapeRegExp(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+// Marcador de status que declara a migration FORA de produção. Aplicado ao INÍCIO de cada
+// célula da linha (não à linha inteira) para não reprovar um recibo final cuja evidência
+// apenas mencione "pendente"/"aguardando" no meio do texto.
+const STATUS_NAO_FINAL =
+  /^(pendente|aguardando|registrada[\s-]*sem[\s-]*aplicar|a[\s-]+aplicar|previsto|n[aã]o[\s-]*aplicad[ao])\b/;
+
+// Normaliza uma célula para comparação: remove marcação (`*`, backticks, underscores),
+// emoji e pontuação, mantendo letras, números, hífen e barra.
+function normalizeCell(celula) {
+  return String(celula)
+    .replace(/[`*_\s]+/g, ' ')
+    .replace(/[^\p{L}\p{N}/-]+/gu, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+// A linha declara a migration como não aplicada? Onde fica o status varia: há linhas
+// `| version | status | ...` (pré-registro curto) e linhas
+// `| version | nome | hash | status |` (recibo de edge). Por isso cada célula é testada,
+// e não só a última.
+function declaraNaoAplicada(line) {
+  const celulas = line.trimStart().startsWith('|')
+    ? line.split('|').slice(1, -1)
+    : [line];
+  return celulas.some((c) => STATUS_NAO_FINAL.test(normalizeCell(c)));
+}
+
 function hasReceiptForVersion(logContent, version) {
   // Usa word-boundary numérico para evitar falso positivo por substring.
   // Ex: versão "2026091615572" (13 dígitos) não faz match em "20260916155725".
@@ -114,11 +141,15 @@ function hasReceiptForVersion(logContent, version) {
     ? linhasDeRecibo
     : logContent.split('\n').filter((l) => !l.trimStart().startsWith('|') && re.test(l));
   if (linhas.length === 0) return false;
-  // Linha "pendente-only" (contém a versão mas apenas status pendente, sem "aplicada")
-  // NÃO conta como recibo — a migration ainda não foi efetivada em produção.
+  // Só status FINAL conta como recibo. Até 2026-11-25 qualquer linha sem a palavra
+  // "pendente" passava, então `registrada-sem-aplicar` e `aguardando_merge` — que declaram a
+  // migration FORA de produção — funcionavam como comprovante: uma versão aplicada no banco
+  // com recibo nesses status dava verde para sempre e o ledger mentia sem ninguém ver.
   return linhas.some((l) => {
+    if (declaraNaoAplicada(l)) return false;
+    // Formatos legados sem coluna de status: "pendente" no texto só passa se houver
+    // "aplicada" positivo (não "não aplicada").
     if (!/pendente/i.test(l)) return true;
-    // Tem "pendente" — só conta se também tem "aplicada" positivo (não "não aplicada")
     return /\baplicada\b/i.test(l) && !/não\s+aplicada/i.test(l);
   });
 }
