@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "de33a8d4fc9f73a4f13fdf3046f5ebefd7e88416",
+  "commit": "74b2b8738ef279d41d4d800df4354e125024ebd8",
   "branch": "main",
-  "data_commit": "2026-11-25T17:44:38-03:00",
+  "data_commit": "2026-11-25T18:02:16-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "74b2b87",
+    "data": "2026-11-25",
+    "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45697871384) (#4123)"
+   },
    {
     "sha": "de33a8d",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "4107894",
     "data": "2026-11-25",
     "assunto": "perf: torna aplicavel o indice de stock_daily_summary do market-intel (#4092)"
-   },
-   {
-    "sha": "69afa3c",
-    "data": "2026-11-25",
-    "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45647674999) (#4083)"
    }
   ],
-  "arquivos_mudados_7d": 576,
+  "arquivos_mudados_7d": 574,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -230,11 +230,19 @@
     "mudancas": 8
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 6
+    "arquivo": "supabase/migrations-snapshot/ALL_IN_ONE.sql",
+    "mudancas": 7
    },
    {
-    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
+    "arquivo": "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "supabase/migrations-snapshot/SNAPSHOT_META.json",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
     "mudancas": 6
    },
    {
@@ -250,16 +258,8 @@
     "mudancas": 6
    },
    {
-    "arquivo": "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "supabase/migrations-snapshot/SNAPSHOT_META.json",
-    "mudancas": 6
+    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
+    "mudancas": 5
    },
    {
     "arquivo": "scripts/automation.config.json",
