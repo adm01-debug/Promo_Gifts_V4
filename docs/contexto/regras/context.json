@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "fd4bdb06629bdc052b62b7d4ad7f07b584fbd5bc",
+  "sha": "de33a8d4fc9f73a4f13fdf3046f5ebefd7e88416",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 20:38 UTC",
+  "generated_at": "2026-11-25 20:46 UTC",
   "files_total": 11210,
   "code_files": 9197,
   "code_lines": 1305231
@@ -564997,10 +564997,19 @@
   }
  },
  "git": {
-  "sha": "fd4bdb06629bdc052b62b7d4ad7f07b584fbd5bc",
+  "sha": "de33a8d4fc9f73a4f13fdf3046f5ebefd7e88416",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "de33a8d",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261120040000 (#4118)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "fd4bdb0",
     "date": "2026-11-25",
@@ -565294,18 +565303,6 @@
     "subject": "docs(migrations-log): recibo E15 — aplicação de 20261125131000 (#4077)",
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "8c250b0",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: restaura EXECUTE de anon no helper de RLS e reconcilia tripwire v5 (#4076)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261125131000_tripwire_anon_v5_reconcilia.sql",
-     "supabase/rollbacks/20261125131000_rollback.sql"
     ]
    }
   ],

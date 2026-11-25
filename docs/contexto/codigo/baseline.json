@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "fd4bdb06629bdc052b62b7d4ad7f07b584fbd5bc",
+  "commit": "de33a8d4fc9f73a4f13fdf3046f5ebefd7e88416",
   "branch": "main",
-  "data_commit": "2026-11-25T17:35:48-03:00",
+  "data_commit": "2026-11-25T17:44:38-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "de33a8d",
+    "data": "2026-11-25",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261120040000 (#4118)"
+   },
    {
     "sha": "fd4bdb0",
     "data": "2026-11-25",
@@ -126,11 +131,6 @@
     "sha": "69afa3c",
     "data": "2026-11-25",
     "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45647674999) (#4083)"
-   },
-   {
-    "sha": "5c65a18",
-    "data": "2026-11-25",
-    "assunto": "docs: recibos de 20261115130100 e 20261119110500 no ledger (#4090)"
    }
   ],
   "arquivos_mudados_7d": 576,
@@ -219,7 +219,7 @@
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "src/lib/freight/index.ts",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 245
+    "commits": 244
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 55
+    "commits": 56
    }
   ]
  },
