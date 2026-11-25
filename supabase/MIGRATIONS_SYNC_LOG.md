@@ -1671,6 +1671,8 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261108230000` | `73174dd8978ed1d0f44fdc76d2c60aba1add07b0bf728bee263bafe24ec921d2` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-25 20:12:44 UTC | job post-check da run 45692395050 confirmou a version no ledger | aplicada |
 | `20261120040000` | `4c0007b4b8f8b608a12693dba5173cab8726627618393ecf61c378af310d4346` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | reconciliação E055 | 2026-11-25 20:38:03 UTC | efeitos conferidos em produção no dump `SCHEMA_LIVE.sql` de 2026-11-25T20:55:49Z: `quotes.freight_plan`, `quotes.freight_mix_mode`, `quotes.show_freight_plan_to_client`, `quotes_freight_mix_mode_check`, `quotes_freight_plan_shape_check` e os 3 `COMMENT ON COLUMN` | aplicada |
 | `20261114160000` | `71368c808e5725ba7b49114394b2e274fa7a3c1985b821879a64eeb61cf8d549` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-25 22:12:55 UTC | job post-check da run 45710140526 confirmou a version no ledger | aplicada |
+| `20260620190001` | `3cca044cdf0c5e6f26bb757b0276740ad2e9a08d8fd9f20d636c2241350ac28d` | — | adm01-debug | E15 | 2026-11-25T22:46:42Z | resgate de migration orfa: rollback e REVOKE EXECUTE incluidos no mesmo commit | registrada-sem-aplicar |
+| `20260629142224` | `8f2a5bcfb070ffa97aafdb177cb8e0ae1ac593b28e8b69baabb62a093c9751ea` | — | adm01-debug | E15 | 2026-11-25T22:46:42Z | resgate de migration orfa: rollback e REVOKE EXECUTE incluidos no mesmo commit | registrada-sem-aplicar |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -3052,3 +3054,14 @@ Rollback do pacote: as definicoes anteriores das 8 policies estao no baseline an
 `20261122180000_baseline_schema.sql` (removido de `main` em `918511e6`) e no
 `.security/policies-baseline.json` de `53b42181^` (sha256 `b9b74e0f`). Reverter exige recriar as
 policies com aquelas definicoes via `db-apply-migration.yml` (regra 8).
+
+## Fila de aplicacao ? migrations pendentes (E15)
+
+Registro da migration que entra no repositorio antes de rodar em producao. A linha
+fica `pendente` ate o `db-apply-migration.yml` gravar o recibo de aplicacao na secao
+`## Recibos ? E15 (workflow de aplica??o controlada)`; depois disso, o status desta
+tabela e atualizado para `aplicada`.
+
+| versao | arquivo | motivo | status |
+|---|---|---|---|
+| `20261125213000` | `20261125213000_e25_unschedule_orphan_history_crons.sql` | remove os cron jobs orfaos `supplier-history-partition-maintenance` e `supplier-history-default-partition-alert`, que apontam para `fn_ensure_history_partitions` inexistente; precisa rodar antes da `20260916193000` (cujo `$precondition$` aborta se os jobs existirem) | pendente |
