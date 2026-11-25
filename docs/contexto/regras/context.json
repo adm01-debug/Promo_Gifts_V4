@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "51afdbd1ad7f61b1ec7bb894709ce21becd82c33",
+  "sha": "b0ceb1ef6d25b0878f23c5667a2e40d2130685fc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 19:43 UTC",
+  "generated_at": "2026-11-25 20:05 UTC",
   "files_total": 11210,
   "code_files": 9197,
   "code_lines": 1305220
@@ -564997,10 +564997,22 @@
   }
  },
  "git": {
-  "sha": "51afdbd1ad7f61b1ec7bb894709ce21becd82c33",
+  "sha": "b0ceb1ef6d25b0878f23c5667a2e40d2130685fc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "b0ceb1e",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.20.1 (#4091)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "51afdbd",
     "date": "2026-11-25",
@@ -565297,16 +565309,6 @@
      "supabase/MIGRATIONS_SYNC_LOG.md",
      "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql"
     ]
-   },
-   {
-    "sha": "4e083f6",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "chore(deps): bump @hookform/resolvers de 5.9.1 para 7.0.8 (#4068)",
-    "files": [
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
@@ -565325,6 +565327,14 @@
    [
     "docs/qa/05-PROGRESSO.md",
     3
+   ],
+   [
+    ".release-please-manifest.json",
+    2
+   ],
+   [
+    "CHANGELOG.md",
+    2
    ],
    [
     "supabase/migrations-snapshot/ALL_IN_ONE.sql",
@@ -565380,14 +565390,6 @@
    ],
    [
     "scripts/check-migration-receipts.mjs",
-    1
-   ],
-   [
-    "tests/scripts/check-migration-receipts.test.mjs",
-    1
-   ],
-   [
-    "supabase/migrations/20261125180000_fix_comment_v_tabela_gravacao_publica.sql",
     1
    ]
   ]

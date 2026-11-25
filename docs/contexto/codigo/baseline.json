@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "51afdbd1ad7f61b1ec7bb894709ce21becd82c33",
+  "commit": "b0ceb1ef6d25b0878f23c5667a2e40d2130685fc",
   "branch": "main",
-  "data_commit": "2026-11-25T16:42:37-03:00",
+  "data_commit": "2026-11-25T17:02:46-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "b0ceb1e",
+    "data": "2026-11-25",
+    "assunto": "chore(main): release gifts-store 1.20.1 (#4091)"
+   },
    {
     "sha": "51afdbd",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "8c250b0",
     "data": "2026-11-25",
     "assunto": "fix: restaura EXECUTE de anon no helper de RLS e reconcilia tripwire v5 (#4076)"
-   },
-   {
-    "sha": "2fbd19f",
-    "data": "2026-11-25",
-    "assunto": "chore(ci): bump actions/dependency-review-action para v5.0.1 (#4069)"
    }
   ],
-  "arquivos_mudados_7d": 580,
+  "arquivos_mudados_7d": 579,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,15 +207,15 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 23
+    "mudancas": 24
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 15
+    "mudancas": 16
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 248
+    "commits": 247
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 52
+    "commits": 53
    }
   ]
  },
