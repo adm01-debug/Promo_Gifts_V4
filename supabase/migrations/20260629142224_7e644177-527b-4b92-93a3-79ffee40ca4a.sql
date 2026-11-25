@@ -5,11 +5,12 @@
 -- Admins/supervisores (has_role('admin') / has_role('supervisor') / can_view_all_sales())
 -- continuam podendo ajustar preço quando necessário. Sellers comuns NÃO.
 
+-- Rollback: supabase/rollbacks/20260629142224_rollback.sql
 CREATE OR REPLACE FUNCTION public.prevent_non_admin_quote_item_price_change()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public
+SET search_path = public, pg_temp
 AS $$
 DECLARE
   v_uid uuid := auth.uid();
