@@ -38,7 +38,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [x] 005 — Fazer o gate de views públicas descobrir view nova em vez de conferir uma lista fixa — onda 1 — Alta — APROVAÇÃO — concluída em #4049: ver Evidências
 - [x] 006 — Registrar as três views de compras no contrato de views públicas — onda 1 — Alta — concluída em #4008 (`e87db751`)
 - [-] 007 — Fechar `tabela_preco_gravacao_oficial_faixa` ao anônimo — onda 1 — Alta — APROVAÇÃO — premissa refutada; ver Evidências
-- [ ] 008 — Fazer o gate de drift rodar também sobre grants de tabela ao `anon` — onda 1 — Média — APROVAÇÃO — **gate implementado em #4059** (baseline de 42 tabelas + `relkind 'r','p'` + congelamento por coluna), aguardando aprovação; medição de 2026-11-24 em "Evidências": 5 tabelas de `public` entregam linhas ao `anon` e 3 têm grant sem linha visível; o que falta é o gate enxergar `relkind` `'r'` para travar a próxima — matview já está coberta (a descoberta usa `relkind in ('v','m')`); o furo que sobra são as **45 tabelas** de `public` com SELECT concedido ao `anon` medidas no dump da etapa 005, que não entram na consulta (`scripts/check-public-views-drift.mjs`, `buildAnonSql`)
+- [ ] 008 — Fazer o gate de drift rodar também sobre grants de tabela ao `anon` — onda 1 — Média — APROVAÇÃO — **gate implementado em #4059 e mergeado em `ddd8488f`** (baseline de 42 tabelas + `relkind 'r','p'` + congelamento por coluna); medição de 2026-11-24 em "Evidências": 5 tabelas de `public` entregam linhas ao `anon` e 3 têm grant sem linha visível; o que falta é o gate enxergar `relkind` `'r'` para travar a próxima — matview já está coberta (a descoberta usa `relkind in ('v','m')`); o furo que sobra são as **45 tabelas** de `public` com SELECT concedido ao `anon` medidas no dump da etapa 005, que não entram na consulta (`scripts/check-public-views-drift.mjs`, `buildAnonSql`) **Revogacao das 13 `interno-grant-herdado`** na migration `20261125120000_revoke_anon_internal_grants_public.sql` (PR aberta, Regra 8); depois de aplicada, as 13 linhas saem de `.security/anon-tables-baseline.json` na mesma janela, senao o gate E118i acusa 'entrada sem efeito'.
 - [ ] 009 — Tornar o guarda de required checks capaz de ver mais de um check — onda 1 — Crítica — APROVAÇÃO
 - [ ] 010 — Pôr o CodeQL de fato como check obrigatório de `main` — onda 1 — Crítica — APROVAÇÃO
 - [ ] 011 — Fazer `static-checks.yml` bloquear merge — onda 1 — Alta — APROVAÇÃO
@@ -919,3 +919,29 @@ O congelamento **por coluna** vale para tabela: `products` (`id`, `is_active`, `
 `kit_component_print_areas`, `print_area_techniques` e `product_kit_components` travam a lista medida, então
 coluna nova legível por anon falha o gate. `product_properties` e `product_tags` têm grant de **tabela inteira**
 (herdado do legado): a entrada trava só o nome, coluna nova já nasce legível — narrowing ou revogação pendente.
+
+### Etapa 008 ? revoga??o executada (2026-11-25)
+
+Migration `20261125120000_revoke_anon_internal_grants_public.sql` (rollback em
+`supabase/rollbacks/20261125120000_rollback.sql`) revoga o `SELECT` de `anon` nas **13** tabelas que a
+baseline de 24/11 marcou como `interno-grant-herdado`: `collections`, `collection_products`,
+`content_articles`, `favorite_item_reactions`, `favorite_items`, `favorite_lists`, `product_ai_content`,
+`product_fiscal`, `product_seo`, `product_supply`, `system_kill_switches`, `system_settings` e
+`video_sim_results`.
+
+Evid?ncia de que ningu?m perde funcionalidade: 12 das 13 devolvem **0 linha** ao `anon` hoje (RLS sem
+policy de SELECT), ent?o o grant era vestigial; a ?nica com linhas vis?veis era `video_sim_results`
+(**1007**), resultado de simula??o de v?deo sem consumidor p?blico. O leitor an?nimo de `system_settings`
+(`AppBootstrap.tsx`) trata `error` com `logger.error` + `return`, exatamente o mesmo resultado da lista
+vazia de hoje. `authenticated` e `service_role` mant?m o grant nas 13 ? o post-check da migration aborta
+a transa??o se perderem.
+
+O tripwire `fn_verify_anon_catalog_grants()` virou **v4** na mesma migration: as 12 que estavam na lista
+"DEVEM ter anon SELECT" passaram para a lista "N?O podem ter anon SELECT", junto com `system_settings`.
+Dry-run em Postgres 17 descart?vel: migration aplica com `exit 0`, revoga 13/13, `authenticated` mant?m
+13/13, tripwire v4 sem achado; rollback devolve 13/13 e o tripwire passa a acusar exatamente 13
+`VAZAMENTO: anon SELECT em tabela sens?vel`.
+
+Pendente (Regra 8): a migration precisa ser aplicada ao banco de produ??o e, na mesma janela, as 13
+entradas devem sair de `.security/anon-tables-baseline.json` ? o gate `E118i --require-live` compara a
+baseline com o banco vivo e fica vermelho nos dois estados intermedi?rios.
