@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "88a358e841687f729b67344b407315429df66082",
+  "sha": "aa0240f3b91631739fc4fd61e383ed218b3361ec",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 17:54 UTC",
+  "generated_at": "2026-11-25 17:58 UTC",
   "files_total": 11208,
   "code_files": 9196,
   "code_lines": 1304770
@@ -564865,10 +564865,19 @@
   }
  },
  "git": {
-  "sha": "88a358e841687f729b67344b407315429df66082",
+  "sha": "aa0240f3b91631739fc4fd61e383ed218b3361ec",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "aa0240f",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261125180000 (#4098)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "88a358e",
     "date": "2026-11-25",
@@ -565179,25 +565188,16 @@
     "files": [
      "docs/qa/05-PROGRESSO.md"
     ]
-   },
-   {
-    "sha": "76cd9fb",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "docs(qa): registra a regressao da lista de colunas e o escopo da etapa 008 (#4056)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    14
+    15
    ],
    [
     "docs/qa/05-PROGRESSO.md",
-    7
+    6
    ],
    [
     "package-lock.json",
