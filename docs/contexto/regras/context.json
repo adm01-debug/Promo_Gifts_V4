@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "8c250b004d4221b595cae2d5c5f7bb6ba72b90b2",
+  "sha": "513be5abfdabdb4b73ba0495fd514da48bc614d6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 13:24 UTC",
+  "generated_at": "2026-11-25 13:34 UTC",
   "files_total": 11202,
   "code_files": 9190,
   "code_lines": 1304504
@@ -564088,10 +564088,19 @@
   }
  },
  "git": {
-  "sha": "8c250b004d4221b595cae2d5c5f7bb6ba72b90b2",
+  "sha": "513be5abfdabdb4b73ba0495fd514da48bc614d6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "513be5a",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261125131000 (#4077)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "8c250b0",
     "date": "2026-11-25",
@@ -564397,26 +564406,16 @@
     "files": [
      "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md"
     ]
-   },
-   {
-    "sha": "22ca37e",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "docs: auditoria das branches restantes e reforco da refutacao da etapa 007 (#4045)",
-    "files": [
-     "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md",
-     "docs/qa/05-PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
    [
-    "docs/qa/05-PROGRESSO.md",
-    9
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    10
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    9
+    "docs/qa/05-PROGRESSO.md",
+    8
    ],
    [
     ".security/anon-tables-baseline.json",
@@ -564424,10 +564423,6 @@
    ],
    [
     "src/lib/fetch-print-areas.ts",
-    3
-   ],
-   [
-    "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md",
     3
    ],
    [
@@ -564464,6 +564459,10 @@
    ],
    [
     "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
+    2
+   ],
+   [
+    "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md",
     2
    ],
    [

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8c250b004d4221b595cae2d5c5f7bb6ba72b90b2",
+  "commit": "513be5abfdabdb4b73ba0495fd514da48bc614d6",
   "branch": "main",
-  "data_commit": "2026-11-25T10:23:04-03:00",
+  "data_commit": "2026-11-25T10:32:57-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "513be5a",
+    "data": "2026-11-25",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261125131000 (#4077)"
+   },
    {
     "sha": "8c250b0",
     "data": "2026-11-25",
@@ -126,11 +131,6 @@
     "sha": "a1b5482",
     "data": "2026-11-24",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261124163000 (#4052)"
-   },
-   {
-    "sha": "2de2ccd",
-    "data": "2026-11-24",
-    "assunto": "fix: fecha leitura anon de print_area_techniques.unit_cost (#4047)"
    }
   ],
   "arquivos_mudados_7d": 639,
@@ -192,14 +192,14 @@
     "mudancas": 80
    },
    {
-    "pasta": "src/components/ui",
-    "mudancas": 73
+    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "mudancas": 74
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 73
+    "mudancas": 74
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -227,7 +227,7 @@
    },
    {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
     "arquivo": "src/lib/freight/index.ts",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 255
+    "commits": 254
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 45
+    "commits": 46
    }
   ]
  },
