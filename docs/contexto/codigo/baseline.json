@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4107894fcdb72ae1d2680e960fafe54f36f7006d",
+  "commit": "4eae35f0d5ef209110f28dd14218f3adc834d606",
   "branch": "main",
-  "data_commit": "2026-11-25T13:48:39-03:00",
+  "data_commit": "2026-11-25T14:02:17-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "4eae35f",
+    "data": "2026-11-25",
+    "assunto": "fix: corrige approved-by do indice de stock_daily_summary (#4092) (#4093)"
+   },
    {
     "sha": "4107894",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "a66bde9",
     "data": "2026-11-24",
     "assunto": "docs(qa): mede o grant de tabela ao anon e registra na etapa 008 (#4057)"
-   },
-   {
-    "sha": "76cd9fb",
-    "data": "2026-11-24",
-    "assunto": "docs(qa): registra a regressao da lista de colunas e o escopo da etapa 008 (#4056)"
    }
   ],
-  "arquivos_mudados_7d": 615,
+  "arquivos_mudados_7d": 607,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -193,13 +193,13 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 78
+    "mudancas": 79
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 78
+    "mudancas": 79
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -226,16 +226,16 @@
     "mudancas": 9
    },
    {
-    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    "mudancas": 8
-   },
-   {
     "arquivo": "src/lib/freight/index.ts",
     "mudancas": 8
    },
    {
     "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
     "mudancas": 8
+   },
+   {
+    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
+    "mudancas": 7
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",

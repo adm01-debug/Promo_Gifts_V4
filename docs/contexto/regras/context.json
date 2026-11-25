@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "4107894fcdb72ae1d2680e960fafe54f36f7006d",
+  "sha": "4eae35f0d5ef209110f28dd14218f3adc834d606",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 16:49 UTC",
+  "generated_at": "2026-11-25 17:03 UTC",
   "files_total": 11206,
   "code_files": 9194,
   "code_lines": 1304652
  },
  "version": "1.3.2",
- "facts_hash": "43969074c5786d90",
+ "facts_hash": "f43a3bcd5d342d38",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -90569,7 +90569,7 @@
     "columns": "summary_date, supplier_id",
     "unique": false,
     "where": "",
-    "src": "supabase/migrations/20261125170000_idx_sds_summary_date_supplier_aplicavel.sql"
+    "src": "supabase/migrations/20261125173000_idx_sds_summary_date_supplier_aplicavel.sql"
    },
    {
     "name": "idx_user_organizations_user",
@@ -96181,7 +96181,7 @@
    "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
    "supabase/migrations/20261125131000_tripwire_anon_v5_reconcilia.sql",
    "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql",
-   "supabase/migrations/20261125170000_idx_sds_summary_date_supplier_aplicavel.sql",
+   "supabase/migrations/20261125173000_idx_sds_summary_date_supplier_aplicavel.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96321,7 +96321,7 @@
    "supabase/rollbacks/20261125120000_rollback.sql",
    "supabase/rollbacks/20261125131000_rollback.sql",
    "supabase/rollbacks/20261125160000_rollback.sql",
-   "supabase/rollbacks/20261125170000_rollback.sql",
+   "supabase/rollbacks/20261125173000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -538582,8 +538582,8 @@
    "path": "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql",
    "lines": 87
   },
-  "supabase/migrations/20261125170000_idx_sds_summary_date_supplier_aplicavel.sql": {
-   "path": "supabase/migrations/20261125170000_idx_sds_summary_date_supplier_aplicavel.sql",
+  "supabase/migrations/20261125173000_idx_sds_summary_date_supplier_aplicavel.sql": {
+   "path": "supabase/migrations/20261125173000_idx_sds_summary_date_supplier_aplicavel.sql",
    "lines": 50
   },
   "supabase/rollbacks/20260511235950_rollback.sql": {
@@ -539163,8 +539163,8 @@
    "path": "supabase/rollbacks/20261125160000_rollback.sql",
    "lines": 7
   },
-  "supabase/rollbacks/20261125170000_rollback.sql": {
-   "path": "supabase/rollbacks/20261125170000_rollback.sql",
+  "supabase/rollbacks/20261125173000_rollback.sql": {
+   "path": "supabase/rollbacks/20261125173000_rollback.sql",
    "lines": 4
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
@@ -564823,10 +564823,21 @@
   }
  },
  "git": {
-  "sha": "4107894fcdb72ae1d2680e960fafe54f36f7006d",
+  "sha": "4eae35f0d5ef209110f28dd14218f3adc834d606",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "4eae35f",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix: corrige approved-by do indice de stock_daily_summary (#4092) (#4093)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261125173000_idx_sds_summary_date_supplier_aplicavel.sql",
+     "supabase/rollbacks/20261125173000_rollback.sql"
+    ]
+   },
    {
     "sha": "4107894",
     "date": "2026-11-25",
@@ -565136,22 +565147,12 @@
      "tests/scripts/check-public-views-drift.test.mjs",
      "tests/security/public-views-columns.test.ts"
     ]
-   },
-   {
-    "sha": "fbbd4ff",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: area de gravacao legivel por anon com colunas explicitas (#4053)",
-    "files": [
-     "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
-     "src/lib/fetch-print-areas.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    10
+    11
    ],
    [
     "docs/qa/05-PROGRESSO.md",
@@ -565167,10 +565168,6 @@
    ],
    [
     ".security/anon-tables-baseline.json",
-    3
-   ],
-   [
-    "src/lib/fetch-print-areas.ts",
     3
    ],
    [
@@ -565198,8 +565195,16 @@
     2
    ],
    [
-    "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
+    "src/lib/fetch-print-areas.ts",
     2
+   ],
+   [
+    "supabase/migrations/20261125173000_idx_sds_summary_date_supplier_aplicavel.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261125173000_rollback.sql",
+    1
    ],
    [
     "supabase/migrations/20261125170000_idx_sds_summary_date_supplier_aplicavel.sql",
@@ -565223,10 +565228,6 @@
    ],
    [
     "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-    1
-   ],
-   [
-    "supabase/migrations-snapshot/SNAPSHOT_META.json",
     1
    ]
   ]
