@@ -14,6 +14,9 @@ const CONTRACT = JSON.parse(readFileSync('.security/public-views-columns.json', 
 const ANON_ALLOWLIST = JSON.parse(readFileSync('.security/anon-select-allowlist.json', 'utf8')) as {
   objects: { object: string; relkind: string; columns: string[]; reason: string }[];
 };
+const ANON_TABLES = JSON.parse(readFileSync('.security/anon-tables-baseline.json', 'utf8')) as {
+  tables: { table: string; exposure: string; reason: string; columns?: string[] | null }[];
+};
 
 const PUBLIC_VIEWS = [
   'v_compras_catalogo',
@@ -34,7 +37,7 @@ function run(args: string[] = []) {
 
 type LiveRow = { relname: string; relkind?: string; columns?: string[]; anon_select?: boolean; anon_columns?: string[] };
 
-/** Banco fictício coerente com os dois arquivos de contrato: 10 views + 7 objetos da allowlist. */
+/** Banco fictício coerente com os três arquivos de contrato: 10 views + 7 objetos da allowlist + tabelas da baseline. */
 function buildLive() {
   const contract: LiveRow[] = PUBLIC_VIEWS.map((relname) => ({
     relname,
@@ -58,6 +61,14 @@ function buildLive() {
       anon_select: true,
       columns: [...o.columns],
       anon_columns: [...o.columns],
+    })),
+    // Etapa 008: tabelas legíveis por anon entram na baseline, não no contrato de views.
+    ...ANON_TABLES.tables.map((t) => ({
+      relname: t.table,
+      relkind: 'r',
+      anon_select: true,
+      columns: t.columns ?? ['id'],
+      anon_columns: t.columns ?? ['id'],
     })),
   ];
   return { contract, anon };
