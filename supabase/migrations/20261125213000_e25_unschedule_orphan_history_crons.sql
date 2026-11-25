@@ -1,5 +1,4 @@
 -- E25 / correcao de estado: os dois cron jobs de manutencao de particoes de
--- Rollback: supabase/rollbacks/20261125213000_rollback.sql (re-agenda os dois jobs orfaos via cron.schedule, com o mesmo schedule/command original)
 -- public.supplier_products_raw_history existem em producao, mas a funcao que
 -- eles chamam (public.fn_ensure_history_partitions) NAO existe.
 --
