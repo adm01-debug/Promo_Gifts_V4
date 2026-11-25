@@ -338,6 +338,13 @@ de `vitest.config.ts:40-70` e o `testDir`+`testMatch` de `playwright.config.ts:9
 | `tests/rls/live-rls.test.ts` | 1 | `vitest.config.ts:69` |
 | `scripts/__tests__/check-invoke-direct-calls.test.mjs` | 1 | o include de `scripts/` aceita só `{ts,mts,cts}` (`vitest.config.ts:46`); o arquivo é `.mjs` |
 
+> **Resgatado em 2026-11-25:** os `tests/e2e/*.spec.ts` (9 arquivos, 21 casos) foram
+> movidos para `e2e/`, onde o Playwright os coleta — `npx playwright test --list`
+> passou de 0 para 21 casos desses arquivos. O `catalog-flows.spec.ts` tambem teve os
+> imports `../fixtures/test-base` / `../helpers/nav` corrigidos para
+> `./fixtures/test-base` / `./helpers/nav` (era o import quebrado de §C.5).
+> Restam 43 orfaos nos demais grupos desta tabela.
+
 Lista nominal dos `supabase/functions` órfãos (amostra): `_shared/createEdge.test.ts`,
 `_shared/credentials.test.ts`, `_shared/kill_switch.test.ts`, `_shared/token-revocation.test.ts`,
 `_shared/url-allowlist.test.ts`, `_shared/dispatcher-auth.test.ts`,
