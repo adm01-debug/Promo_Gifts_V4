@@ -1,0 +1,297 @@
+{
+  "$comment": "Tabelas de public que o role anon consegue ler (relkind r/p). Complementa .security/anon-select-allowlist.json, que cobre view/matview. O gate scripts/check-public-views-drift.mjs compara esta lista com o banco: tabela legivel por anon fora da lista falha o gate (grant novo, feito fora do repo, nao passa despercebido) e entrada sem efeito tambem falha (revogacao concluida exige remover a linha). Nao e permissao para criar nada novo.",
+  "schema": "public",
+  "measured_at": "2026-11-24",
+  "source": "medicao live via PostgREST com a chave publicavel do bundle (Prefer: count=exact, Range: 0-0) sobre os 61 objetos que o dump de 23/11 concedia SELECT a anon; 12 responderam 401 depois das migrations 20261124140000/20261124163000 e ficaram fora. Segunda passada pelo SQL do gate (has_table_privilege + has_column_privilege) revelou 6 tabelas com grant POR COLUNA que o PostgREST recusa em select=* (401): entraram com as colunas medidas em 2026-11-24",
+  "table_count": 42,
+  "tables": [
+    {
+      "table": "categories",
+      "exposure": "catalogo-publico",
+      "observed_rows": "478",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "collection_products",
+      "exposure": "interno-grant-herdado",
+      "observed_rows": "0",
+      "reason": "vinculo colecao x produto. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+    },
+    {
+      "table": "collections",
+      "exposure": "interno-grant-herdado",
+      "observed_rows": "0",
+      "reason": "colecoes montadas no painel. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+    },
+    {
+      "table": "color_groups",
+      "exposure": "catalogo-publico",
+      "observed_rows": "18",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "color_nuances",
+      "exposure": "catalogo-publico",
+      "observed_rows": "7",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "color_synonym_map",
+      "exposure": "catalogo-publico",
+      "observed_rows": "0",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "color_variations",
+      "exposure": "catalogo-publico",
+      "observed_rows": "87",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "content_articles",
+      "exposure": "interno-grant-herdado",
+      "observed_rows": "0",
+      "reason": "artigos de conteudo. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+    },
+    {
+      "table": "favorite_item_reactions",
+      "exposure": "interno-grant-herdado",
+      "observed_rows": "0",
+      "reason": "reacoes de favoritos. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+    },
+    {
+      "table": "favorite_items",
+      "exposure": "interno-grant-herdado",
+      "observed_rows": "0",
+      "reason": "itens favoritados por usuario. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+    },
+    {
+      "table": "favorite_lists",
+      "exposure": "interno-grant-herdado",
+      "observed_rows": "0",
+      "reason": "listas de favoritos por usuario. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+    },
+    {
+      "table": "kit_component_print_areas",
+      "exposure": "catalogo-publico-por-coluna",
+      "reason": "Areas de impressao de kit usadas no mockup publico. Grant por coluna (select=* da 401 no PostgREST); congelado na lista de colunas medida.",
+      "columns": [
+        "id",
+        "kit_component_id",
+        "location_code",
+        "location_name",
+        "location_order",
+        "max_width",
+        "max_height",
+        "shape",
+        "is_curved",
+        "technique_order",
+        "is_active"
+      ]
+    },
+    {
+      "table": "kit_typical_dims",
+      "exposure": "catalogo-publico",
+      "observed_rows": "87",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "material_types",
+      "exposure": "catalogo-publico",
+      "observed_rows": "94",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "personalization_techniques",
+      "exposure": "catalogo-publico",
+      "observed_rows": "11",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "print_area_techniques",
+      "exposure": "catalogo-publico-por-coluna",
+      "reason": "Tecnicas por area de impressao exibidas na configuracao publica do produto. Grant por coluna (select=* da 401); congelado na lista de colunas medida.",
+      "columns": [
+        "id",
+        "tabela_preco_id",
+        "max_width",
+        "max_height",
+        "is_curved",
+        "shape",
+        "technique_order",
+        "is_active",
+        "created_at",
+        "updated_at",
+        "product_id",
+        "location_code",
+        "location_name",
+        "location_order",
+        "notes",
+        "production_days"
+      ]
+    },
+    {
+      "table": "product_ai_content",
+      "exposure": "interno-grant-herdado",
+      "observed_rows": "0",
+      "reason": "conteudo gerado por IA por produto. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+    },
+    {
+      "table": "product_attributes",
+      "exposure": "catalogo-publico",
+      "observed_rows": "15584",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "product_badge_definitions",
+      "exposure": "catalogo-publico",
+      "observed_rows": "32",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "product_commemorative_dates",
+      "exposure": "catalogo-publico",
+      "observed_rows": "34978",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "product_fiscal",
+      "exposure": "interno-grant-herdado",
+      "observed_rows": "0",
+      "reason": "dados fiscais (NCM). Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+    },
+    {
+      "table": "product_kit_components",
+      "exposure": "catalogo-publico-por-coluna",
+      "reason": "Composicao do kit lida na vitrine. Grant por coluna (select=* da 401); congelado na lista de colunas medida.",
+      "columns": [
+        "id",
+        "kit_product_id"
+      ]
+    },
+    {
+      "table": "product_materials",
+      "exposure": "catalogo-publico",
+      "observed_rows": "14199",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "product_novelties",
+      "exposure": "catalogo-publico",
+      "observed_rows": "231",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "product_physical",
+      "exposure": "catalogo-publico",
+      "observed_rows": "8292",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "product_properties",
+      "exposure": "catalogo-publico",
+      "reason": "Propriedades tecnicas exibidas na pagina do produto. Grant e de TABELA inteira para anon (herdado do legado), entao coluna nova nasce legivel: a entrada trava o nome e a revisao de coluna segue pendente de revogacao/narrowing.",
+      "columns": null
+    },
+    {
+      "table": "product_seo",
+      "exposure": "interno-grant-herdado",
+      "observed_rows": "0",
+      "reason": "metadados de SEO. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+    },
+    {
+      "table": "product_supply",
+      "exposure": "interno-grant-herdado",
+      "observed_rows": "0",
+      "reason": "dados de suprimento/lead time. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+    },
+    {
+      "table": "product_tags",
+      "exposure": "catalogo-publico",
+      "reason": "Tags de produto usadas em filtro/busca da vitrine. Grant e de TABELA inteira para anon (herdado do legado), entao coluna nova nasce legivel: a entrada trava o nome e a revisao de coluna segue pendente de revogacao/narrowing.",
+      "columns": null
+    },
+    {
+      "table": "product_variants",
+      "exposure": "catalogo-publico",
+      "observed_rows": "20767",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "products",
+      "exposure": "catalogo-publico-por-coluna",
+      "reason": "Catalogo base da vitrine. Grant por coluna, restrito a id/is_active/is_deleted; congelado para que coluna nova legivel por anon (preco de custo, fornecedor) falhe o gate.",
+      "columns": [
+        "id",
+        "is_active",
+        "is_deleted"
+      ]
+    },
+    {
+      "table": "produto_ramo_atividade",
+      "exposure": "catalogo-publico",
+      "observed_rows": "54360",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "ramo_atividade",
+      "exposure": "catalogo-publico",
+      "observed_rows": "22",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "ramo_atividade_filho",
+      "exposure": "catalogo-publico",
+      "observed_rows": "108",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "spot_typecode_map",
+      "exposure": "catalogo-publico",
+      "observed_rows": "30",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "supplier_sub_brands",
+      "exposure": "catalogo-publico",
+      "observed_rows": "4",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "system_kill_switches",
+      "exposure": "interno-grant-herdado",
+      "observed_rows": "0",
+      "reason": "chaves de desligamento de sistema. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+    },
+    {
+      "table": "system_settings",
+      "exposure": "interno-grant-herdado",
+      "observed_rows": "0",
+      "reason": "configuracoes globais do sistema. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+    },
+    {
+      "table": "tabela_preco_gravacao_oficial_faixa",
+      "exposure": "catalogo-publico",
+      "observed_rows": "952",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "tags",
+      "exposure": "catalogo-publico",
+      "observed_rows": "88",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "tecnicas_gravacao",
+      "exposure": "catalogo-publico",
+      "observed_rows": "16",
+      "reason": "Catalogo/vitrine lido pelo site sem login (grant antigo, RLS libera as linhas). Tabela nova legivel por anon fora desta lista falha o gate."
+    },
+    {
+      "table": "video_sim_results",
+      "exposure": "interno-grant-herdado",
+      "observed_rows": "1007",
+      "reason": "resultados de simulacao de video (1007 linhas visiveis). Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+    }
+  ]
+}

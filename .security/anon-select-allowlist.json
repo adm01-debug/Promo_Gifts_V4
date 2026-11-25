@@ -1,0 +1,140 @@
+{
+  "$comment": "Objetos de public que o role anon consegue ler (view ou matview) e que NAO fazem parte do contrato .security/public-views-columns.json. Existem porque grants antigos de catalogo publico foram dados direto no banco, fora do repo, antes do contrato existir. O gate scripts/check-public-views-drift.mjs compara esta lista com o banco por igualdade estrita de colunas: coluna nova legivel por anon, coluna removida ou objeto sem SELECT falham o gate, obrigando revisao. Nao e permissao para criar nada novo. Estado descrito: producao apos a migration 20261124163000 (revogacao de unit_cost em v_print_area_techniques_public).",
+  "schema": "public",
+  "measured_at": "2026-11-24",
+  "source": "dump supabase/migrations-snapshot/SCHEMA_LIVE.sql carregado em cluster local + has_table_privilege/has_column_privilege('anon', ...)",
+  "objects": [
+    {
+      "object": "mv_product_compositions",
+      "relkind": "v",
+      "columns": [
+        "product_id",
+        "organization_id",
+        "product_name",
+        "total_materials",
+        "total_percentage",
+        "materials_detail"
+      ],
+      "reason": "Composicao de kit (materiais e percentuais) usada na pagina de produto do catalogo publico. Colunas de composicao e quantidade, sem custo, fornecedor ou preco."
+    },
+    {
+      "object": "v_color_nuances_public",
+      "relkind": "v",
+      "columns": [
+        "id",
+        "name",
+        "slug",
+        "description",
+        "sort_order"
+      ],
+      "reason": "Cadastro de nuances de cor exibido no seletor publico de cor. Apenas rotulo, slug e ordem."
+    },
+    {
+      "object": "v_kit_component_print_areas_public",
+      "relkind": "v",
+      "columns": [
+        "id",
+        "kit_component_id",
+        "location_code",
+        "location_name",
+        "location_order",
+        "max_width",
+        "max_height",
+        "shape",
+        "is_curved",
+        "technique_order"
+      ],
+      "reason": "Areas de impressao de componentes de kit (local e dimensoes maximas) necessarias para o cliente montar a personalizacao. Medidas fisicas, sem valor monetario."
+    },
+    {
+      "object": "v_personalization_techniques_public",
+      "relkind": "v",
+      "columns": [
+        "id",
+        "name",
+        "code",
+        "description",
+        "requires_color_count"
+      ],
+      "reason": "Catalogo de tecnicas de personalizacao oferecidas ao cliente (nome, codigo e se exige contagem de cores)."
+    },
+    {
+      "object": "v_print_area_techniques_public",
+      "relkind": "v",
+      "columns": [
+        "id",
+        "product_id",
+        "tabela_preco_id",
+        "location_code",
+        "location_name",
+        "location_order",
+        "max_width",
+        "max_height",
+        "is_curved",
+        "shape",
+        "technique_order",
+        "is_active",
+        "notes",
+        "created_at",
+        "updated_at"
+      ],
+      "reason": "Tecnicas de personalizacao por area de impressao e tabela de preco, consumidas pelo configurador publico. unit_cost saiu daqui pela migration 20261124163000 (era vazamento de custo para anon); esta lista descreve a view ja corrigida."
+    },
+    {
+      "object": "v_site_products_public",
+      "relkind": "v",
+      "columns": [
+        "id",
+        "name",
+        "sku",
+        "slug",
+        "primary_image_url",
+        "primary_image_fallback_url",
+        "set_image_url",
+        "og_image_url",
+        "images",
+        "category_id",
+        "main_category_id",
+        "short_description",
+        "description",
+        "ai_title",
+        "ai_summary",
+        "ai_description",
+        "brand",
+        "min_quantity",
+        "is_new",
+        "is_featured",
+        "is_bestseller",
+        "is_kit",
+        "allows_personalization",
+        "has_commercial_packaging",
+        "has_gift_box",
+        "colors",
+        "materials",
+        "dimensions",
+        "width_cm",
+        "height_cm",
+        "length_cm",
+        "capacity_ml",
+        "weight_g",
+        "created_at",
+        "is_active",
+        "color_swatches"
+      ],
+      "reason": "Vitrine do site institucional (imagens, textos, dimensoes e flags de destaque). Nao projeta custo, preco de venda nem dado de fornecedor."
+    },
+    {
+      "object": "v_tags_public",
+      "relkind": "v",
+      "columns": [
+        "id",
+        "name",
+        "slug",
+        "color_hex",
+        "description",
+        "usage_count"
+      ],
+      "reason": "Tags de catalogo (rotulo, slug e cor) usadas em filtros publicos."
+    }
+  ]
+}

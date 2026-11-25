@@ -8,6 +8,7 @@ import { useSalesScope } from '@/lib/auth/visibility-scope';
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { invalidateQuoteCaches } from '@/hooks/quotes/quoteCacheInvalidation';
 import { quoteService } from '@/services/quoteService';
 import type { Quote, QuoteItem } from '@/hooks/quotes/quoteTypes';
 import { supabase } from '@/integrations/supabase/client';
@@ -67,7 +68,7 @@ export function useQuotes() {
     // (GlobalErrorBoundary / ProtectedRoute). Um tópico único garante sempre um canal novo.
     const channelTopic = `quotes-realtime-${userId}-${Math.random().toString(36).slice(2)}-${Date.now()}`;
     const invalidateAll = () => {
-      queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      invalidateQuoteCaches(queryClient);
     };
     const channel = supabase
       .channel(channelTopic)
@@ -137,7 +138,7 @@ export function useQuotes() {
       return quoteService.createQuote(quote, items, userId, orgId, approvalSellerNotes);
     },
     onSuccess: (newQuote) => {
-      queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      invalidateQuoteCaches(queryClient);
       toast.success('Orçamento criado!', { description: `Número: ${newQuote.quote_number}` });
     },
     onError: (err: unknown) => {
@@ -165,7 +166,7 @@ export function useQuotes() {
       approvalSellerNotes?: string;
     }) => quoteService.updateQuote(quoteId, quote, items, expectedVersion, approvalSellerNotes),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      invalidateQuoteCaches(queryClient);
       toast.success('Orçamento atualizado!');
     },
     onError: (err: unknown) => {
@@ -177,7 +178,7 @@ export function useQuotes() {
     mutationFn: ({ quoteId, status }: { quoteId: string; status: Quote['status'] }) =>
       quoteService.updateQuoteStatus(quoteId, status),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      invalidateQuoteCaches(queryClient);
       toast.success('Status atualizado');
     },
     onError: () => {
@@ -188,7 +189,7 @@ export function useQuotes() {
   const deleteMutation = useMutation({
     mutationFn: (quoteId: string) => quoteService.deleteQuote(quoteId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      invalidateQuoteCaches(queryClient);
       // NÃO disparamos toast aqui — o caller (useQuotesListPage / QuoteViewPage)
       // é responsável por exibir `showUndoToast` COM botão de Desfazer usando
       // o snapshot capturado ANTES do DELETE. Emitir um `toast.success` aqui
@@ -352,7 +353,7 @@ export function useQuotes() {
       toast.success('Sincronizado com Bitrix!', {
         description: `Deal ID: ${syncData?.bitrix_deal_id || 'N/A'}`,
       });
-      queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      invalidateQuoteCaches(queryClient);
       return true;
     } catch (err: unknown) {
       toast.error('Erro ao sincronizar', { description: getErrorMessage(err) });

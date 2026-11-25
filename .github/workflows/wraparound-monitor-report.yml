@@ -29,7 +29,7 @@ name: wraparound-monitor-report
 
 on:
   schedule:
-    - cron: '30 5 * * *' # diário, 05:30 UTC (E89: movido de 06:15→05:30 — evita colisão com quote-number-hardening-verify em 06:15; ≥20min de ci-security-drift segunda)
+    - cron: '19 5 * * *' # diário, 05:19 UTC (E89: 36min de ci-security-drift segunda 05:55 e 98min de supabase-linter-gate 06:57; E19: minuto :19 fora de :00/:30)
   workflow_dispatch:
 
 permissions:

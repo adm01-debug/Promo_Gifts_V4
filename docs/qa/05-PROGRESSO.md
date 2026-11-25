@@ -31,14 +31,14 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 
 ## Onda 1 — Segurança e risco de perda de dado
 
-- [ ] 001 — Medir quem realmente consome as três views `v_compras_*` antes de mexer nelas — onda 1 — Crítica
-- [ ] 002 — Mascarar `cost_price` e os campos de fornecedor em `v_compras_catalogo` — onda 1 — Crítica — APROVAÇÃO
-- [ ] 003 — Mascarar `unit_cost` em `v_compras_precos_faixa` — onda 1 — Crítica — APROVAÇÃO
-- [ ] 004 — Decidir o destino de `v_compras_precos_variante`, que hoje responde 401 ao `anon` — onda 1 — Alta — APROVAÇÃO
-- [ ] 005 — Fazer o gate de views públicas descobrir view nova em vez de conferir uma lista fixa — onda 1 — Alta — APROVAÇÃO
-- [ ] 006 — Registrar as três views de compras no contrato de views públicas — onda 1 — Alta
-- [ ] 007 — Fechar `tabela_preco_gravacao_oficial_faixa` ao anônimo — onda 1 — Alta — APROVAÇÃO
-- [ ] 008 — Fazer o gate de drift rodar também sobre matviews e sobre grants de tabela ao `anon` — onda 1 — Média — APROVAÇÃO
+- [x] 001 — Medir quem realmente consome as três views `v_compras_*` antes de mexer nelas — onda 1 — Crítica — evidência: `docs/qa/evidencia-compras-views.md`
+- [x] 002 — Mascarar `cost_price` e os campos de fornecedor em `v_compras_catalogo` — onda 1 — Crítica — APROVAÇÃO — concluída pela revogação do grant de `anon` (mascarar coluna foi rejeitado): ver Evidências
+- [x] 003 — Mascarar `unit_cost` em `v_compras_precos_faixa` — onda 1 — Crítica — APROVAÇÃO — concluída pela revogação do grant de `anon` (mascarar coluna foi rejeitado): ver Evidências
+- [x] 004 — Decidir o destino de `v_compras_precos_variante`, que hoje responde 401 ao `anon` — onda 1 — Alta — APROVAÇÃO — decidido: revogar o grant de `anon`: ver Evidências
+- [x] 005 — Fazer o gate de views públicas descobrir view nova em vez de conferir uma lista fixa — onda 1 — Alta — APROVAÇÃO — concluída em #4049: ver Evidências
+- [x] 006 — Registrar as três views de compras no contrato de views públicas — onda 1 — Alta — concluída em #4008 (`e87db751`)
+- [-] 007 — Fechar `tabela_preco_gravacao_oficial_faixa` ao anônimo — onda 1 — Alta — APROVAÇÃO — premissa refutada; ver Evidências
+- [ ] 008 — Fazer o gate de drift rodar também sobre grants de tabela ao `anon` — onda 1 — Média — APROVAÇÃO — **gate implementado em #4059** (baseline de 42 tabelas + `relkind 'r','p'` + congelamento por coluna), aguardando aprovação; medição de 2026-11-24 em "Evidências": 5 tabelas de `public` entregam linhas ao `anon` e 3 têm grant sem linha visível; o que falta é o gate enxergar `relkind` `'r'` para travar a próxima — matview já está coberta (a descoberta usa `relkind in ('v','m')`); o furo que sobra são as **45 tabelas** de `public` com SELECT concedido ao `anon` medidas no dump da etapa 005, que não entram na consulta (`scripts/check-public-views-drift.mjs`, `buildAnonSql`)
 - [ ] 009 — Tornar o guarda de required checks capaz de ver mais de um check — onda 1 — Crítica — APROVAÇÃO
 - [ ] 010 — Pôr o CodeQL de fato como check obrigatório de `main` — onda 1 — Crítica — APROVAÇÃO
 - [ ] 011 — Fazer `static-checks.yml` bloquear merge — onda 1 — Alta — APROVAÇÃO
@@ -423,12 +423,12 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 138 — Gate que impede teste apontando para módulo que não existe — onda 3 — Média
 - [ ] 139 — Criar a FK de `art_file_attachments.user_id` — onda 3 — Baixa — APROVAÇÃO
 - [ ] 140 — Varredura de coluna usada em policy sem FK — onda 3 — Média
-- [ ] 141 — Helper único para atualizar `profiles.preferences` sem perder escrita — onda 3 — Média — APROVAÇÃO
-- [ ] 142 — `useCatalogPreferences` passa a usar o helper — onda 3 — Média
+- [x] 141 — Helper único para atualizar `profiles.preferences` sem perder escrita — onda 3 — Média — APROVAÇÃO
+- [x] 142 — `useCatalogPreferences` passa a usar o helper — onda 3 — Média
 - [ ] 143 — `useSimulatorPreferences` passa a usar o helper e deixa o erro visível — onda 3 — Média
-- [ ] 144 — `useBadgeVisibilityStore` passa a usar o helper nos dois pontos — onda 3 — Média
-- [ ] 145 — `useExpertChat` passa a usar o helper — onda 3 — Baixa
-- [ ] 146 — Teste de escrita perdida em `profiles.preferences` — onda 3 — Média
+- [x] 144 — `useBadgeVisibilityStore` passa a usar o helper nos dois pontos — onda 3 — Média
+- [x] 145 — `useExpertChat` passa a usar o helper — onda 3 — Baixa
+- [x] 146 — Teste de escrita perdida em `profiles.preferences` — onda 3 — Média
 - [ ] 147 — Verificação recorrente de registro órfão nas relações críticas — onda 3 — Média — APROVAÇÃO
 - [ ] 148 — Reconciliação da Onda 3: conferir que os números de cotação fecham — onda 3 — Alta
 
@@ -470,19 +470,25 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 179 — Limitar o `backoff_seconds` que vem do banco — onda 5 — Média
 - [ ] 180 — Teto de bytes e conversão eficiente em `analyze-logo-colors` — onda 5 — Média
 - [ ] 181 — Trocar a consulta de geolocalização em claro de `validate-access` — onda 5 — Média
+- [x] 182 — Teste que prova a corrida na tabela de preço da técnica — onda 5 — Alta
+- [x] 183 — Cancelar a busca anterior em `useTechniquePricingOptions` — onda 5 — Alta
+- [x] 184 — Varredura do padrão "dois `await` e um `setState` sem guarda" — onda 5 — Média
+- [x] 185 — Teste e correção da corrida em `InlinePriceCalculator` — onda 5 — Alta
+- [ ] 186 — Invalidar `['quote-item-counts']` nas mutations de orçamento — onda 5 — Média
+- [ ] 187 — Varredura de `queryKey` definida e nunca invalidada — onda 5 — Média
 - [ ] 182 — Teste que prova a corrida na tabela de preço da técnica — onda 5 — Alta
 - [ ] 183 — Cancelar a busca anterior em `useTechniquePricingOptions` — onda 5 — Alta
 - [ ] 184 — Varredura do padrão "dois `await` e um `setState` sem guarda" — onda 5 — Média
 - [ ] 185 — Teste e correção da corrida em `InlinePriceCalculator` — onda 5 — Alta
-- [ ] 186 — Invalidar `['quote-item-counts']` nas mutations de orçamento — onda 5 — Média
-- [ ] 187 — Varredura de `queryKey` definida e nunca invalidada — onda 5 — Média
+- [x] 186 — Invalidar `['quote-item-counts']` nas mutations de orçamento — onda 5 — Média
+- [x] 187 — Varredura de `queryKey` definida e nunca invalidada — onda 5 — Média
 - [ ] 188 — Unificar a contagem de aprovações de desconto num único hook — onda 5 — Média
 - [ ] 189 — Teste que impede a chave de contagem voltar a ter duas implementações — onda 5 — Baixa
 - [ ] 190 — Unificar a `queryFn` de `['video-variant-links']` — onda 5 — Média
 - [ ] 191 — Resolver a duplicação de `useReplenishments` — onda 5 — Baixa
 - [ ] 192 — Resolver a duplicação entre `usePersonalizationData` e `usePersonalizationManager` — onda 5 — Média
 - [ ] 193 — Resolver a duplicação de `useDevGate` — onda 5 — Baixa
-- [ ] 194 — Invalidar os widgets do painel de orçamentos — onda 5 — Baixa
+- [x] 194 — Invalidar os widgets do painel de orçamentos — onda 5 — Baixa
 - [ ] 195 — Decidir o destino de `useCustomKitsRealtime` — onda 5 — Média — APROVAÇÃO
 - [ ] 196 — Decidir o destino de `CredentialsChangedBanner` — onda 5 — Média — APROVAÇÃO
 - [ ] 197 — Decidir o destino de `RealtimeBadge` — onda 5 — Baixa
@@ -491,7 +497,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 200 — Dar sufixo único ao canal de `MyDiscountRequestsWidget` — onda 5 — Média
 - [ ] 201 — Teste e correção do item duplicado no kit — onda 5 — Média
 - [ ] 202 — Dar retorno ao lote de thumbnails que falha inteiro — onda 5 — Baixa
-- [ ] 203 — Registrar com contexto o erro engolido em `useQuotesDashboard` — onda 5 — Baixa
+- [x] 203 — Registrar com contexto o erro engolido em `useQuotesDashboard` — onda 5 — Baixa
 - [ ] 204 — Armadilha de foco e Escape em `KitOnboardingTour` — onda 5 — Média
 - [ ] 205 — Armadilha de foco em `VoiceSearchOverlay` — onda 5 — Média
 - [ ] 206 — Nome acessível nos 6 botões de ícone — onda 5 — Baixa
@@ -608,7 +614,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 
 | Data | Etapa em que apareceu | O que é | arquivo:linha |
 |---|---|---|---|
-|  |  |  |  |
+| 2026-11-24 | 005 (pós-merge do #4053) | O `select` anon das áreas de gravação pedia `production_days`, coluna que não existe na projeção de `v_print_area_techniques_public` → PostgREST 400/42703, exceção engolida pelo chamador e as áreas de gravação sumiam da página de produto. Corrigido no #4054 (lista = as 15 colunas da view, teste de igualdade estrita) e travado no #4055 (constante única `PRINT_AREA_PUBLIC_COLUMNS`, compartilhada com o hook que ainda usava `select('*')` e tomava 401) | `src/lib/print-area-columns.ts`, `src/lib/fetch-print-areas.ts`, `src/hooks/simulation/usePrintAreas.ts`, `src/lib/__tests__/fetch-print-areas.anonSelect.test.ts` |
 
 ---
 
@@ -616,7 +622,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 
 | Etapa | Motivo | Quem destrava |
 |---|---|---|
-|  |  |  |
+| 143 | A gravação já usa o helper e expõe `saveError`, mas `useSimulatorPreferences`/`useSimulation` não têm nenhum consumidor em `src/` (só a barrel `src/hooks/simulation/index.ts`). Não existe tela para exibir o erro, e o status de sincronização nunca apareceu na UI. | Dono: decidir entre remover o código morto ou criar a tela do simulador que consuma o hook |
 
 ---
 
@@ -633,7 +639,283 @@ grep -rn "dispatcher-auth" supabase/functions/ --include='*.ts'
 - So webhook-dispatcher usava o rank e negava admin -> corrigido pela etapa 069
 - Nenhum fluxo de negocio adicional negado a admin encontrado
 ```
+### Etapa 186
+```
+novo: src/hooks/quotes/quoteCacheInvalidation.ts
+QUOTE_DEPENDENT_QUERY_KEYS = [['quotes'], ['quote-item-counts'],
+  ['my-discount-requests-widget'], ['seller-discount-limits']]
+invalidateQuoteCaches(queryClient) -> Promise.all(prefixos.map(invalidateQueries))
+
+src/hooks/quotes/useQuotes.ts: 6 ocorrencias de
+  queryClient.invalidateQueries({ queryKey: ['quotes'] })
+substituidas por invalidateQuoteCaches(queryClient)
+
+teste: src/hooks/quotes/__tests__/quoteCacheInvalidation.test.ts
+  2 passed — trava a lista dos 4 prefixos e que invalidar cobre todos
+```
+### Etapa 187
+```
+documento: docs/qa/querykeys-sem-invalidacao.md (331 linhas, gerado por varredura)
+chaves literais distintas: 270
+ocorrencia unica (candidatas): 201
+  com escrita no cliente numa das tabelas lidas: 44
+  sem escrita no cliente: 157
+compartilhadas (>1 ocorrencia): 69
+nenhuma das 44 candidatas foi alterada: a coluna e co-ocorrencia de tabela,
+nao prova de bug (ressalva registrada no documento)
+```
+### Etapa 194
+```
+widgets do painel: quote-item-counts, my-discount-requests-widget,
+  seller-discount-limits, quotes
+antes: useQuotes.ts invalidava apenas ['quotes'] -> widgets ficavam obsoletos
+depois: os 4 prefixos sao invalidados juntos pelo helper da etapa 186
+o prefixo ['quotes'] cobre por prefixo as variantes ['quotes', ...]
+(ex.: ['quotes','viewed-map']), entao a invalidação do painel e completa
+```
+### Etapa 203
+```
+src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts
++ clientsError: string | null no retorno do hook
++ logger.error com contexto: { table: 'companies', is_customer: true, limit: 200 }
+  e a mensagem do erro, antes de degradar para a lista vazia
+consumidores: QuotesDashboardPage.tsx:54 e o mock de
+  __tests__/QuotesDashboardPage.pdfDisabled.test.tsx
+```
 ### Etapa NNN
 ```
 (saída)
 ```
+
+### Etapa 141
+```
+Arquivo novo: src/lib/profile-preferences.ts (fila de escrita por contexto + merge com
+releitura de conferência e ate 4 tentativas).
+$ npx vitest run src/lib/__tests__/profile-preferences.test.ts
+Test Files  1 passed (1) | Tests  4 passed (4)   (5 execucoes seguidas, sem flake)
+```
+
+### Etapa 142
+```
+src/hooks/products/useCatalogPreferences.ts
+- mutationFn passou a chamar mergeProfilePreferences(user.id, { catalog: prefs }) em vez de
+  gravar o objeto inteiro.
+- onSuccess acrescenta invalidateQueries(['catalog-preferences', user?.id]) (antes faltava).
+- efeito de hidratacao guardado por hydratedFromCloudRef: o valor da nuvem so sobrescreve
+  estado/localStorage na primeira hidratacao, entao um refetch nao reverte mais a escolha.
+$ npx tsc -p tsconfig.app.json --noEmit  ->  exit 0
+```
+
+### Etapa 144
+```
+src/stores/useBadgeVisibilityStore.ts: os dois pontos (toggleBadges e setBadgesEnabled)
+passaram a chamar mergeProfilePreferences(userId, { badge_visibility: newRouteSettings }).
+O `syncError` que a UI ja consome (IntelligenceBadges) continua sendo preenchido no catch.
+$ npx vitest run src/stores/__tests__/useBadgeVisibilityStore.test.ts  -> ver rodape
+```
+
+### Etapa 145
+```
+src/components/expert/chat/useExpertChat.ts: handleToggleAutoPlayTts grava
+mergeProfilePreferences(user.id, { flow_autoplay_tts: next }). O `catch {}` vazio virou
+`catch (err)` com logger.warn e contexto (o chat continua funcionando).
+```
+
+### Etapa 146
+```
+$ npx vitest run src/lib/__tests__/profile-preferences.test.ts
+  ok duas abas gravando chaves diferentes preservam as duas (ACH-039)
+  ok nao grava quando as chaves pedidas ja tem o valor atual
+  ok preserva chaves que o hook chamador nao conhece
+  ok propaga o erro da gravacao em vez de engolir
+Revertendo o helper para gravacao do objeto inteiro, o primeiro caso falha.
+```
+### Etapa 182
+```
+TZ=America/Sao_Paulo npx vitest run src/hooks/simulation/__tests__/useTechniquePricingOptions.race.test.tsx
+ × mantém a tabela da técnica escolhida quando a resposta anterior chega depois
+   → expected [ 2 ] to deeply equal [ 5 ]
+ × não deixa a busca anterior apagar as técnicas que vieram depois
+   → expected [] to deeply equal [ { value: 5, label: '5 cores' } ]
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+```
+O teste controla a ordem das respostas (a da técnica nova primeiro, a da anterior depois) e falha
+hoje mostrando a tabela da técnica antiga no estado — ACH-042 confirmado.
+
+### Etapa 183
+```
+mesmo comando, depois da correção:
+ ✓ mantém a tabela da técnica escolhida quando a resposta anterior chega depois
+ ✓ não deixa a busca anterior apagar as técnicas que vieram depois
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+```
+`useTechniquePricingOptions.ts` e `useMultipleTechniquePricing` ganharam token de requisição
+(`requestTokenRef`) + `useMountedRef`; só a busca mais recente grava estado. Assinatura dos dois
+hooks inalterada. `npx tsc -p tsconfig.app.json --noEmit` → exit 0.
+
+### Etapa 184
+```
+python3 /tmp/pgv4out/scan184.py
+118
+preço   15 arquivos · estoque 5 · outras telas 98
+```
+Documento entregue em `docs/qa/corridas-de-estado.md`, com `arquivo:linha`, coluna de impacto e a
+ressalva de que a varredura acha o formato, não confirma a corrida. Dois arquivos foram lidos e
+veredictados na hora: `useCustomizationPrice.ts` (só `loading`/`error`, baixo impacto) e
+`useStockSelection.ts` (falso positivo — `setState` síncrono).
+
+### Etapa 185
+```
+TZ=America/Sao_Paulo npx vitest run src/components/products/__tests__/InlinePriceCalculator.race.test.tsx
+ antes:  → expected '20|16' to be '20'   (faixas da variante anterior na tela)
+ depois: ✓ mostra as faixas da variante selecionada quando a resposta anterior chega depois
+ Test Files  1 passed (1)
+```
+Mesma guarda (token + `useMountedRef`) em `InlinePriceCalculator.tsx`; a busca antiga é descartada
+logo após responder a variante, sem chegar a consultar o fornecedor.
+`npx eslint` nos 5 arquivos tocados → 0 problemas. `npx tsc -p tsconfig.app.json --noEmit` → exit 0.
+`vitest run` dos 5 arquivos relacionados (races + `QuantityCalculator.addToQuote` +
+`TechniqueCard` + `useLegacyLintLifecycle`) → 31 passed.
+
+### Bloco 1.A — Etapas 001, 002, 003, 004, 006, 007 (custo exposto ao público)
+
+**Etapa 001 — consumo.** `Promo_Supply_V2/src/hooks/useCatalogoPim.ts` chama a edge function
+`external-db-bridge`, que lê `v_compras_catalogo` e `v_compras_precos_faixa`; `v_compras_precos_variante` não
+aparece em nenhum consumidor identificado. Mapa completo em `docs/qa/evidencia-compras-views.md`.
+
+**Etapas 002 e 003 — executadas por credencial, não por coluna.** Mascarar `cost_price`/`unit_cost` foi
+**rejeitado**, com causa: `unit_cost` é o preço da faixa que vira `valor_unitario` da cotação
+(`Promo_Supply_V2/src/pages/gerar-ordem/GerarOrdem.tsx:274`, `pcp.price[i]`) e `supplier_reference` é o código do
+fornecedor no pedido. Em vez disso, o grant de `anon` foi revogado nas views de compras e nos elos que a
+`20261122200000` abriu — `supabase/migrations/20261124140000_close_anon_cost_surface.sql`, aplicada pelo run
+**45414013226** (`isInLedger: true`), recibo na PR #4043.
+
+**Etapa 004 — decisão "revogar".** A view continuava respondendo 401 ao `anon` por causa de
+`vw_variant_sale_prices` (`security_invoker=true`). O grant foi revogado junto com os auxiliares
+(`variant_supplier_sources`, `markup_configurations`, `suppliers.default_markup_percent`).
+
+**Medição em produção** (chave publishable do bundle, somente `GET ?select=*&limit=1`, 2026-11-24):
+
+```
+objeto                                  antes de 2026-11-24   depois
+markup_configurations (SELECT)          200                   401
+markup_configurations (INSERT/DELETE)   200/204               401/401
+v_compras_catalogo                      401 (42501 suppliers) 401
+v_compras_precos_faixa                  401                   401
+v_compras_precos_variante               401                   401
+v_products_public                       200 com dados         200 com dados
+v_variant_sale_prices_public            200 com dados         200 com dados
+v_tabela_preco_gravacao_oficial_public  200 com dados         200 com dados
+categories                              200                   200
+```
+
+Nenhuma view pública da loja perdeu acesso e `authenticated` não perdeu SELECT (post-check da migration abortaria
+a transação se perdesse). O `external-db-bridge` não usa a chave anônima: as três views de compras já respondiam
+401 ao `anon` antes desta rodada — revogar o grant não mudou o caminho de quem consome.
+
+**Etapa 006.** Contrato atualizado em #4008 (`e87db751`): `v_compras_catalogo` e `v_compras_precos_faixa` entraram
+em `.security/public-views-columns.json`.
+
+**Etapa 007 — premissa refutada (`[-]`).** `tabela_preco_gravacao_oficial_faixa.preco_unitario` é o preço de
+**venda** oficial, público por design desde `20260717173348_*` (policy `..._public_read` para `anon` + view
+espelho). O cabeçalho de `20261124140000` registra a rejeição e o motivo; a PR #4009 (mascarar `preco_unitario`)
+foi fechada em 2026-11-24 com a mesma evidência. Reforço medido: `public.fn_verify_anon_catalog_grants()`
+(`SCHEMA_LIVE.sql:53373`) **exige** `anon SELECT` nessa tabela — a revogação do grant, que era o objetivo
+original da etapa, faria a própria verificação de saúde do banco passar a acusar `FALTA anon SELECT`. Detalhe em
+`docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md`.
+
+**Etapa 005 — fechada em #4049, com a medição anterior corrigida.** A PR #4007 trocava o filtro fixo por
+`has_table_privilege('anon', c.oid, 'SELECT')` sem allowlist e foi fechada. O bloqueio que ela media estava
+**superestimado**: `public` tem 200 objetos (196 views + 4 matviews) e o contrato cobre 10, mas o `anon` lê
+**15** — 8 do contrato e 7 fora dele, todos de catálogo e sem coluna de custo depois da `20261124163000`:
+`mv_product_compositions`, `v_color_nuances_public`, `v_kit_component_print_areas_public`,
+`v_personalization_techniques_public`, `v_print_area_techniques_public`, `v_site_products_public`,
+`v_tags_public`. As duas views de compras não entram porque a `20261124140000` revogou o grant delas.
+Medição no dump (`SCHEMA_LIVE.sql`, 2026-11-24T00:14:33Z): das 509 linhas `GRANT ... TO "anon"` em `public` do
+dump, **16** views/matviews têm SELECT de tabela — as 15 acima mais `vw_variant_sale_prices`, cujo grant caiu
+também na `20261124140000` — e **45** são **tabelas**, que não são escopo desta etapa (são a 008).
+`ALTER DEFAULT PRIVILEGES ... ON TABLES TO anon` concede apenas `REFERENCES,TRIGGER,MAINTAIN`, **não** SELECT,
+logo não existe leitura implícita de view nova — a contagem de 190 vinha de creditar ao `anon` um privilégio
+que ele não tem.
+Entregue: a descoberta varre todo objeto de `public` (`relkind in ('v','m')`, grant de tabela **ou** de
+coluna), `.security/anon-select-allowlist.json` congela as 7 views e suas colunas, o contrato passa a declarar
+`anon_select` por view (as duas de compras ficam `false`, então uma re-concessão de grant também falha o gate),
+e o passo `E118i` do `deploy-gates.yml` ganhou `SUPABASE_ACCESS_TOKEN` + `--require-live` — antes rodava sem
+credencial, caía em `static-pass` e era cego. Testes: `tests/security/public-views-columns.test.ts` e
+`tests/scripts/check-public-views-drift.test.mjs` (26 casos), incluindo objeto novo fora do contrato, allowlist
+obsoleta, coluna nova legível por anon e re-concessão de grant em view `anon_select=false`.
+
+### Etapa 005 — regressão da lista de colunas do anon (2026-11-24)
+
+> Corrige o que a etapa 005 deixou passar: o gate ficou verde, mas a lista de colunas que o site manda no
+> `select` tinha uma coluna fora da projeção da view.
+
+Medição em produção (`https://doufsxqlfjyuvxuezpln.supabase.co`, chave `sb_publishable_*` extraída do
+`app-shell-*.js` publicado):
+
+```
+GET /rest/v1/v_print_area_techniques_public?select=*&limit=1        -> 200  (15 colunas)
+GET /rest/v1/v_print_area_techniques_public?select=...,production_days -> 400 42703
+      "column v_print_area_techniques_public.production_days does not exist"
+GET /rest/v1/print_area_techniques?select=*&limit=1                 -> 401 42501  (grant por coluna)
+GET /rest/v1/print_area_techniques?select=<15 colunas>&limit=1       -> 200
+GET /rest/v1/print_area_techniques?select=unit_cost&limit=1          -> 401  (revogação intacta)
+```
+
+Causa: `dbInvoke` resolve `print_area_techniques` por `GOLD_READ_ALIASES`
+(`src/integrations/supabase/gold-relations.ts:386`) para a view de leitura, e a migration `20261124163000`
+deixou a **tabela** com 16 colunas (grant por coluna) e a **view** com 15 — `production_days` só existe na
+tabela. Nenhum erro aparecia na tela porque `fetchPrintAreasFromProduct` captura a exceção e devolve `[]`.
+
+Entregue: #4054 (`519b6a367`, lista = 15 colunas da view + teste que exige igualdade estrita e proíbe
+`unit_cost`/`production_days`) e #4055 (`9238b3113`, `src/lib/print-area-columns.ts` como fonte única,
+consumida por `fetch-print-areas.ts` e por `usePrintAreas.ts`, que passou de `select('*')` para as mesmas 15
+colunas). Produção confirmada no bundle servido: `products-filters-panel-BNa6euT4.js` contém
+`id,product_id,tabela_preco_id,...,created_at,updated_at` e não contém `production_days` nem `unit_cost`.
+
+### Etapa 008 — medição do grant de tabela ao `anon` (2026-11-24)
+
+> Read-only em produção, sem credencial de serviço: chave `sb_publishable_*` do bundle publicado +
+> `Prefer: count=exact` / `Range: 0-0` para ler a contagem real de linhas, não só o status.
+
+```
+200 */0     product_fiscal                        (grant existe, RLS devolve 0 linha)
+200 */0     product_supply                        (grant existe, RLS devolve 0 linha)
+200 */0     system_settings                       (grant existe, RLS devolve 0 linha)
+401 42501   suppliers  select=default_markup_percent
+401 42501   markup_configurations select=*
+401 42501   variant_supplier_sources select=*
+401 42501   print_area_techniques select=*        (grant por coluna; unit_cost segue 401)
+206 952     tabela_preco_gravacao_oficial_faixa   (preco_unitario por faixa de quantidade)
+206 20767   product_variants                      (sku, attributes, stock_quantity, images)
+206 16      tecnicas_gravacao                     (codigo, nome, slug, ativo)
+206 1007    video_sim_results                      (sup, yid, queue_status, cur_w, cur_h, err)
+```
+
+Medição completa do dia (mesmo método, sobre os **61 objetos** que o dump de 23/11 concedia ao `anon`):
+**49 respondem** (36 tabelas + 13 views/matviews) e **12 devolvem 401** — as revogações de `20261124140000`
+e `20261124163000` pegaram 9 tabelas (`markup_configurations`, `suppliers`, `products`, `print_area_techniques`,
+`product_properties`, `product_tags`, `variant_supplier_sources`, `kit_component_print_areas`,
+`product_kit_components`) e 3 views (`v_product_properties_public`, `v_product_tags_public`,
+`vw_variant_sale_prices`). 45 − 9 = 36: a conta fecha com a linha 41.
+
+Leitura: as quatro com linhas são de catálogo — preço por faixa, variantes e técnicas alimentam a página
+pública e a calculadora, então o grant é funcional (é a premissa que a etapa 007 refutou). `video_sim_results`
+é resultado de simulação interna e não tem consumidor público conhecido: exposição sem uso.
+`product_fiscal`, `product_supply` e `system_settings` hoje devolvem 0 linha por RLS, mas o **grant** existe —
+qualquer policy de SELECT futura passa a entregar a tabela inteira ao anônimo. O gate
+(`scripts/check-public-views-drift.mjs`, `buildAnonSql`) consultava só `relkind in ('v','m')`, então nenhum
+desses oito casos aparecia no CI.
+
+**Corrigido em #4059** (aguardando aprovação, Regra 8): `buildAnonSql` passou a trazer `relkind 'r'`/`'p'` e o
+gate compara as tabelas com `.security/anon-tables-baseline.json` — **42 entradas**: 36 medidas por PostgREST
+(23 `catalogo-publico` e 13 `interno-grant-herdado`, as que devem ser revogadas depois) mais 6 que só o SQL do
+gate enxerga, porque o grant é **por coluna** e o PostgREST devolve 401 em `select=*` (`kit_component_print_areas`,
+`print_area_techniques`, `product_kit_components`, `products`, `product_properties`, `product_tags`). Tabela nova
+legível por anon **falha** o gate; entrada sem privilégio no banco também falha (revogação obriga limpar a linha).
+O congelamento **por coluna** vale para tabela: `products` (`id`, `is_active`, `is_deleted`),
+`kit_component_print_areas`, `print_area_techniques` e `product_kit_components` travam a lista medida, então
+coluna nova legível por anon falha o gate. `product_properties` e `product_tags` têm grant de **tabela inteira**
+(herdado do legado): a entrada trava só o nome, coluna nova já nasce legível — narrowing ou revogação pendente.

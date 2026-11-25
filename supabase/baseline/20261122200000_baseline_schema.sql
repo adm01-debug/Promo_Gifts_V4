@@ -1,6 +1,6 @@
 -- =============================================================================
--- Baseline do schema de produção (doufsxqlfjyuvxuezpln) — versão 20261122180000
--- Gerado em 2026-11-22T14:47:15.781Z por scripts/export-schema-snapshot.mjs (supabase db dump --linked).
+-- Baseline do schema de produção (doufsxqlfjyuvxuezpln) — versão 20261122200000
+-- Gerado em 2026-11-24T00:14:33.399Z por scripts/export-schema-snapshot.mjs (supabase db dump --linked).
 -- Uso exclusivo: ponto de partida do replay do db-schema-drift-check.
 -- NÃO é migration: não aplicar em produção, não copiar para supabase/migrations/.
 -- Não contém: dados, jobs do pg_cron, storage, vault, schema auth, publications,
@@ -2693,7 +2693,7 @@ ALTER FUNCTION "public"."check_ip_access"("_ip" "text") OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."check_login_rate_limit"("_email" "text", "_ip" "text" DEFAULT NULL::"text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public'
+    SET "search_path" TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
     AS $$
 DECLARE
   _max_failures int := 5;
@@ -12371,16 +12371,27 @@ COMMENT ON FUNCTION "public"."fn_anon_access_audit"() IS 'Auditoria de acesso an
 
 CREATE OR REPLACE FUNCTION "public"."fn_anon_catalog_grant_audit_run"() RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public'
+    SET "search_path" TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
-DECLARE v jsonb; c int;
+DECLARE
+  v jsonb;
+  c int;
 BEGIN
-  SELECT coalesce(jsonb_agg(to_jsonb(t)), '[]'::jsonb), count(*) INTO v, c
+  IF auth.uid() IS NOT NULL
+     AND NOT COALESCE(public.is_admin_or_above(auth.uid()), false) THEN
+    RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501';
+  END IF;
+
+  SELECT COALESCE(jsonb_agg(to_jsonb(t)), '[]'::jsonb), count(*)
+    INTO v, c
   FROM public.fn_verify_anon_catalog_grants() t;
+
   INSERT INTO public.anon_catalog_grant_audit_log(violation_count, violations)
   VALUES (c, CASE WHEN c > 0 THEN v ELSE NULL END);
+
   RETURN c;
-END $$;
+END;
+$$;
 
 
 ALTER FUNCTION "public"."fn_anon_catalog_grant_audit_run"() OWNER TO "postgres";
@@ -36480,7 +36491,7 @@ COMMENT ON FUNCTION "public"."fn_process_webhook_outbox_batch"("_batch_size" int
 
 CREATE OR REPLACE FUNCTION "public"."fn_product_active_for_rls"("p_id" "uuid") RETURNS boolean
     LANGUAGE "sql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public'
+    SET "search_path" TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
     AS $$
   SELECT EXISTS(
     SELECT 1 FROM products
@@ -38546,21 +38557,34 @@ ALTER FUNCTION "public"."fn_qa_alert_on_activate_without_image"() OWNER TO "post
 
 CREATE OR REPLACE FUNCTION "public"."fn_qa_check_image_coverage"() RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public'
+    SET "search_path" TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
-DECLARE v_crit int; v_semnorm int; v_sample jsonb;
+DECLARE
+  v_crit int;
+  v_semnorm int;
+  v_sample jsonb;
 BEGIN
-  SELECT count(*) FILTER (WHERE severidade='CRITICO'),
-         count(*) FILTER (WHERE severidade='SEM_NORMALIZACAO')
+  IF auth.uid() IS NOT NULL
+     AND NOT COALESCE(public.is_admin_or_above(auth.uid()), false) THEN
+    RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501';
+  END IF;
+
+  SELECT count(*) FILTER (WHERE severidade = 'CRITICO'),
+         count(*) FILTER (WHERE severidade = 'SEM_NORMALIZACAO')
     INTO v_crit, v_semnorm
   FROM public.vw_qa_products_missing_images;
 
-  SELECT jsonb_agg(x) INTO v_sample FROM (
-    SELECT sku, name, supplier_id FROM public.vw_qa_products_missing_images
-    WHERE severidade='CRITICO' LIMIT 20) x;
+  SELECT jsonb_agg(x) INTO v_sample
+  FROM (
+    SELECT sku, name, supplier_id
+    FROM public.vw_qa_products_missing_images
+    WHERE severidade = 'CRITICO'
+    LIMIT 20
+  ) x;
 
-  INSERT INTO public.qa_image_coverage_log(critico_count, sem_normalizacao_count, sample)
-  VALUES (v_crit, v_semnorm, COALESCE(v_sample,'[]'::jsonb));
+  INSERT INTO public.qa_image_coverage_log
+    (critico_count, sem_normalizacao_count, sample)
+  VALUES (v_crit, v_semnorm, COALESCE(v_sample, '[]'::jsonb));
 
   RETURN jsonb_build_object('ran_at', now(), 'critico', v_crit, 'sem_normalizacao', v_semnorm);
 END;
@@ -38572,49 +38596,70 @@ ALTER FUNCTION "public"."fn_qa_check_image_coverage"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."fn_qa_scan_imageless_products"() RETURNS TABLE("total_violacoes" bigint, "alertas_novos" bigint, "alertas_resolvidos" bigint)
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public'
+    SET "search_path" TO 'pg_catalog', 'public', 'pg_temp'
     AS $$
 DECLARE
-  v_novos bigint := 0; v_resolvidos bigint := 0; v_total bigint := 0;
+  v_novos bigint := 0;
+  v_resolvidos bigint := 0;
+  v_total bigint := 0;
 BEGIN
-  -- 1. Auto-resolver alertas: produto tem imagem agora, OU foi desativado/deletado
+  IF auth.uid() IS NOT NULL
+     AND NOT COALESCE(public.is_admin_or_above(auth.uid()), false) THEN
+    RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501';
+  END IF;
+
   WITH resolvidos AS (
-    UPDATE product_qa_image_alerts qa
-    SET is_resolved = true, resolved_at = now(),
+    UPDATE public.product_qa_image_alerts qa
+    SET is_resolved = true,
+        resolved_at = now(),
         resolution_notes = CASE
           WHEN COALESCE(p.is_deleted, false) THEN 'produto deletado'
           WHEN NOT COALESCE(p.is_active, false) THEN 'produto desativado'
           ELSE 'imagem detectada na varredura automática'
         END
-    FROM products p
-    WHERE qa.product_id = p.id AND qa.is_resolved = false
+    FROM public.products p
+    WHERE qa.product_id = p.id
+      AND qa.is_resolved = false
       AND (
-        COALESCE(p.is_deleted, false)              -- deletado → resolver
-        OR NOT COALESCE(p.is_active, false)        -- desativado → resolver
-        OR EXISTS (SELECT 1 FROM product_images pi WHERE pi.product_id=p.id AND pi.is_active=true)
-        OR COALESCE(p.primary_image_url,'') <> ''
-        OR (jsonb_typeof(p.images)='array' AND jsonb_array_length(p.images)>0)
+        COALESCE(p.is_deleted, false)
+        OR NOT COALESCE(p.is_active, false)
+        OR EXISTS (
+          SELECT 1 FROM public.product_images pi
+          WHERE pi.product_id = p.id AND pi.is_active = true
+        )
+        OR COALESCE(p.primary_image_url, '') <> ''
+        OR (jsonb_typeof(p.images) = 'array' AND jsonb_array_length(p.images) > 0)
       )
     RETURNING qa.id
   )
   SELECT count(*) INTO v_resolvidos FROM resolvidos;
 
-  -- 2. Detectar novos violadores (apenas ativos e não-deletados)
   WITH novos AS (
-    INSERT INTO product_qa_image_alerts (product_id, supplier_id, sku_promo, product_name, alert_type)
-    SELECT p.id, p.supplier_id, COALESCE(p.sku_promo, p.sku), left(p.name,200), 'active_without_image'
-    FROM products p
-    WHERE COALESCE(p.is_active,false) AND NOT COALESCE(p.is_deleted,false)
-      AND NOT EXISTS (SELECT 1 FROM product_images pi WHERE pi.product_id=p.id AND pi.is_active=true)
-      AND COALESCE(p.primary_image_url,'') = ''
-      AND NOT (jsonb_typeof(p.images)='array' AND jsonb_array_length(p.images)>0)
-      AND NOT EXISTS (SELECT 1 FROM product_qa_image_alerts qa WHERE qa.product_id=p.id AND qa.is_resolved=false)
+    INSERT INTO public.product_qa_image_alerts
+      (product_id, supplier_id, sku_promo, product_name, alert_type)
+    SELECT p.id, p.supplier_id, COALESCE(p.sku_promo, p.sku), left(p.name, 200), 'active_without_image'
+    FROM public.products p
+    WHERE COALESCE(p.is_active, false)
+      AND NOT COALESCE(p.is_deleted, false)
+      AND NOT EXISTS (
+        SELECT 1 FROM public.product_images pi
+        WHERE pi.product_id = p.id AND pi.is_active = true
+      )
+      AND COALESCE(p.primary_image_url, '') = ''
+      AND NOT (jsonb_typeof(p.images) = 'array' AND jsonb_array_length(p.images) > 0)
+      AND NOT EXISTS (
+        SELECT 1 FROM public.product_qa_image_alerts qa
+        WHERE qa.product_id = p.id AND qa.is_resolved = false
+      )
     ON CONFLICT DO NOTHING
     RETURNING id
   )
   SELECT count(*) INTO v_novos FROM novos;
 
-  SELECT count(*) INTO v_total FROM product_qa_image_alerts WHERE is_resolved=false;
+  SELECT count(*) INTO v_total
+  FROM public.product_qa_image_alerts
+  WHERE is_resolved = false;
+
   RETURN QUERY SELECT v_total, v_novos, v_resolvidos;
 END;
 $$;
@@ -47879,7 +47924,7 @@ COMMENT ON FUNCTION "public"."fn_standardize_variant"("p_raw_id" "uuid") IS 'Bro
 
 CREATE OR REPLACE FUNCTION "public"."fn_super_filtro"("p_search_term" "text" DEFAULT NULL::"text", "p_category_slug" "text" DEFAULT NULL::"text", "p_category_id" "uuid" DEFAULT NULL::"uuid", "p_brands" "text"[] DEFAULT NULL::"text"[], "p_only_in_stock" boolean DEFAULT false, "p_min_price" numeric DEFAULT NULL::numeric, "p_max_price" numeric DEFAULT NULL::numeric, "p_target_audiences" "text"[] DEFAULT NULL::"text"[], "p_is_kit" boolean DEFAULT NULL::boolean, "p_is_textil" boolean DEFAULT NULL::boolean, "p_is_thermal" boolean DEFAULT NULL::boolean, "p_has_gift_box" boolean DEFAULT NULL::boolean, "p_material_groups" "text"[] DEFAULT NULL::"text"[], "p_technique_groups" "text"[] DEFAULT NULL::"text"[], "p_color_groups" "text"[] DEFAULT NULL::"text"[], "p_date_slugs" "text"[] DEFAULT NULL::"text"[], "p_endomarketing" boolean DEFAULT NULL::boolean, "p_limit" integer DEFAULT 50, "p_offset" integer DEFAULT 0, "p_sort" "text" DEFAULT 'name_asc'::"text") RETURNS TABLE("id" "uuid", "name" "text", "sku" "text", "slug" "text", "short_description" "text", "brand" character varying, "sale_price" numeric, "cost_price" numeric, "min_quantity" integer, "stock_quantity" integer, "is_stockout" boolean, "is_kit" boolean, "is_textil" boolean, "is_thermal" boolean, "is_featured" boolean, "is_bestseller" boolean, "is_new" boolean, "has_gift_box" boolean, "target_audience" "text"[], "primary_image_url" "text", "og_image_url" "text", "set_image_url" "text", "category_id" "uuid", "category_name" "text", "category_slug" "text", "total_count" bigint)
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'extensions'
+    SET "search_path" TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
     AS $$
 DECLARE
   v_search_normalized  text;
@@ -48019,7 +48064,7 @@ COMMENT ON FUNCTION "public"."fn_super_filtro"("p_search_term" "text", "p_catego
 
 CREATE OR REPLACE FUNCTION "public"."fn_super_filtro_facets"("p_search_term" "text" DEFAULT NULL::"text", "p_category_slug" "text" DEFAULT NULL::"text", "p_category_id" "uuid" DEFAULT NULL::"uuid", "p_brands" "text"[] DEFAULT NULL::"text"[], "p_only_in_stock" boolean DEFAULT false, "p_min_price" numeric DEFAULT NULL::numeric, "p_max_price" numeric DEFAULT NULL::numeric, "p_target_audiences" "text"[] DEFAULT NULL::"text"[], "p_is_kit" boolean DEFAULT NULL::boolean, "p_is_textil" boolean DEFAULT NULL::boolean, "p_is_thermal" boolean DEFAULT NULL::boolean, "p_has_gift_box" boolean DEFAULT NULL::boolean, "p_material_groups" "text"[] DEFAULT NULL::"text"[], "p_technique_groups" "text"[] DEFAULT NULL::"text"[], "p_color_groups" "text"[] DEFAULT NULL::"text"[], "p_date_slugs" "text"[] DEFAULT NULL::"text"[], "p_endomarketing" boolean DEFAULT NULL::boolean) RETURNS TABLE("facet_type" "text", "facet_value" "text", "facet_slug" "text", "product_count" bigint)
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'extensions'
+    SET "search_path" TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
     AS $$
 DECLARE
   v_search_normalized text;
@@ -48194,7 +48239,7 @@ ALTER FUNCTION "public"."fn_super_filtro_opcoes"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."fn_super_filtro_price_range"("p_brands" "text"[] DEFAULT NULL::"text"[], "p_category_slug" "text" DEFAULT NULL::"text", "p_target_audiences" "text"[] DEFAULT NULL::"text"[], "p_is_textil" boolean DEFAULT NULL::boolean, "p_is_thermal" boolean DEFAULT NULL::boolean, "p_only_in_stock" boolean DEFAULT false) RETURNS TABLE("price_min" numeric, "price_max" numeric, "price_p25" numeric, "price_p75" numeric, "price_median" numeric, "price_avg" numeric, "total_with_price" bigint)
     LANGUAGE "sql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'extensions'
+    SET "search_path" TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
     AS $$
   SELECT
     MIN(p.sale_price) FILTER (WHERE p.sale_price >= 1)::numeric              AS price_min,
@@ -58721,7 +58766,7 @@ COMMENT ON VIEW "public"."v_products_public" IS 'PUBLIC PRODUCT PROJECTION (SECU
 
 CREATE OR REPLACE FUNCTION "public"."get_catalog_bestseller_page"("p_sort" "text" DEFAULT 'best-seller-supplier'::"text", "p_limit" integer DEFAULT 500, "p_offset" integer DEFAULT 0) RETURNS SETOF "public"."v_products_public"
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public'
+    SET "search_path" TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
     AS $$
 DECLARE
   v_limit  integer := GREATEST(COALESCE(p_limit, 500), 0);
@@ -76801,7 +76846,7 @@ COMMENT ON TABLE "public"."catalog_analytics" IS 'Analytics de eventos do catál
 
 
 
-CREATE OR REPLACE VIEW "public"."categories_tree_visual" WITH ("security_invoker"='true') AS
+CREATE OR REPLACE VIEW "public"."categories_tree_visual" WITH ("security_invoker"='false') AS
  SELECT "id",
     "bitrix_id",
     "name",
@@ -80534,7 +80579,7 @@ COMMENT ON VIEW "public"."mv_media_health" IS 'VIEW pública de exposição sobr
 
 
 
-CREATE OR REPLACE VIEW "public"."mv_product_cards" WITH ("security_invoker"='true') AS
+CREATE OR REPLACE VIEW "public"."mv_product_cards" WITH ("security_invoker"='false') AS
  SELECT "id",
     "name",
     "slug",
@@ -80567,7 +80612,7 @@ COMMENT ON VIEW "public"."mv_product_cards" IS 'VIEW pública de exposição (Po
 
 
 
-CREATE OR REPLACE VIEW "public"."mv_product_compositions" WITH ("security_invoker"='true') AS
+CREATE OR REPLACE VIEW "public"."mv_product_compositions" WITH ("security_invoker"='false') AS
  SELECT "product_id",
     "organization_id",
     "product_name",
@@ -80580,7 +80625,7 @@ CREATE OR REPLACE VIEW "public"."mv_product_compositions" WITH ("security_invoke
 ALTER VIEW "public"."mv_product_compositions" OWNER TO "postgres";
 
 
-COMMENT ON VIEW "public"."mv_product_compositions" IS 'VIEW pública de exposição sobre a matview analytics.mv_product_compositions (refresh CONCURRENTLY via cron 47, hourly). public.mv_* é VIEW, não matview — não rode REFRESH aqui.';
+COMMENT ON VIEW "public"."mv_product_compositions" IS 'VIEW publica sobre a matview analytics.mv_product_compositions (refresh pelo cron 47, horario). public.mv_* e VIEW, nao matview - nao rode REFRESH aqui. SECURITY DEFINER desde 20261122200000 porque a matview-base nao concede SELECT a anon nem suporta RLS. NAO religar security_invoker=true.';
 
 
 
@@ -80651,7 +80696,7 @@ COMMENT ON MATERIALIZED VIEW "public"."mv_product_images_audit" IS 'Auditoria co
 
 
 
-CREATE OR REPLACE VIEW "public"."mv_product_intelligence" WITH ("security_invoker"='true') AS
+CREATE OR REPLACE VIEW "public"."mv_product_intelligence" WITH ("security_invoker"='false') AS
  SELECT "product_id",
     "total_depleted_30d",
     "total_depleted_90d",
@@ -80677,7 +80722,7 @@ CREATE OR REPLACE VIEW "public"."mv_product_intelligence" WITH ("security_invoke
 ALTER VIEW "public"."mv_product_intelligence" OWNER TO "postgres";
 
 
-CREATE OR REPLACE VIEW "public"."mv_stock_velocity" WITH ("security_invoker"='true') AS
+CREATE OR REPLACE VIEW "public"."mv_stock_velocity" WITH ("security_invoker"='false') AS
  SELECT "variant_supplier_source_id",
     "supplier_id",
     "supplier_branch_id",
@@ -86965,7 +87010,7 @@ CREATE OR REPLACE VIEW "public"."v_commemorative_dates_with_colors" WITH ("secur
 ALTER VIEW "public"."v_commemorative_dates_with_colors" OWNER TO "postgres";
 
 
-CREATE OR REPLACE VIEW "public"."v_compras_catalogo" WITH ("security_invoker"='false') AS
+CREATE OR REPLACE VIEW "public"."v_compras_catalogo" AS
  SELECT "p"."id" AS "pim_product_id",
     "v"."id" AS "pim_variant_id",
     "p"."sku",
@@ -87002,7 +87047,7 @@ CREATE OR REPLACE VIEW "public"."v_compras_catalogo" WITH ("security_invoker"='f
    FROM (("public"."products" "p"
      JOIN "public"."suppliers" "s" ON (("s"."id" = "p"."supplier_id")))
      LEFT JOIN "public"."product_variants" "v" ON ((("v"."product_id" = "p"."id") AND "v"."is_active")))
-  WHERE ("p"."is_active" AND (NOT COALESCE("p"."is_deleted", false)) AND "s"."active" AND "s"."is_product_supplier");
+  WHERE ("p"."is_active" AND (NOT COALESCE("p"."is_deleted", false)) AND "s"."active" AND "s"."is_product_supplier" AND "public"."can_view_all_sales"());
 
 
 ALTER VIEW "public"."v_compras_catalogo" OWNER TO "postgres";
@@ -87012,7 +87057,7 @@ COMMENT ON VIEW "public"."v_compras_catalogo" IS 'Catalogo canônico para o brid
 
 
 
-CREATE OR REPLACE VIEW "public"."v_compras_precos_faixa" WITH ("security_invoker"='false') AS
+CREATE OR REPLACE VIEW "public"."v_compras_precos_faixa" AS
  SELECT "pcp"."product_id" AS "pim_product_id",
     NULL::"uuid" AS "pim_variant_id",
     "band"."qty_min",
@@ -87034,7 +87079,7 @@ CREATE OR REPLACE VIEW "public"."v_compras_precos_faixa" WITH ("security_invoker
             "t"."price_val" AS "unit_cost",
             "t"."ord"
            FROM UNNEST("pcp"."min_qty", "pcp"."price") WITH ORDINALITY "t"("qty_min_val", "price_val", "ord")) "band")
-  WHERE ("array_length"("pcp"."min_qty", 1) > 0);
+  WHERE (("array_length"("pcp"."min_qty", 1) > 0) AND "public"."can_view_all_sales"());
 
 
 ALTER VIEW "public"."v_compras_precos_faixa" OWNER TO "postgres";
@@ -87079,61 +87124,70 @@ CREATE OR REPLACE VIEW "public"."vw_variant_sale_prices" WITH ("security_invoker
 ALTER VIEW "public"."vw_variant_sale_prices" OWNER TO "postgres";
 
 
-CREATE OR REPLACE VIEW "public"."v_compras_precos_variante" WITH ("security_invoker"='false') AS
- SELECT "vw_variant_sale_prices"."product_id" AS "pim_product_id",
-    "vw_variant_sale_prices"."variant_id" AS "pim_variant_id",
-    1 AS "tier",
-    "vw_variant_sale_prices"."min_qty_1" AS "qty_min",
-    ("vw_variant_sale_prices"."min_qty_2" - 1) AS "qty_max",
-    "vw_variant_sale_prices"."cost_price_1" AS "unit_cost",
-    "vw_variant_sale_prices"."sale_price_1" AS "unit_price",
-    'vw_variant_sale_prices'::"text" AS "source"
-   FROM "public"."vw_variant_sale_prices"
-  WHERE ("vw_variant_sale_prices"."min_qty_1" IS NOT NULL)
-UNION ALL
- SELECT "vw_variant_sale_prices"."product_id" AS "pim_product_id",
-    "vw_variant_sale_prices"."variant_id" AS "pim_variant_id",
-    2 AS "tier",
-    "vw_variant_sale_prices"."min_qty_2" AS "qty_min",
-    ("vw_variant_sale_prices"."min_qty_3" - 1) AS "qty_max",
-    "vw_variant_sale_prices"."cost_price_2" AS "unit_cost",
-    "vw_variant_sale_prices"."sale_price_2" AS "unit_price",
-    'vw_variant_sale_prices'::"text" AS "source"
-   FROM "public"."vw_variant_sale_prices"
-  WHERE ("vw_variant_sale_prices"."min_qty_2" IS NOT NULL)
-UNION ALL
- SELECT "vw_variant_sale_prices"."product_id" AS "pim_product_id",
-    "vw_variant_sale_prices"."variant_id" AS "pim_variant_id",
-    3 AS "tier",
-    "vw_variant_sale_prices"."min_qty_3" AS "qty_min",
-    ("vw_variant_sale_prices"."min_qty_4" - 1) AS "qty_max",
-    "vw_variant_sale_prices"."cost_price_3" AS "unit_cost",
-    "vw_variant_sale_prices"."sale_price_3" AS "unit_price",
-    'vw_variant_sale_prices'::"text" AS "source"
-   FROM "public"."vw_variant_sale_prices"
-  WHERE ("vw_variant_sale_prices"."min_qty_3" IS NOT NULL)
-UNION ALL
- SELECT "vw_variant_sale_prices"."product_id" AS "pim_product_id",
-    "vw_variant_sale_prices"."variant_id" AS "pim_variant_id",
-    4 AS "tier",
-    "vw_variant_sale_prices"."min_qty_4" AS "qty_min",
-    ("vw_variant_sale_prices"."min_qty_5" - 1) AS "qty_max",
-    "vw_variant_sale_prices"."cost_price_4" AS "unit_cost",
-    "vw_variant_sale_prices"."sale_price_4" AS "unit_price",
-    'vw_variant_sale_prices'::"text" AS "source"
-   FROM "public"."vw_variant_sale_prices"
-  WHERE ("vw_variant_sale_prices"."min_qty_4" IS NOT NULL)
-UNION ALL
- SELECT "vw_variant_sale_prices"."product_id" AS "pim_product_id",
-    "vw_variant_sale_prices"."variant_id" AS "pim_variant_id",
-    5 AS "tier",
-    "vw_variant_sale_prices"."min_qty_5" AS "qty_min",
-    NULL::integer AS "qty_max",
-    "vw_variant_sale_prices"."cost_price_5" AS "unit_cost",
-    "vw_variant_sale_prices"."sale_price_5" AS "unit_price",
-    'vw_variant_sale_prices'::"text" AS "source"
-   FROM "public"."vw_variant_sale_prices"
-  WHERE ("vw_variant_sale_prices"."min_qty_5" IS NOT NULL);
+CREATE OR REPLACE VIEW "public"."v_compras_precos_variante" AS
+ SELECT "pim_product_id",
+    "pim_variant_id",
+    "tier",
+    "qty_min",
+    "qty_max",
+    "unit_cost",
+    "unit_price",
+    "source"
+   FROM ( SELECT "vw_variant_sale_prices"."product_id" AS "pim_product_id",
+            "vw_variant_sale_prices"."variant_id" AS "pim_variant_id",
+            1 AS "tier",
+            "vw_variant_sale_prices"."min_qty_1" AS "qty_min",
+            ("vw_variant_sale_prices"."min_qty_2" - 1) AS "qty_max",
+            "vw_variant_sale_prices"."cost_price_1" AS "unit_cost",
+            "vw_variant_sale_prices"."sale_price_1" AS "unit_price",
+            'vw_variant_sale_prices'::"text" AS "source"
+           FROM "public"."vw_variant_sale_prices"
+          WHERE ("vw_variant_sale_prices"."min_qty_1" IS NOT NULL)
+        UNION ALL
+         SELECT "vw_variant_sale_prices"."product_id" AS "pim_product_id",
+            "vw_variant_sale_prices"."variant_id" AS "pim_variant_id",
+            2 AS "tier",
+            "vw_variant_sale_prices"."min_qty_2" AS "qty_min",
+            ("vw_variant_sale_prices"."min_qty_3" - 1) AS "qty_max",
+            "vw_variant_sale_prices"."cost_price_2" AS "unit_cost",
+            "vw_variant_sale_prices"."sale_price_2" AS "unit_price",
+            'vw_variant_sale_prices'::"text" AS "source"
+           FROM "public"."vw_variant_sale_prices"
+          WHERE ("vw_variant_sale_prices"."min_qty_2" IS NOT NULL)
+        UNION ALL
+         SELECT "vw_variant_sale_prices"."product_id" AS "pim_product_id",
+            "vw_variant_sale_prices"."variant_id" AS "pim_variant_id",
+            3 AS "tier",
+            "vw_variant_sale_prices"."min_qty_3" AS "qty_min",
+            ("vw_variant_sale_prices"."min_qty_4" - 1) AS "qty_max",
+            "vw_variant_sale_prices"."cost_price_3" AS "unit_cost",
+            "vw_variant_sale_prices"."sale_price_3" AS "unit_price",
+            'vw_variant_sale_prices'::"text" AS "source"
+           FROM "public"."vw_variant_sale_prices"
+          WHERE ("vw_variant_sale_prices"."min_qty_3" IS NOT NULL)
+        UNION ALL
+         SELECT "vw_variant_sale_prices"."product_id" AS "pim_product_id",
+            "vw_variant_sale_prices"."variant_id" AS "pim_variant_id",
+            4 AS "tier",
+            "vw_variant_sale_prices"."min_qty_4" AS "qty_min",
+            ("vw_variant_sale_prices"."min_qty_5" - 1) AS "qty_max",
+            "vw_variant_sale_prices"."cost_price_4" AS "unit_cost",
+            "vw_variant_sale_prices"."sale_price_4" AS "unit_price",
+            'vw_variant_sale_prices'::"text" AS "source"
+           FROM "public"."vw_variant_sale_prices"
+          WHERE ("vw_variant_sale_prices"."min_qty_4" IS NOT NULL)
+        UNION ALL
+         SELECT "vw_variant_sale_prices"."product_id" AS "pim_product_id",
+            "vw_variant_sale_prices"."variant_id" AS "pim_variant_id",
+            5 AS "tier",
+            "vw_variant_sale_prices"."min_qty_5" AS "qty_min",
+            NULL::integer AS "qty_max",
+            "vw_variant_sale_prices"."cost_price_5" AS "unit_cost",
+            "vw_variant_sale_prices"."sale_price_5" AS "unit_price",
+            'vw_variant_sale_prices'::"text" AS "source"
+           FROM "public"."vw_variant_sale_prices"
+          WHERE ("vw_variant_sale_prices"."min_qty_5" IS NOT NULL)) "q"
+  WHERE "public"."can_view_all_sales"();
 
 
 ALTER VIEW "public"."v_compras_precos_variante" OWNER TO "postgres";
@@ -98474,6 +98528,10 @@ CREATE INDEX "idx_bot_detection_log_created_at" ON "public"."bot_detection_log" 
 
 
 
+CREATE INDEX "idx_business_calendar_created_by" ON "public"."business_calendar" USING "btree" ("created_by");
+
+
+
 CREATE INDEX "idx_cart_templates_user_id" ON "public"."cart_templates" USING "btree" ("user_id");
 
 
@@ -98811,6 +98869,10 @@ CREATE INDEX "idx_fk_categories_created_by" ON "public"."categories" USING "btre
 
 
 CREATE INDEX "idx_fk_supplier_subtype_category_map_category_id" ON "public"."supplier_subtype_category_map" USING "btree" ("category_id");
+
+
+
+CREATE INDEX "idx_freight_settings_updated_by" ON "public"."freight_settings" USING "btree" ("updated_by");
 
 
 
@@ -105266,6 +105328,24 @@ ALTER TABLE "cf_recon"."metric_snapshot" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "cf_recon"."remediation" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "classification_audit"."category_suggestions" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "prod_audit"."category_keywords" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "prod_audit"."category_suggestions" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "prod_audit"."classification_rules" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "prod_audit"."product_features" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "prod_audit"."test_results" ENABLE ROW LEVEL SECURITY;
+
+
 CREATE POLICY "Acesso ao histórico de eventos segue o log de auditoria" ON "public"."conversation_event_history" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."conversation_audit_logs"
   WHERE ("conversation_audit_logs"."id" = "conversation_event_history"."conversation_id"))));
@@ -108513,23 +108593,23 @@ CREATE POLICY "order_items_delete" ON "public"."order_items" FOR DELETE USING ((
 
 
 
-CREATE POLICY "order_items_insert" ON "public"."order_items" FOR INSERT TO "authenticated" WITH CHECK (("public"."can_view_all_sales"() OR (EXISTS ( SELECT 1
+CREATE POLICY "order_items_insert" ON "public"."order_items" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "public"."can_view_all_sales"() AS "can_view_all_sales") OR (EXISTS ( SELECT 1
    FROM "public"."orders" "o"
-  WHERE (("o"."id" = "order_items"."order_id") AND (("o"."seller_id" = "auth"."uid"()) OR ("public"."has_role"("auth"."uid"(), 'supervisor'::"public"."app_role") AND (("o"."organization_id" IS NULL) OR ("o"."organization_id" IN ( SELECT "public"."get_user_org_ids"("auth"."uid"()) AS "get_user_org_ids"))))))))));
+  WHERE (("o"."id" = "order_items"."order_id") AND (("o"."seller_id" = ( SELECT "auth"."uid"() AS "uid")) OR (( SELECT "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'supervisor'::"public"."app_role") AS "has_role") AND (("o"."organization_id" IS NULL) OR ("o"."organization_id" IN ( SELECT "public"."get_user_org_ids"(( SELECT "auth"."uid"() AS "uid")) AS "get_user_org_ids"))))))))));
 
 
 
-CREATE POLICY "order_items_select" ON "public"."order_items" FOR SELECT USING (("public"."can_view_all_sales"() OR (EXISTS ( SELECT 1
+CREATE POLICY "order_items_select" ON "public"."order_items" FOR SELECT USING ((( SELECT "public"."can_view_all_sales"() AS "can_view_all_sales") OR (EXISTS ( SELECT 1
    FROM "public"."orders" "o"
-  WHERE (("o"."id" = "order_items"."order_id") AND (("o"."seller_id" = "auth"."uid"()) OR ("public"."has_role"("auth"."uid"(), 'supervisor'::"public"."app_role") AND (("o"."organization_id" IS NULL) OR ("o"."organization_id" IN ( SELECT "public"."get_user_org_ids"("auth"."uid"()) AS "get_user_org_ids"))))))))));
+  WHERE (("o"."id" = "order_items"."order_id") AND (("o"."seller_id" = ( SELECT "auth"."uid"() AS "uid")) OR (( SELECT "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'supervisor'::"public"."app_role") AS "has_role") AND (("o"."organization_id" IS NULL) OR ("o"."organization_id" IN ( SELECT "public"."get_user_org_ids"(( SELECT "auth"."uid"() AS "uid")) AS "get_user_org_ids"))))))))));
 
 
 
-CREATE POLICY "order_items_update" ON "public"."order_items" FOR UPDATE USING (("public"."can_view_all_sales"() OR (EXISTS ( SELECT 1
+CREATE POLICY "order_items_update" ON "public"."order_items" FOR UPDATE USING ((( SELECT "public"."can_view_all_sales"() AS "can_view_all_sales") OR (EXISTS ( SELECT 1
    FROM "public"."orders" "o"
-  WHERE (("o"."id" = "order_items"."order_id") AND (("o"."seller_id" = "auth"."uid"()) OR ("public"."has_role"("auth"."uid"(), 'supervisor'::"public"."app_role") AND (("o"."organization_id" IS NULL) OR ("o"."organization_id" IN ( SELECT "public"."get_user_org_ids"("auth"."uid"()) AS "get_user_org_ids")))))))))) WITH CHECK (("public"."can_view_all_sales"() OR (EXISTS ( SELECT 1
+  WHERE (("o"."id" = "order_items"."order_id") AND (("o"."seller_id" = ( SELECT "auth"."uid"() AS "uid")) OR (( SELECT "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'supervisor'::"public"."app_role") AS "has_role") AND (("o"."organization_id" IS NULL) OR ("o"."organization_id" IN ( SELECT "public"."get_user_org_ids"(( SELECT "auth"."uid"() AS "uid")) AS "get_user_org_ids")))))))))) WITH CHECK ((( SELECT "public"."can_view_all_sales"() AS "can_view_all_sales") OR (EXISTS ( SELECT 1
    FROM "public"."orders" "o"
-  WHERE (("o"."id" = "order_items"."order_id") AND (("o"."seller_id" = "auth"."uid"()) OR ("public"."has_role"("auth"."uid"(), 'supervisor'::"public"."app_role") AND (("o"."organization_id" IS NULL) OR ("o"."organization_id" IN ( SELECT "public"."get_user_org_ids"("auth"."uid"()) AS "get_user_org_ids"))))))))));
+  WHERE (("o"."id" = "order_items"."order_id") AND (("o"."seller_id" = ( SELECT "auth"."uid"() AS "uid")) OR (( SELECT "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'supervisor'::"public"."app_role") AS "has_role") AND (("o"."organization_id" IS NULL) OR ("o"."organization_id" IN ( SELECT "public"."get_user_org_ids"(( SELECT "auth"."uid"() AS "uid")) AS "get_user_org_ids"))))))))));
 
 
 
@@ -108540,15 +108620,15 @@ CREATE POLICY "orders_delete" ON "public"."orders" FOR DELETE USING ("public"."i
 
 
 
-CREATE POLICY "orders_insert" ON "public"."orders" FOR INSERT TO "authenticated" WITH CHECK (("public"."can_view_all_sales"() OR ("seller_id" = "auth"."uid"())));
+CREATE POLICY "orders_insert" ON "public"."orders" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "public"."can_view_all_sales"() AS "can_view_all_sales") OR ("seller_id" = ( SELECT "auth"."uid"() AS "uid"))));
 
 
 
-CREATE POLICY "orders_select" ON "public"."orders" FOR SELECT USING (("public"."can_view_all_sales"() OR ("public"."has_role"("auth"."uid"(), 'supervisor'::"public"."app_role") AND (("organization_id" IS NULL) OR ("organization_id" IN ( SELECT "public"."get_user_org_ids"("auth"."uid"()) AS "get_user_org_ids")))) OR ("seller_id" = "auth"."uid"())));
+CREATE POLICY "orders_select" ON "public"."orders" FOR SELECT USING ((( SELECT "public"."can_view_all_sales"() AS "can_view_all_sales") OR (( SELECT "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'supervisor'::"public"."app_role") AS "has_role") AND (("organization_id" IS NULL) OR ("organization_id" IN ( SELECT "public"."get_user_org_ids"(( SELECT "auth"."uid"() AS "uid")) AS "get_user_org_ids")))) OR ("seller_id" = ( SELECT "auth"."uid"() AS "uid"))));
 
 
 
-CREATE POLICY "orders_update" ON "public"."orders" FOR UPDATE USING (("public"."can_view_all_sales"() OR ("public"."has_role"("auth"."uid"(), 'supervisor'::"public"."app_role") AND (("organization_id" IS NULL) OR ("organization_id" IN ( SELECT "public"."get_user_org_ids"("auth"."uid"()) AS "get_user_org_ids")))) OR ("seller_id" = "auth"."uid"()))) WITH CHECK (("public"."can_view_all_sales"() OR ("public"."has_role"("auth"."uid"(), 'supervisor'::"public"."app_role") AND (("organization_id" IS NULL) OR ("organization_id" IN ( SELECT "public"."get_user_org_ids"("auth"."uid"()) AS "get_user_org_ids")))) OR ("seller_id" = "auth"."uid"())));
+CREATE POLICY "orders_update" ON "public"."orders" FOR UPDATE USING ((( SELECT "public"."can_view_all_sales"() AS "can_view_all_sales") OR (( SELECT "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'supervisor'::"public"."app_role") AS "has_role") AND (("organization_id" IS NULL) OR ("organization_id" IN ( SELECT "public"."get_user_org_ids"(( SELECT "auth"."uid"() AS "uid")) AS "get_user_org_ids")))) OR ("seller_id" = ( SELECT "auth"."uid"() AS "uid")))) WITH CHECK ((( SELECT "public"."can_view_all_sales"() AS "can_view_all_sales") OR (( SELECT "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'supervisor'::"public"."app_role") AS "has_role") AND (("organization_id" IS NULL) OR ("organization_id" IN ( SELECT "public"."get_user_org_ids"(( SELECT "auth"."uid"() AS "uid")) AS "get_user_org_ids")))) OR ("seller_id" = ( SELECT "auth"."uid"() AS "uid"))));
 
 
 
@@ -108709,11 +108789,11 @@ CREATE POLICY "pcd_oa_ins" ON "public"."product_commemorative_dates" FOR INSERT 
 
 
 
-CREATE POLICY "pcd_oa_read_all" ON "public"."product_commemorative_dates" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
+CREATE POLICY "pcd_oa_read_all" ON "public"."product_commemorative_dates" FOR SELECT TO "authenticated" USING ((("is_active" = true) OR (EXISTS ( SELECT 1
    FROM "public"."products" "p"
   WHERE (("p"."id" = "product_commemorative_dates"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
            FROM "public"."user_organizations" "uo"
-          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"]))))))))));
 
 
 
@@ -108729,7 +108809,7 @@ CREATE POLICY "pcd_oa_upd" ON "public"."product_commemorative_dates" FOR UPDATE 
 
 
 
-CREATE POLICY "pcd_read_public" ON "public"."product_commemorative_dates" FOR SELECT TO "authenticated", "anon" USING (("is_active" = true));
+CREATE POLICY "pcd_read_public" ON "public"."product_commemorative_dates" FOR SELECT TO "anon" USING (("is_active" = true));
 
 
 
@@ -114416,14 +114496,13 @@ GRANT ALL ON TABLE "public"."stock_daily_summary" TO "service_role";
 
 
 
-GRANT MAINTAIN ON TABLE "public"."variant_supplier_sources" TO "anon";
+GRANT SELECT,MAINTAIN ON TABLE "public"."variant_supplier_sources" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."variant_supplier_sources" TO "authenticated";
 GRANT ALL ON TABLE "public"."variant_supplier_sources" TO "service_role";
 
 
 
 GRANT SELECT ON TABLE "analytics"."mv_stock_velocity" TO "service_role";
-GRANT SELECT ON TABLE "analytics"."mv_stock_velocity" TO "authenticated";
 
 
 
@@ -114526,6 +114605,7 @@ GRANT SELECT("shipping_terms") ON TABLE "public"."suppliers" TO "authenticated";
 
 
 GRANT SELECT("default_markup_percent") ON TABLE "public"."suppliers" TO "authenticated";
+GRANT SELECT("default_markup_percent") ON TABLE "public"."suppliers" TO "anon";
 
 
 
@@ -115407,7 +115487,6 @@ GRANT ALL ON FUNCTION "public"."fn_process_webhook_outbox_batch"("_batch_size" i
 REVOKE ALL ON FUNCTION "public"."fn_product_active_for_rls"("p_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_product_active_for_rls"("p_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_product_active_for_rls"("p_id" "uuid") TO "service_role";
-GRANT ALL ON FUNCTION "public"."fn_product_active_for_rls"("p_id" "uuid") TO "anon";
 
 
 
@@ -117508,11 +117587,6 @@ GRANT SELECT("is_active") ON TABLE "public"."products" TO "anon";
 
 
 GRANT SELECT("is_deleted") ON TABLE "public"."products" TO "anon";
-
-
-
-GRANT SELECT ON TABLE "internal"."mv_product_leaf_category" TO "authenticated";
-GRANT SELECT ON TABLE "internal"."mv_product_leaf_category" TO "anon";
 
 
 
@@ -119838,7 +119912,6 @@ GRANT ALL ON FUNCTION "public"."zapp_catalog_stats"() TO "service_role";
 
 
 GRANT ALL ON TABLE "analytics"."categories_tree_visual" TO "service_role";
-GRANT SELECT ON TABLE "analytics"."categories_tree_visual" TO "authenticated";
 
 
 
@@ -119881,17 +119954,14 @@ GRANT ALL ON TABLE "public"."product_variants" TO "service_role";
 
 
 GRANT SELECT ON TABLE "analytics"."mv_product_cards" TO "service_role";
-GRANT SELECT ON TABLE "analytics"."mv_product_cards" TO "authenticated";
 
 
 
 GRANT ALL ON TABLE "analytics"."mv_product_compositions" TO "service_role";
-GRANT SELECT ON TABLE "analytics"."mv_product_compositions" TO "authenticated";
 
 
 
 GRANT SELECT ON TABLE "analytics"."mv_product_intelligence" TO "service_role";
-GRANT SELECT ON TABLE "analytics"."mv_product_intelligence" TO "authenticated";
 
 
 
@@ -121004,7 +121074,7 @@ GRANT ALL ON TABLE "public"."magic_up_reactions" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."markup_configurations" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."markup_configurations" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."markup_configurations" TO "authenticated";
 GRANT ALL ON TABLE "public"."markup_configurations" TO "service_role";
 
@@ -122434,25 +122504,25 @@ GRANT ALL ON TABLE "public"."v_commemorative_dates_with_colors" TO "service_role
 
 
 
-GRANT SELECT,MAINTAIN ON TABLE "public"."v_compras_catalogo" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."v_compras_catalogo" TO "anon";
 GRANT SELECT,MAINTAIN ON TABLE "public"."v_compras_catalogo" TO "authenticated";
 GRANT ALL ON TABLE "public"."v_compras_catalogo" TO "service_role";
 
 
 
-GRANT SELECT,MAINTAIN ON TABLE "public"."v_compras_precos_faixa" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."v_compras_precos_faixa" TO "anon";
 GRANT SELECT,MAINTAIN ON TABLE "public"."v_compras_precos_faixa" TO "authenticated";
 GRANT ALL ON TABLE "public"."v_compras_precos_faixa" TO "service_role";
 
 
 
-GRANT MAINTAIN ON TABLE "public"."vw_variant_sale_prices" TO "anon";
+GRANT SELECT,MAINTAIN ON TABLE "public"."vw_variant_sale_prices" TO "anon";
 GRANT SELECT,MAINTAIN ON TABLE "public"."vw_variant_sale_prices" TO "authenticated";
 GRANT ALL ON TABLE "public"."vw_variant_sale_prices" TO "service_role";
 
 
 
-GRANT SELECT,MAINTAIN ON TABLE "public"."v_compras_precos_variante" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."v_compras_precos_variante" TO "anon";
 GRANT SELECT,MAINTAIN ON TABLE "public"."v_compras_precos_variante" TO "authenticated";
 GRANT ALL ON TABLE "public"."v_compras_precos_variante" TO "service_role";
 
