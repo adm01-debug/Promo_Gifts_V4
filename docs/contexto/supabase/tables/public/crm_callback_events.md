@@ -28,6 +28,7 @@
 | 7 | `result` | `text` | não |  |  |  |
 | 8 | `error_message` | `text` | sim |  |  |  |
 | 9 | `received_at` | `timestamp with time zone` | não | `now()` |  |  |
+| 10 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Ultima alteracao da linha, mantida por trg_crm_callback_events_updated_at. NULL = nunca alterada desde 2026-11-19, quando a coluna foi criada. Fecha a intencao de 20260706223316, que nao pode ser aplicada (ver cabecalho da 20261119110500). |
 
 
 ## Constraints
@@ -76,7 +77,9 @@
 
 ## Triggers
 
-_nenhum_
+| nome | timing | eventos | nível | status | função |
+|---|---|---|---|---|---|
+| trg_crm_callback_events_updated_at | BEFORE | UPDATE | ROW | enabled | public.set_updated_at |
 
 
 ## Grants

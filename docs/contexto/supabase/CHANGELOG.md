@@ -2,6 +2,15 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-25 16:23 UTC
+
+- **colunas** adicionado (1): `public.crm_callback_events.updated_at`
+- **functions** adicionado (1): `public.fn_market_intelligence_macro(p_days integer, p_supplier_id uuid)`
+- **functions** alterado (2): `public.fn_verify_anon_catalog_grants()`, `public.set_updated_at()`
+- **grants** adicionado (1): `public.mv_product_compositions:anon`
+- **migrations** adicionado (3): `20261115130100_fn_market_intelligence_macro`, `20261119110500_crm_callback_events_updated_at`, `20261125160000_restaura_grant_anon_mv_product_compositions`
+- **triggers** adicionado (1): `public.crm_callback_events.trg_crm_callback_events_updated_at`
+
 ## 2026-11-25 15:18 UTC
 
 - **grants** removido (1): `public.mv_product_compositions:anon`

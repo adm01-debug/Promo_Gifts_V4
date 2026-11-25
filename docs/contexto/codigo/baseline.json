@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b290d2f450177a14f557fceb1ce4a3c7bf37a2c6",
+  "commit": "2e4913f89ff897c815c97bb987c7e0e27e2d0f34",
   "branch": "main",
-  "data_commit": "2026-11-25T10:59:18-03:00",
+  "data_commit": "2026-11-25T13:16:31-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "2e4913f",
+    "data": "2026-11-25",
+    "assunto": "fix: restaura grant anon na view publica de composicao de produto (#4081)"
+   },
    {
     "sha": "b290d2f",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "519b6a3",
     "data": "2026-11-24",
     "assunto": "fix: leitura de areas de gravacao segue a projecao da view publica (#4054)"
-   },
-   {
-    "sha": "810bfd1",
-    "data": "2026-11-24",
-    "assunto": "fix: gate de views publicas enxerga view nova legivel por anon (QA etapa 005) (#4049)"
    }
   ],
-  "arquivos_mudados_7d": 639,
+  "arquivos_mudados_7d": 611,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -193,13 +193,13 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 75
+    "mudancas": 76
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 75
+    "mudancas": 76
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -310,7 +310,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11272,
+  "arquivos_total": 11274,
   "arquivos_codigo": 5682,
   "linhas_codigo": 1076946,
   "rotas": 141,
@@ -322,7 +322,7 @@
   "hooks": 646,
   "edge_functions": 112,
   "tabelas": 532,
-  "migrations": 3134,
+  "migrations": 3135,
   "cron_jobs": 122,
   "testes": 2722,
   "workflows": 89,

@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `b290d2f450` · branch `main` · 2026-11-25 14:00 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `2e4913f89f` · branch `main` · 2026-11-25 16:21 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -1218,7 +1218,7 @@ Middleware matcher (Next.js): nenhum
 | grant | anon | insert | `kill_switch_hits` |
 | grant | anon | insert, update, delete, references, trigger | `external_connections` |
 | grant | anon | maintain | `external_connections` |
-| grant | anon | select | `system_kill_switches`, `products`, `products`, `products`, `public`, `somarcas_catalogo_publico`, `somarcas_catalogo_publico`, `analytics.mv_product_compositions`, `discount_approval_requests`, `discount_approval_requests`, `category_icons`, `discount_approval_requests`, `workspace_notifications`, `discount_approval_requests`, `workspace_notifications` … +80 |
+| grant | anon | select | `system_kill_switches`, `products`, `products`, `products`, `public`, `somarcas_catalogo_publico`, `somarcas_catalogo_publico`, `analytics.mv_product_compositions`, `discount_approval_requests`, `discount_approval_requests`, `category_icons`, `discount_approval_requests`, `workspace_notifications`, `discount_approval_requests`, `workspace_notifications` … +81 |
 | grant | anon | select, insert, update | `magazine_reader_state` |
 | grant | anon | select, insert, update, delete, references, trigger | `mockup_approval_links` |
 | grant | anon, authenticated | execute | `check_login_rate_limit`, `get_public_schema_signatures`, `get_catalog_bestseller_page`, `get_catalog_bestseller_ids`, `get_catalog_bestseller_page`, `fn_get_product_intelligence_all`, `fn_get_all_leaf_categories`, `get_catalog_bestseller_page`, `get_promo_sales_ranking`, `get_catalog_bestseller_page`, `get_catalog_bestseller_page`, `fn_get_reposicao_listing`, `get_catalog_bestseller_page`, `get_promo_sales_90d_by_product`, `fn_get_similar_products` |
@@ -1289,7 +1289,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | anon | insert, update, delete, truncate, trigger, references, select | `suppliers` |
 | revoke | anon | insert, update, references | `supplier_products_raw`, `supplier_products_raw`, `import_staging_images`, `color_analysis_staging`, `xbz_gallery_staging`, `scraper_images_staging`, `sm_images_staging`, `_asia_api_staging` |
 | revoke | anon | maintain | `external_connections` |
-| revoke | anon | select | `v_kill_switch_hits_summary`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `products`, `products`, `products`, `products`, `_asia_api_staging`, `_backup_produtos_padronizacao_20260604`, `ai_function_routing`, `ai_provider_quotas`, `ai_providers`, `ai_routing_decisions` … +83 |
+| revoke | anon | select | `v_kill_switch_hits_summary`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `products`, `products`, `products`, `products`, `_asia_api_staging`, `_backup_produtos_padronizacao_20260604`, `ai_function_routing`, `ai_provider_quotas`, `ai_providers`, `ai_routing_decisions` … +84 |
 | revoke | anon, PUBLIC | execute | `fn_rupture_quick_stats`, `fn_ema_kpi_by_level`, `fn_rupture_anomalia_report`, `fn_rupture_by_level`, `fn_rupture_health_check` |
 | revoke | anon, authenticated | all | `slow_queries_view`, `get_edge_function_secret`, `webhook_request_nonces`, `get_edge_functions_base_url`, `mcp_sessions`, `supplier_customization_raw`, `fn_resync_product_media`, `fn_resync_product_media`, `fn_resync_product_media`, `fn_resync_product_media`, `mv_product_images_audit`, `v_product_images_quality_gap`, `vw_image_type_dropblockers`, `mv_product_images_audit`, `mcp_kv` … +28 |
 | revoke | anon, authenticated | all privileges | `_cf_images_audit`, `_img_divergence_audit`, `cf_recon.cf_image`, `cf_recon.cf_ghost_check_queue`, `cf_recon.action_log`, `cf_recon.crawl_run`, `cf_recon.metric_snapshot`, `cf_recon.remediation`, `archive`, `archive`, `archive`, `backup`, `backup`, `archive`, `backup` … +2 |

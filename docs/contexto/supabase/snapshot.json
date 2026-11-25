@@ -16191,6 +16191,19 @@
         "type": "timestamp with time zone"
       },
       {
+        "comment": "Ultima alteracao da linha, mantida por trg_crm_callback_events_updated_at. NULL = nunca alterada desde 2026-11-19, quando a coluna foi criada. Fecha a intencao de 20260706223316, que nao pode ser aplicada (ver cabecalho da 20261119110500).",
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "updated_at",
+        "nullable": true,
+        "position": 10,
+        "schema": "public",
+        "table": "crm_callback_events",
+        "type": "timestamp with time zone"
+      },
+      {
         "comment": null,
         "default": null,
         "generated": null,
@@ -161230,6 +161243,41 @@
         "volatility": "volatile"
       },
       {
+        "args": "p_days integer, p_supplier_id uuid",
+        "callers": {
+          "code": [
+            {
+              "file": "supabase/migrations/20261115130000_idx_sds_summary_date_supplier_include.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Inteligencia de mercado macro: stock_daily_summary somado por (summary_date, supplier_id) nos ultimos p_days (1..366), filtro opcional por fornecedor. SECURITY INVOKER (respeita RLS). Consumida por useMarketIntelligenceMacro.",
+        "config": [
+          "search_path=\"\""
+        ],
+        "definition": null,
+        "definition_sha": "c516539e76b6a19c",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "sql",
+        "leakproof": false,
+        "name": "fn_market_intelligence_macro",
+        "owner": "postgres",
+        "returns": "jsonb",
+        "schema": "public",
+        "security_definer": false,
+        "strict": false,
+        "volatility": "stable"
+      },
+      {
         "args": "p_name text, p_product_id uuid",
         "callers": {
           "code": [
@@ -175846,9 +175894,13 @@
             {
               "file": "supabase/migrations/20261125131000_tripwire_anon_v5_reconcilia.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql",
+              "hits": 3
             }
           ],
-          "code_total_files": 5,
+          "code_total_files": 6,
           "cron": [],
           "db": [
             "public.fn_anon_catalog_grant_audit_run"
@@ -191526,6 +191578,7 @@
             "public.color_nuances.set_updated_at_trigger",
             "public.color_variations.set_updated_at_trigger",
             "public.commemorative_dates.set_updated_at_trigger",
+            "public.crm_callback_events.trg_crm_callback_events_updated_at",
             "public.custom_kits.set_updated_at_trigger",
             "public.endomarketing_themes.set_updated_at_trigger",
             "public.included_packaging_print_areas.set_updated_at_trigger",
@@ -199488,6 +199541,12 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "mv_product_cards"
+        },
+        {
+          "grantee": "anon",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "mv_product_compositions"
         },
         {
           "grantee": "authenticated",
@@ -241172,6 +241231,12 @@
         "version": "20261115034500"
       },
       {
+        "name": "fn_market_intelligence_macro",
+        "statements": 4,
+        "statements_sha": "d991d843007fa3ee",
+        "version": "20261115130100"
+      },
+      {
         "name": "sec001_revoke_anon_execute_trigger_functions",
         "statements": 106,
         "statements_sha": "92c22e66b8ffcc42",
@@ -241236,6 +241301,12 @@
         "statements": 4,
         "statements_sha": "39887f1a733de7c5",
         "version": "20261119103000"
+      },
+      {
+        "name": "crm_callback_events_updated_at",
+        "statements": 4,
+        "statements_sha": "eadb3653d87b8c49",
+        "version": "20261119110500"
       },
       {
         "name": "fix_f12_sparkline_ema_kpi",
@@ -241368,6 +241439,12 @@
         "statements": 4,
         "statements_sha": "0196bcd7fffd1281",
         "version": "20261125131000"
+      },
+      {
+        "name": "restaura_grant_anon_mv_product_compositions",
+        "statements": 2,
+        "statements_sha": "ab8083a31c8f1855",
+        "version": "20261125160000"
       }
     ],
     "policies": [
@@ -262703,6 +262780,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "cover_types",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER trg_crm_callback_events_updated_at BEFORE UPDATE ON crm_callback_events FOR EACH ROW EXECUTE FUNCTION set_updated_at()",
+        "events": "UPDATE",
+        "function": "public.set_updated_at",
+        "level": "ROW",
+        "name": "trg_crm_callback_events_updated_at",
+        "schema": "public",
+        "status": "enabled",
+        "table": "crm_callback_events",
         "timing": "BEFORE"
       },
       {

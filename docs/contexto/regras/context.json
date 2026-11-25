@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "b290d2f450177a14f557fceb1ce4a3c7bf37a2c6",
+  "sha": "2e4913f89ff897c815c97bb987c7e0e27e2d0f34",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 14:00 UTC",
-  "files_total": 11202,
-  "code_files": 9190,
-  "code_lines": 1304504
+  "generated_at": "2026-11-25 16:21 UTC",
+  "files_total": 11204,
+  "code_files": 9192,
+  "code_lines": 1304598
  },
  "version": "1.3.2",
- "facts_hash": "d7cd066bbfa8a316",
+ "facts_hash": "f7cabf4ba7007710",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,7 +1130,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3510,
+   ".sql": 3512,
    ".ts": 3180,
    ".tsx": 2026,
    ".mjs": 456,
@@ -96172,6 +96172,7 @@
    "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql",
    "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
    "supabase/migrations/20261125131000_tripwire_anon_v5_reconcilia.sql",
+   "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96310,6 +96311,7 @@
    "supabase/rollbacks/20261125074200_rollback.sql",
    "supabase/rollbacks/20261125120000_rollback.sql",
    "supabase/rollbacks/20261125131000_rollback.sql",
+   "supabase/rollbacks/20261125160000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -134145,6 +134147,14 @@
     "src": "supabase/migrations/20261125131000_tripwire_anon_v5_reconcilia.sql"
    },
    {
+    "kind": "grant",
+    "privs": "select",
+    "object": "mv_product_compositions",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql"
+   },
+   {
     "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
@@ -135559,6 +135569,14 @@
     "objkind": "function",
     "roles": "anon",
     "src": "supabase/rollbacks/20261125131000_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "mv_product_compositions",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261125160000_rollback.sql"
    },
    {
     "kind": "grant",
@@ -153308,8 +153326,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3133,
-   "lines": 228284,
+   "files": 3134,
+   "lines": 228371,
    "tables": [
     "...",
     "admin_audit_log",
@@ -153407,8 +153425,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 139,
-   "lines": 5393,
+   "files": 140,
+   "lines": 5400,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -405842,6 +405860,14 @@
     "src": "supabase/migrations/20261125131000_tripwire_anon_v5_reconcilia.sql"
    },
    {
+    "kind": "grant",
+    "privs": "select",
+    "object": "mv_product_compositions",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql"
+   },
+   {
     "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
@@ -407256,6 +407282,14 @@
     "objkind": "function",
     "roles": "anon",
     "src": "supabase/rollbacks/20261125131000_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "mv_product_compositions",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261125160000_rollback.sql"
    },
    {
     "kind": "grant",
@@ -537859,6 +537893,10 @@
    "path": "supabase/migrations/20261125131000_tripwire_anon_v5_reconcilia.sql",
    "lines": 283
   },
+  "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql": {
+   "path": "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql",
+   "lines": 87
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -538431,6 +538469,10 @@
   "supabase/rollbacks/20261125131000_rollback.sql": {
    "path": "supabase/rollbacks/20261125131000_rollback.sql",
    "lines": 151
+  },
+  "supabase/rollbacks/20261125160000_rollback.sql": {
+   "path": "supabase/rollbacks/20261125160000_rollback.sql",
+   "lines": 7
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -564088,10 +564130,21 @@
   }
  },
  "git": {
-  "sha": "b290d2f450177a14f557fceb1ce4a3c7bf37a2c6",
+  "sha": "2e4913f89ff897c815c97bb987c7e0e27e2d0f34",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "2e4913f",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix: restaura grant anon na view publica de composicao de produto (#4081)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql",
+     "supabase/rollbacks/20261125160000_rollback.sql"
+    ]
+   },
    {
     "sha": "b290d2f",
     "date": "2026-11-25",
@@ -564397,18 +564450,6 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "2e83b04",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: canonicaliza internal.managed_schema_dictionary criada direto em produção (#4048)",
-    "files": [
-     ".security/rls-no-policy-allowlist.json",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261124171500_internal_managed_schema_dictionary.sql",
-     "supabase/rollbacks/20261124171500_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -564465,6 +564506,14 @@
     2
    ],
    [
+    "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261125160000_rollback.sql",
+    1
+   ],
+   [
     ".release-please-manifest.json",
     1
    ],
@@ -564482,14 +564531,6 @@
    ],
    [
     "supabase/rollbacks/20261125120000_rollback.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261125074200_rollback.sql",
     1
    ]
   ]

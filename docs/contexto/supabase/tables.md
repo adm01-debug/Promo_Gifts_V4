@@ -99,7 +99,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.cover_finishes](tables/public/cover_finishes.md) | table | sim | 1 | 8 | não | Vocabulário de acabamentos de capa de cadernos e materiais gráficos. |
 | [public.cover_materials](tables/public/cover_materials.md) | table | sim | 1 | 9 | não | Vocabulário de materiais de capa, incluindo indicação de sustentabilidade quando aplicável. |
 | [public.cover_types](tables/public/cover_types.md) | table | sim | 1 | 8 | não | Vocabulário de tipos de capa utilizados nas especificações de cadernos e materiais gráficos. |
-| [public.crm_callback_events](tables/public/crm_callback_events.md) | table | sim | 2 | 9 | não | Auditoria + chave de idempotência dos callbacks recebidos do CRM Promo Champions V2 via edge function receive-crm-callback. |
+| [public.crm_callback_events](tables/public/crm_callback_events.md) | table | sim | 2 | 10 | não | Auditoria + chave de idempotência dos callbacks recebidos do CRM Promo Champions V2 via edge function receive-crm-callback. |
 | [public.crm_seller_identity_links](tables/public/crm_seller_identity_links.md) | table | sim | 0 | 4 | não | Mapeamento 1:1 canônico auth.users -> public.users.id do CRM externo usado pelo crm-db-bridge. |
 | [public.cron_job_timeout_map](tables/public/cron_job_timeout_map.md) | table | sim | 1 | 3 | não | Mapa de timeout operacional por nome de job pg_cron, com duração máxima em segundos e descrição. |
 | [public.cron_watchdog_log](tables/public/cron_watchdog_log.md) | table | sim | 1 | 7 | não | Auditoria de sessões/job queries terminadas pelo watchdog, incluindo PID, job, duração e trecho de consulta para investigação. |

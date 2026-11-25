@@ -2985,6 +2985,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261114170845 | [fix_workspace_notifications_insert_policy_reapply](migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql) | 3 |
 | 20261114170921 | [fix_rls_orders_order_items_seller_scope](migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql) | 12 |
 | 20261115034500 | [rpc_sales_assistant_candidates](migrations/20261115034500_rpc_sales_assistant_candidates.sql) | 5 |
+| 20261115130100 | [fn_market_intelligence_macro](migrations/20261115130100_fn_market_intelligence_macro.sql) | 4 |
 | 20261115130200 | [sec001_revoke_anon_execute_trigger_functions](migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql) | 106 |
 | 20261115130300 | [fn_global_search_clamp_limit_hardened](migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql) | 1 |
 | 20261115230000 | [ai_function_routing_mockup_assistant](migrations/20261115230000_ai_function_routing_mockup_assistant.sql) | 1 |
@@ -2996,6 +2997,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261119081500 | [elevenlabs_credential_reemissao](migrations/20261119081500_elevenlabs_credential_reemissao.sql) | 1 |
 | 20261119094500 | [reafirma_revogacoes_anteriores_ao_baseline](migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql) | 6 |
 | 20261119103000 | [onboarding_auto_assign_org_reemissao](migrations/20261119103000_onboarding_auto_assign_org_reemissao.sql) | 4 |
+| 20261119110500 | [crm_callback_events_updated_at](migrations/20261119110500_crm_callback_events_updated_at.sql) | 4 |
 | 20261119212000 | [fix_f12_sparkline_ema_kpi](migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql) | 7 |
 | 20261119213000 | [create_shipping_boxes](migrations/20261119213000_create_shipping_boxes.sql) | 34 |
 | 20261119213100 | [create_freight_settings](migrations/20261119213100_create_freight_settings.sql) | 19 |
@@ -3018,3 +3020,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261124171500 | [internal_managed_schema_dictionary](migrations/20261124171500_internal_managed_schema_dictionary.sql) | 4 |
 | 20261125120000 | [revoke_anon_internal_grants_public](migrations/20261125120000_revoke_anon_internal_grants_public.sql) | 4 |
 | 20261125131000 | [tripwire_anon_v5_reconcilia](migrations/20261125131000_tripwire_anon_v5_reconcilia.sql) | 4 |
+| 20261125160000 | [restaura_grant_anon_mv_product_compositions](migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql) | 2 |
