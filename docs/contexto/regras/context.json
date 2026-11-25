@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "3ea746a1ff6639dec13cc10f652e02fa2fcd0cd3",
+  "sha": "99c6a415f87fc25e2c711433575eaab0e053d98a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 20:07 UTC",
+  "generated_at": "2026-11-25 20:22 UTC",
   "files_total": 11210,
   "code_files": 9197,
   "code_lines": 1305231
@@ -564997,10 +564997,19 @@
   }
  },
  "git": {
-  "sha": "3ea746a1ff6639dec13cc10f652e02fa2fcd0cd3",
+  "sha": "99c6a415f87fc25e2c711433575eaab0e053d98a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "99c6a41",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261027230000 (#4113)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "3ea746a",
     "date": "2026-11-25",
@@ -565298,15 +565307,6 @@
     "files": [
      ".security/anon-tables-baseline.json",
      "docs/qa/05-PROGRESSO.md"
-    ]
-   },
-   {
-    "sha": "e557288",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261125120000 (#4073)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
    }
   ],

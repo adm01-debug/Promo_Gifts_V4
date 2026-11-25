@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3ea746a1ff6639dec13cc10f652e02fa2fcd0cd3",
+  "commit": "99c6a415f87fc25e2c711433575eaab0e053d98a",
   "branch": "main",
-  "data_commit": "2026-11-25T17:06:29-03:00",
+  "data_commit": "2026-11-25T17:14:59-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "99c6a41",
+    "data": "2026-11-25",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261027230000 (#4113)"
+   },
    {
     "sha": "3ea746a",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "f57f0cd",
     "data": "2026-11-25",
     "assunto": "docs(migrations-log): remove a linha de pre-registro duplicada da 20261125131000 (#4078)"
-   },
-   {
-    "sha": "513be5a",
-    "data": "2026-11-25",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261125131000 (#4077)"
    }
   ],
-  "arquivos_mudados_7d": 581,
+  "arquivos_mudados_7d": 577,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -168,11 +168,11 @@
     "mudancas": 92
    },
    {
-    "pasta": "src/pages/quotes",
-    "mudancas": 86
+    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "mudancas": 87
    },
    {
-    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "pasta": "src/pages/quotes",
     "mudancas": 86
    },
    {
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 86
+    "mudancas": 87
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 247
+    "commits": 246
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 53
+    "commits": 54
    }
   ]
  },
