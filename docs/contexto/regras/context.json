@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "6f1d3e487236951b12bb8207d196b13718f0a61a",
+  "sha": "036e217dedb16d41a147162684f4ef44c9bb546a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 22:09 UTC",
+  "generated_at": "2026-11-25 22:51 UTC",
   "files_total": 11211,
   "code_files": 9197,
   "code_lines": 1305232
@@ -565067,10 +565067,19 @@
   }
  },
  "git": {
-  "sha": "6f1d3e487236951b12bb8207d196b13718f0a61a",
+  "sha": "036e217dedb16d41a147162684f4ef44c9bb546a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "036e217",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261114160000 (#4130)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "6f1d3e4",
     "date": "2026-11-25",
@@ -565363,15 +565372,6 @@
      "supabase/migrations-snapshot/ALL_IN_ONE.sql",
      "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
      "supabase/migrations-snapshot/SNAPSHOT_META.json"
-    ]
-   },
-   {
-    "sha": "5c65a18",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "docs: recibos de 20261115130100 e 20261119110500 no ledger (#4090)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
    }
   ],

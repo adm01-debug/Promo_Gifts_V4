@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(migrations-log): recibo E15 — aplicação de 20261114160000 (#4130)",
    "chore: autoriza a aplicacao do indice de restock (approved-by) (#4117)",
    "chore: refresh do snapshot de cron jobs (144 jobs) (#4125)",
    "fix(ci): recibo final da 20261120040000 destrava o gate E055 (#4127)",
-   "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45697871384) (#4123)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261120040000 (#4118)"
+   "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45697871384) (#4123)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
