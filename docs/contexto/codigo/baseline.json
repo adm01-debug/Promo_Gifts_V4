@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "33f01308bc9f2f09432e07c1cbca8122b3642a27",
+  "commit": "e557288df0147a8b37a5120a1625f81875077069",
   "branch": "main",
-  "data_commit": "2026-11-25T09:02:24-03:00",
+  "data_commit": "2026-11-25T09:19:56-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e557288",
+    "data": "2026-11-25",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261125120000 (#4073)"
+   },
    {
     "sha": "33f0130",
     "data": "2026-11-25",
@@ -126,11 +131,6 @@
     "sha": "53f9c04",
     "data": "2026-11-24",
     "assunto": "docs: registra o cleanup das 7 branches obsoletas e como recupera-las (#4046)"
-   },
-   {
-    "sha": "22ca37e",
-    "data": "2026-11-24",
-    "assunto": "docs: auditoria das branches restantes e reforco da refutacao da etapa 007 (#4045)"
    }
   ],
   "arquivos_mudados_7d": 648,
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 115
+    "mudancas": 114
    },
    {
     "pasta": "src/lib/freight",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 71
+    "mudancas": 72
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 256
+    "commits": 255
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 44
+    "commits": 45
    }
   ]
  },

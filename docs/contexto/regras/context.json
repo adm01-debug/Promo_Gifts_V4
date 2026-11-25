@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "33f01308bc9f2f09432e07c1cbca8122b3642a27",
+  "sha": "e557288df0147a8b37a5120a1625f81875077069",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 12:12 UTC",
+  "generated_at": "2026-11-25 12:23 UTC",
   "files_total": 11200,
   "code_files": 9188,
   "code_lines": 1304070
@@ -564046,10 +564046,19 @@
   }
  },
  "git": {
-  "sha": "33f01308bc9f2f09432e07c1cbca8122b3642a27",
+  "sha": "e557288df0147a8b37a5120a1625f81875077069",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e557288",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261125120000 (#4073)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "33f0130",
     "date": "2026-11-25",
@@ -564354,20 +564363,6 @@
      "supabase/MIGRATIONS_SYNC_LOG.md",
      "supabase/migrations/20261124140000_close_anon_cost_surface.sql",
      "supabase/rollbacks/20261124140000_rollback.sql"
-    ]
-   },
-   {
-    "sha": "cbb46a8",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: gate de anon-grants mede pelo catalogo e revoga escrita morta de anon (#4038)",
-    "files": [
-     "docs/SCHEMA_REFERENCE.md",
-     "scripts/check-anon-write-grants.mjs",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261124120000_revoke_anon_write_grants_public.sql",
-     "supabase/rollbacks/20261124120000_rollback.sql",
-     "tests/scripts/check-anon-write-grants.test.mjs"
     ]
    }
   ],
