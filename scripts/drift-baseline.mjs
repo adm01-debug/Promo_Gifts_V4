@@ -487,6 +487,7 @@ const REPLAY_PIPELINE_REWRITES = new Map([
   ['20261114014100_idx_fk_stock_and_missing_perf_indexes.sql', { concurrentlyIndexes: 11 }],
   ['20261114160000_perf_idx_sds_restock_counts.sql', { concurrentlyIndexes: 1 }],
   ['20261115130000_idx_sds_summary_date_supplier_include.sql', { concurrentlyIndexes: 1 }],
+  ['20261125173000_idx_sds_summary_date_supplier_aplicavel.sql', { concurrentlyIndexes: 1 }],
 ]);
 
   // O shadow do CLI nasce com privilégio que a produção não tem e que o role do
