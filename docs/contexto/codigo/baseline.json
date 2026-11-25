@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1b03dfa608666d7630732aa578de8044095c3c11",
+  "commit": "33fa8db71758fd61fe5fbd0173e9955787b09d65",
   "branch": "main",
-  "data_commit": "2026-11-25T14:05:56-03:00",
+  "data_commit": "2026-11-25T14:24:36-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "33fa8db",
+    "data": "2026-11-25",
+    "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45661905897) (#4095)"
+   },
    {
     "sha": "1b03dfa",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "36d409a",
     "data": "2026-11-24",
     "assunto": "chore: dossie de quote_comments passa a refletir a feature reativada (#3944) (#4062)"
-   },
-   {
-    "sha": "20eb648",
-    "data": "2026-11-24",
-    "assunto": "docs(audit): audita as 23 PRs de agente fechadas sem merge (#4058)"
    }
   ],
-  "arquivos_mudados_7d": 607,
+  "arquivos_mudados_7d": 604,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -223,7 +223,7 @@
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
     "arquivo": "src/lib/freight/index.ts",
@@ -254,6 +254,18 @@
     "mudancas": 6
    },
    {
+    "arquivo": "supabase/migrations-snapshot/ALL_IN_ONE.sql",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "supabase/migrations-snapshot/SNAPSHOT_META.json",
+    "mudancas": 6
+   },
+   {
     "arquivo": "scripts/automation.config.json",
     "mudancas": 5
    },
@@ -267,18 +279,6 @@
    },
    {
     "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "supabase/migrations-snapshot/SNAPSHOT_META.json",
     "mudancas": 5
    },
    {
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 252
+    "commits": 251
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 48
+    "commits": 49
    }
   ]
  },
