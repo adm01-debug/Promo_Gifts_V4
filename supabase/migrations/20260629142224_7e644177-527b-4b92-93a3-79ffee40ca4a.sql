@@ -43,6 +43,10 @@ BEGIN
 END;
 $$;
 
+-- Trigger functions are invoked by the trigger machinery, never called directly, so no role
+-- needs EXECUTE on them. Required by the SECURITY DEFINER ACL gate (lints Supabase 0028/0029).
+REVOKE EXECUTE ON FUNCTION public.prevent_non_admin_quote_item_price_change() FROM public, anon, authenticated;
+
 DROP TRIGGER IF EXISTS trg_prevent_non_admin_quote_item_price_change ON public.quote_items;
 CREATE TRIGGER trg_prevent_non_admin_quote_item_price_change
   BEFORE UPDATE OF unit_price ON public.quote_items
