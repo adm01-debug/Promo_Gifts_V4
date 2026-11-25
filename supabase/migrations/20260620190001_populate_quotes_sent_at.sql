@@ -23,6 +23,10 @@ begin
 end;
 $$;
 
+-- Trigger functions are invoked by the trigger machinery, never called directly, so no role
+-- needs EXECUTE on them. Required by the SECURITY DEFINER ACL gate (lints Supabase 0028/0029).
+revoke execute on function public.set_quote_sent_at() from public, anon, authenticated;
+
 drop trigger if exists trg_set_quote_sent_at on public.quotes;
 create trigger trg_set_quote_sent_at
   before insert or update on public.quotes
