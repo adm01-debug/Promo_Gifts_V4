@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4d25f2d410a9be5542f6f346f688a15f2528513f",
+  "commit": "2cf0263847c9c0369bf7aabe0b65b731a99ae2c0",
   "branch": "main",
-  "data_commit": "2026-11-25T07:41:14-03:00",
+  "data_commit": "2026-11-25T08:08:28-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "2cf0263",
+    "data": "2026-11-25",
+    "assunto": "feat: testid do CTA de geracao de mockup e regressao que roda de verdade (#4063)"
+   },
    {
     "sha": "4d25f2d",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "cbb46a8",
     "data": "2026-11-24",
     "assunto": "fix: gate de anon-grants mede pelo catalogo e revoga escrita morta de anon (#4038)"
-   },
-   {
-    "sha": "2d5016c",
-    "data": "2026-11-24",
-    "assunto": "fix: Gate E40 passa a acusar migration já coberta pelo baseline que mudou depois do dump (#4040)"
    }
   ],
-  "arquivos_mudados_7d": 645,
+  "arquivos_mudados_7d": 647,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -168,16 +168,16 @@
     "mudancas": 92
    },
    {
+    "pasta": "src/components/mockup",
+    "mudancas": 86
+   },
+   {
     "pasta": "src/pages/quotes",
     "mudancas": 86
    },
    {
     "pasta": "src/components/inventory",
     "mudancas": 85
-   },
-   {
-    "pasta": "src/components/mockup",
-    "mudancas": 84
    },
    {
     "pasta": "src/hooks/quotes",
@@ -310,9 +310,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11267,
-  "arquivos_codigo": 5683,
-  "linhas_codigo": 1076963,
+  "arquivos_total": 11266,
+  "arquivos_codigo": 5682,
+  "linhas_codigo": 1076946,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -324,7 +324,7 @@
   "tabelas": 532,
   "migrations": 3131,
   "cron_jobs": 122,
-  "testes": 2723,
+  "testes": 2722,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1510
@@ -1900,7 +1900,7 @@
   },
   "src/components": {
    "arquivos": 1486,
-   "linhas": 291074
+   "linhas": 291088
   },
   "src/config": {
    "arquivos": 1,
@@ -2067,8 +2067,8 @@
    "linhas": 5251
   },
   "tests/e2e": {
-   "arquivos": 48,
-   "linhas": 7780
+   "arquivos": 47,
+   "linhas": 7749
   },
   "tests/e2e-customization": {
    "arquivos": 1,

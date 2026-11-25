@@ -5,10 +5,10 @@
   "vitest",
   "playwright"
  ],
- "total": 2723,
+ "total": 2722,
  "por_tipo": {
   "contrato": 70,
-  "e2e": 679,
+  "e2e": 678,
   "pytest": 8,
   "qa": 17,
   "unit": 1949
@@ -16,7 +16,7 @@
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1099
+   "arquivos": 1098
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -6373,13 +6373,13 @@
   {
    "arquivo": "src/components/mockup/__tests__/MockupLayoutButtons.test.tsx",
    "tipo": "unit",
-   "linhas": 183,
+   "linhas": 196,
    "testa": [
     "src/components/mockup/LogoPositionEditor.tsx",
     "src/components/mockup/approval/MockupLayoutButtons.tsx",
     "src/components/ui/tooltip.tsx"
    ],
-   "casos": 12
+   "casos": 13
   },
   {
    "arquivo": "src/components/mockup/__tests__/MockupResultCard.confetti.test.tsx",
@@ -16317,13 +16317,6 @@
    "linhas": 375,
    "testa": [],
    "casos": 38
-  },
-  {
-   "arquivo": "tests/e2e/mockup-regressions.spec.ts",
-   "tipo": "e2e",
-   "linhas": 31,
-   "testa": [],
-   "casos": 3
   },
   {
    "arquivo": "tests/e2e/navigation-layout.test.tsx",

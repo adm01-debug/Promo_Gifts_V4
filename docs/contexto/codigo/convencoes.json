@@ -23,7 +23,7 @@
    "src/services (16)"
   ],
   "testes": [
-   "tests/ (1099)",
+   "tests/ (1098)",
    "co-localizado (__tests__) (791)",
    "e2e/ (627)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat: testid do CTA de geracao de mockup e regressao que roda de verdade (#4063)",
    "fix(ci): jitter E19 nos crons em :00/:30 + recupera o medidor de cron (#4061)",
    "feat(ci): recupera o filtro de ruido de views e policies no E40 (#4060)",
    "feat(security): gate enxerga SELECT de anon em tabela, não só view (#4059)",
-   "chore: dossie de quote_comments passa a refletir a feature reativada (#3944) (#4062)",
-   "docs(audit): audita as 23 PRs de agente fechadas sem merge (#4058)"
+   "chore: dossie de quote_comments passa a refletir a feature reativada (#3944) (#4062)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
