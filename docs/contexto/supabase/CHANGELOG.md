@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-25 21:18 UTC
+
+- **migrations** adicionado (2): `20261120040000_add_quotes_freight_plan`, `20261125074200_revoke_anon_apply_classification_suggestions`
+
 ## 2026-11-25 20:19 UTC
 
 - **cron jobs** removido (1): `235:image-dimensions-backfill`

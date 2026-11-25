@@ -3008,6 +3008,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261120013000 | [add_products_ships_separately](migrations/20261120013000_add_products_ships_separately.sql) | 2 |
 | 20261120030000 | [harden_freight_tables](migrations/20261120030000_harden_freight_tables.sql) | 16 |
 | 20261120030100 | [seed_shipping_boxes](migrations/20261120030100_seed_shipping_boxes.sql) | 1 |
+| 20261120040000 | [add_quotes_freight_plan](migrations/20261120040000_add_quotes_freight_plan.sql) | 5 |
 | 20261120041000 | [production_lead_time_calendar](migrations/20261120041000_production_lead_time_calendar.sql) | 23 |
 | 20261120180000 | [restore_quote_comments_scoped_threads](migrations/20261120180000_restore_quote_comments_scoped_threads.sql) | 16 |
 | 20261121000000 | [quote_rpcs_freight_plan](migrations/20261121000000_quote_rpcs_freight_plan.sql) | 2 |
@@ -3021,6 +3022,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261124140000 | [close_anon_cost_surface](migrations/20261124140000_close_anon_cost_surface.sql) | 9 |
 | 20261124163000 | [revoke_anon_unit_cost_print_areas](migrations/20261124163000_revoke_anon_unit_cost_print_areas.sql) | 9 |
 | 20261124171500 | [internal_managed_schema_dictionary](migrations/20261124171500_internal_managed_schema_dictionary.sql) | 4 |
+| 20261125074200 | [revoke_anon_apply_classification_suggestions](migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql) | 3 |
 | 20261125120000 | [revoke_anon_internal_grants_public](migrations/20261125120000_revoke_anon_internal_grants_public.sql) | 4 |
 | 20261125131000 | [tripwire_anon_v5_reconcilia](migrations/20261125131000_tripwire_anon_v5_reconcilia.sql) | 4 |
 | 20261125160000 | [restaura_grant_anon_mv_product_compositions](migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql) | 2 |

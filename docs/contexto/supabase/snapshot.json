@@ -241583,6 +241583,12 @@
         "version": "20261120030100"
       },
       {
+        "name": "add_quotes_freight_plan",
+        "statements": 5,
+        "statements_sha": "c13950892299c74e",
+        "version": "20261120040000"
+      },
+      {
         "name": "production_lead_time_calendar",
         "statements": 23,
         "statements_sha": "0bd4dd8077b38389",
@@ -241659,6 +241665,12 @@
         "statements": 4,
         "statements_sha": "8725429bf3483ca0",
         "version": "20261124171500"
+      },
+      {
+        "name": "revoke_anon_apply_classification_suggestions",
+        "statements": 3,
+        "statements_sha": "2408101aab864290",
+        "version": "20261125074200"
       },
       {
         "name": "revoke_anon_internal_grants_public",
