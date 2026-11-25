@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `36d409ab1b` · branch `main` · 2026-11-24 23:14 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ddd8488f08` · branch `main` · 2026-11-25 10:17 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6830,7 +6830,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23718 testes em 2390 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23728 testes em 2390 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6999,6 +6999,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/e2e/profile-user.test.ts` | 26 | E2E Profile — Form Validation · accepts valid profile · rejects empty name · rejects short name … |
 | `tests/hooks/useReplenishments.test.ts` | 26 | Replenishment utility functions · isReplenishment · returns true when updated_at is 1+ day after created_at · returns false when updated_at equals created_at (new product) … |
 | `tests/lib/external-db-invoke.test.ts` | 26 | extractFunctionErrorMessage · returns message from Error instance · returns generic message for non-Error · aceita envelope compatível de invokeEdge sem exigir instanceof Error … |
+| `tests/scripts/check-public-views-drift.test.mjs` | 26 | contrato real (.security/public-views-columns.json) · cobre exatamente as 10 views do contrato público · passa a validação estrutural hoje (0 erros) — nenhuma coluna sensível sem allowlist · v_products_public documenta ncm_code/ncm_id/bitrix_product_id como REQUER-PO … |
 | `tests/unit/connection-error-copy.test.ts` | 26 | getErrorCopy · returns timeout copy for kind= · includes timeoutMs in hint when provided · returns network copy for kind= … |
 | `src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx` | 25 | ShippingBoxesManager — tabela e estados · pede a lista com as inativas e mostra externa, interna, peso em kg, fator e ordem · carregando: mostra o aviso e nenhuma tabela · erro: mostra a falha e  … |
 | `src/components/cart/__tests__/cartCompanyCnpj.test.ts` | 25 | resolveCartCompanyCnpj · caminho 1 — CRM entrega CNPJ (fonte preferida) · CNPJ cru (14 dígitos) é mascarado para exibição · CNPJ já mascarado é re-normalizado e mascarado consistentemente … |
@@ -7133,7 +7134,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/auth/__tests__/checkLoginGate.test.ts` | 19 | isOperationalGateBlock · allowed=false + reason operacional %s → true · %o → false · gateBlockMessage … |
 | `src/lib/auth/__tests__/oauth-error-explainer.test.ts` | 19 | explainOAuthError · config errors (admin needs to act) · mapeia redirect_uri_mismatch com hint sobre console do provedor · detecta redirect uri mismatch pela descrição quando code é genérico … |
 | `src/lib/external-db/rest-native.test.ts` | 19 | isRestNativeEligible · whitelisted COM coluna de busca → elegível mesmo com _search · A1: whitelisted SEM coluna de busca → continua elegível com _search · não-whitelisted → inelegível … |
-| `src/lib/inventory/__tests__/stock-filter.test.ts` | 19 | stock-filter — pipeline de seleção/agregação/montagem · normalize remove acentos e diferencia caixa · selectMatchingVariants retorna todas as variações quando não há filtro de cor · cor  … |
 | … +2090 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)

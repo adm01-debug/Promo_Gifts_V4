@@ -21345,11 +21345,11 @@
   {
    "arquivo": "tests/scripts/check-public-views-drift.test.mjs",
    "tipo": "unit",
-   "linhas": 143,
+   "linhas": 230,
    "testa": [
     "scripts/check-public-views-drift.mjs"
    ],
-   "casos": 13
+   "casos": 22
   },
   {
    "arquivo": "tests/scripts/check-quote-rpc-canonical-readiness.test.mjs",
@@ -22377,7 +22377,7 @@
   {
    "arquivo": "tests/security/public-views-columns.test.ts",
    "tipo": "unit",
-   "linhas": 181,
+   "linhas": 192,
    "testa": [],
    "casos": 13
   },

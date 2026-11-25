@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `36d409ab1bcb77bf48eef0f7d15df86c21f6aa0f` (2026-11-24T19:36:50-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ddd8488f0831ae8766b4e6fd40923101a72316da` (2026-11-25T07:12:05-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 11266 |
 | arquivos_codigo | 5682 |
-| linhas_codigo | 1076417 |
+| linhas_codigo | 1076605 |
 | rotas | 141 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -599,14 +599,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50977 nós · 86427 arestas · 2880 comunidades · grafo do commit `36d409ab`
-- comunidades maiores: ref_components (958), react (801), ref_hooks (770), vitest (679), ref_integrations (673), ref_node_child_process (516), @tanstack/react-query (396), ref_types (386), gotoAndSettle (338), scripts (312), ref_node_fs (299), ref_utils (297)
+- 50982 nós · 86438 arestas · 2883 comunidades · grafo do commit `ddd8488f`
+- comunidades maiores: vitest (893), ref_components (806), ref_integrations (522), ref_lib (461), ref_node_child_process (445), ref_hooks (428), react-router-dom (425), @tanstack/react-query (390), ref_types (372), ref_node_fs (366), cors.ts (343), gotoAndSettle (342)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - supabase/MIGRATIONS_SYNC_LOG.md (68)
-- docs/qa/05-PROGRESSO.md (26)
+- docs/qa/05-PROGRESSO.md (27)
 - package.json (23)
 - package-lock.json (17)
 - CHANGELOG.md (14)
@@ -1198,6 +1198,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
 
 ## Últimos commits
+- 2026-11-25 `ddd8488` feat(security): gate enxerga SELECT de anon em tabela, não só view (#4059)
 - 2026-11-24 `36d409a` chore: dossie de quote_comments passa a refletir a feature reativada (#3944) (#4062)
 - 2026-11-24 `20eb648` docs(audit): audita as 23 PRs de agente fechadas sem merge (#4058)
 - 2026-11-24 `a66bde9` docs(qa): mede o grant de tabela ao anon e registra na etapa 008 (#4057)
@@ -1212,7 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `c790e80` docs(migrations-log): recibo E15 — aplicação de 20261124171500 (#4051)
 - 2026-11-24 `2e83b04` fix: canonicaliza internal.managed_schema_dictionary criada direto em produção (#4048)
 - 2026-11-24 `7e66b07` docs: enterra o draft E40 com o SHA arquivado em refs/agents-archive (#4050)
-- 2026-11-24 `53f9c04` docs: registra o cleanup das 7 branches obsoletas e como recupera-las (#4046)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

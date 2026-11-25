@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(security): gate enxerga SELECT de anon em tabela, não só view (#4059)",
    "chore: dossie de quote_comments passa a refletir a feature reativada (#3944) (#4062)",
    "docs(audit): audita as 23 PRs de agente fechadas sem merge (#4058)",
    "docs(qa): mede o grant de tabela ao anon e registra na etapa 008 (#4057)",
-   "docs(qa): registra a regressao da lista de colunas e o escopo da etapa 008 (#4056)",
-   "docs: regenera GRAPH_REPORT.md com o graphify 0.9.115 e camada semântica (#4037)"
+   "docs(qa): registra a regressao da lista de colunas e o escopo da etapa 008 (#4056)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

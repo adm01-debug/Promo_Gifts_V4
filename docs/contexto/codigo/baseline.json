@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "36d409ab1bcb77bf48eef0f7d15df86c21f6aa0f",
+  "commit": "ddd8488f0831ae8766b4e6fd40923101a72316da",
   "branch": "main",
-  "data_commit": "2026-11-24T19:36:50-03:00",
+  "data_commit": "2026-11-25T07:12:05-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ddd8488",
+    "data": "2026-11-25",
+    "assunto": "feat(security): gate enxerga SELECT de anon em tabela, não só view (#4059)"
+   },
    {
     "sha": "36d409a",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "e87db75",
     "data": "2026-11-24",
     "assunto": "feat(security): etapa 006 — registrar v_compras_catalogo e v_compras_precos_faixa no contrato (#4008)"
-   },
-   {
-    "sha": "d65ace2",
-    "data": "2026-11-23",
-    "assunto": "chore: corrige status das migrations 20261122180000/20261122200000 no ledger (#4036)"
    }
   ],
-  "arquivos_mudados_7d": 657,
+  "arquivos_mudados_7d": 640,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 26
+    "mudancas": 27
    },
    {
     "arquivo": "package.json",
@@ -274,10 +274,6 @@
     "mudancas": 4
    },
    {
-    "arquivo": "scripts/drift-baseline.mjs",
-    "mudancas": 4
-   },
-   {
     "arquivo": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
     "mudancas": 4
    },
@@ -296,6 +292,10 @@
    {
     "arquivo": "src/components/layout/SidebarReorganized.tsx",
     "mudancas": 4
+   },
+   {
+    "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
+    "mudancas": 4
    }
   ],
   "autores_30d": [
@@ -312,7 +312,7 @@
  "contagens": {
   "arquivos_total": 11266,
   "arquivos_codigo": 5682,
-  "linhas_codigo": 1076417,
+  "linhas_codigo": 1076605,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1312,7 +1312,7 @@
   },
   "scripts/check-public-views-drift.mjs": {
    "arquivos": 1,
-   "linhas": 510
+   "linhas": 600
   },
   "scripts/check-quote-rpc-canonical-readiness.mjs": {
    "arquivos": 1,
@@ -2152,7 +2152,7 @@
   },
   "tests/scripts": {
    "arquivos": 182,
-   "linhas": 29397
+   "linhas": 29484
   },
   "tests/search": {
    "arquivos": 1,
@@ -2160,7 +2160,7 @@
   },
   "tests/security": {
    "arquivos": 30,
-   "linhas": 3134
+   "linhas": 3145
   },
   "tests/setup-ref-warning-capture.ts": {
    "arquivos": 1,
@@ -2378,7 +2378,7 @@
   "console_log": 1308,
   "ts_ignore": 0,
   "eslint_disable": 24,
-  "todos": 113,
+  "todos": 116,
   "arquivos_acima_500_linhas": 186
  },
  "todos": [
@@ -2570,9 +2570,15 @@
   },
   {
    "arquivo": "scripts/check-public-views-drift.mjs",
-   "linha": 285,
+   "linha": 290,
    "tipo": "TODO",
    "texto": "|PENDENTE|FALTA|PLACEHOLDER/i.test(entry.reason)) {"
+  },
+  {
+   "arquivo": "scripts/check-public-views-drift.mjs",
+   "linha": 407,
+   "tipo": "TODO",
+   "texto": "|FIXME|WIP)\\b/.test(entry.reason)) {"
   },
   {
    "arquivo": "scripts/check-rls-no-policy-drift.mjs",
@@ -2957,6 +2963,18 @@
    "linha": 116,
    "tipo": "TODO",
    "texto": "chamar runLiveSuite(descriptorFor(\"my-func\")) quando tiver credenciais\\n',"
+  },
+  {
+   "arquivo": "tests/scripts/check-public-views-drift.test.mjs",
+   "linha": 218,
+   "tipo": "TODO",
+   "texto": "é rejeitada na validação estrutural', () => {"
+  },
+  {
+   "arquivo": "tests/scripts/check-public-views-drift.test.mjs",
+   "linha": 223,
+   "tipo": "TODO",
+   "texto": "revisar' },"
   },
   {
    "arquivo": "tests/scripts/check-rls-no-policy-drift.test.mjs",

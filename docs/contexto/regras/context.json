@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "36d409ab1bcb77bf48eef0f7d15df86c21f6aa0f",
+  "sha": "ddd8488f0831ae8766b4e6fd40923101a72316da",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 23:14 UTC",
-  "files_total": 11195,
+  "generated_at": "2026-11-25 10:17 UTC",
+  "files_total": 11196,
   "code_files": 9184,
-  "code_lines": 1303180
+  "code_lines": 1303368
  },
  "version": "1.3.2",
- "facts_hash": "3481df38fcd63b39",
+ "facts_hash": "496610cda47e7fdb",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -151149,7 +151149,7 @@
   {
    "module": "scripts",
    "files": 300,
-   "lines": 65537,
+   "lines": 65627,
    "tables": [
     "a",
     "b",
@@ -153530,7 +153530,7 @@
   {
    "module": "tests",
    "files": 1116,
-   "lines": 176855,
+   "lines": 176953,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -307816,6 +307816,46 @@
     "name": "FALHA quando o banco tem uma 9ª view v_*_public SECDEF sem entrada no contrato"
    },
    {
+    "file": "tests/scripts/check-public-views-drift.test.mjs",
+    "name": "baseline de tabelas legíveis por anon (.security/anon-tables-baseline.json)"
+   },
+   {
+    "file": "tests/scripts/check-public-views-drift.test.mjs",
+    "name": "passa a validação estrutural hoje (0 erros)"
+   },
+   {
+    "file": "tests/scripts/check-public-views-drift.test.mjs",
+    "name": "registra as tabelas internas que ainda têm grant herdado, como dívida explícita"
+   },
+   {
+    "file": "tests/scripts/check-public-views-drift.test.mjs",
+    "name": "tabela nova legível por anon fora da baseline falha o gate"
+   },
+   {
+    "file": "tests/scripts/check-public-views-drift.test.mjs",
+    "name": "tabela com SELECT só por coluna (relkind r) também conta como exposta"
+   },
+   {
+    "file": "tests/scripts/check-public-views-drift.test.mjs",
+    "name": "entrada da baseline sem privilégio no banco falha — revogação exige limpar a linha"
+   },
+   {
+    "file": "tests/scripts/check-public-views-drift.test.mjs",
+    "name": "tabela sem privilégio e fora da baseline não gera ruído"
+   },
+   {
+    "file": "tests/scripts/check-public-views-drift.test.mjs",
+    "name": "entrada com columns congela a coluna: coluna nova legível por anon falha"
+   },
+   {
+    "file": "tests/scripts/check-public-views-drift.test.mjs",
+    "name": "entrada sem columns (null) não congela coluna, só o nome"
+   },
+   {
+    "file": "tests/scripts/check-public-views-drift.test.mjs",
+    "name": "entrada sem reason ou com TODO é rejeitada na validação estrutural"
+   },
+   {
     "file": "tests/scripts/check-quote-rpc-canonical-readiness.test.mjs",
     "name": "quote RPC canonical readiness gate"
    },
@@ -438506,7 +438546,7 @@
   },
   "scripts/check-public-views-drift.mjs": {
    "path": "scripts/check-public-views-drift.mjs",
-   "lines": 510,
+   "lines": 600,
    "exports": [
     "const PUBLIC_VIEWS",
     "const SENSITIVE_PATTERNS",
@@ -438517,12 +438557,16 @@
     "function loadAnonAllowlist",
     "function validateAnonAllowlistIntegrity",
     "function diffAnonExposure",
+    "function loadAnonTablesBaseline",
+    "function validateAnonTablesBaseline",
+    "function diffAnonTables",
     "function main"
    ],
    "rule_comments": [
     "`forbidden` de cada view, que já existia mas é uma lista fixa por view,",
     "`forbidden` de uma view que apareça ao vivo.",
-    "`reason` real (sem marcador de pendência), de `columns` congeladas e não pode"
+    "`reason` real (sem marcador de pendência), de `columns` congeladas e não pode",
+    "Tabelas tem regra propria (diffAnonTables): nome na baseline, sem congelar colunas."
    ],
    "doc": "!/usr/bin/env node",
    "calc_fns": [
@@ -438535,6 +438579,11 @@
      "name": "validateAnonAllowlistIntegrity",
      "params": "doc",
      "body": "const errors = []; const objects = doc.objects; if (!Array.isArray(objects)) return ['anon-select-allowlist: campo objects ausente ou inválido']; const seen = new Set(); for (const entry of objects) { const name = entry.object; if (!name || typeof name !== 'string') { errors.push(`anon-select-allowlist: entrada sem 'object' válido: ${JSON.stringify(entry)}`); continue; } if (seen.has(name)) errors.push(`anon-select-allowlist: ${name} aparece mais de uma vez`); seen.add(name); if (!entry.reason | …"
+    },
+    {
+     "name": "validateAnonTablesBaseline",
+     "params": "doc",
+     "body": "const errors = []; const tables = doc?.tables; if (!Array.isArray(tables)) return ['anon-tables-baseline: campo tables ausente ou inválido']; if (!doc.measured_at || !/^\\d{4}-\\d{2}-\\d{2}$/.test(String(doc.measured_at))) { errors.push('anon-tables-baseline: measured_at ausente ou fora de YYYY-MM-DD'); } const seen = new Set(); for (const entry of tables) { const name = entry?.table; if (!name || typeof name !== 'string') { errors.push(`anon-tables-baseline: entrada sem 'table' válido: ${JSON.stri …"
     }
    ],
    "uses_service_role": true
@@ -557967,7 +558016,7 @@
   },
   "tests/scripts/check-public-views-drift.test.mjs": {
    "path": "tests/scripts/check-public-views-drift.test.mjs",
-   "lines": 143,
+   "lines": 230,
    "is_test": true,
    "doc": "PLANO_DBA E16 — testa scripts/check-public-views-drift.mjs, o gate que substitui scripts/check-public-views-columns.mjs (PR #1830, auditoria r3, 2026-09-05) como dono do contrato `.security/public-views-columns.json` (as 8 views `v_*_public` com `security_invoker=false`, todas com SELECT para `anon` …",
    "tests": [
@@ -557986,7 +558035,17 @@
     "FALHA e sinaliza achado sensível quando a coluna nova bate num padrão sensível (ex.: cnpj)",
     "FALHA quando uma coluna da lista forbidden aparece ao vivo",
     "FALHA quando uma view do contrato está ausente no banco",
-    "FALHA quando o banco tem uma 9ª view v_*_public SECDEF sem entrada no contrato"
+    "FALHA quando o banco tem uma 9ª view v_*_public SECDEF sem entrada no contrato",
+    "baseline de tabelas legíveis por anon (.security/anon-tables-baseline.json)",
+    "passa a validação estrutural hoje (0 erros)",
+    "registra as tabelas internas que ainda têm grant herdado, como dívida explícita",
+    "tabela nova legível por anon fora da baseline falha o gate",
+    "tabela com SELECT só por coluna (relkind r) também conta como exposta",
+    "entrada da baseline sem privilégio no banco falha — revogação exige limpar a linha",
+    "tabela sem privilégio e fora da baseline não gera ruído",
+    "entrada com columns congela a coluna: coluna nova legível por anon falha",
+    "entrada sem columns (null) não congela coluna, só o nome",
+    "entrada sem reason ou com TODO é rejeitada na validação estrutural"
    ]
   },
   "tests/scripts/check-quote-rpc-canonical-readiness.test.mjs": {
@@ -561109,7 +561168,7 @@
   },
   "tests/security/public-views-columns.test.ts": {
    "path": "tests/security/public-views-columns.test.ts",
-   "lines": 181,
+   "lines": 192,
    "is_test": true,
    "params": [
     {
@@ -563906,10 +563965,23 @@
   }
  },
  "git": {
-  "sha": "36d409ab1bcb77bf48eef0f7d15df86c21f6aa0f",
+  "sha": "ddd8488f0831ae8766b4e6fd40923101a72316da",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "ddd8488",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "feat(security): gate enxerga SELECT de anon em tabela, não só view (#4059)",
+    "files": [
+     ".security/anon-tables-baseline.json",
+     "docs/qa/05-PROGRESSO.md",
+     "scripts/check-public-views-drift.mjs",
+     "tests/scripts/check-public-views-drift.test.mjs",
+     "tests/security/public-views-columns.test.ts"
+    ]
+   },
    {
     "sha": "36d409a",
     "date": "2026-11-24",
@@ -564212,21 +564284,6 @@
      "src/hooks/quotes/useQuotes.ts",
      "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts"
     ]
-   },
-   {
-    "sha": "cdf7daa",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(hooks): resposta atrasada nao sobrescreve mais preco da tecnica (182-185) (#4030)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "docs/qa/corridas-de-estado.md",
-     "src/components/products/InlinePriceCalculator.tsx",
-     "src/components/products/__tests__/InlinePriceCalculator.race.test.tsx",
-     "src/hooks/common/useMountedRef.ts",
-     "src/hooks/simulation/__tests__/useTechniquePricingOptions.race.test.tsx",
-     "src/hooks/simulation/useTechniquePricingOptions.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -564239,6 +564296,10 @@
     8
    ],
    [
+    "tests/security/public-views-columns.test.ts",
+    3
+   ],
+   [
     "src/lib/fetch-print-areas.ts",
     3
    ],
@@ -564247,15 +564308,19 @@
     3
    ],
    [
+    "scripts/check-public-views-drift.mjs",
+    2
+   ],
+   [
+    "tests/scripts/check-public-views-drift.test.mjs",
+    2
+   ],
+   [
     "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
     2
    ],
    [
     ".security/public-views-columns.json",
-    2
-   ],
-   [
-    "tests/security/public-views-columns.test.ts",
     2
    ],
    [
@@ -564269,6 +564334,10 @@
    [
     "tests/scripts/drift-baseline.test.mjs",
     2
+   ],
+   [
+    ".security/anon-tables-baseline.json",
+    1
    ],
    [
     "docs/agentes/resgates/quote-comments/README.md",
@@ -564296,18 +564365,6 @@
    ],
    [
     ".security/anon-select-allowlist.json",
-    1
-   ],
-   [
-    "scripts/check-public-views-drift.mjs",
-    1
-   ],
-   [
-    "tests/scripts/check-public-views-drift.test.mjs",
-    1
-   ],
-   [
-    "supabase/migrations/20261124163000_revoke_anon_unit_cost_print_areas.sql",
     1
    ]
   ]
