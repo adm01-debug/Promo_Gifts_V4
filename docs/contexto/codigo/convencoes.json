@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: reverte E25 falso-positivo (jobs nao eram orfaos) (#4134)",
    "chore: rollbacks das migrations de sent_at e anti-fraude de preco (#4131)",
    "fix: cabecalho de rollback na 20261125213000 (destrava preflight E15) (#4132)",
    "fix(db): remove crons orfaos de particao do historico (E25) (#4121)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261114160000 (#4130)",
-   "chore: autoriza a aplicacao do indice de restock (approved-by) (#4117)"
+   "docs(migrations-log): recibo E15 — aplicação de 20261114160000 (#4130)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
