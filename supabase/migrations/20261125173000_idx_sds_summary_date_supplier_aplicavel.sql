@@ -1,5 +1,5 @@
 -- transaction: none
--- approved-by: @adm01-debug
+-- approved-by: adm01-debug
 --
 -- Migration: cria (de forma idempotente) o indice de cobertura que a 20261115130000
 --            descreve mas nunca pode ser aplicada
@@ -25,7 +25,7 @@
 -- Sem indice, o plano e Parallel Seq Scan em ~3,1M linhas (~1 GB) a cada carga do grafico
 -- /inteligencia-comercial.
 --
--- Rollback: supabase/rollbacks/20261125170000_rollback.sql
+-- Rollback: supabase/rollbacks/20261125173000_rollback.sql
 
 SET lock_timeout = '5min';
 
