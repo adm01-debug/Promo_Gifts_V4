@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "99c6a415f87fc25e2c711433575eaab0e053d98a",
+  "commit": "1d75179a0ddca8c767b09a0d651b6f4dce31b3bc",
   "branch": "main",
-  "data_commit": "2026-11-25T17:14:59-03:00",
+  "data_commit": "2026-11-25T20:28:24Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1d75179",
+    "data": "2026-11-25",
+    "assunto": "chore(deps): atualiza 6 dependências de desenvolvimento sem major (#4105)"
+   },
    {
     "sha": "99c6a41",
     "data": "2026-11-25",
@@ -126,11 +131,6 @@
     "sha": "b290d2f",
     "data": "2026-11-25",
     "assunto": "chore(main): release gifts-store 1.20.0 (#3983)"
-   },
-   {
-    "sha": "f57f0cd",
-    "data": "2026-11-25",
-    "assunto": "docs(migrations-log): remove a linha de pre-registro duplicada da 20261125131000 (#4078)"
    }
   ],
   "arquivos_mudados_7d": 577,
@@ -168,11 +168,11 @@
     "mudancas": 92
    },
    {
-    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 87
+    "pasta": "src/pages/quotes",
+    "mudancas": 86
    },
    {
-    "pasta": "src/pages/quotes",
+    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
     "mudancas": 86
    },
    {
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 87
+    "mudancas": 86
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -207,11 +207,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 24
+    "mudancas": 25
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "arquivo": "CHANGELOG.md",
