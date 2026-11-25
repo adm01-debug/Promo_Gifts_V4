@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "36833fda740d589040e4df4eb305f92c74e4beef",
+  "sha": "31d96d8d3fbfd6ae4308a62ceb5268e446da1193",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 19:27 UTC",
+  "generated_at": "2026-11-25 19:31 UTC",
   "files_total": 11210,
   "code_files": 9197,
   "code_lines": 1305220
@@ -564997,10 +564997,19 @@
   }
  },
  "git": {
-  "sha": "36833fda740d589040e4df4eb305f92c74e4beef",
+  "sha": "31d96d8d3fbfd6ae4308a62ceb5268e446da1193",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "31d96d8",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "docs(ledger): reconhece as 22 migrations sem aplicação com evidência do canônico (#4108)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "36833fd",
     "date": "2026-11-25",
@@ -565301,17 +565310,6 @@
      "supabase/MIGRATIONS_SYNC_LOG.md",
      "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
      "supabase/rollbacks/20261125120000_rollback.sql"
-    ]
-   },
-   {
-    "sha": "4a102dd",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(db): revoga execute de anon na funcao que reescreve a classificacao do catalogo (#4064)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql",
-     "supabase/rollbacks/20261125074200_rollback.sql"
     ]
    }
   ],
