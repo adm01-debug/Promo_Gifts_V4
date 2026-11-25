@@ -38,7 +38,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [x] 005 — Fazer o gate de views públicas descobrir view nova em vez de conferir uma lista fixa — onda 1 — Alta — APROVAÇÃO — concluída em #4049: ver Evidências
 - [x] 006 — Registrar as três views de compras no contrato de views públicas — onda 1 — Alta — concluída em #4008 (`e87db751`)
 - [-] 007 — Fechar `tabela_preco_gravacao_oficial_faixa` ao anônimo — onda 1 — Alta — APROVAÇÃO — premissa refutada; ver Evidências
-- [ ] 008 — Fazer o gate de drift rodar também sobre grants de tabela ao `anon` — onda 1 — Média — APROVAÇÃO — **gate implementado em #4059 e mergeado em `ddd8488f`** (baseline de 42 tabelas + `relkind 'r','p'` + congelamento por coluna); medição de 2026-11-24 em "Evidências": 5 tabelas de `public` entregam linhas ao `anon` e 3 têm grant sem linha visível; o que falta é o gate enxergar `relkind` `'r'` para travar a próxima — matview já está coberta (a descoberta usa `relkind in ('v','m')`); o furo que sobra são as **45 tabelas** de `public` com SELECT concedido ao `anon` medidas no dump da etapa 005, que não entram na consulta (`scripts/check-public-views-drift.mjs`, `buildAnonSql`) **Revogacao das 13 `interno-grant-herdado`** na migration `20261125120000_revoke_anon_internal_grants_public.sql` (PR aberta, Regra 8); depois de aplicada, as 13 linhas saem de `.security/anon-tables-baseline.json` na mesma janela, senao o gate E118i acusa 'entrada sem efeito'.
+- [ ] 008 — Fazer o gate de drift rodar também sobre grants de tabela ao `anon` — onda 1 — Média — APROVAÇÃO — **gate implementado em #4059 e mergeado em `ddd8488f`** (baseline de 42 tabelas + `relkind 'r','p'` + congelamento por coluna); medição de 2026-11-24 em "Evidências": 5 tabelas de `public` entregam linhas ao `anon` e 3 têm grant sem linha visível; o que falta é o gate enxergar `relkind` `'r'` para travar a próxima — matview já está coberta (a descoberta usa `relkind in ('v','m')`); o furo que sobra são as **45 tabelas** de `public` com SELECT concedido ao `anon` medidas no dump da etapa 005, que não entram na consulta (`scripts/check-public-views-drift.mjs`, `buildAnonSql`) **Revogacao das 13 `interno-grant-herdado`** executada: migration `20261125120000_revoke_anon_internal_grants_public.sql` aplicada em producao (run `45609989922`) e as 13 linhas removidas de `.security/anon-tables-baseline.json` na mesma janela (42 -> 29 tabelas).
 - [ ] 009 — Tornar o guarda de required checks capaz de ver mais de um check — onda 1 — Crítica — APROVAÇÃO
 - [ ] 010 — Pôr o CodeQL de fato como check obrigatório de `main` — onda 1 — Crítica — APROVAÇÃO
 - [ ] 011 — Fazer `static-checks.yml` bloquear merge — onda 1 — Alta — APROVAÇÃO
@@ -967,3 +967,15 @@ necessario porque o gate "Recibo de migration em MIGRATIONS_SYNC_LOG.md" (E75) r
 modificada cujo unico recibo diga "pendente" (`pendente_sem_adicao_no_pr`). O recibo da versao foi
 para "aguardando_merge" ? mesmo remendo documentado em `PENDENCIAS.md` #47 ? porque o SQL ainda nao
 foi aplicado em producao; o job "4. Recibo" volta o status para "aplicada" depois da aplicacao real.
+
+### Etapa 008 ? revoga??o aplicada em produ??o (2026-11-25)
+
+O dispatch de `db-apply-migration.yml` com `version=20261125120000` (run `45609989922`) passou pelos dois
+jobs de verifica??o e aplicou a migration: `1. Preflight (read-only)` e `2. Apply` conclu?ram com sucesso
+(depois do #4070 corrigir o `SET search_path` da fun??o, que reprovava no gate E066).
+
+Na mesma janela ? condi??o do gate `E118i --require-live`, que compara a baseline com o banco vivo ? as
+13 entradas `interno-grant-herdado` sa?ram de `.security/anon-tables-baseline.json`: **42 ? 29 tabelas**
+(25 `catalogo-publico` + 4 `catalogo-publico-por-coluna`). Os grants de `authenticated` e `service_role`
+nas 13 permanecem (o post-check da migration abortaria a transa??o se tivessem sido tocados) e o tripwire
+`fn_verify_anon_catalog_grants()` v4 passa a tratar as 13 como proibidas em vez de obrigat?rias.
