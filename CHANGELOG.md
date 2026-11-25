@@ -5,6 +5,59 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.20.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.19.0...gifts-store-v1.20.0) (2026-11-25)
+
+
+### Features
+
+* **ci:** recupera o filtro de ruido de views e policies no E40 ([#4060](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4060)) ([19de836](https://github.com/adm01-debug/Promo_Gifts_V4/commit/19de8369c025f6b1b17de7f81bbe51e2a17f8f9b))
+* Etapa 014 — descoberta automática de harnesses /__visual/ no gate de produção ([#4010](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4010)) ([13b9bae](https://github.com/adm01-debug/Promo_Gifts_V4/commit/13b9baefe5c5c8c54b559ae2a14c7141d5f5b3b6))
+* Etapa 019 — prova de tautologia RLS em attribute_definitions/groups (ACH-013) ([#4011](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4011)) ([59e624b](https://github.com/adm01-debug/Promo_Gifts_V4/commit/59e624b785e9d720c1c15822a61066d6fe818659))
+* Etapa 040 — confirmacao explicita na exclusao em massa (ACH-098) ([#4013](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4013)) ([28515a1](https://github.com/adm01-debug/Promo_Gifts_V4/commit/28515a12c28240ce54e16536312f5cdf6e4c4dd1))
+* Etapa 041 — alarme explícito de dessincronia no e2e-cleanup (ACH-071) ([#4016](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4016)) ([0f0ccc3](https://github.com/adm01-debug/Promo_Gifts_V4/commit/0f0ccc3d2b2da6e9fb55bab11d3baa721833e749))
+* Etapa 042 — restringir e2e-cleanup a quotes marcadas [E2E] (ACH-071) ([#4017](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4017)) ([ec295ba](https://github.com/adm01-debug/Promo_Gifts_V4/commit/ec295bae2cbea24c3cc607a337a8c7c2ebc7ff30))
+* Etapa 043 — url-allowlist em modo observador no webhook-dispatcher (ACH-009) ([#4012](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4012)) ([6fb570a](https://github.com/adm01-debug/Promo_Gifts_V4/commit/6fb570a11f8575c1dbcfc8bbf6c61e141bf13277))
+* Etapa 044 — ligar bloqueio efetivo allowlist no webhook-dispatcher (ACH-009) ([#4015](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4015)) ([0b17fd8](https://github.com/adm01-debug/Promo_Gifts_V4/commit/0b17fd8904af2f2794097a6164ab07e98e840e05))
+* Etapas 057-060 — adotar safeErrorResponse em 5 edge functions (ACH-030) ([#4018](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4018)) ([aeef004](https://github.com/adm01-debug/Promo_Gifts_V4/commit/aeef004809160c9fb70b1e230907ad091f2143ae))
+* **hooks:** merge parcial em profiles.preferences (etapas 141-146) ([#4029](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4029)) ([e8a15b4](https://github.com/adm01-debug/Promo_Gifts_V4/commit/e8a15b47c2accbb35119323f3732977a589586b8))
+* informa frete e tributos nao incluidos no total do kit ([#3990](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3990)) ([94a724a](https://github.com/adm01-debug/Promo_Gifts_V4/commit/94a724adfd8db7c6ca5ba6050c137833dedc4f8e))
+* **security:** etapa 006 — registrar v_compras_catalogo e v_compras_precos_faixa no contrato ([#4008](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4008)) ([e87db75](https://github.com/adm01-debug/Promo_Gifts_V4/commit/e87db75175db7457d47e260fd193deb4b48142ee))
+* **security:** gate enxerga SELECT de anon em tabela, não só view ([#4059](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4059)) ([ddd8488](https://github.com/adm01-debug/Promo_Gifts_V4/commit/ddd8488f0831ae8766b4e6fd40923101a72316da))
+* testid do CTA de geracao de mockup e regressao que roda de verdade ([#4063](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4063)) ([2cf0263](https://github.com/adm01-debug/Promo_Gifts_V4/commit/2cf0263847c9c0369bf7aabe0b65b731a99ae2c0))
+
+
+### Bug Fixes
+
+* alinhar recibo da 20261121203000 com a linha E15 (aplicada) ([#3980](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3980)) ([3aa6694](https://github.com/adm01-debug/Promo_Gifts_V4/commit/3aa6694279ea40f735bfac363519bc477ff3c30f))
+* area de gravacao legivel por anon com colunas explicitas ([#4053](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4053)) ([fbbd4ff](https://github.com/adm01-debug/Promo_Gifts_V4/commit/fbbd4ff0251c7337828f25671957ccef767ecd1d))
+* canonicaliza internal.managed_schema_dictionary criada direto em produção ([#4048](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4048)) ([2e83b04](https://github.com/adm01-debug/Promo_Gifts_V4/commit/2e83b04fe1afb0d7b796a0953939dc722387e537))
+* **ci:** jitter E19 nos crons em :00/:30 + recupera o medidor de cron ([#4061](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4061)) ([4d25f2d](https://github.com/adm01-debug/Promo_Gifts_V4/commit/4d25f2d410a9be5542f6f346f688a15f2528513f))
+* corrigir cadeia invoker das views de compras e composicoes ([#3989](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3989)) ([7600d95](https://github.com/adm01-debug/Promo_Gifts_V4/commit/7600d950a33dc7b50badce21a0b818eeccdf73a0))
+* **db:** revoga execute de anon na funcao que reescreve a classificacao do catalogo ([#4064](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4064)) ([4a102dd](https://github.com/adm01-debug/Promo_Gifts_V4/commit/4a102ddf81e5e3b0a12013b8935269d9865d5eda))
+* **db:** revoga SELECT de anon nas 13 tabelas internas de public (QA etapa 008) ([#4065](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4065)) ([bf0575d](https://github.com/adm01-debug/Promo_Gifts_V4/commit/bf0575d2d5ddc3158979def87222745dae9114d6))
+* **db:** tripwire da 20261125120000 declara pg_temp no search_path (E066) ([#4070](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4070)) ([33f0130](https://github.com/adm01-debug/Promo_Gifts_V4/commit/33f01308bc9f2f09432e07c1cbca8122b3642a27))
+* devolve security_invoker=false às views p06 e de compras ([#3981](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3981)) ([20c63c3](https://github.com/adm01-debug/Promo_Gifts_V4/commit/20c63c3f7f3cb525b36610fea9a646fdd57c798a))
+* Etapa 045 — exigir auth antes de responder op=ping no crm-db-bridge (ACH-030) ([#4014](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4014)) ([ec29a17](https://github.com/adm01-debug/Promo_Gifts_V4/commit/ec29a176cbcb9dea8755f77295060c47ca6c02dc))
+* Etapas 063-064 — total_cost em personalizacoes de template (ACH-084) ([#4019](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4019)) ([384b16e](https://github.com/adm01-debug/Promo_Gifts_V4/commit/384b16eb48ffd90ca794d5c92a2ba457995d9232))
+* Etapas 067-068 — impressao publica de revista sem login (ACH-046) ([#4020](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4020)) ([ce11844](https://github.com/adm01-debug/Promo_Gifts_V4/commit/ce118440162fc18495954b5e9b8a0bf2456e6e49))
+* Etapas 069-070 — alinhar ROLE_RANK em dispatcher-auth (ACH-022) ([#4022](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4022)) ([3b7dc18](https://github.com/adm01-debug/Promo_Gifts_V4/commit/3b7dc18c4358a4f27932a45967e90eda5ac764ab))
+* fecha a superficie de custo do anon sem mascarar as views de compras ([#4039](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4039)) ([a0daeda](https://github.com/adm01-debug/Promo_Gifts_V4/commit/a0daedaf6c63b577d379ca5bf382fa93fa2aaad2))
+* fecha leitura anon de print_area_techniques.unit_cost ([#4047](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4047)) ([2de2ccd](https://github.com/adm01-debug/Promo_Gifts_V4/commit/2de2ccd2a991186853e4e923f07121180351eca2))
+* gate de anon-grants mede pelo catalogo e revoga escrita morta de anon ([#4038](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4038)) ([cbb46a8](https://github.com/adm01-debug/Promo_Gifts_V4/commit/cbb46a8cc96fc2a36b7d580ffe2c5d8b272e1408))
+* gate de views publicas enxerga view nova legivel por anon (QA etapa 005) ([#4049](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4049)) ([810bfd1](https://github.com/adm01-debug/Promo_Gifts_V4/commit/810bfd16463701c5196b3c9f72d551e3af47f9e0))
+* Gate E40 passa a acusar migration já coberta pelo baseline que mudou depois do dump ([#4040](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4040)) ([2d5016c](https://github.com/adm01-debug/Promo_Gifts_V4/commit/2d5016ccb70062940131c1bb6c57fc2bb6054a35))
+* hooks de areas de gravacao pedem colunas explicitas ([#4055](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4055)) ([9238b31](https://github.com/adm01-debug/Promo_Gifts_V4/commit/9238b311331cf81ecf7df65b83cfc9a70f7abbd6))
+* **hooks:** centralizar invalidacao do cache de orcamentos ([#4031](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4031)) ([e142753](https://github.com/adm01-debug/Promo_Gifts_V4/commit/e142753481ac8093ed22ddc56275dc644aad8140))
+* **hooks:** resposta atrasada nao sobrescreve mais preco da tecnica (182-185) ([#4030](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4030)) ([cdf7daa](https://github.com/adm01-debug/Promo_Gifts_V4/commit/cdf7daae4ed696178fa6435251cef544271bf8a2))
+* leitura de areas de gravacao segue a projecao da view publica ([#4054](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4054)) ([519b6a3](https://github.com/adm01-debug/Promo_Gifts_V4/commit/519b6a367943dd0465bfbc97d78d4952f8497cd7))
+* move cabeçalho -- Rollback: para as primeiras 40 linhas da 20261122180000 ([#3986](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3986)) ([e883e2f](https://github.com/adm01-debug/Promo_Gifts_V4/commit/e883e2f06b46233b64209ebbc2b87913759c5a45))
+* **qa:** etapas 072-079 - erro de catalogo, colecoes e templates separados do vazio ([#4023](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4023)) ([4b02d22](https://github.com/adm01-debug/Promo_Gifts_V4/commit/4b02d228383656213215d9b3f58c1f44ad7da9c5))
+* **qa:** etapas 103, 108, 113 e 114 - subtotal do kit alinhado ao banco ([#4024](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4024)) ([5eaf98a](https://github.com/adm01-debug/Promo_Gifts_V4/commit/5eaf98ad331ced29e88902b129a1c7b7787e9398))
+* **qa:** etapas 131-135 - baseline da suite e testes do kit-builder ([#4025](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4025)) ([35aa001](https://github.com/adm01-debug/Promo_Gifts_V4/commit/35aa001b5f698e9949ab6cba10d9fbffb7809e65))
+* referencia completa da migration do orcamento em 05-PROGRESSO ([#4026](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4026)) ([075a1e0](https://github.com/adm01-debug/Promo_Gifts_V4/commit/075a1e03253039ae1a79061759bc530d16a50dea))
+* restaura EXECUTE de anon no helper de RLS e reconcilia tripwire v5 ([#4076](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4076)) ([8c250b0](https://github.com/adm01-debug/Promo_Gifts_V4/commit/8c250b004d4221b595cae2d5c5f7bb6ba72b90b2))
+* zera ruido de round-trip no Gate E40 ([#4035](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4035)) ([7468ec8](https://github.com/adm01-debug/Promo_Gifts_V4/commit/7468ec85568fadd04f7b4eb150c319bd85e18085))
+
 ## [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
 
 
