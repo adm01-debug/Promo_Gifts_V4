@@ -53,7 +53,7 @@ encerra PR/branch com certeza byte a byte do destino do código.
 | #4006 | revogaria grant de variantes; superada pela revogação aplicada em produção (`20261124140000_*`) |
 | #4007 | gate de views; superada por `scripts/check-public-views-drift.mjs` com `has_table_privilege` + `.security/anon-select-allowlist.json` |
 | #4009 | premissa "view pública de preço" refutada: `tabela_preco_gravacao_oficial_faixa` é legível por `anon` de propósito (medido: 952 linhas) |
-| #3993 | ruído de round-trip de view/matview/policy resolvido declarativamente em `supabase/baseline/drift-allowlist.txt` (seção 2026-11-24), não em código |
+| #3993 | **errata (2026-11-24)**: a premissa de que o ruído ficou só na allowlist era falsa — as 198 linhas de `dropDumpLossyViewsPolicies`/`MONITORED_SCHEMAS` nunca entraram na main. Recuperadas em `scripts/drift-baseline.mjs` (PR de recuperação do E40), com teste que expôs e corrigiu um defeito do span de ruído |
 | #3886 | marcada `[NÃO APLICAR]` pelo próprio autor (trigger de onboarding) |
 | #3832 | só sync log divergente; migrations presentes |
 | #3685 | idem (#3832/#3685 já cobertos pelo log consolidado) |
@@ -64,6 +64,27 @@ encerra PR/branch com certeza byte a byte do destino do código.
 Nenhuma das 23 PRs fechadas sem merge deixou trabalho órfão: 5 estão literais na
 main, 8 foram recuperadas sob outro arquivo e 10 tiveram premissa refutada ou
 solução posterior. As branches correspondentes já estavam deletadas.
+
+### Errata — auditoria linha a linha (2026-11-24)
+
+A primeira passada comparou por arquivo; a segunda comparou **cada linha `+`** de
+cada patch com a versão da main do mesmo arquivo e encontrou um descarte indevido,
+corrigido aqui:
+
+- **#3993** — 163 de 199 linhas estavam ausentes. O filtro de ruído de
+  view/matview/policy (`dropDumpLossyViewsPolicies`, `MONITORED_SCHEMAS`,
+  `extractSchemaObjectStatements`, `schemaObjectSignature`,
+  `schemaObjectDropSignature`, `normalizeSchemaObject`) não existia na main
+  (`grep` = 0). Recuperado em `scripts/drift-baseline.mjs`, com 6 testes em
+  `tests/scripts/drift-baseline.test.mjs`.
+
+Reconferidos e confirmados como realmente cobertos: #3968/#3969 (recuperados na
+`20261122100000_compras_views_canonicas.sql`, que cita as duas PRs e preserva o
+contrato da #3969 em `v_compras_precos_variante`), #3720 (o `security_invoker`
+da 20261101000001 foi revertido de propósito pela `20261122180000` por regressão
+de 22/11, com `COMMENT ON VIEW` de anti-regressão), #3788 (`mergeRestoredBase` e
+`quoteDraftRecoverySchema` presentes), #4003 (`etapa 001` marcada no ledger e
+evidência em `docs/qa/evidencia-compras-views.md`).
 
 ## Como refazer
 

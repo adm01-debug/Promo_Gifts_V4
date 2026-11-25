@@ -14,6 +14,7 @@ import {
   collapseSqlWhitespace,
   collectMigrationDigests,
   dropDumpLossyFunctions,
+  dropDumpLossyViewsPolicies,
   extractFunctionStatements,
   filterDiff,
   findBaseline,
@@ -247,6 +248,72 @@ describe('filterDiff', () => {
     const diff =
       'CREATE INDEX idx_pf_name_trgm ON prod_audit.product_features USING gin (name_normalized gin_trgm_ops);';
     expect(filterDiff(diff, allowlist)).toHaveLength(1);
+  });
+});
+
+describe('dropDumpLossyViewsPolicies', () => {
+  it('remove view igual ao replay exceto aspas, qualificação e espaço', () => {
+    const shadow = 'create view public.v_a as select 1 as x;';
+    const diff = [
+      'drop view if exists "public"."v_a";',
+      'create view "public"."v_a"   as select   1 as x;',
+    ].join('\n');
+    const res = dropDumpLossyViewsPolicies(diff, shadow);
+    expect(res.dropped).toEqual(['view|public.v_a']);
+    expect(res.sql).not.toContain('v_a');
+  });
+
+  it('mantém view que só existe no diff (drift real de objeto novo)', () => {
+    const shadow = 'create view public.v_a as select 1 as x;';
+    const diff = 'create view public.v_nova as select 2 as y;';
+    const res = dropDumpLossyViewsPolicies(diff, shadow);
+    expect(res.dropped).toEqual([]);
+    expect(res.sql).toContain('v_nova');
+  });
+
+  it('mantém view cuja definição normalizada difere (perdeu security_invoker)', () => {
+    const shadow = "create view public.v_b with (security_invoker='true') as select 1 as x;";
+    const diff = [
+      'drop view if exists "public"."v_b";',
+      "create view \"public\".\"v_b\" with (security_invoker='false') as select 1 as x;",
+    ].join('\n');
+    const res = dropDumpLossyViewsPolicies(diff, shadow);
+    expect(res.dropped).toEqual([]);
+    expect(res.sql).toContain('security_invoker');
+  });
+
+  it('trata policy: as permissive e for all são defaults que o dump omite', () => {
+    const shadow = 'create policy "p" on public.t for all to anon using (true);';
+    const diff = [
+      'drop policy "p" on "public"."t";',
+      'create policy "p" on "public"."t" as permissive for all to anon using (true);',
+    ].join('\n');
+    const res = dropDumpLossyViewsPolicies(diff, shadow);
+    expect(res.dropped).toEqual(['policy|p|t']);
+    expect(res.sql).not.toContain('policy');
+  });
+
+  it('preserva o drift real que cai no meio do bloco de ruído', () => {
+    const shadow = [
+      'create view public.v_a as select 1 as x;',
+      'create view public.v_b as select 3 as z;',
+    ].join('\n');
+    const diff = [
+      'drop view if exists "public"."v_a";',
+      'drop view if exists "public"."v_b";',
+      'create view "public"."v_a" as select 1 as x;',
+      'create view "public"."v_nova" as select 2 as y;',
+      'create view "public"."v_b" as select 3 as z;',
+    ].join('\n');
+    const res = dropDumpLossyViewsPolicies(diff, shadow);
+    expect(res.dropped.sort()).toEqual(['view|public.v_a', 'view|public.v_b']);
+    expect(res.sql).toContain('v_nova');
+    expect(res.sql).not.toContain('v_a');
+    expect(res.sql).not.toContain('v_b');
+  });
+
+  it('filterDiff descarta statement que sobra só com ponto e vírgula', () => {
+    expect(filterDiff(';\n', [])).toEqual([]);
   });
 });
 
