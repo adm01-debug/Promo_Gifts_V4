@@ -2985,6 +2985,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261114040000 | [fix_authenticator_idle_session_timeout_pgrst_listener](migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql) | 1 |
 | 20261114120000 | [cron004_reduz_frequencia_jobs_ociosos](migrations/20261114120000_cron004_reduz_frequencia_jobs_ociosos.sql) | 1 |
 | 20261114120100 | [cron005_refresh_all_mvs_diario_timeout_real](migrations/20261114120100_cron005_refresh_all_mvs_diario_timeout_real.sql) | 1 |
+| 20261114160000 | [perf_idx_sds_restock_counts](migrations/20261114160000_perf_idx_sds_restock_counts.sql) | 3 |
 | 20261114170845 | [fix_workspace_notifications_insert_policy_reapply](migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql) | 3 |
 | 20261114170921 | [fix_rls_orders_order_items_seller_scope](migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql) | 12 |
 | 20261115034500 | [rpc_sales_assistant_candidates](migrations/20261115034500_rpc_sales_assistant_candidates.sql) | 5 |

@@ -1058,6 +1058,7 @@ Uso e tamanho em `stats.md`.
 | public.step_up_tokens | step_up_tokens_pkey | btree | id | sim | sim |  |
 | public.stock_daily_summary | idx_daily_product_date | btree | product_id, summary_date | não | sim |  |
 | public.stock_daily_summary | idx_sds_cenario_a | btree | summary_date, stock_open, stock_close | não | sim | `(restock_detected = true)` |
+| public.stock_daily_summary | idx_sds_restock_zero_to_pos_date | btree | summary_date, product_id | não | sim | `((restock_detected = true) AND (COALESCE(stock_open, 0) = 0) AND (COALESCE(stock_close, 0) > 0))` |
 | public.stock_daily_summary | idx_sds_summary_date_supplier | btree | summary_date, supplier_id, stock_close, units_depleted, units_restocked | não | sim |  |
 | public.stock_daily_summary | idx_sds_variant_id | btree | variant_id | não | sim |  |
 | public.stock_daily_summary | idx_sds_zero_to_positive | btree | summary_date, product_id, supplier_id | não | sim | `(restock_zero_to_positive = true)` |

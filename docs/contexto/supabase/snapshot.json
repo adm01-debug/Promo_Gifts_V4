@@ -219806,6 +219806,21 @@
       {
         "columns": [
           "summary_date",
+          "product_id"
+        ],
+        "definition": "CREATE INDEX idx_sds_restock_zero_to_pos_date ON public.stock_daily_summary USING btree (summary_date) INCLUDE (product_id) WHERE ((restock_detected = true) AND (COALESCE(stock_open, 0) = 0) AND (COALESCE(stock_close, 0) > 0))",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_sds_restock_zero_to_pos_date",
+        "predicate": "((restock_detected = true) AND (COALESCE(stock_open, 0) = 0) AND (COALESCE(stock_close, 0) > 0))",
+        "schema": "public",
+        "table": "stock_daily_summary"
+      },
+      {
+        "columns": [
+          "summary_date",
           "supplier_id",
           "stock_close",
           "units_depleted",
@@ -241443,6 +241458,12 @@
         "statements": 1,
         "statements_sha": "07cb99aaca5c43cb",
         "version": "20261114120100"
+      },
+      {
+        "name": "perf_idx_sds_restock_counts",
+        "statements": 3,
+        "statements_sha": "e6014ccd560fd98f",
+        "version": "20261114160000"
       },
       {
         "name": "fix_workspace_notifications_insert_policy_reapply",

@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-25 22:23 UTC
+
+- **indexes** adicionado (1): `public.idx_sds_restock_zero_to_pos_date`
+- **migrations** adicionado (1): `20261114160000_perf_idx_sds_restock_counts`
+
 ## 2026-11-25 21:18 UTC
 
 - **migrations** adicionado (2): `20261120040000_add_quotes_freight_plan`, `20261125074200_revoke_anon_apply_classification_suggestions`
