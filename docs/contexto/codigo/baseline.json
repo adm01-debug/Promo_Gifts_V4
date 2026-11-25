@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "446d8672f56652455e72693be52a74f532694c93",
+  "commit": "6f1d3e487236951b12bb8207d196b13718f0a61a",
   "branch": "main",
-  "data_commit": "2026-11-25T18:41:40-03:00",
+  "data_commit": "2026-11-25T19:04:46-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "6f1d3e4",
+    "data": "2026-11-25",
+    "assunto": "chore: autoriza a aplicacao do indice de restock (approved-by) (#4117)"
+   },
    {
     "sha": "446d867",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "33fa8db",
     "data": "2026-11-25",
     "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45661905897) (#4095)"
-   },
-   {
-    "sha": "1b03dfa",
-    "data": "2026-11-25",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261125173000 (#4094)"
    }
   ],
-  "arquivos_mudados_7d": 558,
+  "arquivos_mudados_7d": 559,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",

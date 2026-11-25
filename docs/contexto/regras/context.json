@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "446d8672f56652455e72693be52a74f532694c93",
+  "sha": "6f1d3e487236951b12bb8207d196b13718f0a61a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 21:56 UTC",
+  "generated_at": "2026-11-25 22:09 UTC",
   "files_total": 11211,
   "code_files": 9197,
-  "code_lines": 1305231
+  "code_lines": 1305232
  },
  "version": "1.3.2",
- "facts_hash": "db215b837f1db606",
+ "facts_hash": "991684dcf5784022",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -154065,7 +154065,7 @@
   {
    "module": "supabase/migrations",
    "files": 3136,
-   "lines": 228599,
+   "lines": 228600,
    "tables": [
     "...",
     "admin_audit_log",
@@ -538562,7 +538562,7 @@
   },
   "supabase/migrations/20261114160000_perf_idx_sds_restock_counts.sql": {
    "path": "supabase/migrations/20261114160000_perf_idx_sds_restock_counts.sql",
-   "lines": 29,
+   "lines": 30,
    "temporal": [
     "-- O db-apply-migration usa lock_timeout=1s: o CONCURRENTLY espera transações antigas, então esta"
    ]
@@ -565067,10 +565067,19 @@
   }
  },
  "git": {
-  "sha": "446d8672f56652455e72693be52a74f532694c93",
+  "sha": "6f1d3e487236951b12bb8207d196b13718f0a61a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "6f1d3e4",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore: autoriza a aplicacao do indice de restock (approved-by) (#4117)",
+    "files": [
+     "supabase/migrations/20261114160000_perf_idx_sds_restock_counts.sql"
+    ]
+   },
    {
     "sha": "446d867",
     "date": "2026-11-25",
@@ -565364,23 +565373,12 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "2e4913f",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: restaura grant anon na view publica de composicao de produto (#4081)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql",
-     "supabase/rollbacks/20261125160000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    19
+    18
    ],
    [
     "supabase/migrations-snapshot/ALL_IN_ONE.sql",
@@ -565401,6 +565399,10 @@
    [
     "package.json",
     2
+   ],
+   [
+    "supabase/migrations/20261114160000_perf_idx_sds_restock_counts.sql",
+    1
    ],
    [
     "supabase/baseline/20261125220000_cron_jobs.json",
@@ -565452,10 +565454,6 @@
    ],
    [
     "docs/db/POLITICA_DDL.md",
-    1
-   ],
-   [
-    "scripts/append-migration-receipt.mjs",
     1
    ]
   ]
