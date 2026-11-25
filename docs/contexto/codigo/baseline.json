@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "33fa8db71758fd61fe5fbd0173e9955787b09d65",
+  "commit": "46f58634b23fbb890c87a0979e8f2227966d1613",
   "branch": "main",
-  "data_commit": "2026-11-25T14:24:36-03:00",
+  "data_commit": "2026-11-25T14:38:47-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "46f5863",
+    "data": "2026-11-25",
+    "assunto": "fix: corrige COMMENT da view de preco de gravacao publica (retoma #4080) (#4096)"
+   },
    {
     "sha": "33fa8db",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "ddd8488",
     "data": "2026-11-25",
     "assunto": "feat(security): gate enxerga SELECT de anon em tabela, não só view (#4059)"
-   },
-   {
-    "sha": "36d409a",
-    "data": "2026-11-24",
-    "assunto": "chore: dossie de quote_comments passa a refletir a feature reativada (#3944) (#4062)"
    }
   ],
-  "arquivos_mudados_7d": 604,
+  "arquivos_mudados_7d": 603,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 80
+    "mudancas": 81
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 80
+    "mudancas": 81
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -310,7 +310,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11276,
+  "arquivos_total": 11278,
   "arquivos_codigo": 5682,
   "linhas_codigo": 1076946,
   "rotas": 141,
@@ -322,7 +322,7 @@
   "hooks": 646,
   "edge_functions": 112,
   "tabelas": 532,
-  "migrations": 3136,
+  "migrations": 3137,
   "cron_jobs": 122,
   "testes": 2722,
   "workflows": 89,
