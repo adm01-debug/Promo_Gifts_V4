@@ -15,13 +15,13 @@
       "table": "collection_products",
       "exposure": "interno-grant-herdado",
       "observed_rows": "0",
-      "reason": "vinculo colecao x produto. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+      "reason": "vinculo colecao x produto. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada. Revogacao pronta em supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql: quando essa migration for aplicada ao banco, REMOVER esta entrada na mesma janela, senao o gate acusa 'baseline declara SELECT de anon e o privilegio NAO existe mais'."
     },
     {
       "table": "collections",
       "exposure": "interno-grant-herdado",
       "observed_rows": "0",
-      "reason": "colecoes montadas no painel. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+      "reason": "colecoes montadas no painel. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada. Revogacao pronta em supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql: quando essa migration for aplicada ao banco, REMOVER esta entrada na mesma janela, senao o gate acusa 'baseline declara SELECT de anon e o privilegio NAO existe mais'."
     },
     {
       "table": "color_groups",
@@ -51,25 +51,25 @@
       "table": "content_articles",
       "exposure": "interno-grant-herdado",
       "observed_rows": "0",
-      "reason": "artigos de conteudo. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+      "reason": "artigos de conteudo. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada. Revogacao pronta em supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql: quando essa migration for aplicada ao banco, REMOVER esta entrada na mesma janela, senao o gate acusa 'baseline declara SELECT de anon e o privilegio NAO existe mais'."
     },
     {
       "table": "favorite_item_reactions",
       "exposure": "interno-grant-herdado",
       "observed_rows": "0",
-      "reason": "reacoes de favoritos. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+      "reason": "reacoes de favoritos. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada. Revogacao pronta em supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql: quando essa migration for aplicada ao banco, REMOVER esta entrada na mesma janela, senao o gate acusa 'baseline declara SELECT de anon e o privilegio NAO existe mais'."
     },
     {
       "table": "favorite_items",
       "exposure": "interno-grant-herdado",
       "observed_rows": "0",
-      "reason": "itens favoritados por usuario. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+      "reason": "itens favoritados por usuario. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada. Revogacao pronta em supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql: quando essa migration for aplicada ao banco, REMOVER esta entrada na mesma janela, senao o gate acusa 'baseline declara SELECT de anon e o privilegio NAO existe mais'."
     },
     {
       "table": "favorite_lists",
       "exposure": "interno-grant-herdado",
       "observed_rows": "0",
-      "reason": "listas de favoritos por usuario. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+      "reason": "listas de favoritos por usuario. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada. Revogacao pronta em supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql: quando essa migration for aplicada ao banco, REMOVER esta entrada na mesma janela, senao o gate acusa 'baseline declara SELECT de anon e o privilegio NAO existe mais'."
     },
     {
       "table": "kit_component_print_areas",
@@ -134,7 +134,7 @@
       "table": "product_ai_content",
       "exposure": "interno-grant-herdado",
       "observed_rows": "0",
-      "reason": "conteudo gerado por IA por produto. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+      "reason": "conteudo gerado por IA por produto. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada. Revogacao pronta em supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql: quando essa migration for aplicada ao banco, REMOVER esta entrada na mesma janela, senao o gate acusa 'baseline declara SELECT de anon e o privilegio NAO existe mais'."
     },
     {
       "table": "product_attributes",
@@ -158,7 +158,7 @@
       "table": "product_fiscal",
       "exposure": "interno-grant-herdado",
       "observed_rows": "0",
-      "reason": "dados fiscais (NCM). Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+      "reason": "dados fiscais (NCM). Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada. Revogacao pronta em supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql: quando essa migration for aplicada ao banco, REMOVER esta entrada na mesma janela, senao o gate acusa 'baseline declara SELECT de anon e o privilegio NAO existe mais'."
     },
     {
       "table": "product_kit_components",
@@ -197,13 +197,13 @@
       "table": "product_seo",
       "exposure": "interno-grant-herdado",
       "observed_rows": "0",
-      "reason": "metadados de SEO. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+      "reason": "metadados de SEO. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada. Revogacao pronta em supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql: quando essa migration for aplicada ao banco, REMOVER esta entrada na mesma janela, senao o gate acusa 'baseline declara SELECT de anon e o privilegio NAO existe mais'."
     },
     {
       "table": "product_supply",
       "exposure": "interno-grant-herdado",
       "observed_rows": "0",
-      "reason": "dados de suprimento/lead time. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+      "reason": "dados de suprimento/lead time. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada. Revogacao pronta em supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql: quando essa migration for aplicada ao banco, REMOVER esta entrada na mesma janela, senao o gate acusa 'baseline declara SELECT de anon e o privilegio NAO existe mais'."
     },
     {
       "table": "product_tags",
@@ -261,13 +261,13 @@
       "table": "system_kill_switches",
       "exposure": "interno-grant-herdado",
       "observed_rows": "0",
-      "reason": "chaves de desligamento de sistema. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+      "reason": "chaves de desligamento de sistema. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada. Revogacao pronta em supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql: quando essa migration for aplicada ao banco, REMOVER esta entrada na mesma janela, senao o gate acusa 'baseline declara SELECT de anon e o privilegio NAO existe mais'."
     },
     {
       "table": "system_settings",
       "exposure": "interno-grant-herdado",
       "observed_rows": "0",
-      "reason": "configuracoes globais do sistema. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+      "reason": "configuracoes globais do sistema. Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada. Revogacao pronta em supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql: quando essa migration for aplicada ao banco, REMOVER esta entrada na mesma janela, senao o gate acusa 'baseline declara SELECT de anon e o privilegio NAO existe mais'."
     },
     {
       "table": "tabela_preco_gravacao_oficial_faixa",
@@ -291,7 +291,7 @@
       "table": "video_sim_results",
       "exposure": "interno-grant-herdado",
       "observed_rows": "1007",
-      "reason": "resultados de simulacao de video (1007 linhas visiveis). Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada."
+      "reason": "resultados de simulacao de video (1007 linhas visiveis). Grant de SELECT herdado do legado, fora do repo; a RLS devolve 0 linha para anon. A revogacao e a etapa 008 do QA docs/qa/05-PROGRESSO.md; enquanto o grant existir a entrada precisa ficar aqui, senao o gate fica vermelho sem que ninguem tenha decidido nada. Revogacao pronta em supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql: quando essa migration for aplicada ao banco, REMOVER esta entrada na mesma janela, senao o gate acusa 'baseline declara SELECT de anon e o privilegio NAO existe mais'."
     }
   ]
 }
