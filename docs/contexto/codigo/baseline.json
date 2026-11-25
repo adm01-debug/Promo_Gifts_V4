@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "bf0575d2d5ddc3158979def87222745dae9114d6",
+  "commit": "4e083f644c28c01e7914181f82dc9ea070f0d137",
   "branch": "main",
-  "data_commit": "2026-11-25T08:33:18-03:00",
+  "data_commit": "2026-11-25T11:55:41Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "4e083f6",
+    "data": "2026-11-25",
+    "assunto": "chore(deps): bump @hookform/resolvers de 5.9.1 para 7.0.8 (#4068)"
+   },
    {
     "sha": "bf0575d",
     "data": "2026-11-25",
@@ -126,11 +131,6 @@
     "sha": "c6581c0",
     "data": "2026-11-24",
     "assunto": "docs: etapas 001-004 e 006 do QA concluídas com evidência; 007 refutada; 005 reescopada (#4044)"
-   },
-   {
-    "sha": "cdf7e3b",
-    "data": "2026-11-24",
-    "assunto": "chore: recibo de aplicacao - 20261124140000 (E15) e status aplicada das duas de 24/11 (#4043)"
    }
   ],
   "arquivos_mudados_7d": 652,
@@ -207,11 +207,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 23
+    "mudancas": 24
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 17
+    "mudancas": 18
    },
    {
     "arquivo": "CHANGELOG.md",

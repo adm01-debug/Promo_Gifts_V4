@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "bf0575d2d5ddc3158979def87222745dae9114d6",
+  "sha": "4e083f644c28c01e7914181f82dc9ea070f0d137",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 11:35 UTC",
+  "generated_at": "2026-11-25 12:00 UTC",
   "files_total": 11200,
   "code_files": 9188,
   "code_lines": 1304069
@@ -564046,10 +564046,20 @@
   }
  },
  "git": {
-  "sha": "bf0575d2d5ddc3158979def87222745dae9114d6",
+  "sha": "4e083f644c28c01e7914181f82dc9ea070f0d137",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "4e083f6",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore(deps): bump @hookform/resolvers de 5.9.1 para 7.0.8 (#4068)",
+    "files": [
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "bf0575d",
     "date": "2026-11-25",
@@ -564360,17 +564370,6 @@
      "supabase/baseline/20261122200000_migration_hashes.json",
      "tests/scripts/drift-baseline.test.mjs"
     ]
-   },
-   {
-    "sha": "7468ec8",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: zera ruido de round-trip no Gate E40 (#4035)",
-    "files": [
-     "scripts/drift-baseline.mjs",
-     "supabase/baseline/drift-allowlist.txt",
-     "tests/scripts/drift-baseline.test.mjs"
-    ]
    }
   ],
   "hot_files": [
@@ -564381,14 +564380,6 @@
    [
     "docs/qa/05-PROGRESSO.md",
     7
-   ],
-   [
-    "scripts/drift-baseline.mjs",
-    3
-   ],
-   [
-    "tests/scripts/drift-baseline.test.mjs",
-    3
    ],
    [
     "src/lib/fetch-print-areas.ts",
@@ -564404,6 +564395,14 @@
    ],
    [
     "docs/coordenacao/auditoria-prs-fechadas.md",
+    2
+   ],
+   [
+    "scripts/drift-baseline.mjs",
+    2
+   ],
+   [
+    "tests/scripts/drift-baseline.test.mjs",
     2
    ],
    [
@@ -564427,6 +564426,14 @@
     2
    ],
    [
+    "package-lock.json",
+    1
+   ],
+   [
+    "package.json",
+    1
+   ],
+   [
     "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
     1
    ],
@@ -564444,14 +564451,6 @@
    ],
    [
     ".security/secdef-anon-allowlist.json",
-    1
-   ],
-   [
-    "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
-    1
-   ],
-   [
-    "docs/agentes/resgates/2026-11-18-recibo-adjudicacao.md",
     1
    ]
   ]
