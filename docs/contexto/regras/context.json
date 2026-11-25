@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "f57f0cda65b5f93f62f42dc2a80459a5c679bed4",
+  "sha": "b290d2f450177a14f557fceb1ce4a3c7bf37a2c6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 13:45 UTC",
+  "generated_at": "2026-11-25 14:00 UTC",
   "files_total": 11202,
   "code_files": 9190,
   "code_lines": 1304504
@@ -564088,10 +564088,22 @@
   }
  },
  "git": {
-  "sha": "f57f0cda65b5f93f62f42dc2a80459a5c679bed4",
+  "sha": "b290d2f450177a14f557fceb1ce4a3c7bf37a2c6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "b290d2f",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.20.0 (#3983)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "f57f0cd",
     "date": "2026-11-25",
@@ -564397,15 +564409,6 @@
      "supabase/migrations/20261124171500_internal_managed_schema_dictionary.sql",
      "supabase/rollbacks/20261124171500_rollback.sql"
     ]
-   },
-   {
-    "sha": "7e66b07",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "docs: enterra o draft E40 com o SHA arquivado em refs/agents-archive (#4050)",
-    "files": [
-     "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md"
-    ]
    }
   ],
   "hot_files": [
@@ -564418,6 +564421,14 @@
     8
    ],
    [
+    "package-lock.json",
+    3
+   ],
+   [
+    "package.json",
+    3
+   ],
+   [
     ".security/anon-tables-baseline.json",
     3
    ],
@@ -564427,14 +564438,6 @@
    ],
    [
     ".github/workflows/deploy-gates.yml",
-    2
-   ],
-   [
-    "package-lock.json",
-    2
-   ],
-   [
-    "package.json",
     2
    ],
    [
@@ -564462,6 +564465,14 @@
     2
    ],
    [
+    ".release-please-manifest.json",
+    1
+   ],
+   [
+    "CHANGELOG.md",
+    1
+   ],
+   [
     "supabase/migrations/20261125131000_tripwire_anon_v5_reconcilia.sql",
     1
    ],
@@ -564479,14 +564490,6 @@
    ],
    [
     "supabase/rollbacks/20261125074200_rollback.sql",
-    1
-   ],
-   [
-    ".security/secdef-anon-allowlist.json",
-    1
-   ],
-   [
-    "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
     1
    ]
   ]

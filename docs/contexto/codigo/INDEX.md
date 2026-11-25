@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f57f0cda65b5f93f62f42dc2a80459a5c679bed4` (2026-11-25T10:43:14-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b290d2f450177a14f557fceb1ce4a3c7bf37a2c6` (2026-11-25T10:59:18-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -599,17 +599,17 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 51002 nós · 86482 arestas · 2790 comunidades · grafo do commit `f57f0cda`
-- comunidades maiores: ref_components (891), vitest (671), ref_integrations (610), ref_node_child_process (511), react-router-dom (475), @testing-library/react (461), ref_hooks (428), ref_types (411), @tanstack/react-query (394), nav.ts (362), ref_node_fs (356), react (351)
+- 51005 nós · 86485 arestas · 2824 comunidades · grafo do commit `b290d2f4`
+- comunidades maiores: vitest (1194), ref_components (725), ref_lib (591), react (529), ref_node_child_process (497), @tanstack/react-query (496), react-router-dom (358), sonner (346), gotoAndSettle (328), scripts (312), cors.ts (301), ref_node_fs (296)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - supabase/MIGRATIONS_SYNC_LOG.md (75)
 - docs/qa/05-PROGRESSO.md (31)
-- package.json (25)
-- package-lock.json (19)
-- CHANGELOG.md (14)
+- package.json (26)
+- package-lock.json (20)
+- CHANGELOG.md (15)
 - docs/coordenacao/conflitos-semanticos.md (10)
 - .github/workflows/deploy-gates.yml (9)
 - docs/agentes/resgates/2026-11-16-auditoria-branches.md (8)
@@ -1031,7 +1031,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/PULL_REQUEST_TEMPLATE.md` (112 linhas)
 - `.github/SENTINEL_CHANGELOG.md` — Sentinel Changelog (188 linhas)
 - `AGENTS.md` — AGENTS.md — Promo Gifts V4 (111 linhas)
-- `CHANGELOG.md` — Changelog (2538 linhas)
+- `CHANGELOG.md` — Changelog (2591 linhas)
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
@@ -1195,9 +1195,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/notifications-module-audit.md` — Auditoria — Módulo "Notificações de Estoque" (sino do header) (110 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — inventário e prova (1148 linhas)
 - subpastas de docs/: docs/arquivo (92), docs/agentes (27), docs/redeploy (27), docs/estado (26), docs/plans (24), docs/db (14), docs/qa (14), docs/audits (12), docs/ci (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/pendencias (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/coordenacao (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/edge-functions (2), docs/frete (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
-- CHANGELOG topo: [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
+- CHANGELOG topo: [1.20.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.19.0...gifts-store-v1.20.0) (2026-11-25)
 
 ## Últimos commits
+- 2026-11-25 `b290d2f` chore(main): release gifts-store 1.20.0 (#3983)
 - 2026-11-25 `f57f0cd` docs(migrations-log): remove a linha de pre-registro duplicada da 20261125131000 (#4078)
 - 2026-11-25 `513be5a` docs(migrations-log): recibo E15 — aplicação de 20261125131000 (#4077)
 - 2026-11-25 `8c250b0` fix: restaura EXECUTE de anon no helper de RLS e reconcilia tripwire v5 (#4076)
@@ -1212,7 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `629c14f` chore(security): corrige reason defasado de fn_global_search no allowlist secdef-anon (#4066)
 - 2026-11-25 `2cf0263` feat: testid do CTA de geracao de mockup e regressao que roda de verdade (#4063)
 - 2026-11-25 `4d25f2d` fix(ci): jitter E19 nos crons em :00/:30 + recupera o medidor de cron (#4061)
-- 2026-11-25 `19de836` feat(ci): recupera o filtro de ruido de views e policies no E40 (#4060)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
