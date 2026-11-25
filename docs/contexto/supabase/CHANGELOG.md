@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-25 11:21 UTC
+
+- **functions** alterado (1): `classification_audit.apply_high_confidence_suggestions(p_dry_run boolean, p_min_matches integer)`
+
 ## 2026-11-25 01:19 UTC
 
 - **realtime** adicionado (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_28`
