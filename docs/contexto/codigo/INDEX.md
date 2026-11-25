@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ddd8488f0831ae8766b4e6fd40923101a72316da` (2026-11-25T07:12:05-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4d25f2d410a9be5542f6f346f688a15f2528513f` (2026-11-25T07:41:14-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (5207), SQL (3504), Markdown (1510), JavaScript (462), JSON (133), YAML (117), Shell (27), HTML (20)
+- linguagens: TypeScript (5207), SQL (3504), Markdown (1510), JavaScript (463), JSON (133), YAML (117), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 11266 |
-| arquivos_codigo | 5682 |
-| linhas_codigo | 1076605 |
+| arquivos_total | 11267 |
+| arquivos_codigo | 5683 |
+| linhas_codigo | 1076963 |
 | rotas | 141 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -50,7 +50,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | cron_jobs | 122 |
 | testes | 2723 |
 | workflows | 89 |
-| scripts | 284 |
+| scripts | 285 |
 | docs_md | 1510 |
 
 ## Onde ficam as coisas
@@ -599,8 +599,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50982 nós · 86438 arestas · 2883 comunidades · grafo do commit `ddd8488f`
-- comunidades maiores: vitest (893), ref_components (806), ref_integrations (522), ref_lib (461), ref_node_child_process (445), ref_hooks (428), react-router-dom (425), @tanstack/react-query (390), ref_types (372), ref_node_fs (366), cors.ts (343), gotoAndSettle (342)
+- 50999 nós · 86478 arestas · 2904 comunidades · grafo do commit `4d25f2d4`
+- comunidades maiores: vitest (947), ref_components (764), ref_integrations (633), ref_node_child_process (484), @tanstack/react-query (439), ref_hooks (416), react-router-dom (378), ref_types (358), react (352), sonner (335), scripts (312), ref_node_fs (294)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -619,7 +619,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/hooks/quotes/useQuoteBuilderState.ts (6)
 - src/integrations/supabase/types.ts (6)
 - src/lib/freight/README.md (6)
-- src/components/quotes/AdminTemplatesManager.tsx (5)
+- scripts/automation.config.json (5)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -646,7 +646,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `deploy-gates.yml` — Deploy Gates (pull_request, push, workflow_dispatch)
 - `deploy-vercel.yml` — Deploy to Vercel (Manual Fallback) (workflow_dispatch)
 - `deployment-failure-alert.yml` — Deployment Failure Alert (deployment_status)
-- `dr-drill-reminder.yml` — DR Drill Reminder (schedule, workflow_dispatch; cron 0 9 1-7 1,4,7,10 1)
+- `dr-drill-reminder.yml` — DR Drill Reminder (schedule, workflow_dispatch; cron 7 9 1-7 1,4,7,10 1)
 - `drafts-index-check.yml` — drafts-index-check (pull_request, push, workflow_dispatch)
 - `e2e-cart.yml` — E2E Cart — Matrix (E79) (push, workflow_dispatch)
 - `e2e-check-calendar-snapshots.yml` — E2E · Check Calendar snapshots (workflow_dispatch)
@@ -656,7 +656,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `e2e-dialogs-pr-check.yml` — E2E · Dialogs visual PR check (workflow_dispatch)
 - `e2e-discount-approval.yml` — E2E Discount Approval (04c*) (push, workflow_dispatch)
 - `e2e-flows.yml` — E2E — Critical Flows & Error Boundaries (push, workflow_dispatch)
-- `e2e-focused.yml` — E2E Focused UI — Matrix (E78) (schedule, workflow_dispatch; cron 0 2 * * 1)
+- `e2e-focused.yml` — E2E Focused UI — Matrix (E78) (schedule, workflow_dispatch; cron 7 2 * * 1)
 - `e2e-freight.yml` — E2E Freight — Matrix (E80) (push, workflow_dispatch)
 - `e2e-magazine-header.yml` — E2E — Magazine Header Layout (push, workflow_dispatch)
 - `e2e-pdf-dialog.yml` — E2E — PDF Dialog (watermark pixel-diff, authed) (push, workflow_dispatch)
@@ -685,7 +685,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `pdf-visual-regression.yml` — PDF Visual Regression (workflow_dispatch)
 - `personalization-trace-diagnostics.yml` — Personalização — diagnóstico readonly do artifact fixo (pull_request, workflow_dispatch)
 - `pgss-slo-report.yml` — pgss-slo-report (schedule, workflow_dispatch; cron 52 10 * * 1)
-- `policies-baseline.yml` — Policies Baseline (schedule, workflow_dispatch; cron 30 10 * * 1)
+- `policies-baseline.yml` — Policies Baseline (schedule, workflow_dispatch; cron 34 11 * * 1)
 - `pr-size-guard.yml` — PR Size Guard (E185) (pull_request)
 - `prod-health.yml` — Static Health Checks (push, workflow_dispatch)
 - `quote-number-hardening-verify.yml` — Quote Number Hardening — Verify (canonical DB) (push, schedule, workflow_dispatch; cron 15 */6 * * *)
@@ -710,7 +710,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `update-snapshots.yml` — E2E · Atualizar snapshots visuais (E155) (push, workflow_dispatch)
 - `uptime-monitor.yml` — Uptime Monitor (schedule, workflow_dispatch; cron */30 * * * *)
 - `visual-tests.yml` — Visual Baseline Tests — Nightly (push)
-- `wraparound-monitor-report.yml` — wraparound-monitor-report (schedule, workflow_dispatch; cron 30 5 * * *)
+- `wraparound-monitor-report.yml` — wraparound-monitor-report (schedule, workflow_dispatch; cron 19 5 * * *)
 
 ## Scripts npm
 - `maintenance:doctor`: `sh scripts/maintenance/run.sh doctor --root .`
@@ -1198,6 +1198,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
 
 ## Últimos commits
+- 2026-11-25 `4d25f2d` fix(ci): jitter E19 nos crons em :00/:30 + recupera o medidor de cron (#4061)
+- 2026-11-25 `19de836` feat(ci): recupera o filtro de ruido de views e policies no E40 (#4060)
 - 2026-11-25 `ddd8488` feat(security): gate enxerga SELECT de anon em tabela, não só view (#4059)
 - 2026-11-24 `36d409a` chore: dossie de quote_comments passa a refletir a feature reativada (#3944) (#4062)
 - 2026-11-24 `20eb648` docs(audit): audita as 23 PRs de agente fechadas sem merge (#4058)
@@ -1211,8 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `a1b5482` docs(migrations-log): recibo E15 — aplicação de 20261124163000 (#4052)
 - 2026-11-24 `2de2ccd` fix: fecha leitura anon de print_area_techniques.unit_cost (#4047)
 - 2026-11-24 `c790e80` docs(migrations-log): recibo E15 — aplicação de 20261124171500 (#4051)
-- 2026-11-24 `2e83b04` fix: canonicaliza internal.managed_schema_dictionary criada direto em produção (#4048)
-- 2026-11-24 `7e66b07` docs: enterra o draft E40 com o SHA arquivado em refs/agents-archive (#4050)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

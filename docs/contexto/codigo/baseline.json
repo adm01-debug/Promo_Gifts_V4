@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ddd8488f0831ae8766b4e6fd40923101a72316da",
+  "commit": "4d25f2d410a9be5542f6f346f688a15f2528513f",
   "branch": "main",
-  "data_commit": "2026-11-25T07:12:05-03:00",
+  "data_commit": "2026-11-25T07:41:14-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "4d25f2d",
+    "data": "2026-11-25",
+    "assunto": "fix(ci): jitter E19 nos crons em :00/:30 + recupera o medidor de cron (#4061)"
+   },
+   {
+    "sha": "19de836",
+    "data": "2026-11-25",
+    "assunto": "feat(ci): recupera o filtro de ruido de views e policies no E40 (#4060)"
+   },
    {
     "sha": "ddd8488",
     "data": "2026-11-25",
@@ -121,19 +131,9 @@
     "sha": "2d5016c",
     "data": "2026-11-24",
     "assunto": "fix: Gate E40 passa a acusar migration já coberta pelo baseline que mudou depois do dump (#4040)"
-   },
-   {
-    "sha": "7468ec8",
-    "data": "2026-11-24",
-    "assunto": "fix: zera ruido de round-trip no Gate E40 (#4035)"
-   },
-   {
-    "sha": "e87db75",
-    "data": "2026-11-24",
-    "assunto": "feat(security): etapa 006 — registrar v_compras_catalogo e v_compras_precos_faixa no contrato (#4008)"
    }
   ],
-  "arquivos_mudados_7d": 640,
+  "arquivos_mudados_7d": 645,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -254,6 +254,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "scripts/automation.config.json",
+    "mudancas": 5
+   },
+   {
     "arquivo": "src/components/quotes/AdminTemplatesManager.tsx",
     "mudancas": 5
    },
@@ -270,7 +274,7 @@
     "mudancas": 4
    },
    {
-    "arquivo": "scripts/automation.config.json",
+    "arquivo": "scripts/drift-baseline.mjs",
     "mudancas": 4
    },
    {
@@ -292,10 +296,6 @@
    {
     "arquivo": "src/components/layout/SidebarReorganized.tsx",
     "mudancas": 4
-   },
-   {
-    "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
-    "mudancas": 4
    }
   ],
   "autores_30d": [
@@ -310,9 +310,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11266,
-  "arquivos_codigo": 5682,
-  "linhas_codigo": 1076605,
+  "arquivos_total": 11267,
+  "arquivos_codigo": 5683,
+  "linhas_codigo": 1076963,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -326,7 +326,7 @@
   "cron_jobs": 122,
   "testes": 2723,
   "workflows": 89,
-  "scripts": 284,
+  "scripts": 285,
   "docs_md": 1510
  },
  "por_pasta": {
@@ -1492,7 +1492,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 1434
+   "linhas": 1617
   },
   "scripts/dry-run-migration-draft.mjs": {
    "arquivos": 1,
@@ -1625,6 +1625,10 @@
   "scripts/lib": {
    "arquivos": 6,
    "linhas": 493
+  },
+  "scripts/list-cron-schedules.mjs": {
+   "arquivos": 1,
+   "linhas": 108
   },
   "scripts/list-migration-drafts.mjs": {
    "arquivos": 1,
@@ -2152,7 +2156,7 @@
   },
   "tests/scripts": {
    "arquivos": 182,
-   "linhas": 29484
+   "linhas": 29551
   },
   "tests/search": {
    "arquivos": 1,
@@ -2289,12 +2293,12 @@
    "linhas": 1660
   },
   {
-   "arquivo": "supabase/functions/expert-chat/index.ts",
-   "linhas": 1480
+   "arquivo": "scripts/drift-baseline.mjs",
+   "linhas": 1617
   },
   {
-   "arquivo": "scripts/drift-baseline.mjs",
-   "linhas": 1434
+   "arquivo": "supabase/functions/expert-chat/index.ts",
+   "linhas": 1480
   },
   {
    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
@@ -2375,7 +2379,7 @@
  ],
  "qualidade": {
   "any": 695,
-  "console_log": 1308,
+  "console_log": 1317,
   "ts_ignore": 0,
   "eslint_disable": 24,
   "todos": 116,

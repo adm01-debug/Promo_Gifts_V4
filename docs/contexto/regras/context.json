@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "ddd8488f0831ae8766b4e6fd40923101a72316da",
+  "sha": "4d25f2d410a9be5542f6f346f688a15f2528513f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 10:17 UTC",
-  "files_total": 11196,
-  "code_files": 9184,
-  "code_lines": 1303368
+  "generated_at": "2026-11-25 10:52 UTC",
+  "files_total": 11197,
+  "code_files": 9185,
+  "code_lines": 1303726
  },
  "version": "1.3.2",
- "facts_hash": "496610cda47e7fdb",
+ "facts_hash": "d29c256c5b74e95b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1133,7 +1133,7 @@
    ".sql": 3504,
    ".ts": 3181,
    ".tsx": 2026,
-   ".mjs": 455,
+   ".mjs": 456,
    ".py": 18,
    ".js": 7
   },
@@ -146534,7 +146534,7 @@
    },
    {
     "kind": "GitHub Actions cron",
-    "detail": "0 9 1-7 1,4,7,10 1",
+    "detail": "7 9 1-7 1,4,7,10 1",
     "file": ".github/workflows/dr-drill-reminder.yml"
    },
    {
@@ -146544,7 +146544,7 @@
    },
    {
     "kind": "GitHub Actions cron",
-    "detail": "0 2 * * 1",
+    "detail": "7 2 * * 1",
     "file": ".github/workflows/e2e-focused.yml"
    },
    {
@@ -146599,7 +146599,7 @@
    },
    {
     "kind": "GitHub Actions cron",
-    "detail": "30 10 * * 1",
+    "detail": "34 11 * * 1",
     "file": ".github/workflows/policies-baseline.yml"
    },
    {
@@ -146664,7 +146664,7 @@
    },
    {
     "kind": "GitHub Actions cron",
-    "detail": "30 5 * * *",
+    "detail": "19 5 * * *",
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
@@ -151148,8 +151148,8 @@
   },
   {
    "module": "scripts",
-   "files": 300,
-   "lines": 65627,
+   "files": 301,
+   "lines": 65918,
    "tables": [
     "a",
     "b",
@@ -153530,7 +153530,7 @@
   {
    "module": "tests",
    "files": 1116,
-   "lines": 176953,
+   "lines": 177020,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -309649,6 +309649,34 @@
    },
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "dropDumpLossyViewsPolicies"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "remove view igual ao replay exceto aspas, qualificação e espaço"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "mantém view que só existe no diff (drift real de objeto novo)"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "mantém view cuja definição normalizada difere (perdeu security_invoker)"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "trata policy: as permissive e for all são defaults que o dump omite"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "preserva o drift real que cai no meio do bloco de ruído"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "filterDiff descarta statement que sobra só com ponto e vírgula"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
     "name": "findSecrets"
    },
    {
@@ -309858,34 +309886,6 @@
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
     "name": "mantém a função quando o corpo muda de verdade"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "mantém a função quando só o cabeçalho muda (SECURITY DEFINER removido)"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "usa a última definição do replay: migration posterior que mudou a função mantém o drift"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "extractFunctionStatements ignora CREATE FUNCTION sem corpo em dollar-quote"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "collapseSqlWhitespace — literais preservados"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "normaliza espaço fora de literal e mantém o de dentro"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "mantém o \\\\n depois de comentário de linha"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "literal com espaço diferente mantém a função no resíduo (Codex P1)"
    },
    {
     "file": "tests/scripts/e2e-cart-artifact-safety.test.mjs",
@@ -439422,7 +439422,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "path": "scripts/drift-baseline.mjs",
-   "lines": 1434,
+   "lines": 1617,
    "exports": [
     "const BASELINE_DIR",
     "const BASELINE_NAME_RE",
@@ -439454,6 +439454,7 @@
     "function extractFunctionStatements",
     "function collapseSqlWhitespace",
     "function dropDumpLossyFunctions",
+    "function dropDumpLossyViewsPolicies",
     "function splitDiffStatements",
     "function filterDiff",
     "function runCli"
@@ -439505,6 +439506,9 @@
     "como token inválido quando ele abre a migration. Normalize somente a cópia",
     "duplas não pode virar início de string/comentário.",
     "argumentos) não pode puxar o `(` de um comando posterior. O `;` e os nomes são",
+    "Remove a qualificação de schema (`schema.obj` -> `obj`) apenas para os schemas",
+    "Normaliza um objeto de schema para comparação, tratando apenas as diferenças",
+    "apenas os intervalos de cada par (mais conservador).",
     "scenarios — not schema objects, strip before allowlist validation."
    ],
    "doc": "!/usr/bin/env node",
@@ -440161,6 +440165,15 @@
    "side_effects": [
     "messages.create"
    ]
+  },
+  "scripts/list-cron-schedules.mjs": {
+   "path": "scripts/list-cron-schedules.mjs",
+   "lines": 108,
+   "rule_comments": [
+    "Rule 1: no :00 or :30 (skip null — variable-step crons like */15)",
+    "Rule 2: no two SAT crons at the same minute (skip null)"
+   ],
+   "doc": "!/usr/bin/env node"
   },
   "scripts/list-migration-drafts.mjs": {
    "path": "scripts/list-migration-drafts.mjs",
@@ -558990,7 +559003,7 @@
   },
   "tests/scripts/drift-baseline.test.mjs": {
    "path": "tests/scripts/drift-baseline.test.mjs",
-   "lines": 1187,
+   "lines": 1254,
    "is_test": true,
    "params": [
     {
@@ -559036,6 +559049,13 @@
     "allowlist vazia não esconde nada",
     "drop de indice na allowlist leva junto o create do MESMO indice (rebuild do db diff)",
     "create de indice sem drop allowlistado continua no residuo",
+    "dropDumpLossyViewsPolicies",
+    "remove view igual ao replay exceto aspas, qualificação e espaço",
+    "mantém view que só existe no diff (drift real de objeto novo)",
+    "mantém view cuja definição normalizada difere (perdeu security_invoker)",
+    "trata policy: as permissive e for all são defaults que o dump omite",
+    "preserva o drift real que cai no meio do bloco de ruído",
+    "filterDiff descarta statement que sobra só com ponto e vírgula",
     "findSecrets",
     "acha JWT, PAT do Supabase e token Cloudflare, e ignora o ID do projeto",
     "findSecrets — anon key pública",
@@ -559088,14 +559108,7 @@
     "grava a semente antes do baseline e ela revoga os privilégios padrão do shadow",
     "dropDumpLossyFunctions",
     "descarta a função que só difere por comentário de coluna 0 e espaçamento",
-    "mantém a função quando o corpo muda de verdade",
-    "mantém a função quando só o cabeçalho muda (SECURITY DEFINER removido)",
-    "usa a última definição do replay: migration posterior que mudou a função mantém o drift",
-    "extractFunctionStatements ignora CREATE FUNCTION sem corpo em dollar-quote",
-    "collapseSqlWhitespace — literais preservados",
-    "normaliza espaço fora de literal e mantém o de dentro",
-    "mantém o \\\\n depois de comentário de linha",
-    "literal com espaço diferente mantém a função no resíduo (Codex P1)"
+    "mantém a função quando o corpo muda de verdade"
    ],
    "uses_service_role": true
   },
@@ -563965,10 +563978,35 @@
   }
  },
  "git": {
-  "sha": "ddd8488f0831ae8766b4e6fd40923101a72316da",
+  "sha": "4d25f2d410a9be5542f6f346f688a15f2528513f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "4d25f2d",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(ci): jitter E19 nos crons em :00/:30 + recupera o medidor de cron (#4061)",
+    "files": [
+     ".github/workflows/dr-drill-reminder.yml",
+     ".github/workflows/e2e-focused.yml",
+     ".github/workflows/policies-baseline.yml",
+     ".github/workflows/wraparound-monitor-report.yml",
+     "scripts/automation.config.json",
+     "scripts/list-cron-schedules.mjs"
+    ]
+   },
+   {
+    "sha": "19de836",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "feat(ci): recupera o filtro de ruido de views e policies no E40 (#4060)",
+    "files": [
+     "docs/coordenacao/auditoria-prs-fechadas.md",
+     "scripts/drift-baseline.mjs",
+     "tests/scripts/drift-baseline.test.mjs"
+    ]
+   },
    {
     "sha": "ddd8488",
     "date": "2026-11-25",
@@ -564261,29 +564299,6 @@
      "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
      "supabase/migrations-snapshot/SNAPSHOT_META.json"
     ]
-   },
-   {
-    "sha": "53b4218",
-    "date": "2026-11-23",
-    "author": "github-actions[bot]",
-    "subject": "chore(security): atualiza baseline assinado de RLS policies (#4032)",
-    "files": [
-     ".security/policies-baseline.json"
-    ]
-   },
-   {
-    "sha": "e142753",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(hooks): centralizar invalidacao do cache de orcamentos (#4031)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "docs/qa/querykeys-sem-invalidacao.md",
-     "src/hooks/quotes/__tests__/quoteCacheInvalidation.test.ts",
-     "src/hooks/quotes/quoteCacheInvalidation.ts",
-     "src/hooks/quotes/useQuotes.ts",
-     "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -564293,7 +564308,15 @@
    ],
    [
     "docs/qa/05-PROGRESSO.md",
-    8
+    7
+   ],
+   [
+    "scripts/drift-baseline.mjs",
+    3
+   ],
+   [
+    "tests/scripts/drift-baseline.test.mjs",
+    3
    ],
    [
     "tests/security/public-views-columns.test.ts",
@@ -564306,6 +564329,10 @@
    [
     "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md",
     3
+   ],
+   [
+    "docs/coordenacao/auditoria-prs-fechadas.md",
+    2
    ],
    [
     "scripts/check-public-views-drift.mjs",
@@ -564328,43 +564355,31 @@
     2
    ],
    [
-    "scripts/drift-baseline.mjs",
-    2
+    ".github/workflows/dr-drill-reminder.yml",
+    1
    ],
    [
-    "tests/scripts/drift-baseline.test.mjs",
-    2
+    ".github/workflows/e2e-focused.yml",
+    1
+   ],
+   [
+    ".github/workflows/policies-baseline.yml",
+    1
+   ],
+   [
+    ".github/workflows/wraparound-monitor-report.yml",
+    1
+   ],
+   [
+    "scripts/automation.config.json",
+    1
+   ],
+   [
+    "scripts/list-cron-schedules.mjs",
+    1
    ],
    [
     ".security/anon-tables-baseline.json",
-    1
-   ],
-   [
-    "docs/agentes/resgates/quote-comments/README.md",
-    1
-   ],
-   [
-    "docs/coordenacao/auditoria-prs-fechadas.md",
-    1
-   ],
-   [
-    "graphify-out/GRAPH_REPORT.md",
-    1
-   ],
-   [
-    "src/hooks/simulation/usePrintAreas.ts",
-    1
-   ],
-   [
-    "src/lib/print-area-columns.ts",
-    1
-   ],
-   [
-    ".github/workflows/deploy-gates.yml",
-    1
-   ],
-   [
-    ".security/anon-select-allowlist.json",
     1
    ]
   ]

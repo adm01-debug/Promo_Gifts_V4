@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 284,
+ "total": 285,
  "scripts": [
   {
    "arquivo": ".github/scripts/e2e-relevance.mjs",
@@ -1978,7 +1978,7 @@
   {
    "arquivo": "scripts/drift-baseline.mjs",
    "descricao": "* drift-baseline.mjs — baseline do schema de produção para o drift-check.",
-   "linhas": 1434,
+   "linhas": 1617,
    "env": [
     "SUPABASE_PROJECT_REF"
    ],
@@ -2548,6 +2548,15 @@
     "regenerate-supabase-types.yml",
     "static-checks.yml"
    ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/list-cron-schedules.mjs",
+   "descricao": "* E19 — Gera tabela de crons de todos os workflows com schedule:.",
+   "linhas": 108,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
    "orfao": false
   },
   {
