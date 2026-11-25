@@ -8,6 +8,7 @@ import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
+  REPLAY_PIPELINE_REWRITES,
   REPLAY_SEED_NAME,
   REPLAY_SEED_SQL,
   byCodeUnit,
@@ -200,6 +201,17 @@ describe('allowlist de reescrita do replay', () => {
         sanitizeReplayMigration(file, sql),
         `${file}: falta entrada em REPLAY_PIPELINE_REWRITES (scripts/drift-baseline.mjs)`,
       ).not.toMatch(ocorrencia);
+    }
+  });
+
+  // A contagem do allowlist é fail-closed no replay. Se o arquivo mudar, o E40
+  // quebra; aqui a mesma checagem roda no vitest, antes do CI.
+  it('cada entrada do allowlist bate com a contagem real do arquivo', () => {
+    expect(REPLAY_PIPELINE_REWRITES.size).toBeGreaterThan(0);
+    for (const fileName of REPLAY_PIPELINE_REWRITES.keys()) {
+      const caminho = join('supabase', 'migrations', fileName);
+      if (!existsSync(caminho)) continue; // arquivo histórico pode sair na rotação do baseline
+      expect(() => sanitizeReplayMigration(fileName, readFileSync(caminho, 'utf8')), fileName).not.toThrow();
     }
   });
 });
