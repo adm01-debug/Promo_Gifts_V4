@@ -981,6 +981,7 @@ manualmente, no mesmo dia, com o método `emergência-MCP`.
 | 2026-11-14T04:25:23.664Z | `asia-ingestion` | 136 | `1256b4a57e12d3371fb677f5758ac1cc299344cb` | 43552937288 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-11-14T15:44:36.308Z | `crm-db-bridge` | 312 | `892494ca4d0937de238a6ece3e058a84530c090a` | 43608688979 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-11-16T00:29:15.241Z | `mockup-assistant` | 1 | `e4ab7f85d9d32ad142c8f1d8b9d581816fc4cf8c` | 43780066347 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-26T13:19:59.536Z | `kit-identity-suggest` | 276 | `b934d25623c5786ff288c8d73595d0dcc10c6105` | 45824995474 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 
 ## Retro-registro (casos anteriores a este ledger, E67)
 
