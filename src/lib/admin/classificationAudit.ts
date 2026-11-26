@@ -214,8 +214,10 @@ export function parseApplyResult(data: unknown): ClassificationApplyRow[] {
   for (const item of data) {
     if (!isRecord(item)) continue;
     const acao = asText(item.acao).toUpperCase();
+    const acaoNorm: ApplyOutcome =
+      acao === 'DRY-RUN' ? 'DRY-RUN' : acao === 'SEM MUDANCA' ? 'SEM MUDANCA' : 'APLICADO';
     rows.push({
-      acao: acao === 'DRY-RUN' || acao === 'SEM MUDANCA' ? (acao as ApplyOutcome) : 'APLICADO',
+      acao: acaoNorm,
       productId: asText(item.product_id),
       sku: asText(item.sku),
       produto: asText(item.produto),

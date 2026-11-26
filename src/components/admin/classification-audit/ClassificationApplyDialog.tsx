@@ -39,8 +39,8 @@ export function ClassificationApplyDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Aplicar sugestões de categoria</AlertDialogTitle>
           <AlertDialogDescription>
-            Serão aplicadas as sugestões com pelo menos {minMatches} matches que ainda não estão
-            atribuídas ao produto. Cada atribuição criada fica registrada na auditoria do sistema.
+            Sugestões com {minMatches}+ matches e ainda não atribuídas ao produto serão aplicadas.
+            Cada atribuição criada fica registrada na auditoria do sistema.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
