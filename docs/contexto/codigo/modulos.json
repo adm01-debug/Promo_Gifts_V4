@@ -258,13 +258,13 @@
   },
   {
    "modulo": "components/admin",
-   "arquivos": 332,
-   "testes": 30,
-   "linhas": 74864,
+   "arquivos": 333,
+   "testes": 31,
+   "linhas": 75223,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 259,
+   "componentes": 260,
    "hooks_locais": [
     "useA11y",
     "useAIRecommendations",
@@ -284,6 +284,7 @@
     "useAiUsageStats",
     "useAllFreshnessOverrides",
     "useAllowedIPs",
+    "useAnonExposureAudit",
     "useAppBootstrap",
     "useAppHealth",
     "useAriaLive",
@@ -562,6 +563,7 @@
     "useResolveProductsSelectComparison",
     "useRetestCooldownSetting",
     "useRoleMigration",
+    "useRunAnonExposureAudit",
     "useSalesGoals",
     "useSalesHistory",
     "useSalesHistoryMacro",
@@ -710,6 +712,7 @@
     "ai_providers",
     "ai_usage_logs",
     "ai_usage_quotas",
+    "anon_catalog_grant_audit_log",
     "art_file_attachments",
     "avatars",
     "bot_detection_log",
@@ -810,6 +813,7 @@
     "enqueue_optimization",
     "ensure_default_favorite_list",
     "fn_admin_sync_external_connections",
+    "fn_anon_catalog_grant_audit_run",
     "fn_batch_update_cart_item_sort_order",
     "fn_get_similar_products",
     "fn_should_apply_kill_switch",
@@ -22481,24 +22485,31 @@
   },
   {
    "modulo": "hooks/security",
-   "arquivos": 1,
+   "arquivos": 2,
    "testes": 0,
-   "linhas": 60,
+   "linhas": 158,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
    "componentes": 0,
    "hooks_locais": [
-    "useBlockedAccessLog"
+    "useAnonExposureAudit",
+    "useBlockedAccessLog",
+    "useRunAnonExposureAudit"
    ],
    "hooks_definidos": [
+    "useAnonExposureAudit",
+    "useRunAnonExposureAudit",
     "useBlockedAccessLog"
    ],
    "edges": [],
    "tabelas": [
-    "access_blocked_log"
+    "access_blocked_log",
+    "anon_catalog_grant_audit_log"
    ],
-   "rpcs": [],
+   "rpcs": [
+    "fn_anon_catalog_grant_audit_run"
+   ],
    "buckets": [],
    "canais_realtime": [],
    "env": [
@@ -22517,9 +22528,12 @@
    "diretos": {
     "edges": [],
     "tabelas": [
-     "access_blocked_log"
+     "access_blocked_log",
+     "anon_catalog_grant_audit_log"
     ],
-    "rpcs": []
+    "rpcs": [
+     "fn_anon_catalog_grant_audit_run"
+    ]
    },
    "importado_por_outros_modulos": [
     "components/admin"
@@ -27113,9 +27127,9 @@
   },
   {
    "modulo": "lib/security",
-   "arquivos": 11,
-   "testes": 13,
-   "linhas": 1393,
+   "arquivos": 12,
+   "testes": 14,
+   "linhas": 1594,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -28520,7 +28534,7 @@
    "modulo": "pages/admin",
    "arquivos": 62,
    "testes": 4,
-   "linhas": 16416,
+   "linhas": 16421,
    "itens_menu": [
     "Acesso & Bots",
     "Auditoria RBAC",
@@ -28611,6 +28625,7 @@
     "useAiUsageStats",
     "useAllFreshnessOverrides",
     "useAllowedIPs",
+    "useAnonExposureAudit",
     "useAppBootstrap",
     "useAppHealth",
     "useAriaLive",
@@ -28927,6 +28942,7 @@
     "useRetestCooldownSetting",
     "useRevokeUserSessions",
     "useRoleMigration",
+    "useRunAnonExposureAudit",
     "useRupturaForecast",
     "useRuptureAlerts",
     "useRuptureHorizon",
@@ -29078,6 +29094,7 @@
     "ai_usage_events",
     "ai_usage_logs",
     "ai_usage_quotas",
+    "anon_catalog_grant_audit_log",
     "art_file_attachments",
     "avatars",
     "bot_detection_log",
@@ -29200,6 +29217,7 @@
     "fn_admin_run_smoke_tests",
     "fn_admin_smoke_tests_dashboard",
     "fn_admin_sync_external_connections",
+    "fn_anon_catalog_grant_audit_run",
     "fn_batch_update_cart_item_sort_order",
     "fn_check_item_fits",
     "fn_get_similar_products",
@@ -35988,6 +36006,7 @@
     "useAiUsageStats",
     "useAllFreshnessOverrides",
     "useAllowedIPs",
+    "useAnonExposureAudit",
     "useAppBootstrap",
     "useAppHealth",
     "useAriaLive",
@@ -36386,6 +36405,7 @@
     "useRetestCooldownSetting",
     "useRevokeUserSessions",
     "useRoleMigration",
+    "useRunAnonExposureAudit",
     "useRupturaForecast",
     "useRuptureAlerts",
     "useRuptureHorizon",
@@ -36550,6 +36570,7 @@
     "ai_usage_events",
     "ai_usage_logs",
     "ai_usage_quotas",
+    "anon_catalog_grant_audit_log",
     "art_file_attachments",
     "avatars",
     "bot_detection_log",
@@ -36685,6 +36706,7 @@
     "fn_admin_run_smoke_tests",
     "fn_admin_smoke_tests_dashboard",
     "fn_admin_sync_external_connections",
+    "fn_anon_catalog_grant_audit_run",
     "fn_batch_update_cart_item_sort_order",
     "fn_check_item_fits",
     "fn_get_color_swatches_batch",

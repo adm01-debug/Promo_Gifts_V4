@@ -1,12 +1,12 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2983,
- "arestas": 11814,
+ "nos": 2986,
+ "arestas": 11827,
  "hubs": [
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 669
+   "importado_por": 670
   },
   {
    "arquivo": "src/lib/utils.ts",
@@ -14,19 +14,19 @@
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
-   "importado_por": 495
+   "importado_por": 496
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 471
+   "importado_por": 472
   },
   {
    "arquivo": "src/components/ui/card.tsx",
-   "importado_por": 364
+   "importado_por": 365
   },
   {
    "arquivo": "src/lib/logger.ts",
-   "importado_por": 327
+   "importado_por": 328
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
@@ -34,7 +34,7 @@
   },
   {
    "arquivo": "src/components/ui/input.tsx",
-   "importado_por": 275
+   "importado_por": 276
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
@@ -42,7 +42,7 @@
   },
   {
    "arquivo": "src/components/ui/skeleton.tsx",
-   "importado_por": 193
+   "importado_por": 194
   },
   {
    "arquivo": "src/components/ui/label.tsx",
@@ -118,7 +118,7 @@
   },
   {
    "arquivo": "src/components/ui/table.tsx",
-   "importado_por": 59
+   "importado_por": 60
   },
   {
    "arquivo": "src/utils/image-utils.ts",

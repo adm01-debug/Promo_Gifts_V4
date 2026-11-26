@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1291,
+ "total": 1292,
  "orfaos": 155,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -5239,6 +5239,24 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/admin/security/AnonExposureTab.tsx",
+   "exports": [
+    "AnonExposureTab"
+   ],
+   "export_default": null,
+   "linhas": 356,
+   "dominio": "components/admin",
+   "hooks_locais": [
+    "useAnonExposureAudit",
+    "useRunAnonExposureAudit",
+    "useToast"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/admin/security/AutoDefenseTab.tsx",
    "exports": [
     "AutoDefenseTab"
@@ -5605,7 +5623,7 @@
     "SecurityTabsList"
    ],
    "export_default": null,
-   "linhas": 46,
+   "linhas": 49,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -16730,7 +16748,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 495,
+   "usado_por": 496,
    "orfao": false
   },
   {
@@ -16765,7 +16783,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 664,
+   "usado_por": 665,
    "orfao": false
   },
   {
@@ -16799,7 +16817,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 364,
+   "usado_por": 365,
    "orfao": false
   },
   {
@@ -17148,7 +17166,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 275,
+   "usado_por": 276,
    "orfao": false
   },
   {
@@ -17456,7 +17474,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 193,
+   "usado_por": 194,
    "orfao": false
   },
   {
@@ -17552,7 +17570,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 59,
+   "usado_por": 60,
    "orfao": false
   },
   {
@@ -18343,7 +18361,7 @@
     "AdminSegurancaAcessoPage"
    ],
    "export_default": "AdminSegurancaAcessoPage",
-   "linhas": 722,
+   "linhas": 727,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useToast"

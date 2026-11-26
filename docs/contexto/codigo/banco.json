@@ -7070,11 +7070,11 @@
    "indices": [],
    "fks": [],
    "criada_em": "20260717144811_schedule_anon_catalog_grant_audit_v1.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "anon_insert_rate": {
    "colunas": {
@@ -51472,6 +51472,11 @@
   },
   {
    "nome": "fn_admin_sync_external_connections",
+   "definida": true,
+   "usada_em": 1
+  },
+  {
+   "nome": "fn_anon_catalog_grant_audit_run",
    "definida": true,
    "usada_em": 1
   },

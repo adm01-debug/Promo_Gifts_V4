@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `29120bc4b4` · branch `main` · 2026-11-26 18:11 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `156532ccbd` · branch `main` · 2026-11-26 18:25 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -5756,6 +5756,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MAX_ROWS` | `10` | `src/components/admin/products/bulk-import/types.ts` |
 | `PRODUCTION_DAYS_MAX` | `365` | `src/components/admin/products/sections/engraving/productionDays.ts` |
 | `MAX_FILE_SIZE` | `100` | `src/components/admin/products/video-gallery/types.ts` |
+| `MAX_VIOLACOES_RENDERIZADAS` | `200` | `src/components/admin/security/AnonExposureTab.tsx` |
 | `MAX_ROWS_RENDERED` | `200` | `src/components/admin/security/BlockedAccessLogTab.tsx` |
 | `ALL_CREATORS` | `'__all__'` | `src/components/admin/security/keys/McpKeysFilters.tsx` |
 | `PAGE_SIZE` | `50` | `src/components/admin/security/keys/audit/useMcpAuditFeed.ts` |
@@ -5973,8 +5974,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `ITEMS_PER_PAGE` | `500` | `src/hooks/products/useCatalogState.helpers.ts` |
 | `CHUNK` | `80` | `src/hooks/products/useColorEnrichment.ts` |
 | `CHUNK` | `80` | `src/hooks/products/useColorFanout.ts` |
-| `CART_ITEM_DEBOUNCE_MS` | `300` | `src/hooks/products/useDebouncedCartItemActions.ts` |
-| … +444 linhas — lista completa em `context.json` | | |
+| … +447 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6280,7 +6280,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/auth/useRBAC.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientAffinity.ts` |
 | `const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;` | `src/hooks/bi/useClientCategoryAffinity.ts` |
-| … +409 linhas — lista completa em `context.json` | |
+| … +410 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -6764,7 +6764,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1403 linhas — lista completa em `context.json` | |
+| … +1405 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6889,7 +6889,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (24000 testes em 2402 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (24043 testes em 2404 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6996,6 +6996,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/scripts/check-workflow-contracts.test.mjs` | 33 | C1 — permissions · flags workflow without top-level permissions · accepts workflow with top-level permissions · C2 — concurrency … |
 | `src/hooks/mockup/__tests__/useMockupDraft.test.ts` | 32 | estado inicial · retorna isSaving=false, isLoading=true, lastSaved=null, error=null · expõe saveDraft, loadDraft, clearDraft como funções · saveDraft — localStorage … |
 | `src/hooks/products/__tests__/futureStock.battery.test.ts` | 32 | Estoque Futuro · processStockEntries · gera entradas para todas as variantes do fixture realista · preserva entryIndex (1, 2, 3) mesmo quando entradas anteriores são puladas · ignora quantidades negativas, zero, NaN e datas vazias … |
+| `src/lib/security/__tests__/anonExposure.test.ts` | 32 | normalizarViolacao · aceita o formato da RPC quando os três campos são texto não vazio · recusa não-objetos, arrays e registros incompletos · recusa campos em branco e não-texto … |
 | `src/pages/magazine/hooks/__tests__/useMagazineReaderState.test.ts` | 32 | useMagazineReaderState — hidratação inicial · estado zerado quando localStorage vazio · lê bookmarks + lastPage válidos do localStorage · sobrevive a JSON corrompido em bookmarks … |
 | `tests/edge-functions/integration/connections.test.ts` | 32 | connections-hub-audit · payload válido · GET sem body → 200 + lista de conexões · POST com connection_id → 200 + audit entries … |
 | `tests/integration/freight-quest/webhook-matrix-1000.test.ts` | 32 | matriz 1: todos eventos × todas fontes (v2 envelope) · event=$event source=$source → 200 · matriz 2: todos eventos com envelope v1 · evento  … |
@@ -7192,8 +7193,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/scripts/append-migration-receipt.test.mjs` | 20 | formatReceiptRow · formata todos os campos como células markdown · usa em-dash para campos ausentes · appendReceiptRow … |
 | `tests/scripts/check-anon-write-grants.test.mjs` | 20 | loadAllowlist · devolve grants=[] quando o arquivo não existe · lê grants de um arquivo válido · tolera arquivo sem campo grants (array vazio) … |
 | `tests/scripts/check-no-inline-cors.test.mjs` | 20 | check-no-inline-cors — repositório real · passa (exit 0) contra supabase/functions/ real do repo · check-no-inline-cors — cenários básicos · passa quando supabase/functions/ está vazio … |
-| `tests/scripts/inventario-banco.test.mjs` | 20 | extrairInventario · aceita a resposta da Management API, do MCP (texto embrulhado), a linha do psql e o objeto direto · recusa entrada incompleta, vazia ou de outra versao · montarInventario … |
-| … +2102 linhas — lista completa em `context.json` | | |
+| … +2104 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

@@ -8,23 +8,23 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (988)",
+   "src/components (989)",
    "src/pages (184)",
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (320)",
+   "src/hooks (321)",
    "recovery/src-legacy (196)",
    "src/components (78)"
   ],
   "servicos_logica": [
-   "src/lib (277)",
+   "src/lib (278)",
    "src/utils (34)",
    "src/services (16)"
   ],
   "testes": [
    "tests/ (1089)",
-   "co-localizado (__tests__) (804)",
+   "co-localizado (__tests__) (806)",
    "e2e/ (636)"
   ],
   "edge_functions": "supabase/functions",
@@ -49,7 +49,7 @@
  },
  "barrels_index": 50,
  "extensao_componentes": [
-  ".tsx (1291)"
+  ".tsx (1292)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat: tela de exposicao anon no painel de seguranca (#4182)",
    "chore(main): release gifts-store 1.23.0 (#4181)",
    "feat: tela de ramos de atividade e segmentos (#4180)",
    "chore(main): release gifts-store 1.22.0 (#4176)",
-   "fix: cabecalho de rollback e transacao unica na migration das RPCs de CRM (#4178)",
-   "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45859951403) (#4173)"
+   "fix: cabecalho de rollback e transacao unica na migration das RPCs de CRM (#4178)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

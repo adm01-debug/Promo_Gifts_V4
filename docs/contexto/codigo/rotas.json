@@ -8155,6 +8155,7 @@
    "definida_em": "src/routes/admin-routes.tsx",
    "redireciona": null,
    "hooks": [
+    "useAnonExposureAudit",
     "useAuth",
     "useAuthMFA",
     "useBlockedAccessLog",
@@ -8186,8 +8187,10 @@
     "useProfileRoles",
     "usePushNotifications",
     "useQuery",
+    "useQueryClient",
     "useReducedMotion",
     "useRef",
+    "useRunAnonExposureAudit",
     "useScroll",
     "useScrollDirection",
     "useScrollLockFix",
@@ -8199,6 +8202,7 @@
     "useWorkspaceNotifications"
    ],
    "hooks_locais": [
+    "useAnonExposureAudit",
     "useAuth",
     "useAuthMFA",
     "useBlockedAccessLog",
@@ -8221,6 +8225,7 @@
     "useProfileRoles",
     "usePushNotifications",
     "useReducedMotion",
+    "useRunAnonExposureAudit",
     "useScroll",
     "useScrollDirection",
     "useScrollLockFix",
@@ -8233,6 +8238,7 @@
    "tabelas": [
     "access_blocked_log",
     "admin_audit_log",
+    "anon_catalog_grant_audit_log",
     "bot_detection_log",
     "frontend_telemetry",
     "hardening_health_snapshots",
@@ -8249,6 +8255,7 @@
    ],
    "rpcs": [
     "check_hardening_status",
+    "fn_anon_catalog_grant_audit_run",
     "fn_should_apply_kill_switch",
     "get_profile_and_roles",
     "log_user_logout"
@@ -8265,7 +8272,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 85
+   "arquivos_puxados": 88
   },
   {
    "protegida": true,

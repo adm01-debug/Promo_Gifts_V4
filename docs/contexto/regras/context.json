@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "29120bc4b425a752cf04a75bc25d4a76cbe3f599",
+  "sha": "156532ccbd218db4fae94cb9efcc844bd07d997b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 18:11 UTC",
-  "files_total": 11270,
-  "code_files": 9249,
-  "code_lines": 1317276
+  "generated_at": "2026-11-26 18:25 UTC",
+  "files_total": 11275,
+  "code_files": 9254,
+  "code_lines": 1318383
  },
  "version": "1.3.2",
- "facts_hash": "fc03d869fbdca3cb",
+ "facts_hash": "30073408ac489fec",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1131,8 +1131,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3532,
-   ".ts": 3200,
-   ".tsx": 2042,
+   ".ts": 3203,
+   ".tsx": 2044,
    ".mjs": 456,
    ".py": 18,
    ".js": 7
@@ -155181,7 +155181,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1777,
+  "components_count": 1779,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -158232,6 +158232,14 @@
     "file": "src/hooks/quotes/useSellerDiscountLimits.ts"
    },
    {
+    "name": "useAnonExposureAudit",
+    "file": "src/hooks/security/useAnonExposureAudit.ts"
+   },
+   {
+    "name": "useRunAnonExposureAudit",
+    "file": "src/hooks/security/useAnonExposureAudit.ts"
+   },
+   {
     "name": "useBlockedAccessLog",
     "file": "src/hooks/security/useBlockedAccessLog.ts"
    },
@@ -159938,8 +159946,8 @@
   },
   {
    "module": "src/components",
-   "files": 1501,
-   "lines": 294397,
+   "files": 1503,
+   "lines": 294972,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -160302,8 +160310,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 520,
-   "lines": 95450,
+   "files": 521,
+   "lines": 95548,
    "tables": [
     "access_blocked_log",
     "admin_audit_log",
@@ -160313,6 +160321,7 @@
     "ai_providers",
     "ai_usage_logs",
     "ai_usage_quotas",
+    "anon_catalog_grant_audit_log",
     "cart_templates",
     "catalog_analytics",
     "category_icons",
@@ -160597,8 +160606,8 @@
   },
   {
    "module": "src/lib",
-   "files": 440,
-   "lines": 69043,
+   "files": 442,
+   "lines": 69472,
    "tables": [
     "...",
     "companies",
@@ -160807,7 +160816,7 @@
   {
    "module": "src/pages",
    "files": 378,
-   "lines": 87442,
+   "lines": 87447,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -162475,6 +162484,11 @@
     "update": [
      "recovery/src-legacy/src/hooks/useAiUsage.ts",
      "src/hooks/intelligence/useAiUsage.ts"
+    ]
+   },
+   "anon_catalog_grant_audit_log": {
+    "select": [
+     "src/hooks/security/useAnonExposureAudit.ts"
     ]
    },
    "art_file_attachments": {
@@ -167816,6 +167830,9 @@
    "fn_admin_sync_external_connections": [
     "src/integrations/supabase/gold.ts"
    ],
+   "fn_anon_catalog_grant_audit_run": [
+    "src/hooks/security/useAnonExposureAudit.ts"
+   ],
    "fn_apply_crm_callback": [
     "supabase/functions/receive-crm-callback/index.ts"
    ],
@@ -169057,7 +169074,6 @@
    "admin_audit_log_y2026m06",
    "ai_routing_decisions",
    "analytics_events",
-   "anon_catalog_grant_audit_log",
    "anon_insert_rate",
    "app_vitals",
    "asia_image_import_queue",
@@ -176922,6 +176938,14 @@
    {
     "file": "src/components/admin/security/ActiveIpsList.tsx",
     "msg": "Erro ao tornar permanente"
+   },
+   {
+    "file": "src/components/admin/security/AnonExposureTab.tsx",
+    "msg": "Não foi possível rodar a verificação"
+   },
+   {
+    "file": "src/components/admin/security/AnonExposureTab.tsx",
+    "msg": "Violações encontradas"
    },
    {
     "file": "src/components/admin/security/BlockIpButton.tsx",
@@ -209806,6 +209830,11 @@
     "value": "100"
    },
    {
+    "file": "src/components/admin/security/AnonExposureTab.tsx",
+    "name": "MAX_VIOLACOES_RENDERIZADAS",
+    "value": "200"
+   },
+   {
     "file": "src/components/admin/security/BlockedAccessLogTab.tsx",
     "name": "MAX_ROWS_RENDERED",
     "value": "200"
@@ -211134,6 +211163,16 @@
     "file": "src/hooks/quotes/useQuoteClientLogos.ts",
     "name": "CHUNK",
     "value": "50"
+   },
+   {
+    "file": "src/hooks/security/useAnonExposureAudit.ts",
+    "name": "ANON_EXPOSURE_LIMIT",
+    "value": "40"
+   },
+   {
+    "file": "src/hooks/security/useAnonExposureAudit.ts",
+    "name": "COLUMNS",
+    "value": "'id,checked_at,violation_count,violations'"
    },
    {
     "file": "src/hooks/security/useBlockedAccessLog.ts",
@@ -231306,6 +231345,10 @@
     "line": "staleTime: 60 * 60 * 1000,"
    },
    {
+    "file": "src/hooks/security/useAnonExposureAudit.ts",
+    "line": "gcTime: 15 * 60 * 1000,"
+   },
+   {
     "file": "src/hooks/security/useBlockedAccessLog.ts",
     "line": "gcTime: 15 * 60 * 1000,"
    },
@@ -244476,6 +244519,50 @@
    {
     "file": "src/components/admin/ramos-atividade/__tests__/RamosAtividadeManager.test.tsx",
     "name": "mostra o erro com retry quando a consulta falha"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonExposureTab.test.tsx",
+    "name": "AnonExposureTab"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonExposureTab.test.tsx",
+    "name": "mostra esqueleto enquanto carrega"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonExposureTab.test.tsx",
+    "name": "mostra o erro com a policy exigida e permite tentar de novo"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonExposureTab.test.tsx",
+    "name": "explica o estado vazio quando nenhuma verificação foi registrada"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonExposureTab.test.tsx",
+    "name": "lista as violações da verificação mais recente, agrupadas por tipo"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonExposureTab.test.tsx",
+    "name": "filtra pela busca e avisa quando nada casa"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonExposureTab.test.tsx",
+    "name": "mostra o histórico com a variação entre execuções"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonExposureTab.test.tsx",
+    "name": "roda a verificação e avisa o resultado saudável"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonExposureTab.test.tsx",
+    "name": "avisa violações com tom destrutivo e desabilita o botão enquanto roda"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonExposureTab.test.tsx",
+    "name": "não vaza a mensagem crua do erro da RPC no toast"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonExposureTab.test.tsx",
+    "name": "recarrega pelo botão Atualizar"
    },
    {
     "file": "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
@@ -270848,6 +270935,134 @@
    {
     "file": "src/lib/security/sanitize-error.test.ts",
     "name": "não vaza detalhe técnico de falha upstream em texto cru"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "normalizarViolacao"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "aceita o formato da RPC quando os três campos são texto não vazio"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "recusa não-objetos, arrays e registros incompletos"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "recusa campos em branco e não-texto"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "normalizarViolacoes"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "devolve [] para qualquer valor que não seja array"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "descarta só os itens inválidos de um array misto"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "rotuloTipoObjeto"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "traduz tipos conhecidos ignorando a caixa"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "preserva o tipo desconhecido como veio"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "agruparViolacoes"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "conta por tipo e deduplica objetos e problemas"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "ordena do maior total para o menor e desempata pelo rótulo"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "devolve [] sem violações"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "filtrarViolacoes"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "devolve a mesma lista quando o termo está vazio ou só com espaços"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "busca por objeto, tipo e problema sem diferenciar caixa"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "ordenarSnapshots"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "coloca o mais recente primeiro"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "manda data inválida para o fim e desempata pelo id"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "não muda o array original"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "variacoesPorSnapshot"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "compara cada execução com a anterior e devolve o mais recente primeiro"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "devolve [] sem snapshots"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "descreverVariacao"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "cobre os quatro ramos"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "descreverExecucao"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "descreve sucesso e falha da RPC"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "resumirExposicao"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "devolve o resumo neutro quando não há histórico"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "resume o snapshot mais recente e calcula a variação"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonExposure.test.ts",
+    "name": "marca como saudável e sem variação quando só existe um snapshot limpo"
    },
    {
     "file": "src/lib/security/__tests__/blockedAccess.test.ts",
@@ -467155,6 +467370,23 @@
     "1000"
    ]
   },
+  "src/components/admin/security/AnonExposureTab.tsx": {
+   "path": "src/components/admin/security/AnonExposureTab.tsx",
+   "lines": 356,
+   "exports": [
+    "function AnonExposureTab"
+   ],
+   "errors": [
+    "Não foi possível rodar a verificação",
+    "Violações encontradas"
+   ],
+   "params": [
+    {
+     "name": "MAX_VIOLACOES_RENDERIZADAS",
+     "value": "200"
+    }
+   ]
+  },
   "src/components/admin/security/AutoDefenseTab.tsx": {
    "path": "src/components/admin/security/AutoDefenseTab.tsx",
    "lines": 151,
@@ -467352,7 +467584,7 @@
   },
   "src/components/admin/security/SecurityTabsList.tsx": {
    "path": "src/components/admin/security/SecurityTabsList.tsx",
-   "lines": 46,
+   "lines": 49,
    "exports": [
     "function SecurityTabsList"
    ],
@@ -467399,6 +467631,24 @@
    ],
    "pagination": [
     "2000"
+   ]
+  },
+  "src/components/admin/security/__tests__/AnonExposureTab.test.tsx": {
+   "path": "src/components/admin/security/__tests__/AnonExposureTab.test.tsx",
+   "lines": 216,
+   "is_test": true,
+   "tests": [
+    "AnonExposureTab",
+    "mostra esqueleto enquanto carrega",
+    "mostra o erro com a policy exigida e permite tentar de novo",
+    "explica o estado vazio quando nenhuma verificação foi registrada",
+    "lista as violações da verificação mais recente, agrupadas por tipo",
+    "filtra pela busca e avisa quando nada casa",
+    "mostra o histórico com a variação entre execuções",
+    "roda a verificação e avisa o resultado saudável",
+    "avisa violações com tom destrutivo e desabilita o botão enquanto roda",
+    "não vaza a mensagem crua do erro da RPC no toast",
+    "recarrega pelo botão Atualizar"
    ]
   },
   "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx": {
@@ -501649,6 +501899,44 @@
     "retorna false e toast.error quando Supabase falha"
    ]
   },
+  "src/hooks/security/useAnonExposureAudit.ts": {
+   "path": "src/hooks/security/useAnonExposureAudit.ts",
+   "lines": 98,
+   "exports": [
+    "const ANON_EXPOSURE_QUERY_KEY",
+    "const ANON_EXPOSURE_LIMIT",
+    "interface UseAnonExposureAuditResult",
+    "function useAnonExposureAudit",
+    "interface AnonExposureRunResult",
+    "function useRunAnonExposureAudit"
+   ],
+   "tables": [
+    {
+     "table": "anon_catalog_grant_audit_log",
+     "op": "select"
+    }
+   ],
+   "rpc": [
+    "fn_anon_catalog_grant_audit_run"
+   ],
+   "params": [
+    {
+     "name": "ANON_EXPOSURE_LIMIT",
+     "value": "40"
+    },
+    {
+     "name": "COLUMNS",
+     "value": "'id,checked_at,violation_count,violations'"
+    }
+   ],
+   "hooks": [
+    "useAnonExposureAudit",
+    "useRunAnonExposureAudit"
+   ],
+   "temporal": [
+    "gcTime: 15 * 60 * 1000,"
+   ]
+  },
   "src/hooks/security/useBlockedAccessLog.ts": {
    "path": "src/hooks/security/useBlockedAccessLog.ts",
    "lines": 60,
@@ -514415,6 +514703,28 @@
    ],
    "doc": "SSOT auditável da matriz de acesso por rota. Esta tabela é a fonte única para a página /admin/rbac-rotas. Atualize SEMPRE que adicionar/remover uma rota técnica ou trocar guard. Convenções: - guard: componente real usado no roteador (App.tsx). - role: papel mínimo necessário, na nomenclatura do app. …"
   },
+  "src/lib/security/anonExposure.ts": {
+   "path": "src/lib/security/anonExposure.ts",
+   "lines": 201,
+   "exports": [
+    "interface AnonViolation",
+    "interface AnonAuditSnapshot",
+    "interface AnonExposureGroup",
+    "interface AnonExposureSummary",
+    "const ANON_EXPOSURE_SEM_DADOS",
+    "function normalizarViolacao",
+    "function normalizarViolacoes",
+    "function rotuloTipoObjeto",
+    "function agruparViolacoes",
+    "function filtrarViolacoes",
+    "function ordenarSnapshots",
+    "interface AnonSnapshotVariacao",
+    "function variacoesPorSnapshot",
+    "function descreverVariacao",
+    "function descreverExecucao",
+    "function resumirExposicao"
+   ]
+  },
   "src/lib/security/blockedAccess.ts": {
    "path": "src/lib/security/blockedAccess.ts",
    "lines": 359,
@@ -514720,6 +515030,45 @@
      "refines": [],
      "chain": []
     }
+   ]
+  },
+  "src/lib/security/__tests__/anonExposure.test.ts": {
+   "path": "src/lib/security/__tests__/anonExposure.test.ts",
+   "lines": 228,
+   "is_test": true,
+   "tests": [
+    "normalizarViolacao",
+    "aceita o formato da RPC quando os três campos são texto não vazio",
+    "recusa não-objetos, arrays e registros incompletos",
+    "recusa campos em branco e não-texto",
+    "normalizarViolacoes",
+    "devolve [] para qualquer valor que não seja array",
+    "descarta só os itens inválidos de um array misto",
+    "rotuloTipoObjeto",
+    "traduz tipos conhecidos ignorando a caixa",
+    "preserva o tipo desconhecido como veio",
+    "agruparViolacoes",
+    "conta por tipo e deduplica objetos e problemas",
+    "ordena do maior total para o menor e desempata pelo rótulo",
+    "devolve [] sem violações",
+    "filtrarViolacoes",
+    "devolve a mesma lista quando o termo está vazio ou só com espaços",
+    "busca por objeto, tipo e problema sem diferenciar caixa",
+    "ordenarSnapshots",
+    "coloca o mais recente primeiro",
+    "manda data inválida para o fim e desempata pelo id",
+    "não muda o array original",
+    "variacoesPorSnapshot",
+    "compara cada execução com a anterior e devolve o mais recente primeiro",
+    "devolve [] sem snapshots",
+    "descreverVariacao",
+    "cobre os quatro ramos",
+    "descreverExecucao",
+    "descreve sucesso e falha da RPC",
+    "resumirExposicao",
+    "devolve o resumo neutro quando não há histórico",
+    "resume o snapshot mais recente e calcula a variação",
+    "marca como saudável e sem variação quando só existe um snapshot limpo"
    ]
   },
   "src/lib/security/__tests__/blockedAccess.test.ts": {
@@ -517196,7 +517545,7 @@
   },
   "src/pages/admin/AdminSegurancaAcessoPage.tsx": {
    "path": "src/pages/admin/AdminSegurancaAcessoPage.tsx",
-   "lines": 722,
+   "lines": 727,
    "exports": [
     "function AdminSegurancaAcessoPage"
    ],
@@ -583030,10 +583379,26 @@
   }
  },
  "git": {
-  "sha": "29120bc4b425a752cf04a75bc25d4a76cbe3f599",
+  "sha": "156532ccbd218db4fae94cb9efcc844bd07d997b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "156532c",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "feat: tela de exposicao anon no painel de seguranca (#4182)",
+    "files": [
+     "audit/supabase-reference-catalog.temporary.json",
+     "src/components/admin/security/AnonExposureTab.tsx",
+     "src/components/admin/security/SecurityTabsList.tsx",
+     "src/components/admin/security/__tests__/AnonExposureTab.test.tsx",
+     "src/hooks/security/useAnonExposureAudit.ts",
+     "src/lib/security/__tests__/anonExposure.test.ts",
+     "src/lib/security/anonExposure.ts",
+     "src/pages/admin/AdminSegurancaAcessoPage.tsx"
+    ]
+   },
    {
     "sha": "29120bc",
     "date": "2026-11-26",
@@ -583405,23 +583770,16 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "e61dc37",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: reemite PERF005 como 20261126030000 com approved-by valido (#4153)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261126030000_perf005_drop_unused_indexes_concurrently.sql",
-     "supabase/rollbacks/20261126030000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    9
+    8
+   ],
+   [
+    "audit/supabase-reference-catalog.temporary.json",
+    6
    ],
    [
     ".release-please-manifest.json",
@@ -583440,12 +583798,16 @@
     5
    ],
    [
-    "audit/supabase-reference-catalog.temporary.json",
-    5
-   ],
-   [
     "docs/estado/07_EDGE_FUNCTIONS.md",
     3
+   ],
+   [
+    "src/components/admin/security/SecurityTabsList.tsx",
+    2
+   ],
+   [
+    "src/pages/admin/AdminSegurancaAcessoPage.tsx",
+    2
    ],
    [
     "supabase/migrations/20261126060000_crm_seller_identity_admin_rpc.sql",
@@ -583489,14 +583851,6 @@
    ],
    [
     "src/components/layout/SidebarReorganized.tsx",
-    2
-   ],
-   [
-    "src/lib/rbac/route-matrix.ts",
-    2
-   ],
-   [
-    "src/routes/admin-routes.tsx",
     2
    ]
   ]

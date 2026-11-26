@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2735,
+ "total": 2737,
  "por_tipo": {
   "contrato": 70,
   "e2e": 678,
   "pytest": 8,
   "qa": 17,
-  "unit": 1962
+  "unit": 1964
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 804
+   "arquivos": 806
   },
   {
    "padrao": "e2e/",
@@ -5141,6 +5141,16 @@
     "src/types/ramo-atividade.ts"
    ],
    "casos": 6
+  },
+  {
+   "arquivo": "src/components/admin/security/__tests__/AnonExposureTab.test.tsx",
+   "tipo": "unit",
+   "linhas": 216,
+   "testa": [
+    "src/components/admin/security/AnonExposureTab.tsx",
+    "src/lib/security/anonExposure.ts"
+   ],
+   "casos": 10
   },
   {
    "arquivo": "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
@@ -10963,6 +10973,15 @@
     "src/lib/quotes/templateTotal.ts"
    ],
    "casos": 12
+  },
+  {
+   "arquivo": "src/lib/security/__tests__/anonExposure.test.ts",
+   "tipo": "unit",
+   "linhas": 228,
+   "testa": [
+    "src/lib/security/anonExposure.ts"
+   ],
+   "casos": 22
   },
   {
    "arquivo": "src/lib/security/__tests__/blockedAccess.test.ts",
@@ -23562,6 +23581,7 @@
   "src/components/admin/products/sections/engraving/types.ts": 1,
   "src/components/admin/products/sections/engraving/useEngravingWizard.ts": 1,
   "src/components/admin/ramos-atividade/RamosAtividadeManager.tsx": 1,
+  "src/components/admin/security/AnonExposureTab.tsx": 1,
   "src/components/admin/security/BlockedAccessLogTab.tsx": 1,
   "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx": 1,
   "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx": 2,
@@ -24236,6 +24256,7 @@
   "src/lib/quotes/status-transition.ts": 1,
   "src/lib/quotes/templateTotal.ts": 1,
   "src/lib/roles.ts": 1,
+  "src/lib/security/anonExposure.ts": 2,
   "src/lib/security/blockedAccess.ts": 2,
   "src/lib/security/file-validation.ts": 1,
   "src/lib/security/lastInternalRoute.ts": 1,
@@ -24953,6 +24974,7 @@
    "src/hooks/quotes/useProdutoPersonalizacao.ts",
    "src/hooks/quotes/useQuoteClientLogos.ts",
    "src/hooks/quotes/useQuoteItemCounts.ts",
+   "src/hooks/security/useAnonExposureAudit.ts",
    "src/hooks/security/useBlockedAccessLog.ts",
    "src/hooks/simulation/useExternalSimulator.ts",
    "src/hooks/simulation/useGravacaoV2.ts",
