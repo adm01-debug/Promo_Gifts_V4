@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0ab1b7ad5b3d1d75929942e0d40dd9d54212d266",
+  "commit": "aacb9e534ebfe2de9e95f126a418645b0ba32647",
   "branch": "main",
-  "data_commit": "2026-11-25T21:39:15-03:00",
+  "data_commit": "2026-11-25T21:46:56-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "aacb9e5",
+    "data": "2026-11-25",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261101210000 (#4145)"
+   },
    {
     "sha": "0ab1b7a",
     "data": "2026-11-25",
@@ -126,11 +131,6 @@
     "sha": "de33a8d",
     "data": "2026-11-25",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261120040000 (#4118)"
-   },
-   {
-    "sha": "fd4bdb0",
-    "data": "2026-11-25",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261125074200 (#4116)"
    }
   ],
   "arquivos_mudados_7d": 575,
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 125
+    "mudancas": 124
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -165,18 +165,18 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 96
+    "mudancas": 97
    },
    {
     "pasta": "src/pages/magazine",
     "mudancas": 92
    },
    {
-    "pasta": "src/pages/quotes",
-    "mudancas": 86
+    "pasta": "src/components/inventory",
+    "mudancas": 85
    },
    {
-    "pasta": "src/components/inventory",
+    "pasta": "src/pages/quotes",
     "mudancas": 85
    },
    {
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 96
+    "mudancas": 97
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -226,10 +226,6 @@
     "mudancas": 8
    },
    {
-    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
-    "mudancas": 8
-   },
-   {
     "arquivo": "supabase/migrations-snapshot/ALL_IN_ONE.sql",
     "mudancas": 8
    },
@@ -240,6 +236,10 @@
    {
     "arquivo": "supabase/migrations-snapshot/SNAPSHOT_META.json",
     "mudancas": 8
+   },
+   {
+    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
+    "mudancas": 7
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 240
+    "commits": 239
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 60
+    "commits": 61
    }
   ]
  },

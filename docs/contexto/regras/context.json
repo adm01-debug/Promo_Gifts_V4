@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "0ab1b7ad5b3d1d75929942e0d40dd9d54212d266",
+  "sha": "aacb9e534ebfe2de9e95f126a418645b0ba32647",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 00:52 UTC",
+  "generated_at": "2026-11-26 01:05 UTC",
   "files_total": 11222,
   "code_files": 9205,
   "code_lines": 1308366
@@ -579405,10 +579405,19 @@
   }
  },
  "git": {
-  "sha": "0ab1b7ad5b3d1d75929942e0d40dd9d54212d266",
+  "sha": "aacb9e534ebfe2de9e95f126a418645b0ba32647",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "aacb9e5",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261101210000 (#4145)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "0ab1b7a",
     "date": "2026-11-25",
@@ -579714,39 +579723,19 @@
      "supabase/migrations/20261027230000_cleanup_get_edge_function_secret_allowlist.sql",
      "supabase/rollbacks/20261027230000_rollback.sql"
     ]
-   },
-   {
-    "sha": "b0ceb1e",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "chore(main): release gifts-store 1.20.1 (#4091)",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    12
+    13
    ],
    [
     "package-lock.json",
-    4
-   ],
-   [
-    "package.json",
-    4
-   ],
-   [
-    ".release-please-manifest.json",
     3
    ],
    [
-    "CHANGELOG.md",
+    "package.json",
     3
    ],
    [
@@ -579756,6 +579745,14 @@
    [
     "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql",
     3
+   ],
+   [
+    ".release-please-manifest.json",
+    2
+   ],
+   [
+    "CHANGELOG.md",
+    2
    ],
    [
     "supabase/baseline/20261125180000_baseline_schema.sql",

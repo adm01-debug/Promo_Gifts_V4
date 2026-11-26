@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(migrations-log): recibo E15 — aplicação de 20261101210000 (#4145)",
    "docs(migrations-log): recibo E15 — aplicação de 20260620190001 (#4141)",
    "fix: PERF005 derruba so os 48 indices com scans=0 e ganha rollback (#4144)",
    "docs(migrations-log): recibo E15 — aplicação de 20260629142224 (#4138)",
-   "fix: rollback das policies no-op e cabecalho na 20261101210000 (#4142)",
-   "chore(main): release gifts-store 1.20.3 (#4135)"
+   "fix: rollback das policies no-op e cabecalho na 20261101210000 (#4142)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
