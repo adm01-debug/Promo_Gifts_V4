@@ -1,7 +1,15 @@
--- Tela /admin/vinculos-vendedor-crm: gestao do mapeamento 1:1 auth.users -> vendedor do CRM.
+-- 20261126060000 - RPCs admin da tela /admin/vinculos-vendedor-crm (mapeamento auth.users -> vendedor CRM).
+--
+-- Rollback: supabase/rollbacks/20261126060000_rollback.sql
+--
+-- approved-by: adm01-debug
+--
 -- A tabela public.crm_seller_identity_links permanece deny-all (sem policies, sem grant a
 -- anon/authenticated); todo acesso passa por estas RPCs SECURITY DEFINER com guard de role.
-BEGIN;
+--
+-- Causa: src/hooks/admin/useCrmSellerLinks.ts + src/lib/crm/seller-links.ts consomem as 3 RPCs e
+-- elas nao existiam no banco canonico (preflight db-apply-migration reprovou o arquivo original por
+-- (1) falta de cabecalho de rollback logico e (2) BEGIN/COMMIT de topo, que conflita com psql -1).
 
 CREATE OR REPLACE FUNCTION public.fn_admin_list_crm_seller_links(
   _search text DEFAULT NULL,
@@ -202,4 +210,3 @@ GRANT EXECUTE ON FUNCTION public.fn_admin_link_crm_seller(bigint, uuid, text) TO
 REVOKE ALL ON FUNCTION public.fn_admin_unlink_crm_seller(uuid) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.fn_admin_unlink_crm_seller(uuid) TO authenticated, service_role;
 
-COMMIT;

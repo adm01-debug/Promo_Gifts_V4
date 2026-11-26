@@ -1,7 +1,7 @@
 -- ==============================================================
 -- ALL_IN_ONE.sql — snapshot concatenado de supabase/migrations/
--- Gerado em: 2026-11-26T03:08:38.960Z
--- Total de arquivos: 3138
+-- Gerado em: 2026-11-26T16:41:20.836Z
+-- Total de arquivos: 3141
 -- Ordem: alfabética (mesmo critério do Supabase CLI)
 -- Uso: APENAS auditoria/leitura. NÃO aplicar direto no banco.
 -- SSOT continua sendo os arquivos individuais em supabase/migrations/.
@@ -266728,3 +266728,420 @@ DROP INDEX CONCURRENTLY IF EXISTS public.idx_pat_tabela;
 DROP INDEX CONCURRENTLY IF EXISTS public.idx_pat_location_code;
 
 -- <<< END 20261126030000_perf005_drop_unused_indexes_concurrently.sql <<<
+
+-- >>> BEGIN 20261126052000_ops_infra_telemetry_dev_rpc.sql >>>
+-- OPS-UI — tela "Infra do Banco" (/admin/infra-ops, DevRoute): única tela para a
+-- telemetria operacional interna que hoje só existe como relatório de CI.
+--   ops.table_size_history     (E30, cron table-size-history-daily)
+--   ops.pgss_history           (E40, cron pgss-history-weekly)
+--   ops.wraparound_monitor_log (E33, cron wraparound-toast-sequence-monitor)
+-- Por que RPC e não policy: o schema ops é deny-all por decisão registrada em
+--   .security/rls-no-policy-allowlist.json e não está exposto no db-schema do
+--   PostgREST. Uma RPC SECURITY DEFINER em public mantém o deny-all (nenhuma das
+--   três tabelas ganha GRANT a anon/authenticated) e devolve só agregados.
+-- Guard: papel dev — mesma regra do <DevRoute /> que protege /admin/infra-ops e
+--   do fn_dev_medallion_health(); 42501 para os demais.
+-- Rollback: DROP FUNCTION IF EXISTS public.fn_dev_ops_infra_telemetry(integer, integer);
+--   (arquivo supabase/rollbacks/20261126052000_rollback.sql)
+
+CREATE OR REPLACE FUNCTION public.fn_dev_ops_infra_telemetry(_days integer DEFAULT 30, _top integer DEFAULT 15)
+RETURNS jsonb
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = public, pg_catalog, pg_temp
+AS $$
+DECLARE
+  v_uid uuid := (SELECT auth.uid());
+  v_days integer := GREATEST(LEAST(COALESCE(_days, 30), 365), 1);
+  v_top integer := GREATEST(LEAST(COALESCE(_top, 15), 50), 1);
+  v_since timestamptz := now() - make_interval(days => v_days);
+  v_size_at timestamptz;
+  v_pgss_at timestamptz;
+  v_wrap_at timestamptz;
+BEGIN
+  IF v_uid IS NULL OR NOT public.is_dev(v_uid) THEN
+    RAISE EXCEPTION 'forbidden: requer papel dev' USING ERRCODE = '42501';
+  END IF;
+
+  SELECT max(captured_at) INTO v_size_at FROM ops.table_size_history;
+  SELECT max(captured_at) INTO v_pgss_at FROM ops.pgss_history;
+  SELECT max(captured_at) INTO v_wrap_at FROM ops.wraparound_monitor_log;
+
+  RETURN jsonb_build_object(
+    'window_days', v_days,
+    'captured_at', jsonb_build_object(
+      'table_size', to_jsonb(v_size_at),
+      'pgss', to_jsonb(v_pgss_at),
+      'wraparound', to_jsonb(v_wrap_at)
+    ),
+    'table_growth', COALESCE((
+      SELECT jsonb_agg(to_jsonb(g) ORDER BY g.delta_bytes DESC)
+      FROM (
+        SELECT l.schema_name, l.table_name,
+               f.total_bytes AS first_bytes,
+               l.total_bytes AS last_bytes,
+               (l.total_bytes - f.total_bytes) AS delta_bytes,
+               l.live_tup,
+               f.captured_at AS first_captured_at,
+               l.captured_at AS last_captured_at
+        FROM (
+          SELECT DISTINCT ON (h.schema_name, h.table_name)
+                 h.schema_name, h.table_name, h.total_bytes, h.captured_at
+          FROM ops.table_size_history h
+          WHERE h.captured_at >= v_since
+          ORDER BY h.schema_name, h.table_name, h.captured_at ASC
+        ) f
+        JOIN (
+          SELECT DISTINCT ON (h.schema_name, h.table_name)
+                 h.schema_name, h.table_name, h.total_bytes, h.live_tup, h.captured_at
+          FROM ops.table_size_history h
+          WHERE h.captured_at >= v_since
+          ORDER BY h.schema_name, h.table_name, h.captured_at DESC
+        ) l USING (schema_name, table_name)
+        ORDER BY (l.total_bytes - f.total_bytes) DESC
+        LIMIT v_top
+      ) g
+    ), '[]'::jsonb),
+    'pgss_summary', COALESCE((
+      SELECT jsonb_build_object(
+        'labels', count(DISTINCT COALESCE(p.fn_name, 'queryid ' || p.queryid::text)),
+        'calls', COALESCE(sum(p.calls), 0),
+        'total_exec_time', COALESCE(sum(p.total_exec_time), 0)
+      )
+      FROM ops.pgss_history p
+      WHERE p.captured_at = v_pgss_at
+    ), '{}'::jsonb),
+    'pgss_top', COALESCE((
+      SELECT jsonb_agg(to_jsonb(p) ORDER BY p.total_exec_time DESC)
+      FROM (
+        SELECT COALESCE(p.fn_name, 'queryid ' || p.queryid::text) AS label,
+               p.fn_name, p.queryid, p.calls, p.total_exec_time,
+               p.mean_exec_time, p.max_exec_time
+        FROM ops.pgss_history p
+        WHERE p.captured_at = v_pgss_at
+        ORDER BY p.total_exec_time DESC
+        LIMIT v_top
+      ) p
+    ), '[]'::jsonb),
+    'wraparound', COALESCE((
+      SELECT jsonb_agg(to_jsonb(w) ORDER BY w.metric, w.value_pct DESC NULLS LAST, w.object_name)
+      FROM (
+        SELECT DISTINCT ON (w.metric, w.object_name)
+               w.metric, w.object_name, w.value_numeric, w.value_pct, w.unit
+        FROM ops.wraparound_monitor_log w
+        WHERE w.captured_at = v_wrap_at
+        ORDER BY w.metric, w.object_name, w.captured_at DESC
+      ) w
+    ), '[]'::jsonb)
+  );
+END;
+$$;
+
+COMMENT ON FUNCTION public.fn_dev_ops_infra_telemetry(integer, integer) IS
+  'Telemetria operacional interna (schema ops: E30 table_size_history, E40 pgss_history, E33 wraparound_monitor_log) '
+  'para a tela /admin/infra-ops. Só papel dev (42501 para os demais). O schema ops segue deny-all e sem GRANT a '
+  'anon/authenticated; esta RPC devolve apenas agregados (top _top itens na janela de _days dias).';
+
+REVOKE ALL ON FUNCTION public.fn_dev_ops_infra_telemetry(integer, integer) FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.fn_dev_ops_infra_telemetry(integer, integer) FROM anon;
+GRANT EXECUTE ON FUNCTION public.fn_dev_ops_infra_telemetry(integer, integer) TO authenticated;
+
+-- <<< END 20261126052000_ops_infra_telemetry_dev_rpc.sql <<<
+
+-- >>> BEGIN 20261126060000_crm_seller_identity_admin_rpc.sql >>>
+-- Tela /admin/vinculos-vendedor-crm: gestao do mapeamento 1:1 auth.users -> vendedor do CRM.
+-- A tabela public.crm_seller_identity_links permanece deny-all (sem policies, sem grant a
+-- anon/authenticated); todo acesso passa por estas RPCs SECURITY DEFINER com guard de role.
+BEGIN;
+
+CREATE OR REPLACE FUNCTION public.fn_admin_list_crm_seller_links(
+  _search text DEFAULT NULL,
+  _limit integer DEFAULT 200
+)
+RETURNS TABLE (
+  auth_user_id uuid,
+  crm_seller_id bigint,
+  link_source text,
+  created_at timestamp with time zone,
+  full_name text,
+  email text
+)
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  v_limit integer := LEAST(GREATEST(COALESCE(_limit, 200), 1), 500);
+  v_search text := NULLIF(btrim(COALESCE(_search, '')), '');
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Autenticacao obrigatoria.' USING ERRCODE = '42501';
+  END IF;
+  IF NOT public.is_admin_or_above(auth.uid()) THEN
+    RAISE EXCEPTION 'Acesso restrito a administradores.' USING ERRCODE = '42501';
+  END IF;
+
+  RETURN QUERY
+  SELECT l.auth_user_id,
+         l.crm_seller_id,
+         l.link_source,
+         l.created_at,
+         p.full_name,
+         p.email
+    FROM public.crm_seller_identity_links l
+    LEFT JOIN public.profiles p ON p.user_id = l.auth_user_id
+   WHERE v_search IS NULL
+      OR p.email ILIKE '%' || v_search || '%'
+      OR p.full_name ILIKE '%' || v_search || '%'
+      OR l.crm_seller_id::text = v_search
+   ORDER BY l.created_at DESC
+   LIMIT v_limit;
+END;
+$$;
+
+COMMENT ON FUNCTION public.fn_admin_list_crm_seller_links(text, integer) IS
+  'Lista os vinculos auth.users -> vendedor do CRM externo para a tela /admin/vinculos-vendedor-crm. Guard is_admin_or_above, le a tabela deny-all crm_seller_identity_links e enriquece com profiles.';
+
+CREATE OR REPLACE FUNCTION public.fn_admin_link_crm_seller(
+  _crm_seller_id bigint,
+  _auth_user_id uuid DEFAULT NULL,
+  _email text DEFAULT NULL
+)
+RETURNS TABLE (
+  action text,
+  previous_crm_seller_id bigint,
+  auth_user_id uuid,
+  email text
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  v_previous bigint;
+  v_user_id uuid;
+  v_email text;
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Autenticacao obrigatoria.' USING ERRCODE = '42501';
+  END IF;
+  IF NOT public.is_admin_or_above(auth.uid()) THEN
+    RAISE EXCEPTION 'Acesso restrito a administradores.' USING ERRCODE = '42501';
+  END IF;
+  IF _crm_seller_id IS NULL OR _crm_seller_id <= 0 THEN
+    RAISE EXCEPTION 'O id do vendedor no CRM deve ser um inteiro positivo.' USING ERRCODE = '22023';
+  END IF;
+
+  IF _auth_user_id IS NULL THEN
+    IF NULLIF(btrim(COALESCE(_email, '')), '') IS NULL THEN
+      RAISE EXCEPTION 'Informe o e-mail ou o id do usuario a vincular.' USING ERRCODE = '22023';
+    END IF;
+    SELECT u.id, u.email INTO v_user_id, v_email
+      FROM auth.users u
+     WHERE lower(u.email) = lower(btrim(_email));
+    IF v_user_id IS NULL THEN
+      RAISE EXCEPTION 'Nenhum usuario cadastrado com o e-mail %.', btrim(_email) USING ERRCODE = '22023';
+    END IF;
+  ELSE
+    SELECT u.id, u.email INTO v_user_id, v_email FROM auth.users u WHERE u.id = _auth_user_id;
+    IF v_user_id IS NULL THEN
+      RAISE EXCEPTION 'Usuario % nao existe em auth.users.', _auth_user_id USING ERRCODE = '23503';
+    END IF;
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM public.crm_seller_identity_links l
+     WHERE l.crm_seller_id = _crm_seller_id AND l.auth_user_id <> v_user_id
+  ) THEN
+    RAISE EXCEPTION 'O vendedor % ja esta vinculado a outro usuario. Desfaca o vinculo anterior primeiro.', _crm_seller_id
+      USING ERRCODE = '23505';
+  END IF;
+
+  SELECT l.crm_seller_id INTO v_previous
+    FROM public.crm_seller_identity_links l
+   WHERE l.auth_user_id = v_user_id;
+
+  IF v_previous IS NULL THEN
+    BEGIN
+      INSERT INTO public.crm_seller_identity_links (auth_user_id, crm_seller_id, link_source)
+      VALUES (v_user_id, _crm_seller_id, 'manual');
+    EXCEPTION WHEN unique_violation THEN
+      RAISE EXCEPTION 'O vendedor % ou o usuario ja possui vinculo (corrida detectada). Recarregue a tela.', _crm_seller_id
+        USING ERRCODE = '23505';
+    END;
+    PERFORM public.log_audit(
+      'crm_seller_identity_link_created',
+      'crm_seller_identity_links',
+      v_user_id::text,
+      jsonb_build_object('crm_seller_id', _crm_seller_id, 'link_source', 'manual', 'email', v_email)
+    );
+    RETURN QUERY SELECT 'created'::text, NULL::bigint, v_user_id, v_email;
+  ELSIF v_previous = _crm_seller_id THEN
+    RETURN QUERY SELECT 'unchanged'::text, v_previous, v_user_id, v_email;
+  ELSE
+    BEGIN
+      UPDATE public.crm_seller_identity_links l
+         SET crm_seller_id = _crm_seller_id,
+             link_source = 'manual'
+       WHERE l.auth_user_id = v_user_id;
+    EXCEPTION WHEN unique_violation THEN
+      RAISE EXCEPTION 'O vendedor % ja esta vinculado a outro usuario (corrida detectada). Recarregue a tela.', _crm_seller_id
+        USING ERRCODE = '23505';
+    END;
+    PERFORM public.log_audit(
+      'crm_seller_identity_link_updated',
+      'crm_seller_identity_links',
+      v_user_id::text,
+      jsonb_build_object('previous_crm_seller_id', v_previous, 'crm_seller_id', _crm_seller_id, 'link_source', 'manual', 'email', v_email)
+    );
+    RETURN QUERY SELECT 'updated'::text, v_previous, v_user_id, v_email;
+  END IF;
+END;
+$$;
+
+COMMENT ON FUNCTION public.fn_admin_link_crm_seller(bigint, uuid, text) IS
+  'Cria ou corrige o vinculo auth.users -> vendedor do CRM externo com link_source=manual (aceita e-mail ou auth_user_id), audita em admin_audit_log e rejeita id invalido, usuario inexistente ou vendedor ja vinculado (23505).';
+
+CREATE OR REPLACE FUNCTION public.fn_admin_unlink_crm_seller(_auth_user_id uuid)
+RETURNS bigint
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  v_previous bigint;
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Autenticacao obrigatoria.' USING ERRCODE = '42501';
+  END IF;
+  IF NOT public.is_admin_or_above(auth.uid()) THEN
+    RAISE EXCEPTION 'Acesso restrito a administradores.' USING ERRCODE = '42501';
+  END IF;
+  IF _auth_user_id IS NULL THEN
+    RAISE EXCEPTION 'Informe o usuario (auth_user_id) a desvincular.' USING ERRCODE = '22023';
+  END IF;
+
+  DELETE FROM public.crm_seller_identity_links l
+   WHERE l.auth_user_id = _auth_user_id
+  RETURNING l.crm_seller_id INTO v_previous;
+
+  IF v_previous IS NULL THEN
+    RETURN NULL;
+  END IF;
+
+  PERFORM public.log_audit(
+    'crm_seller_identity_link_removed',
+    'crm_seller_identity_links',
+    _auth_user_id::text,
+    jsonb_build_object('crm_seller_id', v_previous)
+  );
+
+  RETURN v_previous;
+END;
+$$;
+
+COMMENT ON FUNCTION public.fn_admin_unlink_crm_seller(uuid) IS
+  'Desfaz o vinculo auth.users -> vendedor do CRM externo (o bridge volta a resolver por e-mail no proximo acesso), audita em admin_audit_log e e idempotente.';
+
+REVOKE ALL ON FUNCTION public.fn_admin_list_crm_seller_links(text, integer) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.fn_admin_list_crm_seller_links(text, integer) TO authenticated, service_role;
+
+REVOKE ALL ON FUNCTION public.fn_admin_link_crm_seller(bigint, uuid, text) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.fn_admin_link_crm_seller(bigint, uuid, text) TO authenticated, service_role;
+
+REVOKE ALL ON FUNCTION public.fn_admin_unlink_crm_seller(uuid) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.fn_admin_unlink_crm_seller(uuid) TO authenticated, service_role;
+
+COMMIT;
+-- <<< END 20261126060000_crm_seller_identity_admin_rpc.sql <<<
+
+-- >>> BEGIN 20261126130000_create_saved_stock_views.sql >>>
+-- 20261126130000 - cria saved_stock_views (views salvas do painel de estoque)
+--
+-- Rollback: supabase/rollbacks/20261126130000_rollback.sql
+--
+-- approved-by: adm01-debug
+--
+-- Causa: src/hooks/stock/useSavedStockViews.ts (111 linhas, CRUD completo) existe no repo e aponta
+-- para `saved_stock_views`, tabela que nunca foi criada:
+--   * nenhum CREATE TABLE em supabase/migrations/;
+--   * zero ocorrencia de "saved_stock_views" no dump vivo do projeto canonico
+--     (supabase/migrations-snapshot/SCHEMA_LIVE.sql, gerado em 2026-11-26);
+--   * ausente do ledger (supabase/baseline/20261122200000_migration_hashes.json).
+-- O hook era o unico leitor/escritor conhecido do dado (auditoria
+-- docs/estado/05_LOGICA_HOOKS_SERVICOS.md, secao B item 11: "Escreve saved_stock_views (`:20`).
+-- Nenhuma UI de 'views salvas' existe."), entao falharia em runtime por tabela inexistente.
+-- Esta migration cria a tabela com o contrato que o TypeScript ja declara (interface
+-- SavedStockView) e a UI passa a montar o menu de views na rota /estoque.
+--
+-- Idempotente: IF NOT EXISTS em tabela/indice, CREATE OR REPLACE no trigger e DROP POLICY IF EXISTS
+-- antes de cada CREATE POLICY, para retry seguro do db-apply-migration.yml.
+--
+-- Colunas: espelham a interface SavedStockView (id, user_id, name, filters, description, is_pinned,
+-- use_count, created_at) mais updated_at para o carimbo automatico do trigger.
+
+CREATE TABLE IF NOT EXISTS public.saved_stock_views ( -- soft-delete-exempt: atalho privado do usuario; remover e definitivo e a unicidade (user_id, name) impediria recriar o mesmo nome
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id     uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  name        text NOT NULL,
+  description text,
+  filters     jsonb NOT NULL DEFAULT '{}'::jsonb,
+  is_pinned   boolean NOT NULL DEFAULT false,
+  use_count   integer NOT NULL DEFAULT 0,
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  updated_at  timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT saved_stock_views_name_len_check CHECK (char_length(btrim(name)) BETWEEN 1 AND 80),
+  CONSTRAINT saved_stock_views_filters_object_check CHECK (jsonb_typeof(filters) = 'object'),
+  CONSTRAINT saved_stock_views_use_count_check CHECK (use_count >= 0),
+  CONSTRAINT saved_stock_views_user_name_key UNIQUE (user_id, name)
+);
+
+-- Lista principal do hook: por usuario, fixadas primeiro, mais recentes depois.
+CREATE INDEX IF NOT EXISTS saved_stock_views_user_order_idx
+  ON public.saved_stock_views (user_id, is_pinned DESC, created_at DESC);
+
+-- updated_at automatico (public.handle_updated_at existe desde a 20261031000000)
+CREATE OR REPLACE TRIGGER set_saved_stock_views_updated_at
+  BEFORE UPDATE ON public.saved_stock_views
+  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+-- RLS: cada usuario so enxerga e escreve as proprias views.
+ALTER TABLE public.saved_stock_views ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "saved_stock_views_select_own" ON public.saved_stock_views;
+CREATE POLICY "saved_stock_views_select_own"
+  ON public.saved_stock_views FOR SELECT
+  TO authenticated
+  USING (user_id = auth.uid());
+
+DROP POLICY IF EXISTS "saved_stock_views_insert_own" ON public.saved_stock_views;
+CREATE POLICY "saved_stock_views_insert_own"
+  ON public.saved_stock_views FOR INSERT
+  TO authenticated
+  WITH CHECK (user_id = auth.uid());
+
+DROP POLICY IF EXISTS "saved_stock_views_update_own" ON public.saved_stock_views;
+CREATE POLICY "saved_stock_views_update_own"
+  ON public.saved_stock_views FOR UPDATE
+  TO authenticated
+  USING (user_id = auth.uid())
+  WITH CHECK (user_id = auth.uid());
+
+DROP POLICY IF EXISTS "saved_stock_views_delete_own" ON public.saved_stock_views;
+CREATE POLICY "saved_stock_views_delete_own"
+  ON public.saved_stock_views FOR DELETE
+  TO authenticated
+  USING (user_id = auth.uid());
+
+-- anon nao tem nenhum acesso; o dado e de operacao, por usuario.
+REVOKE ALL ON TABLE public.saved_stock_views FROM anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.saved_stock_views TO authenticated;
+GRANT ALL ON TABLE public.saved_stock_views TO service_role;
+
+COMMENT ON TABLE public.saved_stock_views IS 'Views salvas do painel de estoque: nome, filtros (jsonb), descricao, fixacao e contador de uso, por usuario autenticado.';
+COMMENT ON COLUMN public.saved_stock_views.filters IS 'Filtros do painel /estoque serializados: {"activeLevel": <nivel EMA|null>}; schema validado em src/lib/stock/saved-views.ts.';
+COMMENT ON COLUMN public.saved_stock_views.use_count IS 'Quantas vezes o operador aplicou a view; incrementado pela UI do menu de views salvas.';
+
+-- <<< END 20261126130000_create_saved_stock_views.sql <<<

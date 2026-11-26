@@ -5,6 +5,21 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.22.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.21.0...gifts-store-v1.22.0) (2026-11-26)
+
+
+### Features
+
+* tela de acessos bloqueados lendo access_blocked_log ([#4179](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4179)) ([aab21f0](https://github.com/adm01-debug/Promo_Gifts_V4/commit/aab21f0595abdacdd874f89d0bfbd81dd00bf944))
+* tela de giro por variante lendo v_stock_velocity_safe ([#4177](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4177)) ([a1cece0](https://github.com/adm01-debug/Promo_Gifts_V4/commit/a1cece013c026f1a4112161e02d4f8ce957b847d))
+* tela de vinculos de vendedor do CRM (/admin/vinculos-vendedor-crm) ([#4165](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4165)) ([0ffac8e](https://github.com/adm01-debug/Promo_Gifts_V4/commit/0ffac8e8e0accc8495c1898866564c2e22ab6bb3))
+
+
+### Bug Fixes
+
+* baseline de policies com as 4 RLS de saved_stock_views ([#4175](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4175)) ([ca3aaaa](https://github.com/adm01-debug/Promo_Gifts_V4/commit/ca3aaaa7f0a0468b3b9cdf769a01e8e2f6cf6bf0))
+* cabecalho de rollback e transacao unica na migration das RPCs de CRM ([#4178](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4178)) ([f2107d5](https://github.com/adm01-debug/Promo_Gifts_V4/commit/f2107d5331b976c4bad3f55b41c9541b72a9027e))
+
 ## [1.21.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.5...gifts-store-v1.21.0) (2026-11-26)
 
 
