@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import {
   Table,
   TableBody,
@@ -44,12 +44,7 @@ import {
   CheckCircle2,
   Clock,
   Activity,
-  BarChart3,
   Siren,
-  History,
-  KeySquare,
-  Network,
-  TrendingUp,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -60,6 +55,8 @@ import { RecentAuditTable } from '@/components/admin/security/RecentAuditTable';
 import { HardeningHealthCard } from '@/components/admin/security/HardeningHealthCard';
 import { ActiveIpsList } from '@/components/admin/security/ActiveIpsList';
 import { AutoDefenseTab } from '@/components/admin/security/AutoDefenseTab';
+import { BlockedAccessLogTab } from '@/components/admin/security/BlockedAccessLogTab';
+import { SecurityTabsList } from '@/components/admin/security/SecurityTabsList';
 import { cn } from '@/lib/utils';
 
 interface BotLog {
@@ -309,29 +306,7 @@ export default function AdminSegurancaAcessoPage() {
         </div>
 
         <Tabs defaultValue="anomalias" className="w-full">
-          <TabsList className="h-auto flex-wrap">
-            <TabsTrigger value="anomalias">
-              <Siren className="mr-1.5 h-3.5 w-3.5" /> Anomalias 24h
-            </TabsTrigger>
-            <TabsTrigger value="audit">
-              <History className="mr-1.5 h-3.5 w-3.5" /> Auditoria
-            </TabsTrigger>
-            <TabsTrigger value="tokens">
-              <KeySquare className="mr-1.5 h-3.5 w-3.5" /> Tokens suspeitos
-            </TabsTrigger>
-            <TabsTrigger value="active-ips">
-              <Network className="mr-1.5 h-3.5 w-3.5" /> IPs ativos
-            </TabsTrigger>
-            <TabsTrigger value="auto-defense">
-              <TrendingUp className="mr-1.5 h-3.5 w-3.5" /> Histórico & Auto-defesa
-            </TabsTrigger>
-            <TabsTrigger value="analytics">
-              <BarChart3 className="mr-1.5 h-3.5 w-3.5" /> Analytics
-            </TabsTrigger>
-            <TabsTrigger value="bots">Bot Detection</TabsTrigger>
-            <TabsTrigger value="rate">Rate Limits</TabsTrigger>
-            <TabsTrigger value="ips">Allow/Block IPs ({ipList.length})</TabsTrigger>
-          </TabsList>
+          <SecurityTabsList ipCount={ipList.length} />
 
           <TabsContent value="anomalias" className="space-y-3">
             <AnomalyCards />
@@ -374,6 +349,10 @@ export default function AdminSegurancaAcessoPage() {
           </TabsContent>
 
           <TabsContent value="tokens" />
+
+          <TabsContent value="bloqueios">
+            <BlockedAccessLogTab />
+          </TabsContent>
 
           <TabsContent value="active-ips">
             <ActiveIpsList />
