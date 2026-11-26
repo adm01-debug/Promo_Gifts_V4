@@ -594,6 +594,30 @@
       "occurrences": 1,
       "stage": 107,
       "reason": "Wrapper admin criado na migration 20261126192900 (aba Raio-x do acesso anon em /admin/seguranca-acesso), pendente de aplicacao em producao por Regra 8. A funcao de base fn_anon_access_audit tem EXECUTE apenas para service_role no baseline 20261126130000; esta excecao source-scoped deve ser removida e promovida ao catalogo somente apos o apply via db-apply-migration.yml e confirmacao em pg_proc."
+    },
+    {
+      "kind": "rpc",
+      "name": "fn_admin_classification_summary",
+      "file": "src/hooks/admin/useClassificationAudit.ts",
+      "occurrences": 1,
+      "stage": 108,
+      "reason": "RPC criada pela migration supabase/migrations/20261126211200_admin_classification_audit_rpc.sql (SECURITY DEFINER, guard is_admin_or_above, 42501 para os demais) que serve a aba Classificacao de /admin/cadastros a partir do schema classification_audit (deny-all). Ainda nao aplicada no canonico via db-apply-migration.yml. Remover esta excecao e registrar o RPC em rpcs so depois de aplicada e confirmada via pg_catalog."
+    },
+    {
+      "kind": "rpc",
+      "name": "fn_admin_classification_suggestions",
+      "file": "src/hooks/admin/useClassificationAudit.ts",
+      "occurrences": 1,
+      "stage": 108,
+      "reason": "RPC criada pela migration supabase/migrations/20261126211200_admin_classification_audit_rpc.sql (SECURITY DEFINER, guard is_admin_or_above, 42501 para os demais) que lista as sugestoes de categoria para a aba Classificacao de /admin/cadastros. Ainda nao aplicada no canonico via db-apply-migration.yml. Remover esta excecao e registrar o RPC em rpcs so depois de aplicada e confirmada via pg_catalog."
+    },
+    {
+      "kind": "rpc",
+      "name": "fn_admin_classification_apply",
+      "file": "src/hooks/admin/useClassificationAudit.ts",
+      "occurrences": 1,
+      "stage": 108,
+      "reason": "RPC criada pela migration supabase/migrations/20261126211200_admin_classification_audit_rpc.sql (SECURITY DEFINER, guard is_admin_or_above, 42501 para os demais); wrapper auditado da RPC de escrita service_role-only apply_high_confidence_suggestions, usado pelo dialogo de aplicacao da aba Classificacao. Ainda nao aplicada no canonico via db-apply-migration.yml. Remover esta excecao e registrar o RPC em rpcs so depois de aplicada e confirmada via pg_catalog."
     }
   ],
   "dynamic_baseline": [

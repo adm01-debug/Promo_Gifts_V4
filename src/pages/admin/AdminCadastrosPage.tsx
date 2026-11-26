@@ -11,6 +11,7 @@ import {
   FolderTree,
   Truck,
   Tags,
+  Sparkles,
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
@@ -47,6 +48,12 @@ const RamosAtividadeManager = lazyWithRetry(() =>
   })),
 );
 
+const ClassificationAuditManager = lazyWithRetry(() =>
+  import('@/components/admin/classification-audit').then((m) => ({
+    default: m.ClassificationAuditManager,
+  })),
+);
+
 function TabFallback() {
   return (
     <div className="space-y-4 p-4">
@@ -62,6 +69,7 @@ const VALID_TABS = [
   'caixas',
   'categorias',
   'ramos',
+  'classificacao',
   'personalizacao',
   'badges',
 ] as const;
@@ -125,6 +133,10 @@ export default function AdminCadastrosPage() {
               <Building2 className="h-4 w-4" />
               Ramos de atividade
             </TabsTrigger>
+            <TabsTrigger value="classificacao" className="gap-2">
+              <Sparkles className="h-4 w-4" />
+              Classificação
+            </TabsTrigger>
             <TabsTrigger value="personalizacao" className="gap-2">
               <Palette className="h-4 w-4" />
               Personalização
@@ -175,6 +187,12 @@ export default function AdminCadastrosPage() {
           <TabsContent value="ramos">
             <Suspense fallback={<TabFallback />}>
               <RamosAtividadeManager />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="classificacao">
+            <Suspense fallback={<TabFallback />}>
+              <ClassificationAuditManager />
             </Suspense>
           </TabsContent>
 
