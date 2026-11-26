@@ -23,10 +23,14 @@
 
 ## Ressalvas medidas nesta varredura
 
-1. O snapshot de ledger `supabase/baseline/20261125180000_ledger_versions.json` lista **3021** versoes, enquanto o
-   `SNAPSHOT_META.json` conta **3137** no banco: a exportacao do ledger (E072) esta incompleta, entao
-   **nao** se pode afirmar "fora do ledger" a partir dela. A classificacao abaixo usa apenas o dump
-   de schema, que e confiavel.
+1. ~~O snapshot de ledger lista 3021 versoes enquanto o `SNAPSHOT_META` conta 3137 no banco.~~
+   **Corrigido em 2026-11-26T00:30Z — a comparacao era invalida.** `migrations_count` vem de
+   `allInOne.count` (`scripts/export-schema-snapshot.mjs:273`), ou seja, conta **arquivos de
+   migration** replicados no `ALL_IN_ONE.sql`, nao linhas do ledger. Os 3021/3022 do JSON sao as
+   linhas de `supabase_migrations.schema_migrations`. Depois do conserto do pooler (#4124) a
+   rotacao `run 45723739862` publicou 3022 versoes contendo a `20261114160000` aplicada hoje, o que
+   prova que o snapshot acompanha o ledger real. A classificacao abaixo continua usando o dump de
+   schema.
 2. O schema `ops` nao esta em `supabase/baseline/schemas.txt` (8 schemas: public, analytics, api,
    cf_recon, classification_audit, internal, prod_audit, supplier_stricker). Tudo que existe so em
    `ops` aparece como "ausente" — as tres migrations `ops` desta lista sao falso-negativo.
@@ -189,9 +193,15 @@ guarda `COMMENT` e policies, mas nao guarda o resultado de um DO block.
 
 ## Adendo 2026-11-25T23:50Z — um dos "ausentes" era falso-positivo
 
-A tabela de *ausentes* acima foi montada contra
-`supabase/baseline/20261125173000_ledger_versions.json`. Esse arquivo tem 3021
-versões; o ledger de produção tem 3137. **A lacuna produz falsos-positivos.**
+A tabela de *ausentes* acima foi montada contra o snapshot de ledger do baseline
+(3021 versões). ~~O ledger de produção tem 3137, e a lacuna produz falsos-positivos.~~
+**Correção 2026-11-26T00:30Z:** os 3137 são arquivos de migration (`allInOne.count`,
+`scripts/export-schema-snapshot.mjs:273`), não linhas do ledger — não existe lacuna de
+exportação. Medido agora: `origin/main:supabase/baseline/20261125180000_ledger_versions.json`
+**contém** `20260916193000` (grep = 1) e o `SCHEMA_LIVE.sql` de `main` contém
+`fn_ensure_history_partitions` (5 ocorrências). Ou seja, a etapa nunca esteve ausente do
+snapshot; a leitura que originou o #4121 não veio deste arquivo. O que **é** verdade é que
+ledger de baseline não substitui o preflight do E15 — a regra abaixo continua valendo.
 
 Caso comprovado nesta sessão: `20260916193000_e25_supplier_history_partition_automation.sql`
 foi classificada como ausente, o outro agente abriu o #4121 para "remover os cron
