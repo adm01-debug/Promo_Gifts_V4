@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `480871c05e21e5a6a667ddc9b845a576b172e9b8` (2026-11-26T09:10:36-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b934d25623c5786ff288c8d73595d0dcc10c6105` (2026-11-26T09:46:30-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 11297 |
 | arquivos_codigo | 5683 |
-| linhas_codigo | 1077626 |
+| linhas_codigo | 1077652 |
 | rotas | 141 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -591,7 +591,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - tabelas_usadas_sem_definicao: 10 — ex.: ai_models, avatars, categories_tree_visual
 - tabelas_com_drift_migration_vs_types: 0
 - rpcs_sem_definicao: 5 — ex.: fn_get_color_swatches_batch, fn_get_reposicao_variants_summary, fn_rupture_health_check
-- componentes_orfaos: 156 — ex.: docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx, recovery/RealtimeMessagesExample.tsx, recovery/src-legacy/src/components/admin/CatalogQualityDashboard.tsx
+- componentes_orfaos: 155 — ex.: docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx, recovery/RealtimeMessagesExample.tsx, recovery/src-legacy/src/components/admin/CatalogQualityDashboard.tsx
 - componentes_com_nome_duplicado: 126 — ex.: AdminTemplatesManager, AdvancedPriceSearchPage, Auth
 - scripts_orfaos: 0
 - env_usadas_nao_declaradas: 23 — ex.: CI, DEV, E2E_USER_EMAIL
@@ -599,8 +599,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 51044 nós · 86549 arestas · 2834 comunidades · grafo do commit `480871c0`
-- comunidades maiores: vitest (967), ref_components (757), ref_integrations (729), ref_node_child_process (533), @tanstack/react-query (454), ref_hooks (398), react-router-dom (393), sonner (366), ref_node_fs (365), ref_utils (361), ref_types (351), react (337)
+- 51044 nós · 86556 arestas · 2802 comunidades · grafo do commit `b934d256`
+- comunidades maiores: vitest (1043), ref_components (900), ref_integrations (748), ref_node_child_process (549), @tanstack/react-query (470), ref_hooks (400), ref_utils (358), ref_types (358), sonner (349), react-router-dom (343), react (336), concludeCheck (330)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1198,6 +1198,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.20.5](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.4...gifts-store-v1.20.5) (2026-11-26)
 
 ## Últimos commits
+- 2026-11-26 `b934d25` feat: JWT de agente na sugestao de identidade + botao montado no Kit Builder (#4167)
 - 2026-11-26 `480871c` docs(edges): registra que os 4 achados graves de auth e os 9 crons ja foram fechados (#4166)
 - 2026-11-26 `2e0c748` docs: mede cron das edges e corrige status N01/N15/N21/I01 (#4164)
 - 2026-11-26 `47346c1` feat: liga a Meta de Vendas ao dashboard com progresso real (#4161)
@@ -1212,7 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `7cde484` docs(migrations-log): recibo E15 — aplicação de 20261126030000 (#4155)
 - 2026-11-25 `e61dc37` fix: reemite PERF005 como 20261126030000 com approved-by valido (#4153)
 - 2026-11-25 `1f99d5b` fix: reemite PERF005 como 20261126020000 com approved-by no cabecalho (#4152)
-- 2026-11-25 `98f1077` chore: inclui o schema ops no baseline de drift e snapshot (#4151)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

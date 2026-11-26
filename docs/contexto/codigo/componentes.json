@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "total": 1281,
- "orfaos": 156,
+ "orfaos": 155,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
    "recovery/src-legacy/src/components/quotes/AdminTemplatesManager.tsx",
@@ -10340,8 +10340,8 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 0,
-   "orfao": true
+   "usado_por": 1,
+   "orfao": false
   },
   {
    "arquivo": "src/components/kit-builder/ItemCard.tsx",
@@ -10478,7 +10478,7 @@
     "KitBuilderHeader"
    ],
    "export_default": null,
-   "linhas": 412,
+   "linhas": 429,
    "dominio": "components/kit-builder",
    "hooks_locais": [
     "useRBAC",

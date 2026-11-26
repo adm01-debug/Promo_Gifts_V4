@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `480871c05e` · branch `main` · 2026-11-26 12:22 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `b934d25623` · branch `main` · 2026-11-26 12:50 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6786,6 +6786,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `dev` | `supabase/functions/force-global-logout/index.ts` |
 | `dev` | `supabase/functions/github-credentials-test/index.ts` |
 | `agente` | `supabase/functions/kit-ai-builder/index.ts` |
+| `agente` | `supabase/functions/kit-identity-suggest/index.ts` |
 | `dev` | `supabase/functions/manage-users/index.ts` |
 | `supervisor` | `supabase/functions/manage-users/index.ts` |
 | `vendedor` | `supabase/functions/manage-users/index.ts` |

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "480871c05e21e5a6a667ddc9b845a576b172e9b8",
+  "sha": "b934d25623c5786ff288c8d73595d0dcc10c6105",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 12:22 UTC",
+  "generated_at": "2026-11-26 12:50 UTC",
   "files_total": 11227,
   "code_files": 9208,
-  "code_lines": 1308864
+  "code_lines": 1308890
  },
  "version": "1.3.2",
- "facts_hash": "75198708e9af8c25",
+ "facts_hash": "c0216ec261772406",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -147464,7 +147464,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 288
+    "deps_count": 289
    },
    {
     "path": "",
@@ -148307,7 +148307,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 172
+    "deps_count": 173
    },
    {
     "path": "",
@@ -151275,7 +151275,9 @@
     ],
     "auth": "service_role (ignora RLS) + valida JWT do usuário",
     "tables": [
-     "integration_credentials"
+     "integration_credentials",
+     "user_roles",
+     "user_token_revocations"
     ],
     "env": [],
     "external": [],
@@ -159553,7 +159555,7 @@
   {
    "module": "src/components",
    "files": 1487,
-   "lines": 291176,
+   "lines": 291193,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -161174,7 +161176,7 @@
   {
    "module": "supabase/functions",
    "files": 279,
-   "lines": 52089,
+   "lines": 52098,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -180714,6 +180716,10 @@
     "value": "agente"
    },
    {
+    "file": "supabase/functions/kit-identity-suggest/index.ts",
+    "value": "agente"
+   },
+   {
     "file": "supabase/functions/manage-users/index.ts",
     "value": "dev"
    },
@@ -187261,7 +187267,7 @@
    },
    {
     "file": "supabase/functions/kit-identity-suggest/index.ts",
-    "text": "Hardening: Zod validation + bot protection (rate limit)."
+    "text": "Hardening: JWT (agente+) + Zod validation + bot protection (rate limit)."
    },
    {
     "file": "supabase/functions/kit-identity-suggest/index.ts",
@@ -473345,7 +473351,7 @@
   },
   "src/components/kit-builder/KitBuilderHeader.tsx": {
    "path": "src/components/kit-builder/KitBuilderHeader.tsx",
-   "lines": 412,
+   "lines": 429,
    "exports": [
     "function KitBuilderHeader"
    ],
@@ -534339,7 +534345,7 @@
   },
   "supabase/functions/kit-identity-suggest/index.ts": {
    "path": "supabase/functions/kit-identity-suggest/index.ts",
-   "lines": 144,
+   "lines": 153,
    "zod": [
     {
      "name": "BodySchema",
@@ -534396,8 +534402,11 @@
      "kind": "escreve"
     }
    ],
+   "role_checks": [
+    "agente"
+   ],
    "rule_comments": [
-    "Hardening: Zod validation + bot protection (rate limit).",
+    "Hardening: JWT (agente+) + Zod validation + bot protection (rate limit).",
     "Bot protection + rate limit (10 req / 60s, block 1h)"
    ]
   },
@@ -579671,10 +579680,21 @@
   }
  },
  "git": {
-  "sha": "480871c05e21e5a6a667ddc9b845a576b172e9b8",
+  "sha": "b934d25623c5786ff288c8d73595d0dcc10c6105",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "b934d25",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "feat: JWT de agente na sugestao de identidade + botao montado no Kit Builder (#4167)",
+    "files": [
+     "docs/estado/07_EDGE_FUNCTIONS.md",
+     "src/components/kit-builder/KitBuilderHeader.tsx",
+     "supabase/functions/kit-identity-suggest/index.ts"
+    ]
+   },
    {
     "sha": "480871c",
     "date": "2026-11-26",
@@ -579980,23 +580000,16 @@
     "files": [
      "supabase/MIGRATIONS_RECONCILIACAO_20261125.md"
     ]
-   },
-   {
-    "sha": "7221b0b",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: cabecalho de rollback e pg_temp nas migrations resgatadas (#4133)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
-     "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    12
+    11
+   ],
+   [
+    "docs/estado/07_EDGE_FUNCTIONS.md",
+    3
    ],
    [
     ".release-please-manifest.json",
@@ -580013,10 +580026,6 @@
    [
     "package.json",
     3
-   ],
-   [
-    "docs/estado/07_EDGE_FUNCTIONS.md",
-    2
    ],
    [
     "docs/estado/12_PLANEJADO_E_SUGERIDO.md",
@@ -580055,6 +580064,14 @@
     2
    ],
    [
+    "src/components/kit-builder/KitBuilderHeader.tsx",
+    1
+   ],
+   [
+    "supabase/functions/kit-identity-suggest/index.ts",
+    1
+   ],
+   [
     "docs/FUNCIONALIDADES_E_FERRAMENTAS.md",
     1
    ],
@@ -580064,14 +580081,6 @@
    ],
    [
     "src/hooks/intelligence/useSalesGoals.ts",
-    1
-   ],
-   [
-    "src/pages/CustomizableDashboard.tsx",
-    1
-   ],
-   [
-    "tests/hooks/useSalesGoals.test.tsx",
     1
    ]
   ]

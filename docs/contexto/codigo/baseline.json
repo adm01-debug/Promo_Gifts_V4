@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "480871c05e21e5a6a667ddc9b845a576b172e9b8",
+  "commit": "b934d25623c5786ff288c8d73595d0dcc10c6105",
   "branch": "main",
-  "data_commit": "2026-11-26T09:10:36-03:00",
+  "data_commit": "2026-11-26T09:46:30-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "b934d25",
+    "data": "2026-11-26",
+    "assunto": "feat: JWT de agente na sugestao de identidade + botao montado no Kit Builder (#4167)"
+   },
    {
     "sha": "480871c",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "939d6fd",
     "data": "2026-11-25",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20260629142224 (#4138)"
-   },
-   {
-    "sha": "faedf4a",
-    "data": "2026-11-25",
-    "assunto": "fix: rollback das policies no-op e cabecalho na 20261101210000 (#4142)"
    }
   ],
-  "arquivos_mudados_7d": 564,
+  "arquivos_mudados_7d": 566,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -286,15 +286,15 @@
     "mudancas": 4
    },
    {
+    "arquivo": "docs/estado/07_EDGE_FUNCTIONS.md",
+    "mudancas": 4
+   },
+   {
     "arquivo": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
     "mudancas": 4
    },
    {
     "arquivo": "src/components/kit-builder/KitSummary.tsx",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
     "mudancas": 4
    }
   ],
@@ -312,7 +312,7 @@
  "contagens": {
   "arquivos_total": 11297,
   "arquivos_codigo": 5683,
-  "linhas_codigo": 1077626,
+  "linhas_codigo": 1077652,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1936,7 +1936,7 @@
   },
   "src/components": {
    "arquivos": 1487,
-   "linhas": 291177
+   "linhas": 291194
   },
   "src/config": {
    "arquivos": 1,
@@ -2012,7 +2012,7 @@
   },
   "supabase/functions": {
    "arquivos": 279,
-   "linhas": 52089
+   "linhas": 52098
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -3366,7 +3366,6 @@
    "src/components/inventory/HealthScoreInfoDialog.tsx",
    "src/components/inventory/StockCategoryTreeSelect.tsx",
    "src/components/inventory/VariantStockRowActions.tsx",
-   "src/components/kit-builder/IdentitySuggestionButton.tsx",
    "src/components/kit-builder/KitCollaborationPanel.tsx",
    "src/components/kit-builder/KitComparisonDialog.tsx",
    "src/components/kit-builder/KitTemplates.tsx",

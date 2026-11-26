@@ -1868,7 +1868,7 @@
    "nome": "kit-identity-suggest",
    "entrada": "supabase/functions/kit-identity-suggest/index.ts",
    "arquivos": 1,
-   "linhas": 144,
+   "linhas": 153,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1883,6 +1883,7 @@
    ],
    "usa_shared": [
     "ai-credentials.ts",
+    "auth.ts",
     "bot-protection.ts",
     "cors.ts",
     "error-response.ts",

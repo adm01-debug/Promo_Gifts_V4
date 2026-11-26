@@ -6589,6 +6589,7 @@
   ],
   "src/components/kit-builder/KitBuilderHeader.tsx": [
    "src/components/common/BackButton.tsx",
+   "src/components/kit-builder/IdentitySuggestionButton.tsx",
    "src/components/kit-builder/KitAIPromptDialog.tsx",
    "src/components/kit-builder/KitIdentityPicker.tsx",
    "src/components/ui/alert-dialog.tsx",
@@ -16047,6 +16048,7 @@
   ],
   "supabase/functions/kit-identity-suggest/index.ts": [
    "supabase/functions/_shared/ai-credentials.ts",
+   "supabase/functions/_shared/auth.ts",
    "supabase/functions/_shared/bot-protection.ts",
    "supabase/functions/_shared/cors.ts",
    "supabase/functions/_shared/error-response.ts",
