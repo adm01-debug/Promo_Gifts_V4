@@ -2,11 +2,26 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c25a77988b18a1b41844dd01a68627f7a09ec217",
+  "commit": "98f107792985ca9141505d877a1b981a5055f926",
   "branch": "main",
-  "data_commit": "2026-11-25T22:18:36-03:00",
+  "data_commit": "2026-11-25T22:39:24-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "98f1077",
+    "data": "2026-11-25",
+    "assunto": "chore: inclui o schema ops no baseline de drift e snapshot (#4151)"
+   },
+   {
+    "sha": "5c40c7e",
+    "data": "2026-11-25",
+    "assunto": "fix: reemite PERF005 com DROP INDEX CONCURRENTLY (sem editar o historico) (#4147)"
+   },
+   {
+    "sha": "ea1788c",
+    "data": "2026-11-25",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20260917160000 (#4150)"
+   },
    {
     "sha": "c25a779",
     "data": "2026-11-25",
@@ -116,24 +131,9 @@
     "sha": "8eeee4f",
     "data": "2026-11-25",
     "assunto": "fix(db): remove crons orfaos de particao do historico (E25) (#4121)"
-   },
-   {
-    "sha": "036e217",
-    "data": "2026-11-25",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261114160000 (#4130)"
-   },
-   {
-    "sha": "6f1d3e4",
-    "data": "2026-11-25",
-    "assunto": "chore: autoriza a aplicacao do indice de restock (approved-by) (#4117)"
-   },
-   {
-    "sha": "446d867",
-    "data": "2026-11-25",
-    "assunto": "chore: refresh do snapshot de cron jobs (144 jobs) (#4125)"
    }
   ],
-  "arquivos_mudados_7d": 564,
+  "arquivos_mudados_7d": 567,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 99
+    "mudancas": 101
    },
    {
     "pasta": "src/pages/magazine",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 99
+    "mudancas": 101
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -301,16 +301,16 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 237
+    "commits": 236
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 63
+    "commits": 64
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 11292,
+  "arquivos_total": 11294,
   "arquivos_codigo": 5682,
   "linhas_codigo": 1077287,
   "rotas": 141,
@@ -322,7 +322,7 @@
   "hooks": 646,
   "edge_functions": 112,
   "tabelas": 532,
-  "migrations": 3137,
+  "migrations": 3138,
   "cron_jobs": 122,
   "testes": 2722,
   "workflows": 89,

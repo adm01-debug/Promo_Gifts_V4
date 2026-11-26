@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore: inclui o schema ops no baseline de drift e snapshot (#4151)",
+   "fix: reemite PERF005 com DROP INDEX CONCURRENTLY (sem editar o historico) (#4147)",
+   "docs(migrations-log): recibo E15 — aplicação de 20260917160000 (#4150)",
    "docs(migrations-log): recibo E15 — aplicação de 20260917150000 (#4149)",
-   "docs(migrations-log): recibo E15 — aplicação de 20260916211500 (#4148)",
-   "chore: allowlist E06 recebe as 21 migrations efetivas por equivalencia (#4146)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261101210000 (#4145)",
-   "docs(migrations-log): recibo E15 — aplicação de 20260620190001 (#4141)"
+   "docs(migrations-log): recibo E15 — aplicação de 20260916211500 (#4148)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

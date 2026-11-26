@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "c25a77988b18a1b41844dd01a68627f7a09ec217",
+  "sha": "98f107792985ca9141505d877a1b981a5055f926",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 01:25 UTC",
-  "files_total": 11222,
-  "code_files": 9205,
-  "code_lines": 1308366
+  "generated_at": "2026-11-26 02:00 UTC",
+  "files_total": 11224,
+  "code_files": 9207,
+  "code_lines": 1308501
  },
  "version": "1.3.2",
- "facts_hash": "a92e115e22fc77db",
+ "facts_hash": "1f9108ec07f3e30a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,7 +1130,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3524,
+   ".sql": 3526,
    ".ts": 3180,
    ".tsx": 2026,
    ".mjs": 456,
@@ -93204,6 +93204,7 @@
    "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql",
    "supabase/migrations/20261125173000_idx_sds_summary_date_supplier_aplicavel.sql",
    "supabase/migrations/20261125180000_fix_comment_v_tabela_gravacao_publica.sql",
+   "supabase/migrations/20261126012000_perf005_drop_unused_indexes_concurrently.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -93353,6 +93354,7 @@
    "supabase/rollbacks/20261125160000_rollback.sql",
    "supabase/rollbacks/20261125173000_rollback.sql",
    "supabase/rollbacks/20261125180000_rollback.sql",
+   "supabase/rollbacks/20261126012000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -161357,8 +161359,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3136,
-   "lines": 228600,
+   "files": 3137,
+   "lines": 228680,
    "tables": [
     "...",
     "admin_audit_log",
@@ -161456,8 +161458,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 150,
-   "lines": 5571,
+   "files": 151,
+   "lines": 5626,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -231478,6 +231480,10 @@
    {
     "file": "supabase/migrations/20261115130000_idx_sds_summary_date_supplier_include.sql",
     "line": "-- O db-apply-migration usa lock_timeout=1s: o CONCURRENTLY espera transações antigas, então esta"
+   },
+   {
+    "file": "supabase/migrations/20261126012000_perf005_drop_unused_indexes_concurrently.sql",
+    "line": "-- pede ACCESS EXCLUSIVE na tabela e o workflow usa lock_timeout=1s; em"
    },
    {
     "file": "supabase/rollbacks/20260917100000_rollback.sql",
@@ -553219,6 +553225,13 @@
    "path": "supabase/migrations/20261125180000_fix_comment_v_tabela_gravacao_publica.sql",
    "lines": 105
   },
+  "supabase/migrations/20261126012000_perf005_drop_unused_indexes_concurrently.sql": {
+   "path": "supabase/migrations/20261126012000_perf005_drop_unused_indexes_concurrently.sql",
+   "lines": 80,
+   "temporal": [
+    "-- pede ACCESS EXCLUSIVE na tabela e o workflow usa lock_timeout=1s; em"
+   ]
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -553839,6 +553852,10 @@
   "supabase/rollbacks/20261125180000_rollback.sql": {
    "path": "supabase/rollbacks/20261125180000_rollback.sql",
    "lines": 13
+  },
+  "supabase/rollbacks/20261126012000_rollback.sql": {
+   "path": "supabase/rollbacks/20261126012000_rollback.sql",
+   "lines": 55
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -579405,10 +579422,39 @@
   }
  },
  "git": {
-  "sha": "c25a77988b18a1b41844dd01a68627f7a09ec217",
+  "sha": "98f107792985ca9141505d877a1b981a5055f926",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "98f1077",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore: inclui o schema ops no baseline de drift e snapshot (#4151)",
+    "files": [
+     "supabase/baseline/schemas.txt"
+    ]
+   },
+   {
+    "sha": "5c40c7e",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix: reemite PERF005 com DROP INDEX CONCURRENTLY (sem editar o historico) (#4147)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261126012000_perf005_drop_unused_indexes_concurrently.sql",
+     "supabase/rollbacks/20261126012000_rollback.sql"
+    ]
+   },
+   {
+    "sha": "ea1788c",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20260917160000 (#4150)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "c25a779",
     "date": "2026-11-25",
@@ -579694,39 +579740,12 @@
      "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
      "supabase/migrations-snapshot/SNAPSHOT_META.json"
     ]
-   },
-   {
-    "sha": "de33a8d",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261120040000 (#4118)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "fd4bdb0",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261125074200 (#4116)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "b389b08",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "docs(ledger): recibo da 20261108230000 e encerra as linhas \"segue sem aplicação\" (#4115)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    14
+    13
    ],
    [
     "supabase/MIGRATIONS_RECONCILIACAO_20261125.md",
@@ -579785,23 +579804,23 @@
     2
    ],
    [
+    "supabase/baseline/schemas.txt",
+    1
+   ],
+   [
+    "supabase/migrations/20261126012000_perf005_drop_unused_indexes_concurrently.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261126012000_rollback.sql",
+    1
+   ],
+   [
     "docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
     1
    ],
    [
     "supabase/migrations/20261101205400_perf005_drop_unused_indexes.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261101205400_rollback.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261101210000_sb0007_drop_noop_restrictive_policies.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261101210000_rollback.sql",
     1
    ]
   ]

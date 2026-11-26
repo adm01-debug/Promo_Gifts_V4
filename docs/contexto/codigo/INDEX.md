@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c25a77988b18a1b41844dd01a68627f7a09ec217` (2026-11-25T22:18:36-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `98f107792985ca9141505d877a1b981a5055f926` (2026-11-25T22:39:24-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (5206), SQL (3524), Markdown (1511), JavaScript (463), JSON (137), YAML (117), Shell (27), HTML (20)
+- linguagens: TypeScript (5206), SQL (3526), Markdown (1511), JavaScript (463), JSON (137), YAML (117), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 11292 |
+| arquivos_total | 11294 |
 | arquivos_codigo | 5682 |
 | linhas_codigo | 1077287 |
 | rotas | 141 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 646 |
 | edge_functions | 112 |
 | tabelas | 532 |
-| migrations | 3137 |
+| migrations | 3138 |
 | cron_jobs | 122 |
 | testes | 2722 |
 | workflows | 89 |
@@ -599,13 +599,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 51027 nós · 86518 arestas · 2891 comunidades · grafo do commit `c25a7798`
+- 51027 nós · 86518 arestas · 2891 comunidades · grafo do commit `98f10779`
 - comunidades maiores: vitest (1049), ref_components (801), ref_integrations (686), ref_node_child_process (517), @tanstack/react-query (457), ref_hooks (452), ref_types (398), react-router-dom (397), ref_utils (372), gotoAndSettle (358), react (349), sonner (347)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (99)
+- supabase/MIGRATIONS_SYNC_LOG.md (101)
 - docs/qa/05-PROGRESSO.md (31)
 - package.json (22)
 - package-lock.json (19)
@@ -1198,6 +1198,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.20.3](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.2...gifts-store-v1.20.3) (2026-11-26)
 
 ## Últimos commits
+- 2026-11-25 `98f1077` chore: inclui o schema ops no baseline de drift e snapshot (#4151)
+- 2026-11-25 `5c40c7e` fix: reemite PERF005 com DROP INDEX CONCURRENTLY (sem editar o historico) (#4147)
+- 2026-11-25 `ea1788c` docs(migrations-log): recibo E15 — aplicação de 20260917160000 (#4150)
 - 2026-11-25 `c25a779` docs(migrations-log): recibo E15 — aplicação de 20260917150000 (#4149)
 - 2026-11-25 `d2f3c85` docs(migrations-log): recibo E15 — aplicação de 20260916211500 (#4148)
 - 2026-11-25 `da92fae` chore: allowlist E06 recebe as 21 migrations efetivas por equivalencia (#4146)
@@ -1210,9 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `ba98ac5` docs: classifica as 21 versoes novas fora do baseline E06 (18 ja refletidas em producao) (#4140)
 - 2026-11-25 `9fa5514` chore(schema-snapshot): snapshot semanal 2026-W48 (run 45723739862) (#4137)
 - 2026-11-25 `5d589f5` docs: corrige adendo - 3137 era contagem de arquivos, nao do ledger (#4139)
-- 2026-11-25 `7221b0b` fix: cabecalho de rollback e pg_temp nas migrations resgatadas (#4133)
-- 2026-11-25 `0792fac` fix(ci): snapshot de cron/event triggers via pooler (E037) (#4124)
-- 2026-11-25 `0c2d7c6` chore(test): liga 9 specs Playwright orfaos de tests/e2e/ ao runner (#4122)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
