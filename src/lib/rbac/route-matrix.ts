@@ -379,6 +379,18 @@ export const RBAC_ROUTES: RbacRouteEntry[] = [
     category: 'audit',
   },
   {
+    path: '/admin/vinculos-vendedor-crm',
+    label: 'Vínculos de vendedor (CRM)',
+    guard: 'AdminRoute',
+    role: 'admin',
+    mfaAal2: true,
+    rlsHelper:
+      'is_admin_or_above nas RPCs fn_admin_*_crm_seller*; tabela crm_seller_identity_links deny-all',
+    category: 'admin',
+    notes:
+      'cria/corrige/desfaz o mapeamento auth.users -> vendedor do CRM consumido pelo crm-db-bridge.',
+  },
+  {
     path: '/admin/sessoes',
     label: 'Sessões ativas',
     guard: 'DevRoute',

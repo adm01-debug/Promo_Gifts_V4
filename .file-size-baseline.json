@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-23T20:34:26.491Z",
+  "generatedAt": "2026-11-26T11:52:00.844Z",
   "description": "Baseline de arquivos src/ com mais de 500 linhas (excluindo testes). Falha em arquivo novo acima do limite ou em crescimento.",
   "maxLines": 500,
   "meta": {
@@ -38,7 +38,7 @@
     "src/components/compare/CompareTableView.tsx": 546,
     "src/components/compare/SupplierComparisonModal.tsx": 958,
     "src/components/errors/EnhancedErrorBoundary.tsx": 506,
-    "src/components/expert/chat/useExpertChat.ts": 756,
+    "src/components/expert/chat/useExpertChat.ts": 736,
     "src/components/filters/PresetsBar.tsx": 546,
     "src/components/intelligence/MarketIntelligenceChart.tsx": 611,
     "src/components/inventory/FutureStockDialog.tsx": 726,
@@ -52,7 +52,7 @@
     "src/components/kit-builder/KitMakerLanding.tsx": 563,
     "src/components/kit-builder/PersonalizationConfig.tsx": 1402,
     "src/components/layout/Header.tsx": 561,
-    "src/components/layout/SidebarReorganized.tsx": 678,
+    "src/components/layout/SidebarReorganized.tsx": 686,
     "src/components/loading/ModernSkeletons.tsx": 755,
     "src/components/mockup/MockupHistoryPanel.tsx": 828,
     "src/components/mockup/approval/MockupApprovalTemplate.tsx": 737,
