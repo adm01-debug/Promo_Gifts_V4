@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "d15c74f976cd0d191d5cc682beeb263260628354",
+  "sha": "26d2b495935f5c46a0deb65715ca75d0a5aa528f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 21:33 UTC",
+  "generated_at": "2026-11-26 22:01 UTC",
   "files_total": 11290,
   "code_files": 9268,
   "code_lines": 1320131
@@ -584107,10 +584107,19 @@
   }
  },
  "git": {
-  "sha": "d15c74f976cd0d191d5cc682beeb263260628354",
+  "sha": "26d2b495935f5c46a0deb65715ca75d0a5aa528f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "26d2b49",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261126191200 (#4190)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "d15c74f",
     "date": "2026-11-26",
@@ -584498,21 +584507,12 @@
      ".github/workflows/db-apply-migration.yml",
      ".github/workflows/schema-snapshot-export.yml"
     ]
-   },
-   {
-    "sha": "e9aef61",
-    "date": "2026-11-26",
-    "author": "github-actions[bot]",
-    "subject": "chore(security): atualiza baseline assinado de RLS policies (#4154)",
-    "files": [
-     ".security/policies-baseline.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    9
+    10
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
@@ -584579,15 +584579,15 @@
     2
    ],
    [
-    ".security/policies-baseline.json",
-    2
-   ],
-   [
     "docs/estado/12_PLANEJADO_E_SUGERIDO.md",
     2
    ],
    [
     "src/components/admin/security/AnonAccessAuditPanel.tsx",
+    1
+   ],
+   [
+    "src/components/admin/security/__tests__/AnonAccessAuditPanel.test.tsx",
     1
    ]
   ]

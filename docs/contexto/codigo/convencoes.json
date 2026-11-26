@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(migrations-log): recibo E15 — aplicação de 20261126191200 (#4190)",
    "feat: aba Raio-x do acesso anon em seguranca e acesso (#4186)",
    "feat: tela de cota de IA por usuario no painel de consumo (#4185)",
    "docs: varredura backend->UI medida (0 RPC de negocio sem consumidor) (#4184)",
-   "chore(main): release gifts-store 1.24.0 (#4183)",
-   "feat: tela de exposicao anon no painel de seguranca (#4182)"
+   "chore(main): release gifts-store 1.24.0 (#4183)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

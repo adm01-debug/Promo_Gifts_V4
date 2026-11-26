@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d15c74f976cd0d191d5cc682beeb263260628354",
+  "commit": "26d2b495935f5c46a0deb65715ca75d0a5aa528f",
   "branch": "main",
-  "data_commit": "2026-11-26T18:31:03-03:00",
+  "data_commit": "2026-11-26T18:52:36-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "26d2b49",
+    "data": "2026-11-26",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261126191200 (#4190)"
+   },
    {
     "sha": "d15c74f",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "2e0c748",
     "data": "2026-11-26",
     "assunto": "docs: mede cron das edges e corrige status N01/N15/N21/I01 (#4164)"
-   },
-   {
-    "sha": "47346c1",
-    "data": "2026-11-26",
-    "assunto": "feat: liga a Meta de Vendas ao dashboard com progresso real (#4161)"
    }
   ],
-  "arquivos_mudados_7d": 620,
+  "arquivos_mudados_7d": 618,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 112
+    "mudancas": 113
    },
    {
     "pasta": "src/components/quotes",
@@ -181,7 +181,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 83
+    "mudancas": 82
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 112
+    "mudancas": 113
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 224
+    "commits": 223
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 76
+    "commits": 77
    }
   ]
  },
