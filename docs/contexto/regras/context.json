@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "f2107d5331b976c4bad3f55b41c9541b72a9027e",
+  "sha": "5f0529c009a271f962e4aa631d6e4c7ab8c0ab6d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 17:10 UTC",
+  "generated_at": "2026-11-26 17:17 UTC",
   "files_total": 11262,
   "code_files": 9241,
   "code_lines": 1315056
@@ -582387,10 +582387,22 @@
   }
  },
  "git": {
-  "sha": "f2107d5331b976c4bad3f55b41c9541b72a9027e",
+  "sha": "5f0529c009a271f962e4aa631d6e4c7ab8c0ab6d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "5f0529c",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.22.0 (#4176)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "f2107d5",
     "date": "2026-11-26",
@@ -582750,23 +582762,12 @@
     "files": [
      "supabase/baseline/schemas.txt"
     ]
-   },
-   {
-    "sha": "5c40c7e",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: reemite PERF005 com DROP INDEX CONCURRENTLY (sem editar o historico) (#4147)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261126012000_perf005_drop_unused_indexes_concurrently.sql",
-     "supabase/rollbacks/20261126012000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    11
+    10
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
@@ -582774,19 +582775,19 @@
    ],
    [
     ".release-please-manifest.json",
-    3
+    4
    ],
    [
     "CHANGELOG.md",
-    3
+    4
    ],
    [
     "package-lock.json",
-    3
+    4
    ],
    [
     "package.json",
-    3
+    4
    ],
    [
     "docs/estado/07_EDGE_FUNCTIONS.md",

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f2107d5331b976c4bad3f55b41c9541b72a9027e` (2026-11-26T14:09:05-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5f0529c009a271f962e4aa631d6e4c7ab8c0ab6d` (2026-11-26T14:10:53-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -601,17 +601,17 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 51290 nós · 86968 arestas · 2835 comunidades · grafo do commit `f2107d53`
-- comunidades maiores: ref_components (820), vitest (667), react (595), ref_hooks (529), @tanstack/react-query (506), ref_node_child_process (497), @testing-library/react (476), ref_node_fs (376), sonner (355), ref_utils (329), ref_pages (328), scripts (312)
+- 51293 nós · 86971 arestas · 2851 comunidades · grafo do commit `5f0529c0`
+- comunidades maiores: ref_integrations (598), ref_node_child_process (481), lucide-react (479), @testing-library/react (431), ref_hooks (409), vitest (394), ref_node_fs (351), ref_lib (325), @tanstack/react-query (324), react (317), scripts (312), sonner (312)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - supabase/MIGRATIONS_SYNC_LOG.md (110)
 - docs/qa/05-PROGRESSO.md (31)
-- package.json (25)
-- package-lock.json (22)
-- CHANGELOG.md (19)
+- package.json (26)
+- package-lock.json (23)
+- CHANGELOG.md (20)
 - audit/supabase-reference-catalog.temporary.json (11)
 - docs/coordenacao/conflitos-semanticos.md (10)
 - supabase/migrations-snapshot/ALL_IN_ONE.sql (10)
@@ -1033,7 +1033,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/PULL_REQUEST_TEMPLATE.md` (112 linhas)
 - `.github/SENTINEL_CHANGELOG.md` — Sentinel Changelog (188 linhas)
 - `AGENTS.md` — AGENTS.md — Promo Gifts V4 (111 linhas)
-- `CHANGELOG.md` — Changelog (2665 linhas)
+- `CHANGELOG.md` — Changelog (2680 linhas)
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
@@ -1197,9 +1197,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/notifications-module-audit.md` — Auditoria — Módulo "Notificações de Estoque" (sino do header) (110 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — inventário e prova (1148 linhas)
 - subpastas de docs/: docs/arquivo (92), docs/agentes (27), docs/redeploy (27), docs/estado (26), docs/plans (24), docs/db (14), docs/qa (14), docs/audits (12), docs/ci (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/pendencias (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/coordenacao (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/edge-functions (2), docs/frete (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
-- CHANGELOG topo: [1.21.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.5...gifts-store-v1.21.0) (2026-11-26)
+- CHANGELOG topo: [1.22.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.21.0...gifts-store-v1.22.0) (2026-11-26)
 
 ## Últimos commits
+- 2026-11-26 `5f0529c` chore(main): release gifts-store 1.22.0 (#4176)
 - 2026-11-26 `f2107d5` fix: cabecalho de rollback e transacao unica na migration das RPCs de CRM (#4178)
 - 2026-11-26 `9b092c3` chore(schema-snapshot): snapshot semanal 2026-W48 (run 45859951403) (#4173)
 - 2026-11-26 `aab21f0` feat: tela de acessos bloqueados lendo access_blocked_log (#4179)
@@ -1214,7 +1215,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `48dbd0b` docs(edge-deploy-log): recibo do deploy — run 45824995474 (#4170)
 - 2026-11-26 `3a44413` feat: liga a tabela stock_notes a uma tela de notas por variacao (#4168)
 - 2026-11-26 `b934d25` feat: JWT de agente na sugestao de identidade + botao montado no Kit Builder (#4167)
-- 2026-11-26 `480871c` docs(edges): registra que os 4 achados graves de auth e os 9 crons ja foram fechados (#4166)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f2107d5331b976c4bad3f55b41c9541b72a9027e",
+  "commit": "5f0529c009a271f962e4aa631d6e4c7ab8c0ab6d",
   "branch": "main",
-  "data_commit": "2026-11-26T14:09:05-03:00",
+  "data_commit": "2026-11-26T14:10:53-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "5f0529c",
+    "data": "2026-11-26",
+    "assunto": "chore(main): release gifts-store 1.22.0 (#4176)"
+   },
    {
     "sha": "f2107d5",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "be120cf",
     "data": "2026-11-26",
     "assunto": "chore(main): release gifts-store 1.20.4 (#4143)"
-   },
-   {
-    "sha": "f240a63",
-    "data": "2026-11-25",
-    "assunto": "fix: replay do shadow aceita DROP INDEX CONCURRENTLY (#4156)"
    }
   ],
   "arquivos_mudados_7d": 604,
@@ -207,15 +207,15 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 25
+    "mudancas": 26
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 22
+    "mudancas": 23
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 227
+    "commits": 226
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 73
+    "commits": 74
    }
   ]
  },
