@@ -2304,6 +2304,14 @@
       "name": "mirror_categories_bitrix_id_out_of_band"
     },
     {
+      "version": "20260511235959",
+      "name": "add_categories_full_path_readable_drift"
+    },
+    {
+      "version": "20260511235960",
+      "name": "add_categories_full_path_readable_drift"
+    },
+    {
       "version": "20260512000000",
       "name": "bootstrap_missing_application_schemas"
     },
@@ -12020,6 +12028,10 @@
       "name": "reactivate_generate_blurhashes_safe_schedule"
     },
     {
+      "version": "20261027195959",
+      "name": "supplier_stricker_rls_deny_all"
+    },
+    {
       "version": "20261027200000",
       "name": "supplier_stricker_rls_deny_all"
     },
@@ -12038,6 +12050,78 @@
     {
       "version": "20261027234500",
       "name": "reactivate_xbz_image_uploader_cron"
+    },
+    {
+      "version": "20261101190101",
+      "name": "fn_global_search_clamp_limit"
+    },
+    {
+      "version": "20261101194200",
+      "name": "perf002_drop_unused_indexes_stock_snapshots"
+    },
+    {
+      "version": "20261101202000",
+      "name": "drop_revoke_agent_created_functions"
+    },
+    {
+      "version": "20261101205400",
+      "name": "perf005_drop_unused_indexes"
+    },
+    {
+      "version": "20261101210000",
+      "name": "sb0007_drop_noop_restrictive_policies"
+    },
+    {
+      "version": "20261102063000",
+      "name": "repair_kill_switch_hits_anon_rate_guard"
+    },
+    {
+      "version": "20261108030000",
+      "name": "ft005_cron_scheduled_reports"
+    },
+    {
+      "version": "20261108030100",
+      "name": "ft079_view_products_min_quantity"
+    },
+    {
+      "version": "20261108030200",
+      "name": "ft088_fn_check_item_fits"
+    },
+    {
+      "version": "20261108120000",
+      "name": "p10_categories_indexes_espelho"
+    },
+    {
+      "version": "20261108223000",
+      "name": "add_stock_daily_summary_date_index"
+    },
+    {
+      "version": "20261108230100",
+      "name": "cron002_fix_residual_collisions"
+    },
+    {
+      "version": "20261111222500",
+      "name": "fix_touch_seller_cart_secdef"
+    },
+    {
+      "version": "20261115013000",
+      "name": "fix_get_quote_token_public_respeita_expiracao"
+    },
+    {
+      "version": "20261115130000",
+      "name": "idx_sds_summary_date_supplier_include"
+    },
+    {
+      "version": "20261117172500",
+      "name": "elevenlabs_credential"
+    },
+    {
+      "version": "20261121163000",
+      "name": "v_compras_catalogo"
+    },
+    {
+      "version": "20261121183000",
+      "name": "v_compras_precos_faixa"
     }
   ],
   "entries": [
