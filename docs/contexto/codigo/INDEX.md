@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `caba55243216d1a49dd730b4261560ac8dd591d2` (2026-11-26T11:20:33-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0d772c1196e15b6ebd731e3e0fb595e45e3b64d0` (2026-11-26T11:33:34-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -600,13 +600,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 51156 nós · 86748 arestas · 2884 comunidades · grafo do commit `caba5524`
-- comunidades maiores: ref_hooks (712), vitest (704), lucide-react (633), react (620), ref_node_child_process (500), @tanstack/react-query (461), ref_integrations (426), ref_components (415), ref_types (372), sonner (367), react-router-dom (344), ref_utils (322)
+- 51156 nós · 86747 arestas · 2818 comunidades · grafo do commit `0d772c11`
+- comunidades maiores: ref_components (862), ref_integrations (716), vitest (666), react-router-dom (524), ref_node_child_process (453), ref_hooks (422), @tanstack/react-query (416), @testing-library/react (395), ref_node_fs (375), react (366), sonner (364), ref_types (364)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (107)
+- supabase/MIGRATIONS_SYNC_LOG.md (108)
 - docs/qa/05-PROGRESSO.md (31)
 - package.json (24)
 - package-lock.json (21)
@@ -1199,6 +1199,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.20.5](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.4...gifts-store-v1.20.5) (2026-11-26)
 
 ## Últimos commits
+- 2026-11-26 `0d772c1` docs(migrations-log): recibo E15 — aplicação de 20261126130000 (#4172)
 - 2026-11-26 `caba552` feat: liga views salvas do painel de estoque a uma tela (#4169)
 - 2026-11-26 `c3f747f` feat: tela Infra do Banco (/admin/infra-ops) para a telemetria ops.* sem consumidor (#4160)
 - 2026-11-26 `48dbd0b` docs(edge-deploy-log): recibo do deploy — run 45824995474 (#4170)
@@ -1213,7 +1214,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `a42709a` infra: serializa snapshot de schema e apply de migration no mesmo grupo (#4136)
 - 2026-11-26 `e9aef61` chore(security): atualiza baseline assinado de RLS policies (#4154)
 - 2026-11-26 `a85fea6` chore(schema-snapshot): snapshot semanal 2026-W48 (run 45746283733) (#4157)
-- 2026-11-26 `be120cf` chore(main): release gifts-store 1.20.4 (#4143)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

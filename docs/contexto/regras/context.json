@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "caba55243216d1a49dd730b4261560ac8dd591d2",
+  "sha": "0d772c1196e15b6ebd731e3e0fb595e45e3b64d0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 14:28 UTC",
+  "generated_at": "2026-11-26 14:45 UTC",
   "files_total": 11243,
   "code_files": 9224,
   "code_lines": 1311834
@@ -580969,10 +580969,19 @@
   }
  },
  "git": {
-  "sha": "caba55243216d1a49dd730b4261560ac8dd591d2",
+  "sha": "0d772c1196e15b6ebd731e3e0fb595e45e3b64d0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "0d772c1",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261126130000 (#4172)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "caba552",
     "date": "2026-11-26",
@@ -581296,22 +581305,12 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "faedf4a",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: rollback das policies no-op e cabecalho na 20261101210000 (#4142)",
-    "files": [
-     "supabase/migrations/20261101210000_sb0007_drop_noop_restrictive_policies.sql",
-     "supabase/rollbacks/20261101210000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    13
+    14
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
