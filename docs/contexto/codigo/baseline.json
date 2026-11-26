@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7221b0b8b860888405a6388d5b0b16c4d5635651",
+  "commit": "5d589f552bdab58ebaf844aad008dc4893bbb974",
   "branch": "main",
-  "data_commit": "2026-11-25T20:56:53-03:00",
+  "data_commit": "2026-11-25T21:13:10-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "5d589f5",
+    "data": "2026-11-25",
+    "assunto": "docs: corrige adendo - 3137 era contagem de arquivos, nao do ledger (#4139)"
+   },
    {
     "sha": "7221b0b",
     "data": "2026-11-25",
@@ -126,11 +131,6 @@
     "sha": "31d96d8",
     "data": "2026-11-25",
     "assunto": "docs(ledger): reconhece as 22 migrations sem aplicação com evidência do canônico (#4108)"
-   },
-   {
-    "sha": "36833fd",
-    "data": "2026-11-25",
-    "assunto": "fix: snapshot de cron jobs com os jobs da E25 (destrava o drift E037) (#4106)"
    }
   ],
   "arquivos_mudados_7d": 569,

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7221b0b8b860888405a6388d5b0b16c4d5635651` (2026-11-25T20:56:53-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5d589f552bdab58ebaf844aad008dc4893bbb974` (2026-11-25T21:13:10-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -599,7 +599,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 51022 nós · 86513 arestas · 2858 comunidades · grafo do commit `7221b0b8`
+- 51022 nós · 86513 arestas · 2858 comunidades · grafo do commit `5d589f55`
 - comunidades maiores: vitest (1003), @tanstack/react-query (655), lucide-react (473), ref_hooks (462), ref_node_child_process (460), gotoAndSettle (451), react (424), ref_components (336), sonner (323), expert-chat/index.ts (315), cors.ts (314), scripts (312)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -1198,6 +1198,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.20.2](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.1...gifts-store-v1.20.2) (2026-11-25)
 
 ## Últimos commits
+- 2026-11-25 `5d589f5` docs: corrige adendo - 3137 era contagem de arquivos, nao do ledger (#4139)
 - 2026-11-25 `7221b0b` fix: cabecalho de rollback e pg_temp nas migrations resgatadas (#4133)
 - 2026-11-25 `0792fac` fix(ci): snapshot de cron/event triggers via pooler (E037) (#4124)
 - 2026-11-25 `0c2d7c6` chore(test): liga 9 specs Playwright orfaos de tests/e2e/ ao runner (#4122)
@@ -1212,7 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `6f1d3e4` chore: autoriza a aplicacao do indice de restock (approved-by) (#4117)
 - 2026-11-25 `446d867` chore: refresh do snapshot de cron jobs (144 jobs) (#4125)
 - 2026-11-25 `2bbfb0b` fix(ci): recibo final da 20261120040000 destrava o gate E055 (#4127)
-- 2026-11-25 `74b2b87` chore(schema-snapshot): snapshot semanal 2026-W48 (run 45697871384) (#4123)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

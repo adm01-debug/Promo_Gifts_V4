@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "7221b0b8b860888405a6388d5b0b16c4d5635651",
+  "sha": "5d589f552bdab58ebaf844aad008dc4893bbb974",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 00:02 UTC",
+  "generated_at": "2026-11-26 00:18 UTC",
   "files_total": 11217,
   "code_files": 9202,
   "code_lines": 1305277
@@ -564719,10 +564719,19 @@
   }
  },
  "git": {
-  "sha": "7221b0b8b860888405a6388d5b0b16c4d5635651",
+  "sha": "5d589f552bdab58ebaf844aad008dc4893bbb974",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "5d589f5",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "docs: corrige adendo - 3137 era contagem de arquivos, nao do ledger (#4139)",
+    "files": [
+     "supabase/MIGRATIONS_RECONCILIACAO_20261125.md"
+    ]
+   },
    {
     "sha": "7221b0b",
     "date": "2026-11-25",
@@ -565019,17 +565028,6 @@
      "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql",
      "supabase/rollbacks/20260916193000_rollback.sql"
     ]
-   },
-   {
-    "sha": "f0454b7",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: recibo de migration substitui linha existente de qualquer status (E75) (#4100)",
-    "files": [
-     "docs/db/POLITICA_DDL.md",
-     "scripts/append-migration-receipt.mjs",
-     "tests/scripts/append-migration-receipt.test.mjs"
-    ]
    }
   ],
   "hot_files": [
@@ -565048,6 +565046,10 @@
    [
     "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql",
     3
+   ],
+   [
+    "supabase/MIGRATIONS_RECONCILIACAO_20261125.md",
+    2
    ],
    [
     "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
@@ -565107,10 +565109,6 @@
    ],
    [
     "e2e/role-badge-no-tooltip.spec.ts",
-    1
-   ],
-   [
-    "e2e/stock-regression.spec.ts",
     1
    ]
   ]
