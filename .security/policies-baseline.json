@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-25T19:05:47.633Z",
+  "generated_at": "2026-11-26T02:18:30.710Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -11,9 +11,10 @@
     "classification_audit",
     "internal",
     "prod_audit",
-    "supplier_stricker"
+    "supplier_stricker",
+    "ops"
   ],
-  "sha256": "80c1819246e31f3605fc99af5bcd657c895580fb34af03a09d305461fb561090",
+  "sha256": "098c262126c5b61682e989e101030781e75f363007b2617321ec9fe5e3f4ef93",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -383,16 +384,6 @@
       "roles": "{authenticated}",
       "cmd": "SELECT",
       "qual": "(( SELECT auth.uid() AS uid) IS NOT NULL)",
-      "with_check": ""
-    },
-    {
-      "schemaname": "public",
-      "tablename": "ai_usage_quotas",
-      "policyname": "rls_restrictive_ai_usage_quotas",
-      "permissive": "RESTRICTIVE",
-      "roles": "{authenticated,service_role}",
-      "cmd": "ALL",
-      "qual": "true",
       "with_check": ""
     },
     {
@@ -3037,16 +3028,6 @@
     },
     {
       "schemaname": "public",
-      "tablename": "kit_collaborators",
-      "policyname": "rls_restrictive_kit_collaborators",
-      "permissive": "RESTRICTIVE",
-      "roles": "{authenticated,service_role}",
-      "cmd": "ALL",
-      "qual": "true",
-      "with_check": ""
-    },
-    {
-      "schemaname": "public",
       "tablename": "kit_comments",
       "policyname": "Author can delete own comment",
       "permissive": "PERMISSIVE",
@@ -4647,16 +4628,6 @@
     },
     {
       "schemaname": "public",
-      "tablename": "notification_preferences",
-      "policyname": "rls_restrictive_notification_preferences",
-      "permissive": "RESTRICTIVE",
-      "roles": "{authenticated,service_role}",
-      "cmd": "ALL",
-      "qual": "true",
-      "with_check": ""
-    },
-    {
-      "schemaname": "public",
       "tablename": "notification_templates",
       "policyname": "notification_templates_delete",
       "permissive": "PERMISSIVE",
@@ -5337,16 +5308,6 @@
     },
     {
       "schemaname": "public",
-      "tablename": "product_ai_content",
-      "policyname": "rls_restrictive_product_ai_content",
-      "permissive": "RESTRICTIVE",
-      "roles": "{authenticated,service_role}",
-      "cmd": "ALL",
-      "qual": "true",
-      "with_check": ""
-    },
-    {
-      "schemaname": "public",
       "tablename": "product_ai_history",
       "policyname": "auth_read_product_ai_history",
       "permissive": "PERMISSIVE",
@@ -5744,16 +5705,6 @@
       "cmd": "ALL",
       "qual": "true",
       "with_check": "true"
-    },
-    {
-      "schemaname": "public",
-      "tablename": "product_fiscal",
-      "policyname": "rls_restrictive_product_fiscal",
-      "permissive": "RESTRICTIVE",
-      "roles": "{authenticated,service_role}",
-      "cmd": "ALL",
-      "qual": "true",
-      "with_check": ""
     },
     {
       "schemaname": "public",
@@ -6397,16 +6348,6 @@
     },
     {
       "schemaname": "public",
-      "tablename": "product_seo",
-      "policyname": "rls_restrictive_product_seo",
-      "permissive": "RESTRICTIVE",
-      "roles": "{authenticated,service_role}",
-      "cmd": "ALL",
-      "qual": "true",
-      "with_check": ""
-    },
-    {
-      "schemaname": "public",
       "tablename": "product_similarity_group_members",
       "policyname": "psgm_public_read",
       "permissive": "PERMISSIVE",
@@ -6444,16 +6385,6 @@
       "cmd": "ALL",
       "qual": "true",
       "with_check": "true"
-    },
-    {
-      "schemaname": "public",
-      "tablename": "product_supply",
-      "policyname": "rls_restrictive_product_supply",
-      "permissive": "RESTRICTIVE",
-      "roles": "{authenticated,service_role}",
-      "cmd": "ALL",
-      "qual": "true",
-      "with_check": ""
     },
     {
       "schemaname": "public",
@@ -6924,16 +6855,6 @@
       "cmd": "UPDATE",
       "qual": "(( SELECT auth.uid() AS uid) = user_id)",
       "with_check": "(( SELECT auth.uid() AS uid) = user_id)"
-    },
-    {
-      "schemaname": "public",
-      "tablename": "push_subscriptions",
-      "policyname": "rls_restrictive_push_subscriptions",
-      "permissive": "RESTRICTIVE",
-      "roles": "{authenticated,service_role}",
-      "cmd": "ALL",
-      "qual": "true",
-      "with_check": ""
     },
     {
       "schemaname": "public",
@@ -7413,16 +7334,6 @@
       "roles": "{authenticated}",
       "cmd": "SELECT",
       "qual": "(( SELECT auth.uid() AS uid) = user_id)",
-      "with_check": ""
-    },
-    {
-      "schemaname": "public",
-      "tablename": "recently_viewed_products",
-      "policyname": "rls_restrictive_recently_viewed_products",
-      "permissive": "RESTRICTIVE",
-      "roles": "{authenticated,service_role}",
-      "cmd": "ALL",
-      "qual": "true",
       "with_check": ""
     },
     {
@@ -9064,16 +8975,6 @@
       "cmd": "UPDATE",
       "qual": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))",
       "with_check": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))"
-    },
-    {
-      "schemaname": "public",
-      "tablename": "system_kill_switches",
-      "policyname": "rls_restrictive_system_kill_switches",
-      "permissive": "RESTRICTIVE",
-      "roles": "{authenticated,service_role}",
-      "cmd": "ALL",
-      "qual": "true",
-      "with_check": ""
     },
     {
       "schemaname": "public",
