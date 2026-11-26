@@ -134,7 +134,6 @@
 | idx_pad_rejected | btree | supplier_id | não | sim | `(status = 'rejected'::produtos_padronizacao_status)` | `CREATE INDEX idx_pad_rejected ON public.produtos_padronizacao USING btree (supplier_id) WHERE (status = 'rejected'::produtos_padronizacao_status)` |
 | idx_pad_to_promote | btree | supplier_id | não | sim | `(status = 'standardized'::produtos_padronizacao_status)` | `CREATE INDEX idx_pad_to_promote ON public.produtos_padronizacao USING btree (supplier_id) WHERE (status = 'standardized'::produtos_padronizacao_status)` |
 | idx_pad_to_standardize | btree | supplier_id | não | sim | `(status = 'pending'::produtos_padronizacao_status)` | `CREATE INDEX idx_pad_to_standardize ON public.produtos_padronizacao USING btree (supplier_id) WHERE (status = 'pending'::produtos_padronizacao_status)` |
-| idx_produtos_padronizacao_sub_brand_id | btree | sub_brand_id | não | sim |  | `CREATE INDEX idx_produtos_padronizacao_sub_brand_id ON public.produtos_padronizacao USING btree (sub_brand_id)` |
 | produtos_padronizacao_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX produtos_padronizacao_pkey ON public.produtos_padronizacao USING btree (id)` |
 | uq_pad_supplier_reference | btree | supplier_id, supplier_reference | sim | sim |  | `CREATE UNIQUE INDEX uq_pad_supplier_reference ON public.produtos_padronizacao USING btree (supplier_id, supplier_reference)` |
 

@@ -8,7 +8,7 @@
 | owner | postgres |
 | RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 5 |
+| policies | 4 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -86,16 +86,6 @@
 | tipo | PERMISSIVE |
 | roles | authenticated |
 | USING | `(is_kit_owner(kit_id, ( SELECT auth.uid() AS uid)) OR (user_id = auth.uid()))` |
-| WITH CHECK |  |
-
-### `rls_restrictive_kit_collaborators`
-
-| campo | valor |
-|---|---|
-| comando | ALL |
-| tipo | RESTRICTIVE |
-| roles | authenticated, service_role |
-| USING | `true` |
 | WITH CHECK |  |
 
 

@@ -1,6 +1,6 @@
 # CONTEXTO PARA AGENTES DE IA — ÍNDICE ÚNICO
 
-> Gerado automaticamente por indice.py · 2026-11-26 02:26 UTC · HEAD `e61dc37eee` · Não edite à mão.
+> Gerado automaticamente por indice.py · 2026-11-26 02:31 UTC · HEAD `e61dc37eee` · Não edite à mão.
 
 Um sistema, três fontes de verdade, três produtores independentes. **Leia este arquivo e vá direto à fonte certa.** Cada fato tem um dono: se duas fontes discordarem, vale o dono.
 
@@ -8,9 +8,9 @@ Um sistema, três fontes de verdade, três produtores independentes. **Leia este
 
 | Preciso de… | Fonte (dona do fato) | Onde ler | Estado |
 |---|---|---|---|
-| Regras que não podem ser quebradas: RLS por operação, estados e transições, validações, fórmulas, prazos, erros de negócio, testes como especificação, inconsistências código×schema (NÃO VERIFICADO) e regras humanas (`manual/`) | **regras de negócio** | `docs/contexto/regras/07-REGRAS-DE-NEGOCIO.md` | ok · 5 min atrás |
-| Tabelas, colunas, RLS/políticas, funções, triggers, cron, storage, lints — **como está em produção agora** | **banco real** | `docs/contexto/supabase/README.md` | desatualizado · 3h atrás · ⚠️ desatualizado há 3h00 |
-| Rotas, telas, módulos, hooks, edge functions, grafo de dependências, testes, scripts, convenções | **código** | `docs/contexto/codigo/INDEX.md` | ok · 5 min atrás |
+| Regras que não podem ser quebradas: RLS por operação, estados e transições, validações, fórmulas, prazos, erros de negócio, testes como especificação, inconsistências código×schema (NÃO VERIFICADO) e regras humanas (`manual/`) | **regras de negócio** | `docs/contexto/regras/07-REGRAS-DE-NEGOCIO.md` | ok · 10 min atrás |
+| Tabelas, colunas, RLS/políticas, funções, triggers, cron, storage, lints — **como está em produção agora** | **banco real** | `docs/contexto/supabase/README.md` | ok · 1 min atrás |
+| Rotas, telas, módulos, hooks, edge functions, grafo de dependências, testes, scripts, convenções | **código** | `docs/contexto/codigo/INDEX.md` | ok · 10 min atrás |
 
 ## Ordem de leitura antes de qualquer tarefa ou planejamento
 
@@ -65,6 +65,9 @@ Um sistema, três fontes de verdade, três produtores independentes. **Leia este
 - `docs/contexto/supabase/tables/cf_recon/remediation.md`
 - `docs/contexto/supabase/tables/classification_audit/category_suggestions.md`
 - `docs/contexto/supabase/tables/internal/managed_schema_dictionary.md`
+- `docs/contexto/supabase/tables/ops/pgss_history.md`
+- `docs/contexto/supabase/tables/ops/table_size_history.md`
+- `docs/contexto/supabase/tables/ops/wraparound_monitor_log.md`
 - `docs/contexto/supabase/tables/prod_audit/category_keywords.md`
 - `docs/contexto/supabase/tables/prod_audit/category_suggestions.md`
 - `docs/contexto/supabase/tables/prod_audit/classification_rules.md`
@@ -105,10 +108,7 @@ Um sistema, três fontes de verdade, três produtores independentes. **Leia este
 - `docs/contexto/supabase/tables/public/bkp_kcvs_pre_normalize_20260624.md`
 - `docs/contexto/supabase/tables/public/bkp_kit_color_from_name_20260624.md`
 - `docs/contexto/supabase/tables/public/bkp_kit_dims_20260619.md`
-- `docs/contexto/supabase/tables/public/bkp_kit_packing_type_20260624.md`
-- `docs/contexto/supabase/tables/public/bkp_kit_pkg_material_20260624.md`
-- `docs/contexto/supabase/tables/public/bkp_orphan_active_variants_20260619.md`
-- … +402
+- … +405
 
 </details>
 

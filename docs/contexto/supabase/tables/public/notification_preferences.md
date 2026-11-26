@@ -8,7 +8,7 @@
 | owner | postgres |
 | RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 5 |
+| policies | 4 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -87,16 +87,6 @@
 | roles | authenticated |
 | USING | `(( SELECT auth.uid() AS uid) = user_id)` |
 | WITH CHECK | `(( SELECT auth.uid() AS uid) = user_id)` |
-
-### `rls_restrictive_notification_preferences`
-
-| campo | valor |
-|---|---|
-| comando | ALL |
-| tipo | RESTRICTIVE |
-| roles | authenticated, service_role |
-| USING | `true` |
-| WITH CHECK |  |
 
 
 ## Triggers

@@ -42,7 +42,6 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.ai_usage_quotas | ai_usage_quotas_admin_insert | INSERT | PERMISSIVE | authenticated |  | `(is_dev() OR has_role(( SELECT auth.uid() AS uid), 'admin'::app_role))` |
 | public.ai_usage_quotas | ai_usage_quotas_admin_update | UPDATE | PERMISSIVE | authenticated | `(is_dev() OR has_role(( SELECT auth.uid() AS uid), 'admin'::app_role))` | `(is_dev() OR has_role(( SELECT auth.uid() AS uid), 'admin'::app_role))` |
 | public.ai_usage_quotas | ai_usage_quotas_read_authenticated | SELECT | PERMISSIVE | authenticated | `(( SELECT auth.uid() AS uid) IS NOT NULL)` |  |
-| public.ai_usage_quotas | rls_restrictive_ai_usage_quotas | ALL | RESTRICTIVE | authenticated, service_role | `true` |  |
 | public.analytics_events | ae_delete_dev | DELETE | PERMISSIVE | authenticated | `is_dev(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
 | public.analytics_events | ae_insert_anon | INSERT | PERMISSIVE | anon |  | `(user_id IS NULL)` |
 | public.analytics_events | ae_insert_self_or_anon | INSERT | PERMISSIVE | authenticated |  | `((user_id IS NULL) OR (user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)))` |
@@ -307,7 +306,6 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.kit_collaborators | Owner can remove collaborators | DELETE | PERMISSIVE | authenticated | `is_kit_owner(kit_id, ( SELECT auth.uid() AS uid))` |  |
 | public.kit_collaborators | Owner can update collaborators | UPDATE | PERMISSIVE | authenticated | `is_kit_owner(kit_id, ( SELECT auth.uid() AS uid))` |  |
 | public.kit_collaborators | View collaborators if owner or self | SELECT | PERMISSIVE | authenticated | `(is_kit_owner(kit_id, ( SELECT auth.uid() AS uid)) OR (user_id = auth.uid()))` |  |
-| public.kit_collaborators | rls_restrictive_kit_collaborators | ALL | RESTRICTIVE | authenticated, service_role | `true` |  |
 | public.kit_comments | Author can delete own comment | DELETE | PERMISSIVE | authenticated | `((author_id = ( SELECT auth.uid() AS uid)) OR is_admin(( SELECT auth.uid() AS uid)))` |  |
 | public.kit_comments | Author can edit own comment | UPDATE | PERMISSIVE | authenticated | `((author_id = ( SELECT auth.uid() AS uid)) OR is_admin(( SELECT auth.uid() AS uid)))` | `((author_id = ( SELECT auth.uid() AS uid)) OR is_admin(( SELECT auth.uid() AS uid)))` |
 | public.kit_comments | Owner or collab can comment | INSERT | PERMISSIVE | authenticated |  | `((author_id = ( SELECT auth.uid() AS uid)) AND (is_kit_owner(kit_id, ( SELECT auth.uid() AS uid)) OR is_kit_collaborator(kit_id, ( SELECT auth.uid() AS uid))))` |
@@ -468,7 +466,6 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.notification_preferences | notification_preferences_insert | INSERT | PERMISSIVE | authenticated |  | `(( SELECT auth.uid() AS uid) = user_id)` |
 | public.notification_preferences | notification_preferences_select | SELECT | PERMISSIVE | authenticated | `(( SELECT auth.uid() AS uid) = user_id)` |  |
 | public.notification_preferences | notification_preferences_update | UPDATE | PERMISSIVE | authenticated | `(( SELECT auth.uid() AS uid) = user_id)` | `(( SELECT auth.uid() AS uid) = user_id)` |
-| public.notification_preferences | rls_restrictive_notification_preferences | ALL | RESTRICTIVE | authenticated, service_role | `true` |  |
 | public.notification_templates | notification_templates_delete | DELETE | PERMISSIVE | public | `false` |  |
 | public.notification_templates | notification_templates_insert | INSERT | PERMISSIVE | public |  | `false` |
 | public.notification_templates | notification_templates_select | SELECT | PERMISSIVE | authenticated | `is_supervisor_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
@@ -537,7 +534,6 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.print_area_techniques | print_area_techniques_oa_upd | UPDATE | PERMISSIVE | authenticated | `(EXISTS ( SELECT 1    FROM products p   WHERE ((p.id = print_area_techniques.product_id) AND is_org_owner_or_admin(p.organization_id))))` | `(EXISTS ( SELECT 1    FROM products p   WHERE ((p.id = print_area_techniques.product_id) AND is_org_owner_or_admin(p.organization_id))))` |
 | public.product_ai_content | product_ai_content_authenticated_select | SELECT | PERMISSIVE | authenticated | `true` |  |
 | public.product_ai_content | product_ai_service_all | ALL | PERMISSIVE | service_role | `true` | `true` |
-| public.product_ai_content | rls_restrictive_product_ai_content | ALL | RESTRICTIVE | authenticated, service_role | `true` |  |
 | public.product_ai_history | auth_read_product_ai_history | SELECT | PERMISSIVE | authenticated | `true` |  |
 | public.product_attributes | pa_select_anon | SELECT | PERMISSIVE | anon | `((is_active = true) AND (is_visible = true))` |  |
 | public.product_attributes | pa_select_authenticated_all | SELECT | PERMISSIVE | authenticated | `true` |  |
@@ -578,7 +574,6 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.product_faqs | product_faqs_public_read | SELECT | PERMISSIVE | public | `(is_active = true)` |  |
 | public.product_fiscal | product_fiscal_authenticated_select | SELECT | PERMISSIVE | authenticated | `true` |  |
 | public.product_fiscal | product_fiscal_service_all | ALL | PERMISSIVE | service_role | `true` | `true` |
-| public.product_fiscal | rls_restrictive_product_fiscal | ALL | RESTRICTIVE | authenticated, service_role | `true` |  |
 | public.product_group_components | pgcomp_admin_delete | DELETE | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
 | public.product_group_components | pgcomp_admin_insert | INSERT | PERMISSIVE | authenticated |  | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
 | public.product_group_components | pgcomp_admin_update | UPDATE | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
@@ -643,12 +638,10 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.product_search_logs | search_logs_write | INSERT | PERMISSIVE | authenticated |  | `(( SELECT ( SELECT auth.uid() AS uid) AS uid) IS NOT NULL)` |
 | public.product_seo | product_seo_authenticated_select | SELECT | PERMISSIVE | authenticated | `true` |  |
 | public.product_seo | product_seo_service_all | ALL | PERMISSIVE | service_role | `true` | `true` |
-| public.product_seo | rls_restrictive_product_seo | ALL | RESTRICTIVE | authenticated, service_role | `true` |  |
 | public.product_similarity_group_members | psgm_public_read | SELECT | PERMISSIVE | public | `true` |  |
 | public.product_similarity_groups | psg_public_read | SELECT | PERMISSIVE | public | `true` |  |
 | public.product_supply | product_supply_authenticated_select | SELECT | PERMISSIVE | authenticated | `true` |  |
 | public.product_supply | product_supply_service_all | ALL | PERMISSIVE | service_role | `true` | `true` |
-| public.product_supply | rls_restrictive_product_supply | ALL | RESTRICTIVE | authenticated, service_role | `true` |  |
 | public.product_sync_logs | Admins insert product sync logs | INSERT | PERMISSIVE | authenticated |  | `has_role(( SELECT ( SELECT auth.uid() AS uid) AS uid), 'admin'::app_role)` |
 | public.product_sync_logs | Admins view product sync logs | SELECT | PERMISSIVE | authenticated | `has_role(( SELECT ( SELECT auth.uid() AS uid) AS uid), 'admin'::app_role)` |  |
 | public.product_tags | product_tags_anon_read | SELECT | PERMISSIVE | anon | `fn_product_active_for_rls(product_id)` |  |
@@ -696,7 +689,6 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.push_subscriptions | push_subscriptions_insert | INSERT | PERMISSIVE | authenticated |  | `(( SELECT auth.uid() AS uid) = user_id)` |
 | public.push_subscriptions | push_subscriptions_select | SELECT | PERMISSIVE | authenticated | `(( SELECT auth.uid() AS uid) = user_id)` |  |
 | public.push_subscriptions | push_subscriptions_update | UPDATE | PERMISSIVE | authenticated | `(( SELECT auth.uid() AS uid) = user_id)` | `(( SELECT auth.uid() AS uid) = user_id)` |
-| public.push_subscriptions | rls_restrictive_push_subscriptions | ALL | RESTRICTIVE | authenticated, service_role | `true` |  |
 | public.qa_image_coverage_log | qa_coverage_admin_delete | DELETE | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
 | public.qa_image_coverage_log | qa_coverage_admin_insert | INSERT | PERMISSIVE | authenticated |  | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
 | public.qa_image_coverage_log | qa_coverage_admin_update | UPDATE | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
@@ -745,7 +737,6 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.recently_viewed_products | Users can insert their own recently viewed products | INSERT | PERMISSIVE | authenticated |  | `(( SELECT auth.uid() AS uid) = user_id)` |
 | public.recently_viewed_products | Users can update their own recently viewed products | UPDATE | PERMISSIVE | authenticated | `(( SELECT auth.uid() AS uid) = user_id)` | `(( SELECT auth.uid() AS uid) = user_id)` |
 | public.recently_viewed_products | Users can view their own recently viewed products | SELECT | PERMISSIVE | authenticated | `(( SELECT auth.uid() AS uid) = user_id)` |  |
-| public.recently_viewed_products | rls_restrictive_recently_viewed_products | ALL | RESTRICTIVE | authenticated, service_role | `true` |  |
 | public.request_rate_limits | Devs can read rate limits | SELECT | PERMISSIVE | authenticated | `is_dev(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
 | public.request_rate_limits | Service role can manage rate limits | ALL | PERMISSIVE | service_role | `true` | `true` |
 | public.rls_denial_log | Admins can delete old logs | DELETE | PERMISSIVE | authenticated | `is_admin_strict(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
@@ -910,7 +901,6 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.system_kill_switches | kill_switches_delete_admin | DELETE | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
 | public.system_kill_switches | kill_switches_insert_admin | INSERT | PERMISSIVE | authenticated |  | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
 | public.system_kill_switches | kill_switches_update_admin | UPDATE | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
-| public.system_kill_switches | rls_restrictive_system_kill_switches | ALL | RESTRICTIVE | authenticated, service_role | `true` |  |
 | public.system_kill_switches | system_kill_switches_authenticated_select | SELECT | PERMISSIVE | authenticated | `true` |  |
 | public.system_settings | system_settings_admin_delete | DELETE | PERMISSIVE | authenticated | `is_admin(( SELECT auth.uid() AS uid))` |  |
 | public.system_settings | system_settings_admin_insert | INSERT | PERMISSIVE | authenticated |  | `is_admin(( SELECT auth.uid() AS uid))` |

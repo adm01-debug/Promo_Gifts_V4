@@ -113,12 +113,9 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
-| idx_variant_supplier_sources_supplier_branch_id | btree | supplier_branch_id | não | sim |  | `CREATE INDEX idx_variant_supplier_sources_supplier_branch_id ON public.variant_supplier_sources USING btree (supplier_branch_id)` |
 | idx_variant_supplier_sources_supplier_id | btree | supplier_id | não | sim |  | `CREATE INDEX idx_variant_supplier_sources_supplier_id ON public.variant_supplier_sources USING btree (supplier_id)` |
 | idx_vss_cost | btree | variant_id, cost_price | não | sim | `(is_active = true)` | `CREATE INDEX idx_vss_cost ON public.variant_supplier_sources USING btree (variant_id, cost_price) WHERE (is_active = true)` |
-| idx_vss_org_supplier | btree | organization_id, supplier_id | não | sim |  | `CREATE INDEX idx_vss_org_supplier ON public.variant_supplier_sources USING btree (organization_id, supplier_id)` |
 | idx_vss_preferred | btree | variant_id | não | sim | `(is_preferred = true)` | `CREATE INDEX idx_vss_preferred ON public.variant_supplier_sources USING btree (variant_id) WHERE (is_preferred = true)` |
-| idx_vss_supplier_sku_xbz | btree | supplier_sku, supplier_id | não | sim | `(supplier_id = 'd6718a29-e954-4c1b-bd84-03ea24884900'::uuid)` | `CREATE INDEX idx_vss_supplier_sku_xbz ON public.variant_supplier_sources USING btree (supplier_sku, supplier_id) WHERE (supplier_id = 'd6718a29-e954-4c1b-bd84-03ea24884900'::uuid)` |
 | idx_vss_variant_supplier_unique | btree | variant_id, supplier_id | sim | sim |  | `CREATE UNIQUE INDEX idx_vss_variant_supplier_unique ON public.variant_supplier_sources USING btree (variant_id, supplier_id)` |
 | variant_stocks_organization_id_variant_id_supplier_id_key | btree | organization_id, variant_id, supplier_id | sim | sim |  | `CREATE UNIQUE INDEX variant_stocks_organization_id_variant_id_supplier_id_key ON public.variant_supplier_sources USING btree (organization_id, variant_id, supplier_id)` |
 | variant_stocks_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX variant_stocks_pkey ON public.variant_supplier_sources USING btree (id)` |

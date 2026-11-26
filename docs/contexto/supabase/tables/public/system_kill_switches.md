@@ -8,7 +8,7 @@
 | owner | postgres |
 | RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 5 |
+| policies | 4 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -75,16 +75,6 @@
 | roles | authenticated |
 | USING | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
 | WITH CHECK | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
-
-### `rls_restrictive_system_kill_switches`
-
-| campo | valor |
-|---|---|
-| comando | ALL |
-| tipo | RESTRICTIVE |
-| roles | authenticated, service_role |
-| USING | `true` |
-| WITH CHECK |  |
 
 ### `system_kill_switches_authenticated_select`
 

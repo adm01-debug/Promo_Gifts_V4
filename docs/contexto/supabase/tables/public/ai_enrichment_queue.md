@@ -165,8 +165,6 @@
 |---|---|---|---|---|---|---|
 | ai_enrichment_queue_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX ai_enrichment_queue_pkey ON public.ai_enrichment_queue USING btree (id)` |
 | idx_ai_queue_locked_at | btree | locked_at | não | sim | `(status = 'processing'::text)` | `CREATE INDEX idx_ai_queue_locked_at ON public.ai_enrichment_queue USING btree (locked_at) WHERE (status = 'processing'::text)` |
-| idx_ai_queue_pending | btree | priority, created_at | não | sim | `(status = 'pending'::text)` | `CREATE INDEX idx_ai_queue_pending ON public.ai_enrichment_queue USING btree (priority, created_at) WHERE (status = 'pending'::text)` |
-| idx_ai_queue_product_id | btree | product_id | não | sim |  | `CREATE INDEX idx_ai_queue_product_id ON public.ai_enrichment_queue USING btree (product_id)` |
 | idx_ai_queue_status | btree | status, updated_at | não | sim |  | `CREATE INDEX idx_ai_queue_status ON public.ai_enrichment_queue USING btree (status, updated_at)` |
 | uq_product_enrichment_type | btree | product_id, enrichment_type | sim | sim |  | `CREATE UNIQUE INDEX uq_product_enrichment_type ON public.ai_enrichment_queue USING btree (product_id, enrichment_type)` |
 

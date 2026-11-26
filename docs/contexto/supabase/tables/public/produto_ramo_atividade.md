@@ -39,7 +39,6 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
-| idx_produto_ramo_atividade_filho | btree | ramo_atividade_filho_id | não | sim |  | `CREATE INDEX idx_produto_ramo_atividade_filho ON public.produto_ramo_atividade USING btree (ramo_atividade_filho_id)` |
 | idx_produto_ramo_atividade_produto | btree | produto_id | não | sim |  | `CREATE INDEX idx_produto_ramo_atividade_produto ON public.produto_ramo_atividade USING btree (produto_id)` |
 | produto_ramo_atividade_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX produto_ramo_atividade_pkey ON public.produto_ramo_atividade USING btree (id)` |
 | produto_ramo_atividade_produto_id_ramo_atividade_filho_id_key | btree | produto_id, ramo_atividade_filho_id | sim | sim |  | `CREATE UNIQUE INDEX produto_ramo_atividade_produto_id_ramo_atividade_filho_id_key ON public.produto_ramo_atividade USING btree (produto_id, ramo_atividade_filho_id)` |

@@ -3127,6 +3127,279 @@
       },
       {
         "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "captured_at",
+        "nullable": false,
+        "position": 1,
+        "schema": "ops",
+        "table": "pgss_history",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "queryid",
+        "nullable": false,
+        "position": 2,
+        "schema": "ops",
+        "table": "pgss_history",
+        "type": "bigint"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "fn_name",
+        "nullable": true,
+        "position": 3,
+        "schema": "ops",
+        "table": "pgss_history",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "calls",
+        "nullable": false,
+        "position": 4,
+        "schema": "ops",
+        "table": "pgss_history",
+        "type": "bigint"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "total_exec_time",
+        "nullable": false,
+        "position": 5,
+        "schema": "ops",
+        "table": "pgss_history",
+        "type": "double precision"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "mean_exec_time",
+        "nullable": false,
+        "position": 6,
+        "schema": "ops",
+        "table": "pgss_history",
+        "type": "double precision"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "stddev_exec_time",
+        "nullable": false,
+        "position": 7,
+        "schema": "ops",
+        "table": "pgss_history",
+        "type": "double precision"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "max_exec_time",
+        "nullable": false,
+        "position": 8,
+        "schema": "ops",
+        "table": "pgss_history",
+        "type": "double precision"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "captured_at",
+        "nullable": false,
+        "position": 1,
+        "schema": "ops",
+        "table": "table_size_history",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "schema_name",
+        "nullable": false,
+        "position": 2,
+        "schema": "ops",
+        "table": "table_size_history",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "table_name",
+        "nullable": false,
+        "position": 3,
+        "schema": "ops",
+        "table": "table_size_history",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "total_bytes",
+        "nullable": false,
+        "position": 4,
+        "schema": "ops",
+        "table": "table_size_history",
+        "type": "bigint"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "live_tup",
+        "nullable": false,
+        "position": 5,
+        "schema": "ops",
+        "table": "table_size_history",
+        "type": "bigint"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": "a",
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "ops",
+        "table": "wraparound_monitor_log",
+        "type": "bigint"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "captured_at",
+        "nullable": false,
+        "position": 2,
+        "schema": "ops",
+        "table": "wraparound_monitor_log",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "metric",
+        "nullable": false,
+        "position": 3,
+        "schema": "ops",
+        "table": "wraparound_monitor_log",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "object_name",
+        "nullable": true,
+        "position": 4,
+        "schema": "ops",
+        "table": "wraparound_monitor_log",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "value_numeric",
+        "nullable": true,
+        "position": 5,
+        "schema": "ops",
+        "table": "wraparound_monitor_log",
+        "type": "numeric"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "value_pct",
+        "nullable": true,
+        "position": 6,
+        "schema": "ops",
+        "table": "wraparound_monitor_log",
+        "type": "numeric"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "unit",
+        "nullable": true,
+        "position": 7,
+        "schema": "ops",
+        "table": "wraparound_monitor_log",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "detail",
+        "nullable": true,
+        "position": 8,
+        "schema": "ops",
+        "table": "wraparound_monitor_log",
+        "type": "jsonb"
+      },
+      {
+        "comment": null,
         "default": null,
         "generated": null,
         "identity": null,
@@ -113619,6 +113892,77 @@
       },
       {
         "columns": [
+          "captured_at",
+          "queryid"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (captured_at, queryid)",
+        "name": "pgss_history_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "ops",
+        "table": "pgss_history",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "captured_at",
+          "schema_name",
+          "table_name"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (captured_at, schema_name, table_name)",
+        "name": "table_size_history_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "ops",
+        "table": "table_size_history",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "metric"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (metric = ANY (ARRAY['xid_age'::text, 'mxid_age'::text, 'sequence_pct_used'::text, 'replication_slot_retained_bytes'::text, 'toast_pct_of_heap'::text]))",
+        "name": "wraparound_monitor_log_metric_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "ops",
+        "table": "wraparound_monitor_log",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id)",
+        "name": "wraparound_monitor_log_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "ops",
+        "table": "wraparound_monitor_log",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
           "category_id"
         ],
         "deferrable": false,
@@ -140917,6 +141261,33 @@
           "jobname": "supplier-history-default-partition-alert",
           "schedule": "15 4 * * *",
           "username": "postgres"
+        },
+        {
+          "active": true,
+          "command": "SELECT public.fn_cron_safe_run(\n    168::bigint,\n    'INSERT INTO ops.table_size_history (schema_name, table_name, total_bytes, live_tup) '\n    'SELECT n.nspname, c.relname, pg_total_relation_size(c.oid), c.reltuples::bigint '\n    'FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace '\n    'WHERE c.relkind IN (''r'',''p'') AND n.nspname = ''public'';',\n    45000,\n    'table-size-history'\n  );",
+          "database": "postgres",
+          "jobid": 320,
+          "jobname": "table-size-history-daily",
+          "schedule": "17 3 * * *",
+          "username": "postgres"
+        },
+        {
+          "active": true,
+          "command": "SELECT public.fn_cron_safe_run(\n    169::bigint,\n    'INSERT INTO ops.pgss_history (queryid, fn_name, calls, total_exec_time, mean_exec_time, stddev_exec_time, max_exec_time) '\n    'SELECT queryid, coalesce((regexp_match(query, ''\"public\"\\.\"([a-zA-Z0-9_]+)\"''))[1], (regexp_match(query, ''FROM ([a-zA-Z0-9_]+)\\(''))[1]) AS fn_name, '\n    'calls, total_exec_time, mean_exec_time, stddev_exec_time, max_exec_time '\n    'FROM extensions.pg_stat_statements '\n    'WHERE query ILIKE ''%pgrst_call%'';',\n    45000,\n    'pgss-history-weekly'\n  );",
+          "database": "postgres",
+          "jobid": 321,
+          "jobname": "pgss-history-weekly",
+          "schedule": "41 3 * * 1",
+          "username": "postgres"
+        },
+        {
+          "active": true,
+          "command": "SELECT public.fn_cron_safe_run(\n    167::bigint,\n    $sql$\n    INSERT INTO ops.wraparound_monitor_log (metric, object_name, value_numeric, value_pct, unit, detail)\n    SELECT 'xid_age', current_database(), age(datfrozenxid)::numeric,\n           round(100.0 * age(datfrozenxid) / 2000000000.0, 4), 'xid',\n           jsonb_build_object('datfrozenxid', datfrozenxid)\n    FROM pg_database WHERE datname = current_database()\n    UNION ALL\n    SELECT 'mxid_age', current_database(), mxid_age(datminmxid)::numeric,\n           round(100.0 * mxid_age(datminmxid) / 2000000000.0, 4), 'mxid',\n           jsonb_build_object('datminmxid', datminmxid)\n    FROM pg_database WHERE datname = current_database()\n    UNION ALL\n    SELECT 'sequence_pct_used', s.schemaname || '.' || s.sequencename,\n           COALESCE(s.last_value, 0)::numeric,\n           round(100.0 * COALESCE(s.last_value, 0)::numeric / s.max_value::numeric, 4),\n           'pct',\n           jsonb_build_object('owner_table', c2.relname, 'owner_column', a.attname, 'seq_type', s.data_type)\n    FROM pg_sequences s\n    JOIN pg_namespace sn ON sn.nspname = s.schemaname\n    JOIN pg_class sc ON sc.relname = s.sequencename AND sc.relnamespace = sn.oid\n    LEFT JOIN pg_depend d ON d.objid = sc.oid AND d.deptype = 'a'\n    LEFT JOIN pg_class c2 ON c2.oid = d.refobjid\n    LEFT JOIN pg_attribute a ON a.attrelid = d.refobjid AND a.attnum = d.refobjsubid\n    WHERE s.data_type IN ('smallint', 'integer')\n    UNION ALL\n    SELECT 'replication_slot_retained_bytes', slot_name,\n           pg_wal_lsn_diff(pg_current_wal_lsn(), restart_lsn)::numeric, NULL, 'bytes',\n           jsonb_build_object('active', active, 'wal_status', wal_status)\n    FROM pg_replication_slots\n    UNION ALL\n    (SELECT 'toast_pct_of_heap', c.oid::regclass::text,\n           pg_relation_size(t.oid)::numeric,\n           round(100.0 * pg_relation_size(t.oid) / NULLIF(pg_relation_size(c.oid), 0), 1), 'pct',\n           jsonb_build_object('heap_bytes', pg_relation_size(c.oid), 'total_bytes', pg_total_relation_size(c.oid))\n    FROM pg_class c\n    JOIN pg_namespace n ON n.oid = c.relnamespace\n    JOIN pg_class t ON t.oid = c.reltoastrelid\n    WHERE c.relkind = 'r' AND c.reltoastrelid <> 0\n      AND n.nspname NOT IN ('pg_catalog', 'information_schema')\n      AND pg_relation_size(t.oid) > 1048576\n    ORDER BY 4 DESC NULLS LAST\n    LIMIT 10);\n    $sql$,\n    30000,\n    'wraparound-monitor'\n  );",
+          "database": "postgres",
+          "jobid": 322,
+          "jobname": "wraparound-toast-sequence-monitor",
+          "schedule": "0 6 * * *",
+          "username": "postgres"
         }
       ]
     },
@@ -142751,7 +143122,9 @@
           ],
           "code_total_files": 19,
           "cron": [],
-          "db": [],
+          "db": [
+            "public.prevent_non_admin_quote_item_price_change"
+          ],
           "triggers": [],
           "views": [
             "public.v_compras_catalogo",
@@ -154578,7 +154951,10 @@
             "277:xbz-stock-sync",
             "278:asia-image-uploader",
             "304:refresh-mv-product-leaf-category",
-            "318:supplier-history-partition-maintenance"
+            "318:supplier-history-partition-maintenance",
+            "320:table-size-history-daily",
+            "321:pgss-history-weekly",
+            "322:wraparound-toast-sequence-monitor"
           ],
           "db": [],
           "triggers": [],
@@ -155913,13 +156289,9 @@
             {
               "file": "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql",
               "hits": 1
-            },
-            {
-              "file": "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql",
-              "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 2,
           "cron": [
             "318:supplier-history-partition-maintenance"
           ],
@@ -183015,6 +183387,7 @@
             "public.magazine_remove_items_atomic",
             "public.magazine_reorder_items_atomic",
             "public.magazine_update_metadata_atomic",
+            "public.prevent_non_admin_quote_item_price_change",
             "public.prevent_profile_role_change",
             "public.prevent_role_self_update",
             "public.repair_ownership_orphans",
@@ -188632,6 +189005,43 @@
         "callers": {
           "code": [
             {
+              "file": "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [],
+          "triggers": [
+            "public.quote_items.trg_prevent_non_admin_quote_item_price_change"
+          ],
+          "views": []
+        },
+        "comment": null,
+        "config": [
+          "search_path=public, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "20257cd8ba2911f9",
+        "execute_api_roles": "service_role",
+        "execute_public": false,
+        "is_trigger_fn": true,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "prevent_non_admin_quote_item_price_change",
+        "owner": "postgres",
+        "returns": "trigger",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "",
+        "callers": {
+          "code": [
+            {
               "file": "supabase/migrations/20260317155554_ba3ad0d9-b31e-425a-9808-f271eeeece06.sql",
               "hits": 1
             },
@@ -191681,6 +192091,43 @@
         "returns": "trigger",
         "schema": "public",
         "security_definer": false,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "",
+        "callers": {
+          "code": [
+            {
+              "file": "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [],
+          "triggers": [
+            "public.quotes.trg_set_quote_sent_at"
+          ],
+          "views": []
+        },
+        "comment": null,
+        "config": [
+          "search_path=public, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "35af737d6d19483f",
+        "execute_api_roles": "service_role",
+        "execute_public": false,
+        "is_trigger_fn": true,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "set_quote_sent_at",
+        "owner": "postgres",
+        "returns": "trigger",
+        "schema": "public",
+        "security_definer": true,
         "strict": false,
         "volatility": "volatile"
       },
@@ -205226,6 +205673,97 @@
       },
       {
         "columns": [
+          "fn_name",
+          "captured_at"
+        ],
+        "definition": "CREATE INDEX idx_pgss_history_fn_captured ON ops.pgss_history USING btree (fn_name, captured_at DESC)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_pgss_history_fn_captured",
+        "predicate": null,
+        "schema": "ops",
+        "table": "pgss_history"
+      },
+      {
+        "columns": [
+          "captured_at",
+          "queryid"
+        ],
+        "definition": "CREATE UNIQUE INDEX pgss_history_pkey ON ops.pgss_history USING btree (captured_at, queryid)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "pgss_history_pkey",
+        "predicate": null,
+        "schema": "ops",
+        "table": "pgss_history"
+      },
+      {
+        "columns": [
+          "schema_name",
+          "table_name",
+          "captured_at"
+        ],
+        "definition": "CREATE INDEX idx_table_size_history_table_captured ON ops.table_size_history USING btree (schema_name, table_name, captured_at DESC)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_table_size_history_table_captured",
+        "predicate": null,
+        "schema": "ops",
+        "table": "table_size_history"
+      },
+      {
+        "columns": [
+          "captured_at",
+          "schema_name",
+          "table_name"
+        ],
+        "definition": "CREATE UNIQUE INDEX table_size_history_pkey ON ops.table_size_history USING btree (captured_at, schema_name, table_name)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "table_size_history_pkey",
+        "predicate": null,
+        "schema": "ops",
+        "table": "table_size_history"
+      },
+      {
+        "columns": [
+          "metric",
+          "captured_at"
+        ],
+        "definition": "CREATE INDEX idx_wraparound_monitor_log_metric_captured ON ops.wraparound_monitor_log USING btree (metric, captured_at DESC)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_wraparound_monitor_log_metric_captured",
+        "predicate": null,
+        "schema": "ops",
+        "table": "wraparound_monitor_log"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "definition": "CREATE UNIQUE INDEX wraparound_monitor_log_pkey ON ops.wraparound_monitor_log USING btree (id)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "wraparound_monitor_log_pkey",
+        "predicate": null,
+        "schema": "ops",
+        "table": "wraparound_monitor_log"
+      },
+      {
+        "columns": [
           "category_id"
         ],
         "definition": "CREATE UNIQUE INDEX category_keywords_pkey ON prod_audit.category_keywords USING btree (category_id)",
@@ -205784,35 +206322,6 @@
         "method": "btree",
         "name": "idx_ai_queue_locked_at",
         "predicate": "(status = 'processing'::text)",
-        "schema": "public",
-        "table": "ai_enrichment_queue"
-      },
-      {
-        "columns": [
-          "priority",
-          "created_at"
-        ],
-        "definition": "CREATE INDEX idx_ai_queue_pending ON public.ai_enrichment_queue USING btree (priority, created_at) WHERE (status = 'pending'::text)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_ai_queue_pending",
-        "predicate": "(status = 'pending'::text)",
-        "schema": "public",
-        "table": "ai_enrichment_queue"
-      },
-      {
-        "columns": [
-          "product_id"
-        ],
-        "definition": "CREATE INDEX idx_ai_queue_product_id ON public.ai_enrichment_queue USING btree (product_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_ai_queue_product_id",
-        "predicate": null,
         "schema": "public",
         "table": "ai_enrichment_queue"
       },
@@ -209591,20 +210100,6 @@
       },
       {
         "columns": [
-          "user_id"
-        ],
-        "definition": "CREATE INDEX idx_frontend_telemetry_user_id ON public.frontend_telemetry USING btree (user_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_frontend_telemetry_user_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "frontend_telemetry"
-      },
-      {
-        "columns": [
           "id"
         ],
         "definition": "CREATE UNIQUE INDEX generated_mockups_pkey ON public.generated_mockups USING btree (id)",
@@ -209773,21 +210268,6 @@
         "method": "btree",
         "name": "idx_backfill_queue_by_task",
         "predicate": null,
-        "schema": "public",
-        "table": "image_backfill_queue"
-      },
-      {
-        "columns": [
-          "priority",
-          "created_at"
-        ],
-        "definition": "CREATE INDEX idx_backfill_queue_dispatch ON public.image_backfill_queue USING btree (priority DESC, created_at) WHERE (status = 'pending'::text)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_backfill_queue_dispatch",
-        "predicate": "(status = 'pending'::text)",
         "schema": "public",
         "table": "image_backfill_queue"
       },
@@ -210333,48 +210813,6 @@
       },
       {
         "columns": [
-          "kit_component_id"
-        ],
-        "definition": "CREATE INDEX idx_kcer_component ON public.kit_component_enrichment_raw USING btree (kit_component_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_kcer_component",
-        "predicate": null,
-        "schema": "public",
-        "table": "kit_component_enrichment_raw"
-      },
-      {
-        "columns": [
-          "kit_product_id"
-        ],
-        "definition": "CREATE INDEX idx_kcer_kit ON public.kit_component_enrichment_raw USING btree (kit_product_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_kcer_kit",
-        "predicate": null,
-        "schema": "public",
-        "table": "kit_component_enrichment_raw"
-      },
-      {
-        "columns": [
-          "source"
-        ],
-        "definition": "CREATE INDEX idx_kcer_source ON public.kit_component_enrichment_raw USING btree (source)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_kcer_source",
-        "predicate": null,
-        "schema": "public",
-        "table": "kit_component_enrichment_raw"
-      },
-      {
-        "columns": [
           "imported_by"
         ],
         "definition": "CREATE INDEX idx_kit_component_enrichment_raw_imported_by ON public.kit_component_enrichment_raw USING btree (imported_by)",
@@ -210383,34 +210821,6 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_kit_component_enrichment_raw_imported_by",
-        "predicate": null,
-        "schema": "public",
-        "table": "kit_component_enrichment_raw"
-      },
-      {
-        "columns": [
-          "promoted_component_id"
-        ],
-        "definition": "CREATE INDEX idx_kit_component_enrichment_raw_promoted_component_id ON public.kit_component_enrichment_raw USING btree (promoted_component_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_kit_component_enrichment_raw_promoted_component_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "kit_component_enrichment_raw"
-      },
-      {
-        "columns": [
-          "promoted_padronizacao_id"
-        ],
-        "definition": "CREATE INDEX idx_kit_component_enrichment_raw_promoted_padronizacao_id ON public.kit_component_enrichment_raw USING btree (promoted_padronizacao_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_kit_component_enrichment_raw_promoted_padronizacao_id",
         "predicate": null,
         "schema": "public",
         "table": "kit_component_enrichment_raw"
@@ -210529,20 +210939,6 @@
       },
       {
         "columns": [
-          "kit_product_id"
-        ],
-        "definition": "CREATE INDEX idx_kcpad_kit ON public.kit_component_padronizacao USING btree (kit_product_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_kcpad_kit",
-        "predicate": null,
-        "schema": "public",
-        "table": "kit_component_padronizacao"
-      },
-      {
-        "columns": [
           "padronizacao_status"
         ],
         "definition": "CREATE INDEX idx_kcpad_status ON public.kit_component_padronizacao USING btree (padronizacao_status)",
@@ -210593,20 +210989,6 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_kit_component_padronizacao_pkg_type_code",
-        "predicate": null,
-        "schema": "public",
-        "table": "kit_component_padronizacao"
-      },
-      {
-        "columns": [
-          "raw_id"
-        ],
-        "definition": "CREATE INDEX idx_kit_component_padronizacao_raw_id ON public.kit_component_padronizacao USING btree (raw_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_kit_component_padronizacao_raw_id",
         "predicate": null,
         "schema": "public",
         "table": "kit_component_padronizacao"
@@ -214039,20 +214421,6 @@
       },
       {
         "columns": [
-          "location_code"
-        ],
-        "definition": "CREATE INDEX idx_pat_location_code ON public.print_area_techniques USING btree (location_code)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_pat_location_code",
-        "predicate": null,
-        "schema": "public",
-        "table": "print_area_techniques"
-      },
-      {
-        "columns": [
           "product_id",
           "is_active"
         ],
@@ -214079,20 +214447,6 @@
         "method": "btree",
         "name": "idx_pat_product_location_active",
         "predicate": "(is_active = true)",
-        "schema": "public",
-        "table": "print_area_techniques"
-      },
-      {
-        "columns": [
-          "tabela_preco_id"
-        ],
-        "definition": "CREATE INDEX idx_pat_tabela ON public.print_area_techniques USING btree (tabela_preco_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_pat_tabela",
-        "predicate": null,
         "schema": "public",
         "table": "print_area_techniques"
       },
@@ -214381,34 +214735,6 @@
         "predicate": "(is_primary = true)",
         "schema": "public",
         "table": "product_category_assignments"
-      },
-      {
-        "columns": [
-          "product_id"
-        ],
-        "definition": "CREATE INDEX idx_prod_comm_product ON public.product_commemorative_dates USING btree (product_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_prod_comm_product",
-        "predicate": null,
-        "schema": "public",
-        "table": "product_commemorative_dates"
-      },
-      {
-        "columns": [
-          "category_id"
-        ],
-        "definition": "CREATE INDEX idx_product_commemorative_dates_category_id ON public.product_commemorative_dates USING btree (category_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_product_commemorative_dates_category_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "product_commemorative_dates"
       },
       {
         "columns": [
@@ -214807,34 +215133,6 @@
         "method": "btree",
         "name": "idx_product_fiscal_ean",
         "predicate": "(ean IS NOT NULL)",
-        "schema": "public",
-        "table": "product_fiscal"
-      },
-      {
-        "columns": [
-          "ncm_code"
-        ],
-        "definition": "CREATE INDEX idx_product_fiscal_ncm_code ON public.product_fiscal USING btree (ncm_code)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_product_fiscal_ncm_code",
-        "predicate": null,
-        "schema": "public",
-        "table": "product_fiscal"
-      },
-      {
-        "columns": [
-          "ncm_id"
-        ],
-        "definition": "CREATE INDEX idx_product_fiscal_ncm_id ON public.product_fiscal USING btree (ncm_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_product_fiscal_ncm_id",
-        "predicate": null,
         "schema": "public",
         "table": "product_fiscal"
       },
@@ -215429,34 +215727,6 @@
       },
       {
         "columns": [
-          "component_name"
-        ],
-        "definition": "CREATE INDEX idx_kit_components_name ON public.product_kit_components USING btree (component_name)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_kit_components_name",
-        "predicate": null,
-        "schema": "public",
-        "table": "product_kit_components"
-      },
-      {
-        "columns": [
-          "color_id"
-        ],
-        "definition": "CREATE INDEX idx_pkc_color_id ON public.product_kit_components USING btree (color_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_pkc_color_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "product_kit_components"
-      },
-      {
-        "columns": [
           "component_type_code"
         ],
         "definition": "CREATE INDEX idx_pkc_component_type ON public.product_kit_components USING btree (component_type_code)",
@@ -215493,48 +215763,6 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_pkc_material",
-        "predicate": null,
-        "schema": "public",
-        "table": "product_kit_components"
-      },
-      {
-        "columns": [
-          "component_product_id"
-        ],
-        "definition": "CREATE INDEX idx_product_kit_components_component_product_id ON public.product_kit_components USING btree (component_product_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_product_kit_components_component_product_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "product_kit_components"
-      },
-      {
-        "columns": [
-          "padronizacao_id"
-        ],
-        "definition": "CREATE INDEX idx_product_kit_components_padronizacao_id ON public.product_kit_components USING btree (padronizacao_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_product_kit_components_padronizacao_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "product_kit_components"
-      },
-      {
-        "columns": [
-          "secondary_material_type_id"
-        ],
-        "definition": "CREATE INDEX idx_product_kit_components_secondary_material_type_id ON public.product_kit_components USING btree (secondary_material_type_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_product_kit_components_secondary_material_type_id",
         "predicate": null,
         "schema": "public",
         "table": "product_kit_components"
@@ -216252,20 +216480,6 @@
       },
       {
         "columns": [
-          "property_definition_id"
-        ],
-        "definition": "CREATE INDEX idx_product_properties_property_definition_id ON public.product_properties USING btree (property_definition_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_product_properties_property_definition_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "product_properties"
-      },
-      {
-        "columns": [
           "source"
         ],
         "definition": "CREATE INDEX idx_product_properties_source ON public.product_properties USING btree (source)",
@@ -216592,20 +216806,6 @@
         "predicate": null,
         "schema": "public",
         "table": "product_similarity_groups"
-      },
-      {
-        "columns": [
-          "sync_status"
-        ],
-        "definition": "CREATE INDEX idx_product_supply_sync_status ON public.product_supply USING btree (sync_status)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_product_supply_sync_status",
-        "predicate": null,
-        "schema": "public",
-        "table": "product_supply"
       },
       {
         "columns": [
@@ -217303,20 +217503,6 @@
       },
       {
         "columns": [
-          "ncm_id"
-        ],
-        "definition": "CREATE INDEX idx_products_ncm_id ON public.products USING btree (ncm_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_products_ncm_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "products"
-      },
-      {
-        "columns": [
           "novelty_detected_at",
           "id",
           "novelty_expires_at",
@@ -217376,20 +217562,6 @@
         "method": "btree",
         "name": "idx_products_org",
         "predicate": null,
-        "schema": "public",
-        "table": "products"
-      },
-      {
-        "columns": [
-          "padronizacao_id"
-        ],
-        "definition": "CREATE INDEX idx_products_padronizacao_id ON public.products USING btree (padronizacao_id) WHERE (padronizacao_id IS NOT NULL)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_products_padronizacao_id",
-        "predicate": "(padronizacao_id IS NOT NULL)",
         "schema": "public",
         "table": "products"
       },
@@ -217494,20 +217666,6 @@
       },
       {
         "columns": [
-          "sub_brand_id"
-        ],
-        "definition": "CREATE INDEX idx_products_sub_brand_id ON public.products USING btree (sub_brand_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_products_sub_brand_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "products"
-      },
-      {
-        "columns": [
           "supplier_id"
         ],
         "definition": "CREATE INDEX idx_products_supplier ON public.products USING btree (supplier_id)",
@@ -217560,20 +217718,6 @@
         "method": "gin",
         "name": "idx_products_target_audience_gin",
         "predicate": "((is_active = true) AND (is_deleted IS NOT TRUE))",
-        "schema": "public",
-        "table": "products"
-      },
-      {
-        "columns": [
-          "xbz_stock_reliability_id"
-        ],
-        "definition": "CREATE INDEX idx_products_xbz_reliability ON public.products USING btree (xbz_stock_reliability_id) WHERE (xbz_stock_reliability_id IS NOT NULL)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_products_xbz_reliability",
-        "predicate": "(xbz_stock_reliability_id IS NOT NULL)",
         "schema": "public",
         "table": "products"
       },
@@ -217633,20 +217777,6 @@
         "predicate": "(supplier_reference IS NOT NULL)",
         "schema": "public",
         "table": "products"
-      },
-      {
-        "columns": [
-          "ramo_atividade_filho_id"
-        ],
-        "definition": "CREATE INDEX idx_produto_ramo_atividade_filho ON public.produto_ramo_atividade USING btree (ramo_atividade_filho_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_produto_ramo_atividade_filho",
-        "predicate": null,
-        "schema": "public",
-        "table": "produto_ramo_atividade"
       },
       {
         "columns": [
@@ -217777,20 +217907,6 @@
       },
       {
         "columns": [
-          "sub_brand_id"
-        ],
-        "definition": "CREATE INDEX idx_produtos_padronizacao_sub_brand_id ON public.produtos_padronizacao USING btree (sub_brand_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_produtos_padronizacao_sub_brand_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "produtos_padronizacao"
-      },
-      {
-        "columns": [
           "id"
         ],
         "definition": "CREATE UNIQUE INDEX produtos_padronizacao_pkey ON public.produtos_padronizacao USING btree (id)",
@@ -217834,20 +217950,6 @@
       },
       {
         "columns": [
-          "pad_id"
-        ],
-        "definition": "CREATE INDEX idx_padvar_pad ON public.produtos_padronizacao_variantes USING btree (pad_id) WHERE (pad_id IS NOT NULL)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_padvar_pad",
-        "predicate": "(pad_id IS NOT NULL)",
-        "schema": "public",
-        "table": "produtos_padronizacao_variantes"
-      },
-      {
-        "columns": [
           "supplier_id",
           "parent_reference"
         ],
@@ -217872,20 +217974,6 @@
         "method": "btree",
         "name": "idx_padvar_raw_id",
         "predicate": "(raw_id IS NOT NULL)",
-        "schema": "public",
-        "table": "produtos_padronizacao_variantes"
-      },
-      {
-        "columns": [
-          "supplier_id"
-        ],
-        "definition": "CREATE INDEX idx_padvar_sem_colorid ON public.produtos_padronizacao_variantes USING btree (supplier_id) WHERE (color_id IS NULL)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_padvar_sem_colorid",
-        "predicate": "(color_id IS NULL)",
         "schema": "public",
         "table": "produtos_padronizacao_variantes"
       },
@@ -217945,20 +218033,6 @@
         "predicate": null,
         "schema": "public",
         "table": "produtos_padronizacao_variantes"
-      },
-      {
-        "columns": [
-          "raw_id"
-        ],
-        "definition": "CREATE INDEX idx_produtos_site_padronizacao_raw_id ON public.produtos_site_padronizacao USING btree (raw_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_produtos_site_padronizacao_raw_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "produtos_site_padronizacao"
       },
       {
         "columns": [
@@ -219872,34 +219946,6 @@
       },
       {
         "columns": [
-          "supplier_branch_id"
-        ],
-        "definition": "CREATE INDEX idx_stock_daily_summary_supplier_branch_id ON public.stock_daily_summary USING btree (supplier_branch_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_stock_daily_summary_supplier_branch_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "stock_daily_summary"
-      },
-      {
-        "columns": [
-          "supplier_id"
-        ],
-        "definition": "CREATE INDEX idx_stock_daily_summary_supplier_id ON public.stock_daily_summary USING btree (supplier_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_stock_daily_summary_supplier_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "stock_daily_summary"
-      },
-      {
-        "columns": [
           "id"
         ],
         "definition": "CREATE UNIQUE INDEX stock_daily_summary_pkey ON public.stock_daily_summary USING btree (id)",
@@ -220523,20 +220569,6 @@
       },
       {
         "columns": [
-          "supplier_id"
-        ],
-        "definition": "CREATE INDEX idx_supplier_import_batches_supplier_id ON public.supplier_import_batches USING btree (supplier_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_supplier_import_batches_supplier_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "supplier_import_batches"
-      },
-      {
-        "columns": [
           "id"
         ],
         "definition": "CREATE UNIQUE INDEX supplier_import_batches_pkey ON public.supplier_import_batches USING btree (id)",
@@ -220637,21 +220669,6 @@
       },
       {
         "columns": [
-          "supplier_id",
-          "imported_at"
-        ],
-        "definition": "CREATE INDEX idx_spr_images_pending ON public.supplier_products_raw USING btree (supplier_id, imported_at) WHERE (images_status <> 'processed'::supplier_raw_status)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_spr_images_pending",
-        "predicate": "(images_status <> 'processed'::supplier_raw_status)",
-        "schema": "public",
-        "table": "supplier_products_raw"
-      },
-      {
-        "columns": [
           "id"
         ],
         "definition": "CREATE INDEX idx_spr_images_status_pending ON public.supplier_products_raw USING btree (id) WHERE (images_status = 'pending'::supplier_raw_status)",
@@ -220661,20 +220678,6 @@
         "method": "btree",
         "name": "idx_spr_images_status_pending",
         "predicate": "(images_status = 'pending'::supplier_raw_status)",
-        "schema": "public",
-        "table": "supplier_products_raw"
-      },
-      {
-        "columns": [
-          "import_batch_id"
-        ],
-        "definition": "CREATE INDEX idx_spr_import_batch_id ON public.supplier_products_raw USING btree (import_batch_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_spr_import_batch_id",
-        "predicate": null,
         "schema": "public",
         "table": "supplier_products_raw"
       },
@@ -220790,20 +220793,6 @@
         "method": "btree",
         "name": "idx_spr_unprocessed",
         "predicate": "(status <> ALL (ARRAY['processed'::supplier_raw_status, 'quarantined'::supplier_raw_status]))",
-        "schema": "public",
-        "table": "supplier_products_raw"
-      },
-      {
-        "columns": [
-          "variant_id"
-        ],
-        "definition": "CREATE INDEX idx_spr_variant_id ON public.supplier_products_raw USING btree (variant_id) WHERE (variant_id IS NOT NULL)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_spr_variant_id",
-        "predicate": "(variant_id IS NOT NULL)",
         "schema": "public",
         "table": "supplier_products_raw"
       },
@@ -221296,36 +221285,6 @@
       },
       {
         "columns": [
-          "supplier_id",
-          "promised_date"
-        ],
-        "definition": "CREATE INDEX idx_sre_supplier_date ON public.supplier_replenishment_events USING btree (supplier_id, promised_date DESC)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_sre_supplier_date",
-        "predicate": null,
-        "schema": "public",
-        "table": "supplier_replenishment_events"
-      },
-      {
-        "columns": [
-          "variant_id",
-          "promised_date"
-        ],
-        "definition": "CREATE INDEX idx_sre_variant_date ON public.supplier_replenishment_events USING btree (variant_id, promised_date DESC)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_sre_variant_date",
-        "predicate": null,
-        "schema": "public",
-        "table": "supplier_replenishment_events"
-      },
-      {
-        "columns": [
           "id"
         ],
         "definition": "CREATE UNIQUE INDEX supplier_replenishment_events_pkey ON public.supplier_replenishment_events USING btree (id)",
@@ -221793,26 +221752,6 @@
       {
         "columns": [
           "tabela_preco_gravacao_id",
-          "quantidade_minima",
-          "quantidade_maxima",
-          "largura_min",
-          "largura_max",
-          "altura_min",
-          "altura_max"
-        ],
-        "definition": "CREATE INDEX idx_faixa_v11_dim ON public.tabela_preco_gravacao_oficial_faixa USING btree (tabela_preco_gravacao_id, quantidade_minima, quantidade_maxima, largura_min, largura_max, altura_min, altura_max)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_faixa_v11_dim",
-        "predicate": null,
-        "schema": "public",
-        "table": "tabela_preco_gravacao_oficial_faixa"
-      },
-      {
-        "columns": [
-          "tabela_preco_gravacao_id",
           "quantidade_maxima"
         ],
         "definition": "CREATE INDEX idx_faixa_v11_qty_max ON public.tabela_preco_gravacao_oficial_faixa USING btree (tabela_preco_gravacao_id, quantidade_maxima) WHERE (quantidade_maxima IS NOT NULL)",
@@ -221850,28 +221789,6 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_tabela_preco_faixa_tabela",
-        "predicate": null,
-        "schema": "public",
-        "table": "tabela_preco_gravacao_oficial_faixa"
-      },
-      {
-        "columns": [
-          "tabela_preco_gravacao_id",
-          "quantidade_minima",
-          "quantidade_maxima",
-          "preco_unitario",
-          "prazo_dias",
-          "largura_min",
-          "largura_max",
-          "altura_min",
-          "altura_max"
-        ],
-        "definition": "CREATE INDEX idx_tpgof_tabela_qty ON public.tabela_preco_gravacao_oficial_faixa USING btree (tabela_preco_gravacao_id, quantidade_minima, quantidade_maxima) INCLUDE (preco_unitario, prazo_dias, largura_min, largura_max, altura_min, altura_max)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_tpgof_tabela_qty",
         "predicate": null,
         "schema": "public",
         "table": "tabela_preco_gravacao_oficial_faixa"
@@ -222639,20 +222556,6 @@
       },
       {
         "columns": [
-          "supplier_branch_id"
-        ],
-        "definition": "CREATE INDEX idx_variant_supplier_sources_supplier_branch_id ON public.variant_supplier_sources USING btree (supplier_branch_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_variant_supplier_sources_supplier_branch_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "variant_supplier_sources"
-      },
-      {
-        "columns": [
           "supplier_id"
         ],
         "definition": "CREATE INDEX idx_variant_supplier_sources_supplier_id ON public.variant_supplier_sources USING btree (supplier_id)",
@@ -222682,21 +222585,6 @@
       },
       {
         "columns": [
-          "organization_id",
-          "supplier_id"
-        ],
-        "definition": "CREATE INDEX idx_vss_org_supplier ON public.variant_supplier_sources USING btree (organization_id, supplier_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_vss_org_supplier",
-        "predicate": null,
-        "schema": "public",
-        "table": "variant_supplier_sources"
-      },
-      {
-        "columns": [
           "variant_id"
         ],
         "definition": "CREATE INDEX idx_vss_preferred ON public.variant_supplier_sources USING btree (variant_id) WHERE (is_preferred = true)",
@@ -222706,21 +222594,6 @@
         "method": "btree",
         "name": "idx_vss_preferred",
         "predicate": "(is_preferred = true)",
-        "schema": "public",
-        "table": "variant_supplier_sources"
-      },
-      {
-        "columns": [
-          "supplier_sku",
-          "supplier_id"
-        ],
-        "definition": "CREATE INDEX idx_vss_supplier_sku_xbz ON public.variant_supplier_sources USING btree (supplier_sku, supplier_id) WHERE (supplier_id = 'd6718a29-e954-4c1b-bd84-03ea24884900'::uuid)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_vss_supplier_sku_xbz",
-        "predicate": "(supplier_id = 'd6718a29-e954-4c1b-bd84-03ea24884900'::uuid)",
         "schema": "public",
         "table": "variant_supplier_sources"
       },
@@ -223316,21 +223189,6 @@
       },
       {
         "columns": [
-          "status",
-          "created_at"
-        ],
-        "definition": "CREATE INDEX idx_xbz_staging_status ON public.xbz_gallery_staging USING btree (status, created_at)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_xbz_staging_status",
-        "predicate": null,
-        "schema": "public",
-        "table": "xbz_gallery_staging"
-      },
-      {
-        "columns": [
           "cf_custom_id"
         ],
         "definition": "CREATE UNIQUE INDEX uq_xbz_staging_cf_id ON public.xbz_gallery_staging USING btree (cf_custom_id) WHERE (cf_custom_id IS NOT NULL)",
@@ -223396,20 +223254,6 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_xbz_upload_mapping_request_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "xbz_upload_mapping"
-      },
-      {
-        "columns": [
-          "status"
-        ],
-        "definition": "CREATE INDEX idx_xbz_upload_mapping_status ON public.xbz_upload_mapping USING btree (status)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_xbz_upload_mapping_status",
         "predicate": null,
         "schema": "public",
         "table": "xbz_upload_mapping"
@@ -224356,6 +224200,174 @@
         "code": "extension_in_public",
         "detail": "Extensão instalada no schema public (recomendado: schema extensions).",
         "object": "pgstattuple",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['user_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.frontend_telemetry.frontend_telemetry_user_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['kit_component_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.kit_component_enrichment_raw.kit_component_enrichment_raw_kit_component_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['kit_product_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.kit_component_enrichment_raw.kit_component_enrichment_raw_kit_product_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['promoted_component_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.kit_component_enrichment_raw.kit_component_enrichment_raw_promoted_component_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['promoted_padronizacao_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.kit_component_enrichment_raw.kit_component_enrichment_raw_promoted_padronizacao_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['raw_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.kit_component_padronizacao.fk_kcpad_raw_id",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['kit_product_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.kit_component_padronizacao.kit_component_padronizacao_kit_product_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['tabela_preco_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.print_area_techniques.print_area_techniques_tabela_preco_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['category_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.product_commemorative_dates.product_commemorative_dates_category_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['ncm_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.product_fiscal.product_fiscal_ncm_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['color_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.product_kit_components.product_kit_components_color_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['component_product_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.product_kit_components.product_kit_components_component_product_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['padronizacao_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.product_kit_components.product_kit_components_padronizacao_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['secondary_material_type_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.product_kit_components.product_kit_components_secondary_material_type_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['property_definition_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.product_properties.product_properties_property_definition_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['ncm_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.products.products_ncm_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['padronizacao_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.products.products_padronizacao_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['sub_brand_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.products.products_sub_brand_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['ramo_atividade_filho_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.produto_ramo_atividade.produto_ramo_atividade_ramo_atividade_filho_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['sub_brand_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.produtos_padronizacao.produtos_padronizacao_sub_brand_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['pad_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.produtos_padronizacao_variantes.produtos_padronizacao_variantes_pad_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['raw_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.produtos_site_padronizacao.produtos_site_padronizacao_raw_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['supplier_branch_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.stock_daily_summary.stock_daily_summary_supplier_branch_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['supplier_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.stock_daily_summary.stock_daily_summary_supplier_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['supplier_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.supplier_import_batches.supplier_import_batches_supplier_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['import_batch_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.supplier_products_raw.supplier_products_raw_import_batch_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['variant_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.supplier_products_raw.supplier_products_raw_variant_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['supplier_branch_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.variant_supplier_sources.variant_supplier_sources_supplier_branch_id_fkey",
         "severity": "BAIXA"
       },
       {
@@ -235796,6 +235808,12 @@
         "version": "20260620190000"
       },
       {
+        "name": "populate_quotes_sent_at",
+        "statements": 5,
+        "statements_sha": "c7705f727784a91d",
+        "version": "20260620190001"
+      },
+      {
         "name": null,
         "statements": null,
         "version": "20260620190002"
@@ -238948,6 +238966,12 @@
         "version": "20260629102207"
       },
       {
+        "name": "7e644177-527b-4b92-93a3-79ffee40ca4a",
+        "statements": 4,
+        "statements_sha": "9ba3ed5fe5534f54",
+        "version": "20260629142224"
+      },
+      {
         "name": null,
         "statements": null,
         "version": "20260629142245"
@@ -240766,10 +240790,28 @@
         "version": "20260916202000"
       },
       {
+        "name": "e30_ops_table_size_history",
+        "statements": 11,
+        "statements_sha": "e5d4413bc2fda654",
+        "version": "20260916211500"
+      },
+      {
         "name": "e18_revoke_authenticated_authz_gaps",
         "statements": 6,
         "statements_sha": "055f2ec97200821c",
         "version": "20260917061500"
+      },
+      {
+        "name": "e40_ops_pgss_history",
+        "statements": 8,
+        "statements_sha": "236c9c053f518d22",
+        "version": "20260917150000"
+      },
+      {
+        "name": "e33_ops_wraparound_monitor",
+        "statements": 8,
+        "statements_sha": "f7578b0a88f9ae63",
+        "version": "20260917160000"
       },
       {
         "name": "signup_identity_safe_default",
@@ -241249,6 +241291,12 @@
         "version": "20261101202500"
       },
       {
+        "name": "sb0007_drop_noop_restrictive_policies",
+        "statements": 10,
+        "statements_sha": "701fca09a23f0a14",
+        "version": "20261101210000"
+      },
+      {
         "name": null,
         "statements": null,
         "version": "20261101220000"
@@ -241726,6 +241774,12 @@
         "statements": 2,
         "statements_sha": "90789771cbe2fe45",
         "version": "20261125180000"
+      },
+      {
+        "name": "perf005_drop_unused_indexes_concurrently",
+        "statements": 48,
+        "statements_sha": "deab881287bd8636",
+        "version": "20261126030000"
       }
     ],
     "policies": [
@@ -242171,19 +242225,6 @@
         "schema": "public",
         "table": "ai_usage_quotas",
         "using": "(( SELECT auth.uid() AS uid) IS NOT NULL)",
-        "with_check": null
-      },
-      {
-        "cmd": "ALL",
-        "name": "rls_restrictive_ai_usage_quotas",
-        "permissive": "RESTRICTIVE",
-        "roles": [
-          "authenticated",
-          "service_role"
-        ],
-        "schema": "public",
-        "table": "ai_usage_quotas",
-        "using": "true",
         "with_check": null
       },
       {
@@ -245369,19 +245410,6 @@
         "with_check": null
       },
       {
-        "cmd": "ALL",
-        "name": "rls_restrictive_kit_collaborators",
-        "permissive": "RESTRICTIVE",
-        "roles": [
-          "authenticated",
-          "service_role"
-        ],
-        "schema": "public",
-        "table": "kit_collaborators",
-        "using": "true",
-        "with_check": null
-      },
-      {
         "cmd": "DELETE",
         "name": "Author can delete own comment",
         "permissive": "PERMISSIVE",
@@ -247304,19 +247332,6 @@
         "with_check": "(( SELECT auth.uid() AS uid) = user_id)"
       },
       {
-        "cmd": "ALL",
-        "name": "rls_restrictive_notification_preferences",
-        "permissive": "RESTRICTIVE",
-        "roles": [
-          "authenticated",
-          "service_role"
-        ],
-        "schema": "public",
-        "table": "notification_preferences",
-        "using": "true",
-        "with_check": null
-      },
-      {
         "cmd": "DELETE",
         "name": "notification_templates_delete",
         "permissive": "PERMISSIVE",
@@ -248137,19 +248152,6 @@
         "with_check": "true"
       },
       {
-        "cmd": "ALL",
-        "name": "rls_restrictive_product_ai_content",
-        "permissive": "RESTRICTIVE",
-        "roles": [
-          "authenticated",
-          "service_role"
-        ],
-        "schema": "public",
-        "table": "product_ai_content",
-        "using": "true",
-        "with_check": null
-      },
-      {
         "cmd": "SELECT",
         "name": "auth_read_product_ai_history",
         "permissive": "PERMISSIVE",
@@ -248629,19 +248631,6 @@
         "table": "product_fiscal",
         "using": "true",
         "with_check": "true"
-      },
-      {
-        "cmd": "ALL",
-        "name": "rls_restrictive_product_fiscal",
-        "permissive": "RESTRICTIVE",
-        "roles": [
-          "authenticated",
-          "service_role"
-        ],
-        "schema": "public",
-        "table": "product_fiscal",
-        "using": "true",
-        "with_check": null
       },
       {
         "cmd": "DELETE",
@@ -249414,19 +249403,6 @@
         "with_check": "true"
       },
       {
-        "cmd": "ALL",
-        "name": "rls_restrictive_product_seo",
-        "permissive": "RESTRICTIVE",
-        "roles": [
-          "authenticated",
-          "service_role"
-        ],
-        "schema": "public",
-        "table": "product_seo",
-        "using": "true",
-        "with_check": null
-      },
-      {
         "cmd": "SELECT",
         "name": "psgm_public_read",
         "permissive": "PERMISSIVE",
@@ -249473,19 +249449,6 @@
         "table": "product_supply",
         "using": "true",
         "with_check": "true"
-      },
-      {
-        "cmd": "ALL",
-        "name": "rls_restrictive_product_supply",
-        "permissive": "RESTRICTIVE",
-        "roles": [
-          "authenticated",
-          "service_role"
-        ],
-        "schema": "public",
-        "table": "product_supply",
-        "using": "true",
-        "with_check": null
       },
       {
         "cmd": "INSERT",
@@ -250051,19 +250014,6 @@
         "table": "push_subscriptions",
         "using": "(( SELECT auth.uid() AS uid) = user_id)",
         "with_check": "(( SELECT auth.uid() AS uid) = user_id)"
-      },
-      {
-        "cmd": "ALL",
-        "name": "rls_restrictive_push_subscriptions",
-        "permissive": "RESTRICTIVE",
-        "roles": [
-          "authenticated",
-          "service_role"
-        ],
-        "schema": "public",
-        "table": "push_subscriptions",
-        "using": "true",
-        "with_check": null
       },
       {
         "cmd": "DELETE",
@@ -250641,19 +250591,6 @@
         "schema": "public",
         "table": "recently_viewed_products",
         "using": "(( SELECT auth.uid() AS uid) = user_id)",
-        "with_check": null
-      },
-      {
-        "cmd": "ALL",
-        "name": "rls_restrictive_recently_viewed_products",
-        "permissive": "RESTRICTIVE",
-        "roles": [
-          "authenticated",
-          "service_role"
-        ],
-        "schema": "public",
-        "table": "recently_viewed_products",
-        "using": "true",
         "with_check": null
       },
       {
@@ -252626,19 +252563,6 @@
         "table": "system_kill_switches",
         "using": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))",
         "with_check": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))"
-      },
-      {
-        "cmd": "ALL",
-        "name": "rls_restrictive_system_kill_switches",
-        "permissive": "RESTRICTIVE",
-        "roles": [
-          "authenticated",
-          "service_role"
-        ],
-        "schema": "public",
-        "table": "system_kill_switches",
-        "using": "true",
-        "with_check": null
       },
       {
         "cmd": "SELECT",
@@ -254915,11 +254839,6 @@
         {
           "publication": "supabase_realtime_messages_publication",
           "schema": "realtime",
-          "table": "messages_2026_11_22"
-        },
-        {
-          "publication": "supabase_realtime_messages_publication",
-          "schema": "realtime",
           "table": "messages_2026_11_23"
         },
         {
@@ -254946,6 +254865,11 @@
           "publication": "supabase_realtime_messages_publication",
           "schema": "realtime",
           "table": "messages_2026_11_28"
+        },
+        {
+          "publication": "supabase_realtime_messages_publication",
+          "schema": "realtime",
+          "table": "messages_2026_11_29"
         }
       ]
     },
@@ -255246,6 +255170,12 @@
         "usage_api_roles": "anon, authenticated"
       },
       {
+        "comment": "Telemetria operacional interna (série histórica de tamanho, monitores de manutenção). Nunca exposta à API pública — criado em 20260916211500 para E30 do PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md.",
+        "name": "ops",
+        "owner": "postgres",
+        "usage_api_roles": null
+      },
+      {
         "comment": "Área de auditoria e suporte à classificação de produtos. Contém evidências de testes, regras e projeções de atributos/categorias usadas para revisar resultados de classificação; não é a fonte de verdade do catálogo de produção.",
         "name": "prod_audit",
         "owner": "postgres",
@@ -255299,6 +255229,15 @@
         "name": "category_suggestions_id_seq",
         "owned_by": "classification_audit.category_suggestions.id",
         "schema": "classification_audit",
+        "start_value": 1
+      },
+      {
+        "cycle": false,
+        "data_type": "bigint",
+        "increment": 1,
+        "name": "wraparound_monitor_log_id_seq",
+        "owned_by": "ops.wraparound_monitor_log.id",
+        "schema": "ops",
         "start_value": 1
       },
       {
@@ -255872,6 +255811,51 @@
         "rls_enabled": true,
         "rls_forced": false,
         "schema": "internal"
+      },
+      {
+        "comment": "PLANO_DBA E40 — snapshot semanal de extensions.pg_stat_statements (filtrado a query ILIKE '%pgrst_call%', só chamadas roteadas por PostgREST) por RPC, alimentada pelo cron pgss-history-weekly (fn_cron_safe_run p_key=169). RLS deny-all intencional (ver .security/rls-no-policy-allowlist.json) — só service_role/postgres lê/escreve; zero policies, sem GRANT a anon/authenticated. Consumida pelo workflow semanal pgss-slo-report.yml (scripts/pgss-slo-check.mjs).",
+        "from_extension": false,
+        "is_partition": false,
+        "kind": "table",
+        "name": "pgss_history",
+        "owner": "postgres",
+        "parent": null,
+        "partition_bound": null,
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": true,
+        "rls_forced": false,
+        "schema": "ops"
+      },
+      {
+        "comment": "PLANO_DBA E30 — série histórica diária de pg_total_relation_size()/reltuples por tabela do schema public, alimentada pelo cron table-size-history-daily (fn_cron_safe_run p_key=168). RLS deny-all intencional (ver .security/rls-no-policy-allowlist.json) — só service_role/postgres lê/escreve; zero policies, sem GRANT a anon/authenticated. Consumida pelo workflow semanal capacity-growth-report.yml (scripts/capacity-growth-projection.mjs).",
+        "from_extension": false,
+        "is_partition": false,
+        "kind": "table",
+        "name": "table_size_history",
+        "owner": "postgres",
+        "parent": null,
+        "partition_bound": null,
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": true,
+        "rls_forced": false,
+        "schema": "ops"
+      },
+      {
+        "comment": "PLANO_DBA E33 — snapshot diário de risco de wraparound de XID/multixact, uso de sequências int4/int2, WAL retido por replication slot e proporção TOAST/heap (top 10), alimentada pelo cron wraparound-toast-sequence-monitor (fn_cron_safe_run p_key=167). RLS deny-all intencional (ver .security/rls-no-policy-allowlist.json) — só service_role/postgres lê/escreve; zero policies, sem GRANT a anon/authenticated. Consumida pelo workflow diário wraparound-monitor-report.yml (scripts/wraparound-monitor-check.mjs).",
+        "from_extension": false,
+        "is_partition": false,
+        "kind": "table",
+        "name": "wraparound_monitor_log",
+        "owner": "postgres",
+        "parent": null,
+        "partition_bound": null,
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": true,
+        "rls_forced": false,
+        "schema": "ops"
       },
       {
         "comment": "Projeção de auditoria de categorias e palavras-chave normalizadas. Mantém tokens e flags de segmentos (cliente, material, ecológico e kit) derivados da hierarquia de public.categories para apoiar análise de classificação; refreshed_at indica a atualização da projeção.",
@@ -265941,6 +265925,17 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER trg_prevent_non_admin_quote_item_price_change BEFORE UPDATE OF unit_price ON quote_items FOR EACH ROW EXECUTE FUNCTION prevent_non_admin_quote_item_price_change()",
+        "events": "UPDATE",
+        "function": "public.prevent_non_admin_quote_item_price_change",
+        "level": "ROW",
+        "name": "trg_prevent_non_admin_quote_item_price_change",
+        "schema": "public",
+        "status": "enabled",
+        "table": "quote_items",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER trg_quote_items_calc_subtotal BEFORE INSERT OR UPDATE OF quantity, unit_price, personalization_cost, discount_amount ON quote_items FOR EACH ROW EXECUTE FUNCTION fn_quote_items_calc_subtotal()",
         "events": "INSERT OR UPDATE",
         "function": "public.fn_quote_items_calc_subtotal",
@@ -266122,6 +266117,17 @@
         "function": "public.increment_quote_version",
         "level": "ROW",
         "name": "trg_quotes_version",
+        "schema": "public",
+        "status": "enabled",
+        "table": "quotes",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER trg_set_quote_sent_at BEFORE INSERT OR UPDATE ON quotes FOR EACH ROW EXECUTE FUNCTION set_quote_sent_at()",
+        "events": "INSERT OR UPDATE",
+        "function": "public.set_quote_sent_at",
+        "level": "ROW",
+        "name": "trg_set_quote_sent_at",
         "schema": "public",
         "status": "enabled",
         "table": "quotes",

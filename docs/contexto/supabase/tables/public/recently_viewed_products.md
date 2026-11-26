@@ -8,7 +8,7 @@
 | owner | postgres |
 | RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 5 |
+| policies | 4 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -78,16 +78,6 @@
 | tipo | PERMISSIVE |
 | roles | authenticated |
 | USING | `(( SELECT auth.uid() AS uid) = user_id)` |
-| WITH CHECK |  |
-
-### `rls_restrictive_recently_viewed_products`
-
-| campo | valor |
-|---|---|
-| comando | ALL |
-| tipo | RESTRICTIVE |
-| roles | authenticated, service_role |
-| USING | `true` |
 | WITH CHECK |  |
 
 

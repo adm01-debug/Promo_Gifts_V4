@@ -62,7 +62,6 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
-| idx_xbz_staging_status | btree | status, created_at | não | sim |  | `CREATE INDEX idx_xbz_staging_status ON public.xbz_gallery_staging USING btree (status, created_at)` |
 | uq_xbz_staging_cf_id | btree | cf_custom_id | sim | sim | `(cf_custom_id IS NOT NULL)` | `CREATE UNIQUE INDEX uq_xbz_staging_cf_id ON public.xbz_gallery_staging USING btree (cf_custom_id) WHERE (cf_custom_id IS NOT NULL)` |
 | uq_xbz_staging_sku_source_url | btree | sku, source_url | sim | sim |  | `CREATE UNIQUE INDEX uq_xbz_staging_sku_source_url ON public.xbz_gallery_staging USING btree (sku, source_url)` |
 | xbz_gallery_staging_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX xbz_gallery_staging_pkey ON public.xbz_gallery_staging USING btree (id)` |

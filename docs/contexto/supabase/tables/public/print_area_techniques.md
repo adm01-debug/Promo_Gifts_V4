@@ -53,10 +53,8 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
-| idx_pat_location_code | btree | location_code | não | sim |  | `CREATE INDEX idx_pat_location_code ON public.print_area_techniques USING btree (location_code)` |
 | idx_pat_product_active | btree | product_id, is_active | não | sim |  | `CREATE INDEX idx_pat_product_active ON public.print_area_techniques USING btree (product_id, is_active)` |
 | idx_pat_product_location_active | btree | product_id, location_code, is_active | não | sim | `(is_active = true)` | `CREATE INDEX idx_pat_product_location_active ON public.print_area_techniques USING btree (product_id, location_code, is_active) WHERE (is_active = true)` |
-| idx_pat_tabela | btree | tabela_preco_id | não | sim |  | `CREATE INDEX idx_pat_tabela ON public.print_area_techniques USING btree (tabela_preco_id)` |
 | print_area_techniques_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX print_area_techniques_pkey ON public.print_area_techniques USING btree (id)` |
 | uq_pat_product_location_tecnica | btree | product_id, location_code, tabela_preco_id | sim | sim |  | `CREATE UNIQUE INDEX uq_pat_product_location_tecnica ON public.print_area_techniques USING btree (product_id, location_code, tabela_preco_id)` |
 

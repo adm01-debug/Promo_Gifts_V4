@@ -2013,6 +2013,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20260620170500 | [](migrations/20260620170500.sql) | 0 |
 | 20260620180000 | [fix_security_definer_search_path](migrations/20260620180000_fix_security_definer_search_path.sql) | 6 |
 | 20260620190000 | [](migrations/20260620190000.sql) | 0 |
+| 20260620190001 | [populate_quotes_sent_at](migrations/20260620190001_populate_quotes_sent_at.sql) | 5 |
 | 20260620190002 | [](migrations/20260620190002.sql) | 0 |
 | 20260620190003 | [](migrations/20260620190003.sql) | 0 |
 | 20260620190004 | [](migrations/20260620190004.sql) | 0 |
@@ -2549,6 +2550,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20260627200100 | [](migrations/20260627200100.sql) | 0 |
 | 20260628192131 | [add_art_file_attachments_lookup_indexes_step6](migrations/20260628192131_add_art_file_attachments_lookup_indexes_step6.sql) | 1 |
 | 20260629102207 | [seller_carts_status_two_state_em_separacao](migrations/20260629102207_seller_carts_status_two_state_em_separacao.sql) | 1 |
+| 20260629142224 | [7e644177-527b-4b92-93a3-79ffee40ca4a](migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql) | 4 |
 | 20260629142245 | [](migrations/20260629142245.sql) | 0 |
 | 20260702163543 | [cnpj_normalize_backfill_and_check_constraints](migrations/20260702163543_cnpj_normalize_backfill_and_check_constraints.sql) | 1 |
 | 20260702171630 | [cnpj_checks_ascii_hardening](migrations/20260702171630_cnpj_checks_ascii_hardening.sql) | 1 |
@@ -2868,7 +2870,10 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20260916155725 | [catalog_stats_price_range_top_colors_materials](migrations/20260916155725_catalog_stats_price_range_top_colors_materials.sql) | 1 |
 | 20260916193000 | [e25_supplier_history_partition_automation](migrations/20260916193000_e25_supplier_history_partition_automation.sql) | 14 |
 | 20260916202000 | [e23_force_rls_secret_tables](migrations/20260916202000_e23_force_rls_secret_tables.sql) | 12 |
+| 20260916211500 | [e30_ops_table_size_history](migrations/20260916211500_e30_ops_table_size_history.sql) | 11 |
 | 20260917061500 | [e18_revoke_authenticated_authz_gaps](migrations/20260917061500_e18_revoke_authenticated_authz_gaps.sql) | 6 |
+| 20260917150000 | [e40_ops_pgss_history](migrations/20260917150000_e40_ops_pgss_history.sql) | 8 |
+| 20260917160000 | [e33_ops_wraparound_monitor](migrations/20260917160000_e33_ops_wraparound_monitor.sql) | 8 |
 | 20260922170000 | [signup_identity_safe_default](migrations/20260922170000_signup_identity_safe_default.sql) | 3 |
 | 20260923114500 | [quote_rpc_lineage_atomicity](migrations/20260923114500_quote_rpc_lineage_atomicity.sql) | 1 |
 | 20261005124500 | [discount_approval_requests_version](migrations/20261005124500_discount_approval_requests_version.sql) | 7 |
@@ -2949,6 +2954,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261101202426 | [fix_auth001_revoke_execute_cleanup_sessions](migrations/20261101202426_fix_auth001_revoke_execute_cleanup_sessions.sql) | 1 |
 | 20261101202432 | [fix_perf002_recreate_captured_at_index](migrations/20261101202432_fix_perf002_recreate_captured_at_index.sql) | 1 |
 | 20261101202500 | [cron001_stagger_schedules_reduce_concurrent](migrations/20261101202500_cron001_stagger_schedules_reduce_concurrent.sql) | 1 |
+| 20261101210000 | [sb0007_drop_noop_restrictive_policies](migrations/20261101210000_sb0007_drop_noop_restrictive_policies.sql) | 10 |
 | 20261101220000 | [](migrations/20261101220000.sql) | 0 |
 | 20261101223908 | [20261101202500_cron001_stagger_schedules_reduce_concurrent](migrations/20261101223908_20261101202500_cron001_stagger_schedules_reduce_concurrent.sql) | 1 |
 | 20261101232022 | [cron001_stagger_schedules](migrations/20261101232022_cron001_stagger_schedules.sql) | 1 |
@@ -3029,3 +3035,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261125160000 | [restaura_grant_anon_mv_product_compositions](migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql) | 2 |
 | 20261125173000 | [idx_sds_summary_date_supplier_aplicavel](migrations/20261125173000_idx_sds_summary_date_supplier_aplicavel.sql) | 3 |
 | 20261125180000 | [fix_comment_v_tabela_gravacao_publica](migrations/20261125180000_fix_comment_v_tabela_gravacao_publica.sql) | 2 |
+| 20261126030000 | [perf005_drop_unused_indexes_concurrently](migrations/20261126030000_perf005_drop_unused_indexes_concurrently.sql) | 48 |

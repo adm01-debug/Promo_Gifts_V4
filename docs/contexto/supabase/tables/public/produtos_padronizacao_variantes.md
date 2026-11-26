@@ -98,10 +98,8 @@
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
 | idx_padvar_color_id_2 | btree | color_id_2 | não | sim | `(color_id_2 IS NOT NULL)` | `CREATE INDEX idx_padvar_color_id_2 ON public.produtos_padronizacao_variantes USING btree (color_id_2) WHERE (color_id_2 IS NOT NULL)` |
-| idx_padvar_pad | btree | pad_id | não | sim | `(pad_id IS NOT NULL)` | `CREATE INDEX idx_padvar_pad ON public.produtos_padronizacao_variantes USING btree (pad_id) WHERE (pad_id IS NOT NULL)` |
 | idx_padvar_parent | btree | supplier_id, parent_reference | não | sim |  | `CREATE INDEX idx_padvar_parent ON public.produtos_padronizacao_variantes USING btree (supplier_id, parent_reference)` |
 | idx_padvar_raw_id | btree | raw_id | não | sim | `(raw_id IS NOT NULL)` | `CREATE INDEX idx_padvar_raw_id ON public.produtos_padronizacao_variantes USING btree (raw_id) WHERE (raw_id IS NOT NULL)` |
-| idx_padvar_sem_colorid | btree | supplier_id | não | sim | `(color_id IS NULL)` | `CREATE INDEX idx_padvar_sem_colorid ON public.produtos_padronizacao_variantes USING btree (supplier_id) WHERE (color_id IS NULL)` |
 | idx_padvar_status | btree | supplier_id | não | sim | `(status = 'pending'::produtos_padronizacao_status)` | `CREATE INDEX idx_padvar_status ON public.produtos_padronizacao_variantes USING btree (supplier_id) WHERE (status = 'pending'::produtos_padronizacao_status)` |
 | idx_produtos_padronizacao_variantes_variant_id | btree | variant_id | não | sim |  | `CREATE INDEX idx_produtos_padronizacao_variantes_variant_id ON public.produtos_padronizacao_variantes USING btree (variant_id)` |
 | produtos_padronizacao_variantes_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX produtos_padronizacao_variantes_pkey ON public.produtos_padronizacao_variantes USING btree (id)` |

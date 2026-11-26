@@ -48,8 +48,6 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
-| idx_prod_comm_product | btree | product_id | não | sim |  | `CREATE INDEX idx_prod_comm_product ON public.product_commemorative_dates USING btree (product_id)` |
-| idx_product_commemorative_dates_category_id | btree | category_id | não | sim |  | `CREATE INDEX idx_product_commemorative_dates_category_id ON public.product_commemorative_dates USING btree (category_id)` |
 | idx_product_commemorative_dates_commemorative_date_id | btree | commemorative_date_id | não | sim |  | `CREATE INDEX idx_product_commemorative_dates_commemorative_date_id ON public.product_commemorative_dates USING btree (commemorative_date_id)` |
 | product_commemorative_dates_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX product_commemorative_dates_pkey ON public.product_commemorative_dates USING btree (id)` |
 | uq_product_commemorative_date | btree | product_id, commemorative_date_id | sim | sim |  | `CREATE UNIQUE INDEX uq_product_commemorative_date ON public.product_commemorative_dates USING btree (product_id, commemorative_date_id)` |

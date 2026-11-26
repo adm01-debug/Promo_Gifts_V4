@@ -67,8 +67,6 @@
 | idx_sds_summary_date_supplier | btree | summary_date, supplier_id, stock_close, units_depleted, units_restocked | não | sim |  | `CREATE INDEX idx_sds_summary_date_supplier ON public.stock_daily_summary USING btree (summary_date, supplier_id) INCLUDE (stock_close, units_depleted, units_restocked)` |
 | idx_sds_variant_id | btree | variant_id | não | sim |  | `CREATE INDEX idx_sds_variant_id ON public.stock_daily_summary USING btree (variant_id)` |
 | idx_sds_zero_to_positive | btree | summary_date, product_id, supplier_id | não | sim | `(restock_zero_to_positive = true)` | `CREATE INDEX idx_sds_zero_to_positive ON public.stock_daily_summary USING btree (summary_date DESC, product_id, supplier_id) WHERE (restock_zero_to_positive = true)` |
-| idx_stock_daily_summary_supplier_branch_id | btree | supplier_branch_id | não | sim |  | `CREATE INDEX idx_stock_daily_summary_supplier_branch_id ON public.stock_daily_summary USING btree (supplier_branch_id)` |
-| idx_stock_daily_summary_supplier_id | btree | supplier_id | não | sim |  | `CREATE INDEX idx_stock_daily_summary_supplier_id ON public.stock_daily_summary USING btree (supplier_id)` |
 | stock_daily_summary_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX stock_daily_summary_pkey ON public.stock_daily_summary USING btree (id)` |
 | uq_stock_daily_vss_date | btree | variant_supplier_source_id, summary_date | sim | sim |  | `CREATE UNIQUE INDEX uq_stock_daily_vss_date ON public.stock_daily_summary USING btree (variant_supplier_source_id, summary_date)` |
 

@@ -129,14 +129,9 @@
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
 | idx_kit_components_kit | btree | kit_product_id | não | sim |  | `CREATE INDEX idx_kit_components_kit ON public.product_kit_components USING btree (kit_product_id)` |
-| idx_kit_components_name | btree | component_name | não | sim |  | `CREATE INDEX idx_kit_components_name ON public.product_kit_components USING btree (component_name)` |
-| idx_pkc_color_id | btree | color_id | não | sim |  | `CREATE INDEX idx_pkc_color_id ON public.product_kit_components USING btree (color_id)` |
 | idx_pkc_component_type | btree | component_type_code | não | sim |  | `CREATE INDEX idx_pkc_component_type ON public.product_kit_components USING btree (component_type_code)` |
 | idx_pkc_enrichment_status | btree | enrichment_status | não | sim |  | `CREATE INDEX idx_pkc_enrichment_status ON public.product_kit_components USING btree (enrichment_status)` |
 | idx_pkc_material | btree | material_type_id | não | sim |  | `CREATE INDEX idx_pkc_material ON public.product_kit_components USING btree (material_type_id)` |
-| idx_product_kit_components_component_product_id | btree | component_product_id | não | sim |  | `CREATE INDEX idx_product_kit_components_component_product_id ON public.product_kit_components USING btree (component_product_id)` |
-| idx_product_kit_components_padronizacao_id | btree | padronizacao_id | não | sim |  | `CREATE INDEX idx_product_kit_components_padronizacao_id ON public.product_kit_components USING btree (padronizacao_id)` |
-| idx_product_kit_components_secondary_material_type_id | btree | secondary_material_type_id | não | sim |  | `CREATE INDEX idx_product_kit_components_secondary_material_type_id ON public.product_kit_components USING btree (secondary_material_type_id)` |
 | product_kit_components_kit_product_id_component_product_id_key | btree | kit_product_id, component_product_id | sim | sim |  | `CREATE UNIQUE INDEX product_kit_components_kit_product_id_component_product_id_key ON public.product_kit_components USING btree (kit_product_id, component_product_id)` |
 | product_kit_components_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX product_kit_components_pkey ON public.product_kit_components USING btree (id)` |
 | uq_pkc_component_code | btree | component_code | sim | sim | `(component_code IS NOT NULL)` | `CREATE UNIQUE INDEX uq_pkc_component_code ON public.product_kit_components USING btree (component_code) WHERE (component_code IS NOT NULL)` |

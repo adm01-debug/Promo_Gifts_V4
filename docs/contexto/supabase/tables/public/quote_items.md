@@ -138,6 +138,7 @@
 | nome | timing | eventos | nível | status | função |
 |---|---|---|---|---|---|
 | set_updated_at_trigger | BEFORE | UPDATE | ROW | enabled | public.set_updated_at |
+| trg_prevent_non_admin_quote_item_price_change | BEFORE | UPDATE | ROW | enabled | public.prevent_non_admin_quote_item_price_change |
 | trg_quote_items_calc_subtotal | BEFORE | INSERT OR UPDATE | ROW | enabled | public.fn_quote_items_calc_subtotal |
 | trg_quote_items_discount_integrity_deferred | AFTER | INSERT OR DELETE OR UPDATE | ROW | enabled | public.fn_deferred_quote_discount_integrity |
 | trg_quote_items_parent_immutable | BEFORE | INSERT OR DELETE OR UPDATE | ROW | enabled | public.fn_quote_children_enforce_parent_immutability |

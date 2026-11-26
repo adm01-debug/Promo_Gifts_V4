@@ -54,7 +54,6 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
-| idx_supplier_import_batches_supplier_id | btree | supplier_id | não | sim |  | `CREATE INDEX idx_supplier_import_batches_supplier_id ON public.supplier_import_batches USING btree (supplier_id)` |
 | supplier_import_batches_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX supplier_import_batches_pkey ON public.supplier_import_batches USING btree (id)` |
 
 

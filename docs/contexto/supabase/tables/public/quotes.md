@@ -204,6 +204,7 @@
 | trg_quotes_sync_seller | BEFORE | INSERT OR UPDATE | ROW | enabled | public.fn_quotes_sync_seller |
 | trg_quotes_validate_discount | BEFORE | INSERT OR UPDATE | ROW | enabled | public.fn_quotes_validate_discount |
 | trg_quotes_version | BEFORE | UPDATE | ROW | enabled | public.increment_quote_version |
+| trg_set_quote_sent_at | BEFORE | INSERT OR UPDATE | ROW | enabled | public.set_quote_sent_at |
 
 
 ## Grants

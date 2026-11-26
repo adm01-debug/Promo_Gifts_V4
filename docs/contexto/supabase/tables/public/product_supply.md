@@ -11,7 +11,7 @@
 | owner | postgres |
 | RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 3 |
+| policies | 2 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -47,7 +47,6 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
-| idx_product_supply_sync_status | btree | sync_status | não | sim |  | `CREATE INDEX idx_product_supply_sync_status ON public.product_supply USING btree (sync_status)` |
 | product_supply_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX product_supply_pkey ON public.product_supply USING btree (id)` |
 | product_supply_product_id_key | btree | product_id | sim | sim |  | `CREATE UNIQUE INDEX product_supply_product_id_key ON public.product_supply USING btree (product_id)` |
 
@@ -73,16 +72,6 @@
 | roles | service_role |
 | USING | `true` |
 | WITH CHECK | `true` |
-
-### `rls_restrictive_product_supply`
-
-| campo | valor |
-|---|---|
-| comando | ALL |
-| tipo | RESTRICTIVE |
-| roles | authenticated, service_role |
-| USING | `true` |
-| WITH CHECK |  |
 
 
 ## Triggers

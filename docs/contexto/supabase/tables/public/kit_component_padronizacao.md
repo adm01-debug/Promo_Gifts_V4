@@ -118,12 +118,10 @@
 | idx_kcp_material_type_id | btree | material_type_id | não | sim |  | `CREATE INDEX idx_kcp_material_type_id ON public.kit_component_padronizacao USING btree (material_type_id)` |
 | idx_kcpad_approved | btree | padronizacao_status | não | sim | `((padronizacao_status)::text = 'approved'::text)` | `CREATE INDEX idx_kcpad_approved ON public.kit_component_padronizacao USING btree (padronizacao_status) WHERE ((padronizacao_status)::text = 'approved'::text)` |
 | idx_kcpad_component | btree | kit_component_id | não | sim |  | `CREATE INDEX idx_kcpad_component ON public.kit_component_padronizacao USING btree (kit_component_id)` |
-| idx_kcpad_kit | btree | kit_product_id | não | sim |  | `CREATE INDEX idx_kcpad_kit ON public.kit_component_padronizacao USING btree (kit_product_id)` |
 | idx_kcpad_status | btree | padronizacao_status | não | sim |  | `CREATE INDEX idx_kcpad_status ON public.kit_component_padronizacao USING btree (padronizacao_status)` |
 | idx_kit_component_padronizacao_component_product_id | btree | component_product_id | não | sim |  | `CREATE INDEX idx_kit_component_padronizacao_component_product_id ON public.kit_component_padronizacao USING btree (component_product_id)` |
 | idx_kit_component_padronizacao_component_type_code | btree | component_type_code | não | sim |  | `CREATE INDEX idx_kit_component_padronizacao_component_type_code ON public.kit_component_padronizacao USING btree (component_type_code)` |
 | idx_kit_component_padronizacao_pkg_type_code | btree | pkg_type_code | não | sim |  | `CREATE INDEX idx_kit_component_padronizacao_pkg_type_code ON public.kit_component_padronizacao USING btree (pkg_type_code)` |
-| idx_kit_component_padronizacao_raw_id | btree | raw_id | não | sim |  | `CREATE INDEX idx_kit_component_padronizacao_raw_id ON public.kit_component_padronizacao USING btree (raw_id)` |
 | idx_kit_component_padronizacao_reviewed_by | btree | reviewed_by | não | sim |  | `CREATE INDEX idx_kit_component_padronizacao_reviewed_by ON public.kit_component_padronizacao USING btree (reviewed_by)` |
 | idx_kit_padronizacao_material_id | btree | secondary_material_type_id | não | sim |  | `CREATE INDEX idx_kit_padronizacao_material_id ON public.kit_component_padronizacao USING btree (secondary_material_type_id)` |
 | kit_component_padronizacao_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX kit_component_padronizacao_pkey ON public.kit_component_padronizacao USING btree (id)` |

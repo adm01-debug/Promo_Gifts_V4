@@ -6,6 +6,7 @@
 | cf_recon.metric_snapshot_id_seq | bigint | 1 | 1 | não | cf_recon.metric_snapshot.id |
 | cf_recon.remediation_id_seq | bigint | 1 | 1 | não | cf_recon.remediation.id |
 | classification_audit.category_suggestions_id_seq | bigint | 1 | 1 | não | classification_audit.category_suggestions.id |
+| ops.wraparound_monitor_log_id_seq | bigint | 1 | 1 | não | ops.wraparound_monitor_log.id |
 | prod_audit.category_suggestions_id_seq | bigint | 1 | 1 | não | prod_audit.category_suggestions.id |
 | prod_audit.classification_rules_id_seq | integer | 1 | 1 | não | prod_audit.classification_rules.id |
 | prod_audit.test_results_id_seq | bigint | 1 | 1 | não | prod_audit.test_results.id |

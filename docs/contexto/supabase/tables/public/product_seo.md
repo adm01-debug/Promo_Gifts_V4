@@ -11,7 +11,7 @@
 | owner | postgres |
 | RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 3 |
+| policies | 2 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -79,16 +79,6 @@
 | roles | service_role |
 | USING | `true` |
 | WITH CHECK | `true` |
-
-### `rls_restrictive_product_seo`
-
-| campo | valor |
-|---|---|
-| comando | ALL |
-| tipo | RESTRICTIVE |
-| roles | authenticated, service_role |
-| USING | `true` |
-| WITH CHECK |  |
 
 
 ## Triggers

@@ -58,8 +58,6 @@
 | idx_sre_fulfilled_at | btree | resolved_at | não | sim | `(resolution = 'fulfilled'::text)` | `CREATE INDEX idx_sre_fulfilled_at ON public.supplier_replenishment_events USING btree (resolved_at DESC) WHERE (resolution = 'fulfilled'::text)` |
 | idx_sre_pending | btree | resolution | não | sim | `(resolution = 'pending'::text)` | `CREATE INDEX idx_sre_pending ON public.supplier_replenishment_events USING btree (resolution) WHERE (resolution = 'pending'::text)` |
 | idx_sre_source_pending | btree | source_id, promised_date | não | sim | `(resolution = 'pending'::text)` | `CREATE INDEX idx_sre_source_pending ON public.supplier_replenishment_events USING btree (source_id, promised_date) WHERE (resolution = 'pending'::text)` |
-| idx_sre_supplier_date | btree | supplier_id, promised_date | não | sim |  | `CREATE INDEX idx_sre_supplier_date ON public.supplier_replenishment_events USING btree (supplier_id, promised_date DESC)` |
-| idx_sre_variant_date | btree | variant_id, promised_date | não | sim |  | `CREATE INDEX idx_sre_variant_date ON public.supplier_replenishment_events USING btree (variant_id, promised_date DESC)` |
 | supplier_replenishment_events_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX supplier_replenishment_events_pkey ON public.supplier_replenishment_events USING btree (id)` |
 | uq_sre_promise | btree | source_id, slot, promised_date, promised_quantity, observed_at | sim | sim |  | `CREATE UNIQUE INDEX uq_sre_promise ON public.supplier_replenishment_events USING btree (source_id, slot, promised_date, promised_quantity, observed_at)` |
 

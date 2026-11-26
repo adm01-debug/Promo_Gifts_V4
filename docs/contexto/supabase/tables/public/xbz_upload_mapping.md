@@ -41,7 +41,6 @@
 |---|---|---|---|---|---|---|
 | idx_xbz_upload_mapping_created_at | btree | created_at | não | sim |  | `CREATE INDEX idx_xbz_upload_mapping_created_at ON public.xbz_upload_mapping USING btree (created_at)` |
 | idx_xbz_upload_mapping_request_id | btree | request_id | não | sim |  | `CREATE INDEX idx_xbz_upload_mapping_request_id ON public.xbz_upload_mapping USING btree (request_id)` |
-| idx_xbz_upload_mapping_status | btree | status | não | sim |  | `CREATE INDEX idx_xbz_upload_mapping_status ON public.xbz_upload_mapping USING btree (status)` |
 | xbz_upload_mapping_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX xbz_upload_mapping_pkey ON public.xbz_upload_mapping USING btree (id)` |
 
 

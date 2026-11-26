@@ -52,7 +52,6 @@
 |---|---|---|---|---|---|---|
 | idx_backfill_dispatch_v2 | btree | task, status, priority, created_at | não | sim | `(status = 'pending'::text)` | `CREATE INDEX idx_backfill_dispatch_v2 ON public.image_backfill_queue USING btree (task, status, priority, created_at) WHERE (status = 'pending'::text)` |
 | idx_backfill_queue_by_task | btree | task, status | não | sim |  | `CREATE INDEX idx_backfill_queue_by_task ON public.image_backfill_queue USING btree (task, status)` |
-| idx_backfill_queue_dispatch | btree | priority, created_at | não | sim | `(status = 'pending'::text)` | `CREATE INDEX idx_backfill_queue_dispatch ON public.image_backfill_queue USING btree (priority DESC, created_at) WHERE (status = 'pending'::text)` |
 | image_backfill_queue_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX image_backfill_queue_pkey ON public.image_backfill_queue USING btree (id)` |
 | uq_backfill_one_per_image_task | btree | product_image_id, task | sim | sim |  | `CREATE UNIQUE INDEX uq_backfill_one_per_image_task ON public.image_backfill_queue USING btree (product_image_id, task)` |
 
