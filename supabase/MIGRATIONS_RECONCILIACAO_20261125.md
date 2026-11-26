@@ -221,3 +221,61 @@ DDL. Antes de agir, prove o estado com o preflight do E15
 (`--version=<v> --require-live`, que lê o ledger real) ou com um `repair-only`
 (`mode=repair-only`), nunca com o JSON do baseline nem com o `SCHEMA_LIVE.sql`
 antigo.
+
+## Classificação das 21 versões novas fora do baseline E06
+
+Fonte: `run 45723739862`, job `Weekly live drift check`
+(`scripts/check-ledger-manifest-drift.mjs`), com o ledger vivo em 3025 versões e
+`newRegistradaSemArquivoCandidates: []`. **Nenhuma dessas 21 perdeu arquivo**: todas
+têm migration no repo e nenhuma delas existe em produção sem arquivo correspondente
+(o inverso, que seria a perda real, está zerado).
+
+Semântica da lista: são **arquivos no repo que não têm linha no ledger vivo** — isto
+é, candidatas a "escrita local nunca aplicada em produção", novas desde a captura do
+baseline E06 (2026-11-01). O check fica vermelho porque essas 21 são justamente o que
+ele deve mandar investigar; não é falha de exportação (o pooler foi consertado no
+#4124 e o baseline de hoje saiu completo).
+
+### Vereditos medidos (objeto a objeto contra `SCHEMA_LIVE.sql` de 2026-11-26)
+
+| versão | o que tenta fazer | estado em produção | veredito |
+|---|---|---|---|
+| `20260511235959` / `20260511235960` | `categories.full_path_readable` (drift) | coluna/tokens presentes | efeito já em produção |
+| `20261027195959` | RLS deny-all em `supplier_stricker` | presente | efeito já em produção |
+| `20261101190101` | clamp de `limit` em `fn_global_search` | presente | efeito já em produção |
+| `20261101194200` | drop de índices não usados (snapshots) | índices ausentes | no-op (alvo já não existe) |
+| `20261101202000` | drop de `perf002_drop_unused_snapshot_indexes()` + revoke em `cleanup_expired_auth_sessions()` | função inexistente; dump mostra `REVOKE ALL ... FROM PUBLIC` + `GRANT ... TO service_role` | já satisfeita |
+| **`20261101205400`** | drop de índices não usados (PERF005) | **pendente de checagem objeto a objeto** | investigar |
+| **`20261101210000`** | drop de 10 policies `rls_restrictive_*` (`USING (true)`) | **as 10 continuam no dump** (linhas 112832-112860) | **não aplicada — limpeza real pendente** |
+| `20261102063000` | kill switch / rate guard anon | tokens presentes | efeito já em produção |
+| `20261108030000` | cron de relatórios agendados | presente | efeito já em produção |
+| `20261108030100` | `vw_products_min_quantity` | view existe (6 ocorrências) | efeito já em produção |
+| `20261108030200` | `fn_check_item_fits` | presente | efeito já em produção |
+| `20261108120000` | 3 índices `categories` (espelho) | `idx_categories_level` (2), `idx_cat_parent_nav` (1) | efeito já em produção |
+| `20261108223000` | índice por data em `stock_daily_summary` | presente | efeito já em produção |
+| `20261108230100` | realinhar 4 crons que colidiam no minuto 0 (ids 114/224/243/276) | live: `57 * * * *`, `21,51 1-8 * * *`, `26 9-23/2 * * *`, `16,46 1-8 * * *`; **0 jobs no minuto 0** | objetivo já alcançado por outro caminho |
+| `20261111222500` | `touch_seller_cart` SECURITY DEFINER | presente | efeito já em produção |
+| `20261115013000` | `get_quote_token_public` respeitando expiração | presente | efeito já em produção |
+| `20261115130000` | índice `sds` com supplier INCLUDE | presente | efeito já em produção |
+| **`20261117172500`** | `INSERT` em `integration_credentials` (ElevenLabs) | dado, não aparece no dump de schema | **indeterminada — exige consulta ao vivo** |
+| `20261121163000` | `v_compras_catalogo` | presente | efeito já em produção |
+| `20261121183000` | `v_compras_precos_faixa` | presente | efeito já em produção |
+
+Sobram **2 itens de trabalho real** (e 1 indeterminado):
+
+1. `20261101210000` — 10 policies `rls_restrictive_*` `USING (true)` continuam ativas.
+   São no-op de avaliação (custam um nó de plano em cada consulta às 10 tabelas).
+   Migration pronta no repo; falta aplicar.
+2. `20261101205400` — PERF005 (drop de índices não usados), 4.995 bytes: a
+   conferência por token achou só 1 dos 5; precisa da lista nominal de `DROP INDEX`
+   comparada com o dump antes de aplicar.
+3. `20261117172500` — credencial ElevenLabs: só uma consulta a
+   `integration_credentials` resolve se a linha existe.
+
+### Regra para não repetir o #4121
+
+Estar nesta lista **não** significa "objeto ausente em produção": significa "arquivo
+local sem linha no ledger". Como se viu acima, 18 das 21 já estão refletidas no dump
+vivo. Aplicar uma delas sem conferir o efeito real (como o #4121 fez com a E25) cria
+DDL cuja pré-condição nunca passa. Confira o objeto no `SCHEMA_LIVE.sql` **de hoje**
+antes de qualquer `db-apply-migration`.
