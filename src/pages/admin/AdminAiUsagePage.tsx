@@ -11,6 +11,7 @@ import { AiSummaryCard } from '@/pages/admin/ai-usage/AiSummaryCard';
 import { AiCharts } from '@/pages/admin/ai-usage/AiCharts';
 import { AiTables } from '@/pages/admin/ai-usage/AiTables';
 import { AiQuotaManager } from '@/pages/admin/ai-usage/AiQuotaManager';
+import { AiQuotaPerUserPanel } from '@/pages/admin/ai-usage/AiQuotaPerUserPanel';
 import { MarketIntelInsightsUsagePanel } from '@/pages/admin/ai-usage/MarketIntelInsightsUsagePanel';
 
 const formatCurrency = (val: number) => `$${val.toFixed(4)}`;
@@ -104,6 +105,7 @@ export default function AdminAiUsagePage() {
         />
         <MarketIntelInsightsUsagePanel />
         <AiQuotaManager />
+        <AiQuotaPerUserPanel />
       </div>
     </>
   );

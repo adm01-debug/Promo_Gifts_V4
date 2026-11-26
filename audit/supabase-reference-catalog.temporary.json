@@ -578,6 +578,14 @@
       "occurrences": 1,
       "stage": 105,
       "reason": "RPC criada na migration 20261126060000 (tela /admin/vinculos-vendedor-crm), ainda pendente de aplicacao em producao por Regra 8. Remover esta excecao source-scoped e promover ao catalogo somente apos o apply via db-apply-migration.yml e recaptura administrativa, com confirmacao em pg_proc."
+    },
+    {
+      "kind": "rpc",
+      "name": "fn_admin_ai_quota_summary",
+      "file": "src/hooks/admin/useAiQuotaSummary.ts",
+      "occurrences": 1,
+      "stage": 106,
+      "reason": "RPC criada na migration 20261126191200 (painel /admin/consumo-ia, aba de cota por usuario), ainda pendente de aplicacao em producao. Mesma natureza da 105 (fn_admin_* criada e nao aplicada): remover esta excecao source-scoped e promover ao catalogo somente apos o apply via db-apply-migration.yml e confirmacao em pg_proc."
     }
   ],
   "dynamic_baseline": [
