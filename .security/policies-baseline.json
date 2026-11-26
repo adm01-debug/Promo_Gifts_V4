@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-26T02:18:30.710Z",
+  "generated_at": "2026-11-26T14:57:08.317Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -14,7 +14,7 @@
     "supplier_stricker",
     "ops"
   ],
-  "sha256": "098c262126c5b61682e989e101030781e75f363007b2617321ec9fe5e3f4ef93",
+  "sha256": "cd177e9b64e937f187efbabcce54faad2fb3969ee0aeec9415b4108484487b38",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -7575,6 +7575,46 @@
       "cmd": "UPDATE",
       "qual": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)",
       "with_check": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "saved_stock_views",
+      "policyname": "saved_stock_views_delete_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "qual": "(user_id = auth.uid())",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "saved_stock_views",
+      "policyname": "saved_stock_views_insert_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "qual": "",
+      "with_check": "(user_id = auth.uid())"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "saved_stock_views",
+      "policyname": "saved_stock_views_select_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "(user_id = auth.uid())",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "saved_stock_views",
+      "policyname": "saved_stock_views_update_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "qual": "(user_id = auth.uid())",
+      "with_check": "(user_id = auth.uid())"
     },
     {
       "schemaname": "public",
