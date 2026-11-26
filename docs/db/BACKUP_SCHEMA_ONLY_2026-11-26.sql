@@ -1,6 +1,6 @@
 -- =============================================================================
--- Baseline do schema de produção (doufsxqlfjyuvxuezpln) — versão 20261125180000
--- Gerado em 2026-11-26T00:01:41.628Z por scripts/export-schema-snapshot.mjs (supabase db dump --linked).
+-- Baseline do schema de produção (doufsxqlfjyuvxuezpln) — versão 20261126030000
+-- Gerado em 2026-11-26T03:13:01.819Z por scripts/export-schema-snapshot.mjs (supabase db dump --linked).
 -- Uso exclusivo: ponto de partida do replay do db-schema-drift-check.
 -- NÃO é migration: não aplicar em produção, não copiar para supabase/migrations/.
 -- Não contém: dados, jobs do pg_cron, storage, vault, schema auth, publications,
@@ -83,6 +83,16 @@ CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
 
 
 
+
+
+
+CREATE SCHEMA IF NOT EXISTS "ops";
+
+
+ALTER SCHEMA "ops" OWNER TO "postgres";
+
+
+COMMENT ON SCHEMA "ops" IS 'Telemetria operacional interna (série histórica de tamanho, monitores de manutenção). Nunca exposta à API pública — criado em 20260916211500 para E30 do PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md.';
 
 
 
@@ -67167,6 +67177,46 @@ Otimizado em: 2026-06-23.';
 
 
 
+CREATE OR REPLACE FUNCTION "public"."prevent_non_admin_quote_item_price_change"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+DECLARE
+  v_uid uuid := auth.uid();
+  v_is_admin boolean := false;
+BEGIN
+  -- INSERTs e mudanças sem auth context (service_role / jobs) passam direto.
+  IF v_uid IS NULL THEN
+    RETURN NEW;
+  END IF;
+
+  -- Se unit_price não mudou, nada a validar.
+  IF NEW.unit_price IS NOT DISTINCT FROM OLD.unit_price THEN
+    RETURN NEW;
+  END IF;
+
+  -- Verifica privilégio (admin OU supervisor OU can_view_all_sales).
+  BEGIN
+    v_is_admin := public.has_role(v_uid, 'admin'::app_role)
+               OR public.has_role(v_uid, 'supervisor'::app_role)
+               OR public.can_view_all_sales();
+  EXCEPTION WHEN OTHERS THEN
+    v_is_admin := false;
+  END;
+
+  IF NOT v_is_admin THEN
+    RAISE EXCEPTION 'Preço unitário (unit_price) não pode ser alterado por este usuário. O preço vem do catálogo e é somente leitura.'
+      USING ERRCODE = '42501', HINT = 'Solicite a um administrador para ajustar o preço, se necessário.';
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."prevent_non_admin_quote_item_price_change"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."prevent_profile_role_change"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -70744,6 +70794,25 @@ ALTER FUNCTION "public"."set_product_defaults_from_supplier"() OWNER TO "postgre
 
 COMMENT ON FUNCTION "public"."set_product_defaults_from_supplier"() IS 'Trigger unificado: aplica configurações do fornecedor (supply_mode, is_imported, lead_time_days) e classifica embalagem automaticamente';
 
+
+
+CREATE OR REPLACE FUNCTION "public"."set_quote_sent_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+begin
+  -- Stamp the first time a quote enters 'sent' (covers INSERT-as-sent and UPDATE-to-sent),
+  -- and never overwrite an existing timestamp.
+  if new.status = 'sent' and new.sent_at is null
+     and (tg_op = 'INSERT' or old.status is distinct from 'sent') then
+    new.sent_at := now();
+  end if;
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."set_quote_sent_at"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."set_updated_at"() RETURNS "trigger"
@@ -75546,6 +75615,72 @@ COMMENT ON COLUMN "internal"."managed_schema_dictionary"."partition_of" IS 'Rela
 
 
 COMMENT ON COLUMN "internal"."managed_schema_dictionary"."reviewed_at" IS 'Momento em que a descrição foi incluída/revisada no dicionário.';
+
+
+
+CREATE TABLE IF NOT EXISTS "ops"."pgss_history" (
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "queryid" bigint NOT NULL,
+    "fn_name" "text",
+    "calls" bigint NOT NULL,
+    "total_exec_time" double precision NOT NULL,
+    "mean_exec_time" double precision NOT NULL,
+    "stddev_exec_time" double precision NOT NULL,
+    "max_exec_time" double precision NOT NULL
+);
+
+
+ALTER TABLE "ops"."pgss_history" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "ops"."pgss_history" IS 'PLANO_DBA E40 — snapshot semanal de extensions.pg_stat_statements (filtrado a query ILIKE ''%pgrst_call%'', só chamadas roteadas por PostgREST) por RPC, alimentada pelo cron pgss-history-weekly (fn_cron_safe_run p_key=169). RLS deny-all intencional (ver .security/rls-no-policy-allowlist.json) — só service_role/postgres lê/escreve; zero policies, sem GRANT a anon/authenticated. Consumida pelo workflow semanal pgss-slo-report.yml (scripts/pgss-slo-check.mjs).';
+
+
+
+CREATE TABLE IF NOT EXISTS "ops"."table_size_history" (
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "schema_name" "text" NOT NULL,
+    "table_name" "text" NOT NULL,
+    "total_bytes" bigint NOT NULL,
+    "live_tup" bigint NOT NULL
+);
+
+
+ALTER TABLE "ops"."table_size_history" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "ops"."table_size_history" IS 'PLANO_DBA E30 — série histórica diária de pg_total_relation_size()/reltuples por tabela do schema public, alimentada pelo cron table-size-history-daily (fn_cron_safe_run p_key=168). RLS deny-all intencional (ver .security/rls-no-policy-allowlist.json) — só service_role/postgres lê/escreve; zero policies, sem GRANT a anon/authenticated. Consumida pelo workflow semanal capacity-growth-report.yml (scripts/capacity-growth-projection.mjs).';
+
+
+
+CREATE TABLE IF NOT EXISTS "ops"."wraparound_monitor_log" (
+    "id" bigint NOT NULL,
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "metric" "text" NOT NULL,
+    "object_name" "text",
+    "value_numeric" numeric,
+    "value_pct" numeric,
+    "unit" "text",
+    "detail" "jsonb",
+    CONSTRAINT "wraparound_monitor_log_metric_check" CHECK (("metric" = ANY (ARRAY['xid_age'::"text", 'mxid_age'::"text", 'sequence_pct_used'::"text", 'replication_slot_retained_bytes'::"text", 'toast_pct_of_heap'::"text"])))
+);
+
+
+ALTER TABLE "ops"."wraparound_monitor_log" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "ops"."wraparound_monitor_log" IS 'PLANO_DBA E33 — snapshot diário de risco de wraparound de XID/multixact, uso de sequências int4/int2, WAL retido por replication slot e proporção TOAST/heap (top 10), alimentada pelo cron wraparound-toast-sequence-monitor (fn_cron_safe_run p_key=167). RLS deny-all intencional (ver .security/rls-no-policy-allowlist.json) — só service_role/postgres lê/escreve; zero policies, sem GRANT a anon/authenticated. Consumida pelo workflow diário wraparound-monitor-report.yml (scripts/wraparound-monitor-check.mjs).';
+
+
+
+ALTER TABLE "ops"."wraparound_monitor_log" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME "ops"."wraparound_monitor_log_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
 
 
 
@@ -97795,6 +97930,21 @@ ALTER TABLE ONLY "internal"."managed_schema_dictionary"
 
 
 
+ALTER TABLE ONLY "ops"."pgss_history"
+    ADD CONSTRAINT "pgss_history_pkey" PRIMARY KEY ("captured_at", "queryid");
+
+
+
+ALTER TABLE ONLY "ops"."table_size_history"
+    ADD CONSTRAINT "table_size_history_pkey" PRIMARY KEY ("captured_at", "schema_name", "table_name");
+
+
+
+ALTER TABLE ONLY "ops"."wraparound_monitor_log"
+    ADD CONSTRAINT "wraparound_monitor_log_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "prod_audit"."category_keywords"
     ADD CONSTRAINT "category_keywords_pkey" PRIMARY KEY ("category_id");
 
@@ -101125,6 +101275,18 @@ CREATE UNIQUE INDEX "idx_mv_product_leaf_category_product_id" ON "internal"."mv_
 
 
 
+CREATE INDEX "idx_pgss_history_fn_captured" ON "ops"."pgss_history" USING "btree" ("fn_name", "captured_at" DESC);
+
+
+
+CREATE INDEX "idx_table_size_history_table_captured" ON "ops"."table_size_history" USING "btree" ("schema_name", "table_name", "captured_at" DESC);
+
+
+
+CREATE INDEX "idx_wraparound_monitor_log_metric_captured" ON "ops"."wraparound_monitor_log" USING "btree" ("metric", "captured_at" DESC);
+
+
+
 CREATE INDEX "idx_catkw_level" ON "prod_audit"."category_keywords" USING "btree" ("level");
 
 
@@ -101233,14 +101395,6 @@ CREATE INDEX "idx_ai_queue_locked_at" ON "public"."ai_enrichment_queue" USING "b
 
 
 
-CREATE INDEX "idx_ai_queue_pending" ON "public"."ai_enrichment_queue" USING "btree" ("priority", "created_at") WHERE ("status" = 'pending'::"text");
-
-
-
-CREATE INDEX "idx_ai_queue_product_id" ON "public"."ai_enrichment_queue" USING "btree" ("product_id");
-
-
-
 CREATE INDEX "idx_ai_queue_status" ON "public"."ai_enrichment_queue" USING "btree" ("status", "updated_at");
 
 
@@ -101322,10 +101476,6 @@ CREATE INDEX "idx_backfill_dispatch_v2" ON "public"."image_backfill_queue" USING
 
 
 CREATE INDEX "idx_backfill_queue_by_task" ON "public"."image_backfill_queue" USING "btree" ("task", "status");
-
-
-
-CREATE INDEX "idx_backfill_queue_dispatch" ON "public"."image_backfill_queue" USING "btree" ("priority" DESC, "created_at") WHERE ("status" = 'pending'::"text");
 
 
 
@@ -101629,10 +101779,6 @@ CREATE INDEX "idx_faixa_preco_qtd" ON "public"."tabela_preco_gravacao_oficial_fa
 
 
 
-CREATE INDEX "idx_faixa_v11_dim" ON "public"."tabela_preco_gravacao_oficial_faixa" USING "btree" ("tabela_preco_gravacao_id", "quantidade_minima", "quantidade_maxima", "largura_min", "largura_max", "altura_min", "altura_max");
-
-
-
 CREATE INDEX "idx_faixa_v11_qty_max" ON "public"."tabela_preco_gravacao_oficial_faixa" USING "btree" ("tabela_preco_gravacao_id", "quantidade_maxima") WHERE ("quantidade_maxima" IS NOT NULL);
 
 
@@ -101678,10 +101824,6 @@ CREATE INDEX "idx_fk_supplier_subtype_category_map_category_id" ON "public"."sup
 
 
 CREATE INDEX "idx_freight_settings_updated_by" ON "public"."freight_settings" USING "btree" ("updated_by");
-
-
-
-CREATE INDEX "idx_frontend_telemetry_user_id" ON "public"."frontend_telemetry" USING "btree" ("user_id");
 
 
 
@@ -101753,18 +101895,6 @@ CREATE UNIQUE INDEX "idx_ipt_packaging_technique" ON "public"."included_packagin
 
 
 
-CREATE INDEX "idx_kcer_component" ON "public"."kit_component_enrichment_raw" USING "btree" ("kit_component_id");
-
-
-
-CREATE INDEX "idx_kcer_kit" ON "public"."kit_component_enrichment_raw" USING "btree" ("kit_product_id");
-
-
-
-CREATE INDEX "idx_kcer_source" ON "public"."kit_component_enrichment_raw" USING "btree" ("source");
-
-
-
 CREATE INDEX "idx_kcp_material_type_id" ON "public"."kit_component_padronizacao" USING "btree" ("material_type_id");
 
 
@@ -101786,10 +101916,6 @@ CREATE INDEX "idx_kcpad_approved" ON "public"."kit_component_padronizacao" USING
 
 
 CREATE INDEX "idx_kcpad_component" ON "public"."kit_component_padronizacao" USING "btree" ("kit_component_id");
-
-
-
-CREATE INDEX "idx_kcpad_kit" ON "public"."kit_component_padronizacao" USING "btree" ("kit_product_id");
 
 
 
@@ -101825,14 +101951,6 @@ CREATE INDEX "idx_kit_component_enrichment_raw_imported_by" ON "public"."kit_com
 
 
 
-CREATE INDEX "idx_kit_component_enrichment_raw_promoted_component_id" ON "public"."kit_component_enrichment_raw" USING "btree" ("promoted_component_id");
-
-
-
-CREATE INDEX "idx_kit_component_enrichment_raw_promoted_padronizacao_id" ON "public"."kit_component_enrichment_raw" USING "btree" ("promoted_padronizacao_id");
-
-
-
 CREATE INDEX "idx_kit_component_padronizacao_component_product_id" ON "public"."kit_component_padronizacao" USING "btree" ("component_product_id");
 
 
@@ -101842,10 +101960,6 @@ CREATE INDEX "idx_kit_component_padronizacao_component_type_code" ON "public"."k
 
 
 CREATE INDEX "idx_kit_component_padronizacao_pkg_type_code" ON "public"."kit_component_padronizacao" USING "btree" ("pkg_type_code");
-
-
-
-CREATE INDEX "idx_kit_component_padronizacao_raw_id" ON "public"."kit_component_padronizacao" USING "btree" ("raw_id");
 
 
 
@@ -101866,10 +101980,6 @@ CREATE INDEX "idx_kit_component_variant_skus_item_color_id" ON "public"."kit_com
 
 
 CREATE INDEX "idx_kit_components_kit" ON "public"."product_kit_components" USING "btree" ("kit_product_id");
-
-
-
-CREATE INDEX "idx_kit_components_name" ON "public"."product_kit_components" USING "btree" ("component_name");
 
 
 
@@ -102189,19 +102299,11 @@ CREATE INDEX "idx_padvar_color_id_2" ON "public"."produtos_padronizacao_variante
 
 
 
-CREATE INDEX "idx_padvar_pad" ON "public"."produtos_padronizacao_variantes" USING "btree" ("pad_id") WHERE ("pad_id" IS NOT NULL);
-
-
-
 CREATE INDEX "idx_padvar_parent" ON "public"."produtos_padronizacao_variantes" USING "btree" ("supplier_id", "parent_reference");
 
 
 
 CREATE INDEX "idx_padvar_raw_id" ON "public"."produtos_padronizacao_variantes" USING "btree" ("raw_id") WHERE ("raw_id" IS NOT NULL);
-
-
-
-CREATE INDEX "idx_padvar_sem_colorid" ON "public"."produtos_padronizacao_variantes" USING "btree" ("supplier_id") WHERE ("color_id" IS NULL);
 
 
 
@@ -102217,19 +102319,11 @@ CREATE INDEX "idx_password_reset_requests_user_id" ON "public"."password_reset_r
 
 
 
-CREATE INDEX "idx_pat_location_code" ON "public"."print_area_techniques" USING "btree" ("location_code");
-
-
-
 CREATE INDEX "idx_pat_product_active" ON "public"."print_area_techniques" USING "btree" ("product_id", "is_active");
 
 
 
 CREATE INDEX "idx_pat_product_location_active" ON "public"."print_area_techniques" USING "btree" ("product_id", "location_code", "is_active") WHERE ("is_active" = true);
-
-
-
-CREATE INDEX "idx_pat_tabela" ON "public"."print_area_techniques" USING "btree" ("tabela_preco_id");
 
 
 
@@ -102290,10 +102384,6 @@ CREATE INDEX "idx_pip_supplier_id" ON "public"."product_included_packagings" USI
 
 
 CREATE INDEX "idx_pipeline_known_issues_supplier_id" ON "public"."pipeline_known_issues" USING "btree" ("supplier_id");
-
-
-
-CREATE INDEX "idx_pkc_color_id" ON "public"."product_kit_components" USING "btree" ("color_id");
 
 
 
@@ -102361,15 +102451,7 @@ CREATE INDEX "idx_price_history_variant_id" ON "public"."price_history" USING "b
 
 
 
-CREATE INDEX "idx_prod_comm_product" ON "public"."product_commemorative_dates" USING "btree" ("product_id");
-
-
-
 CREATE INDEX "idx_product_ai_content_version" ON "public"."product_ai_content" USING "btree" ("ai_version" DESC NULLS LAST);
-
-
-
-CREATE INDEX "idx_product_commemorative_dates_category_id" ON "public"."product_commemorative_dates" USING "btree" ("category_id");
 
 
 
@@ -102418,14 +102500,6 @@ CREATE INDEX "idx_product_faqs_product_id" ON "public"."product_faqs" USING "btr
 
 
 CREATE UNIQUE INDEX "idx_product_fiscal_ean" ON "public"."product_fiscal" USING "btree" ("ean") WHERE ("ean" IS NOT NULL);
-
-
-
-CREATE INDEX "idx_product_fiscal_ncm_code" ON "public"."product_fiscal" USING "btree" ("ncm_code");
-
-
-
-CREATE INDEX "idx_product_fiscal_ncm_id" ON "public"."product_fiscal" USING "btree" ("ncm_id");
 
 
 
@@ -102512,18 +102586,6 @@ CREATE INDEX "idx_product_images_variant_id" ON "public"."product_images" USING 
 
 
 
-CREATE INDEX "idx_product_kit_components_component_product_id" ON "public"."product_kit_components" USING "btree" ("component_product_id");
-
-
-
-CREATE INDEX "idx_product_kit_components_padronizacao_id" ON "public"."product_kit_components" USING "btree" ("padronizacao_id");
-
-
-
-CREATE INDEX "idx_product_kit_components_secondary_material_type_id" ON "public"."product_kit_components" USING "btree" ("secondary_material_type_id");
-
-
-
 CREATE INDEX "idx_product_materials_material_id" ON "public"."product_materials" USING "btree" ("material_id");
 
 
@@ -102588,10 +102650,6 @@ CREATE INDEX "idx_product_price_freshness_overrides_updated_by" ON "public"."pro
 
 
 
-CREATE INDEX "idx_product_properties_property_definition_id" ON "public"."product_properties" USING "btree" ("property_definition_id");
-
-
-
 CREATE INDEX "idx_product_properties_source" ON "public"."product_properties" USING "btree" ("source");
 
 
@@ -102613,10 +102671,6 @@ CREATE INDEX "idx_product_seo_score" ON "public"."product_seo" USING "btree" ("s
 
 
 CREATE INDEX "idx_product_similarity_group_members_supplier_id" ON "public"."product_similarity_group_members" USING "btree" ("supplier_id");
-
-
-
-CREATE INDEX "idx_product_supply_sync_status" ON "public"."product_supply" USING "btree" ("sync_status");
 
 
 
@@ -102732,10 +102786,6 @@ CREATE INDEX "idx_products_name_trgm" ON "public"."products" USING "gin" ("name"
 
 
 
-CREATE INDEX "idx_products_ncm_id" ON "public"."products" USING "btree" ("ncm_id");
-
-
-
 CREATE INDEX "idx_products_new_active_sort" ON "public"."products" USING "btree" ("novelty_detected_at" DESC, "id") INCLUDE ("novelty_expires_at", "sale_price", "stock_quantity", "is_stockout", "primary_image_url", "category_id", "supplier_id") WHERE ("is_new" = true);
 
 
@@ -102753,10 +102803,6 @@ CREATE INDEX "idx_products_novelty_expires_count" ON "public"."products" USING "
 
 
 CREATE INDEX "idx_products_org" ON "public"."products" USING "btree" ("organization_id");
-
-
-
-CREATE INDEX "idx_products_padronizacao_id" ON "public"."products" USING "btree" ("padronizacao_id") WHERE ("padronizacao_id" IS NOT NULL);
 
 
 
@@ -102794,10 +102840,6 @@ CREATE UNIQUE INDEX "idx_products_slug_unique" ON "public"."products" USING "btr
 
 
 
-CREATE INDEX "idx_products_sub_brand_id" ON "public"."products" USING "btree" ("sub_brand_id");
-
-
-
 CREATE INDEX "idx_products_supplier" ON "public"."products" USING "btree" ("supplier_id");
 
 
@@ -102814,27 +102856,11 @@ CREATE INDEX "idx_products_target_audience_gin" ON "public"."products" USING "gi
 
 
 
-CREATE INDEX "idx_products_xbz_reliability" ON "public"."products" USING "btree" ("xbz_stock_reliability_id") WHERE ("xbz_stock_reliability_id" IS NOT NULL);
-
-
-
-CREATE INDEX "idx_produto_ramo_atividade_filho" ON "public"."produto_ramo_atividade" USING "btree" ("ramo_atividade_filho_id");
-
-
-
 CREATE INDEX "idx_produto_ramo_atividade_produto" ON "public"."produto_ramo_atividade" USING "btree" ("produto_id");
 
 
 
-CREATE INDEX "idx_produtos_padronizacao_sub_brand_id" ON "public"."produtos_padronizacao" USING "btree" ("sub_brand_id");
-
-
-
 CREATE INDEX "idx_produtos_padronizacao_variantes_variant_id" ON "public"."produtos_padronizacao_variantes" USING "btree" ("variant_id");
-
-
-
-CREATE INDEX "idx_produtos_site_padronizacao_raw_id" ON "public"."produtos_site_padronizacao" USING "btree" ("raw_id");
 
 
 
@@ -103078,19 +103104,7 @@ CREATE INDEX "idx_snapshots_captured_at" ON "public"."stock_snapshots" USING "bt
 
 
 
-CREATE INDEX "idx_spr_images_pending" ON "public"."supplier_products_raw" USING "btree" ("supplier_id", "imported_at") WHERE ("images_status" <> 'processed'::"public"."supplier_raw_status");
-
-
-
-COMMENT ON INDEX "public"."idx_spr_images_pending" IS 'Fila do worker de imagens. Espelha idx_spr_unprocessed mas para images_status.';
-
-
-
 CREATE INDEX "idx_spr_images_status_pending" ON "public"."supplier_products_raw" USING "btree" ("id") WHERE ("images_status" = 'pending'::"public"."supplier_raw_status");
-
-
-
-CREATE INDEX "idx_spr_import_batch_id" ON "public"."supplier_products_raw" USING "btree" ("import_batch_id");
 
 
 
@@ -103130,10 +103144,6 @@ CREATE INDEX "idx_spr_unprocessed" ON "public"."supplier_products_raw" USING "bt
 
 
 
-CREATE INDEX "idx_spr_variant_id" ON "public"."supplier_products_raw" USING "btree" ("variant_id") WHERE ("variant_id" IS NOT NULL);
-
-
-
 CREATE INDEX "idx_spr_xbz_site_status" ON "public"."supplier_products_raw" USING "btree" ("supplier_id", "site_status") WHERE (("supplier_id" = 'd6718a29-e954-4c1b-bd84-03ea24884900'::"uuid") AND ("site_status" IS NOT NULL));
 
 
@@ -103158,23 +103168,7 @@ CREATE INDEX "idx_sre_source_pending" ON "public"."supplier_replenishment_events
 
 
 
-CREATE INDEX "idx_sre_supplier_date" ON "public"."supplier_replenishment_events" USING "btree" ("supplier_id", "promised_date" DESC);
-
-
-
-CREATE INDEX "idx_sre_variant_date" ON "public"."supplier_replenishment_events" USING "btree" ("variant_id", "promised_date" DESC);
-
-
-
 CREATE INDEX "idx_step_up_challenges_expires" ON "public"."step_up_challenges" USING "btree" ("expires_at") WHERE ("consumed" = false);
-
-
-
-CREATE INDEX "idx_stock_daily_summary_supplier_branch_id" ON "public"."stock_daily_summary" USING "btree" ("supplier_branch_id");
-
-
-
-CREATE INDEX "idx_stock_daily_summary_supplier_id" ON "public"."stock_daily_summary" USING "btree" ("supplier_id");
 
 
 
@@ -103243,10 +103237,6 @@ CREATE INDEX "idx_supplier_customization_raw_import_batch_id" ON "public"."suppl
 
 
 CREATE INDEX "idx_supplier_field_priority_supplier_id" ON "public"."supplier_field_priority" USING "btree" ("supplier_id");
-
-
-
-CREATE INDEX "idx_supplier_import_batches_supplier_id" ON "public"."supplier_import_batches" USING "btree" ("supplier_id");
 
 
 
@@ -103327,10 +103317,6 @@ CREATE INDEX "idx_tpgo_ativo_grupo" ON "public"."tabela_preco_gravacao_oficial" 
 
 
 
-CREATE INDEX "idx_tpgof_tabela_qty" ON "public"."tabela_preco_gravacao_oficial_faixa" USING "btree" ("tabela_preco_gravacao_id", "quantidade_minima", "quantidade_maxima") INCLUDE ("preco_unitario", "prazo_dias", "largura_min", "largura_max", "altura_min", "altura_max");
-
-
-
 CREATE UNIQUE INDEX "idx_unique_product_filename" ON "public"."product_images" USING "btree" ("product_id", "filename") WHERE (("is_active" = true) AND ("filename" IS NOT NULL));
 
 
@@ -103391,10 +103377,6 @@ CREATE INDEX "idx_variant_commemorative_dates_variant_id" ON "public"."variant_c
 
 
 
-CREATE INDEX "idx_variant_supplier_sources_supplier_branch_id" ON "public"."variant_supplier_sources" USING "btree" ("supplier_branch_id");
-
-
-
 CREATE INDEX "idx_variant_supplier_sources_supplier_id" ON "public"."variant_supplier_sources" USING "btree" ("supplier_id");
 
 
@@ -103431,15 +103413,7 @@ CREATE INDEX "idx_vss_cost" ON "public"."variant_supplier_sources" USING "btree"
 
 
 
-CREATE INDEX "idx_vss_org_supplier" ON "public"."variant_supplier_sources" USING "btree" ("organization_id", "supplier_id");
-
-
-
 CREATE INDEX "idx_vss_preferred" ON "public"."variant_supplier_sources" USING "btree" ("variant_id") WHERE ("is_preferred" = true);
-
-
-
-CREATE INDEX "idx_vss_supplier_sku_xbz" ON "public"."variant_supplier_sources" USING "btree" ("supplier_sku", "supplier_id") WHERE ("supplier_id" = 'd6718a29-e954-4c1b-bd84-03ea24884900'::"uuid");
 
 
 
@@ -103503,19 +103477,11 @@ CREATE INDEX "idx_workspace_notifications_user_unread_v2" ON "public"."workspace
 
 
 
-CREATE INDEX "idx_xbz_staging_status" ON "public"."xbz_gallery_staging" USING "btree" ("status", "created_at");
-
-
-
 CREATE INDEX "idx_xbz_upload_mapping_created_at" ON "public"."xbz_upload_mapping" USING "btree" ("created_at");
 
 
 
 CREATE INDEX "idx_xbz_upload_mapping_request_id" ON "public"."xbz_upload_mapping" USING "btree" ("request_id");
-
-
-
-CREATE INDEX "idx_xbz_upload_mapping_status" ON "public"."xbz_upload_mapping" USING "btree" ("status");
 
 
 
@@ -105284,6 +105250,10 @@ CREATE OR REPLACE TRIGGER "trg_prevent_canonical_chain_insert" BEFORE INSERT ON 
 
 
 
+CREATE OR REPLACE TRIGGER "trg_prevent_non_admin_quote_item_price_change" BEFORE UPDATE OF "unit_price" ON "public"."quote_items" FOR EACH ROW EXECUTE FUNCTION "public"."prevent_non_admin_quote_item_price_change"();
+
+
+
 CREATE OR REPLACE TRIGGER "trg_prod_comm_updated" BEFORE UPDATE ON "public"."product_commemorative_dates" FOR EACH ROW EXECUTE FUNCTION "public"."fn_update_prod_comm_timestamp"();
 
 
@@ -105527,6 +105497,10 @@ CREATE OR REPLACE TRIGGER "trg_set_product_as_new" BEFORE INSERT OR UPDATE OF "i
 
 
 CREATE OR REPLACE TRIGGER "trg_set_product_defaults" BEFORE INSERT OR UPDATE ON "public"."products" FOR EACH ROW EXECUTE FUNCTION "public"."set_product_defaults_from_supplier"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_set_quote_sent_at" BEFORE INSERT OR UPDATE ON "public"."quotes" FOR EACH ROW EXECUTE FUNCTION "public"."set_quote_sent_at"();
 
 
 
@@ -108153,6 +108127,15 @@ ALTER TABLE "classification_audit"."category_suggestions" ENABLE ROW LEVEL SECUR
 
 
 ALTER TABLE "internal"."managed_schema_dictionary" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "ops"."pgss_history" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "ops"."table_size_history" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "ops"."wraparound_monitor_log" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "prod_audit"."category_keywords" ENABLE ROW LEVEL SECURITY;
@@ -112829,46 +112812,6 @@ CREATE POLICY "rls_infra_deny_public" ON "public"."pipeline_run_log" TO "authent
 
 
 CREATE POLICY "rls_infra_deny_public" ON "public"."supplier_customization_options_raw" TO "authenticated", "anon" USING (false);
-
-
-
-CREATE POLICY "rls_restrictive_ai_usage_quotas" ON "public"."ai_usage_quotas" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
-
-
-
-CREATE POLICY "rls_restrictive_kit_collaborators" ON "public"."kit_collaborators" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
-
-
-
-CREATE POLICY "rls_restrictive_notification_preferences" ON "public"."notification_preferences" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
-
-
-
-CREATE POLICY "rls_restrictive_product_ai_content" ON "public"."product_ai_content" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
-
-
-
-CREATE POLICY "rls_restrictive_product_fiscal" ON "public"."product_fiscal" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
-
-
-
-CREATE POLICY "rls_restrictive_product_seo" ON "public"."product_seo" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
-
-
-
-CREATE POLICY "rls_restrictive_product_supply" ON "public"."product_supply" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
-
-
-
-CREATE POLICY "rls_restrictive_push_subscriptions" ON "public"."push_subscriptions" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
-
-
-
-CREATE POLICY "rls_restrictive_recently_viewed_products" ON "public"."recently_viewed_products" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
-
-
-
-CREATE POLICY "rls_restrictive_system_kill_switches" ON "public"."system_kill_switches" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
 
 
 
@@ -121759,6 +121702,11 @@ GRANT ALL ON FUNCTION "public"."prevent_category_loops"() TO "service_role";
 
 
 
+REVOKE ALL ON FUNCTION "public"."prevent_non_admin_quote_item_price_change"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."prevent_non_admin_quote_item_price_change"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."prevent_profile_role_change"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."prevent_profile_role_change"() TO "service_role";
 
@@ -122208,6 +122156,11 @@ GRANT ALL ON FUNCTION "public"."set_optimization_queue_updated_at"() TO "service
 
 REVOKE ALL ON FUNCTION "public"."set_product_defaults_from_supplier"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."set_product_defaults_from_supplier"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."set_quote_sent_at"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."set_quote_sent_at"() TO "service_role";
 
 
 

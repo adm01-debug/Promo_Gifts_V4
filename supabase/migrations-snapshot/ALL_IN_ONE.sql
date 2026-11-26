@@ -1,7 +1,7 @@
 -- ==============================================================
 -- ALL_IN_ONE.sql — snapshot concatenado de supabase/migrations/
--- Gerado em: 2026-11-25T23:55:37.382Z
--- Total de arquivos: 3137
+-- Gerado em: 2026-11-26T03:08:38.960Z
+-- Total de arquivos: 3138
 -- Ordem: alfabética (mesmo critério do Supabase CLI)
 -- Uso: APENAS auditoria/leitura. NÃO aplicar direto no banco.
 -- SSOT continua sendo os arquivos individuais em supabase/migrations/.
@@ -176393,6 +176393,7 @@ NOTIFY pgrst, 'reload schema';
 -- <<< END 20260620190000_faxina_tier1c_archive_orphan_tables.sql <<<
 
 -- >>> BEGIN 20260620190001_populate_quotes_sent_at.sql >>>
+-- Rollback: supabase/rollbacks/20260620190001_rollback.sql
 -- Populate quotes.sent_at so the quote-followup-reminders cron actually fires.
 --
 -- Bug: the edge fn filters `.not('sent_at','is',null).lte('sent_at', twoDaysAgo)`, but
@@ -176405,7 +176406,7 @@ create or replace function public.set_quote_sent_at()
 returns trigger
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, pg_temp
 as $$
 begin
   -- Stamp the first time a quote enters 'sent' (covers INSERT-as-sent and UPDATE-to-sent),
@@ -208561,11 +208562,12 @@ COMMENT ON CONSTRAINT chk_sc_status ON public.seller_carts IS
 -- Admins/supervisores (has_role('admin') / has_role('supervisor') / can_view_all_sales())
 -- continuam podendo ajustar preço quando necessário. Sellers comuns NÃO.
 
+-- Rollback: supabase/rollbacks/20260629142224_rollback.sql
 CREATE OR REPLACE FUNCTION public.prevent_non_admin_quote_item_price_change()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public
+SET search_path = public, pg_temp
 AS $$
 DECLARE
   v_uid uuid := auth.uid();
@@ -257397,33 +257399,33 @@ SELECT cron.alter_job(241, schedule := '18 * * * *');    -- refresh-mv-stock-rup
 --
 -- ROLLBACK: reconstruir índice individualmente com CREATE INDEX CONCURRENTLY; scripts em docs/perf/perf005_rollback_indexes.sql
 -- Nota: DROP INDEX sem CONCURRENTLY adquire ShareUpdateExclusiveLock (não bloqueia leitura/escrita)
+-- Rollback: supabase/rollbacks/20261101205400_rollback.sql
+-- ATUALIZADO 2026-11-26: 16 dos 64 DROP foram retirados porque estes indices
+-- passaram a ter idx_scan > 0 (evidencia: docs/contexto/supabase/stats.md,
+-- secao 'Indices nunca usados', snapshot vivo de 2026-11-26 — 48 dos 64
+-- continuam com scans=0 e 16 ja aparecem em uso).
+-- Mantidos de fora deste lote: idx_kcpa_component, idx_kit_components_kit, idx_pad_product, idx_padvar_raw_id, idx_pkc_enrichment_status, idx_pkc_material, idx_pkg_compat_packaging, idx_pkg_compat_product, idx_product_commemorative_dates_commemorative_date_id, idx_product_properties_source, idx_produto_ramo_atividade_produto, idx_sds_variant_id, idx_spr_supplier_source_channel, idx_sre_arrival_snapshot, idx_sre_pending, idx_vss_cost
 
 -- stock_daily_summary FK indexes (~82MB)
 DROP INDEX IF EXISTS public.idx_stock_daily_summary_supplier_branch_id;
 DROP INDEX IF EXISTS public.idx_stock_daily_summary_supplier_id;
-DROP INDEX IF EXISTS public.idx_sds_variant_id;
 
 -- supplier_products_raw indexes obsoletos (não criados pelo PERF-001)
-DROP INDEX IF EXISTS public.idx_spr_supplier_source_channel;
 DROP INDEX IF EXISTS public.idx_spr_import_batch_id;
 DROP INDEX IF EXISTS public.idx_spr_variant_id;
 DROP INDEX IF EXISTS public.idx_spr_images_pending;
 
 -- variant_supplier_sources menos usados
-DROP INDEX IF EXISTS public.idx_vss_cost;
 DROP INDEX IF EXISTS public.idx_vss_org_supplier;
 DROP INDEX IF EXISTS public.idx_vss_supplier_sku_xbz;
 DROP INDEX IF EXISTS public.idx_variant_supplier_sources_supplier_branch_id;
 
 -- produto_ramo_atividade
 DROP INDEX IF EXISTS public.idx_produto_ramo_atividade_filho;
-DROP INDEX IF EXISTS public.idx_produto_ramo_atividade_produto;
 
 -- produtos_padronizacao e variantes (tabelas internas de mapeamento)
-DROP INDEX IF EXISTS public.idx_padvar_raw_id;
 DROP INDEX IF EXISTS public.idx_padvar_pad;
 DROP INDEX IF EXISTS public.idx_padvar_sem_colorid;
-DROP INDEX IF EXISTS public.idx_pad_product;
 DROP INDEX IF EXISTS public.idx_produtos_padronizacao_sub_brand_id;
 DROP INDEX IF EXISTS public.idx_produtos_site_padronizacao_raw_id;
 
@@ -257435,13 +257437,9 @@ DROP INDEX IF EXISTS public.idx_kit_component_enrichment_raw_promoted_padronizac
 DROP INDEX IF EXISTS public.idx_kit_component_enrichment_raw_promoted_component_id;
 DROP INDEX IF EXISTS public.idx_kit_component_padronizacao_raw_id;
 DROP INDEX IF EXISTS public.idx_kcpad_kit;
-DROP INDEX IF EXISTS public.idx_kcpa_component;
-DROP INDEX IF EXISTS public.idx_pkc_enrichment_status;
 DROP INDEX IF EXISTS public.idx_kit_components_name;
-DROP INDEX IF EXISTS public.idx_kit_components_kit;
 DROP INDEX IF EXISTS public.idx_product_kit_components_secondary_material_type_id;
 DROP INDEX IF EXISTS public.idx_product_kit_components_component_product_id;
-DROP INDEX IF EXISTS public.idx_pkc_material;
 DROP INDEX IF EXISTS public.idx_product_kit_components_padronizacao_id;
 DROP INDEX IF EXISTS public.idx_pkc_color_id;
 
@@ -257454,16 +257452,12 @@ DROP INDEX IF EXISTS public.idx_backfill_queue_dispatch;
 
 -- product_commemorative_dates FK indexes
 DROP INDEX IF EXISTS public.idx_prod_comm_product;
-DROP INDEX IF EXISTS public.idx_product_commemorative_dates_commemorative_date_id;
 DROP INDEX IF EXISTS public.idx_product_commemorative_dates_category_id;
 
 -- product_properties FK indexes
-DROP INDEX IF EXISTS public.idx_product_properties_source;
 DROP INDEX IF EXISTS public.idx_product_properties_property_definition_id;
 
 -- product_packaging_compatibility
-DROP INDEX IF EXISTS public.idx_pkg_compat_product;
-DROP INDEX IF EXISTS public.idx_pkg_compat_packaging;
 
 -- supplier_import_batches FK
 DROP INDEX IF EXISTS public.idx_supplier_import_batches_supplier_id;
@@ -257471,8 +257465,6 @@ DROP INDEX IF EXISTS public.idx_supplier_import_batches_supplier_id;
 -- supplier_replenishment_events
 DROP INDEX IF EXISTS public.idx_sre_variant_date;
 DROP INDEX IF EXISTS public.idx_sre_supplier_date;
-DROP INDEX IF EXISTS public.idx_sre_pending;
-DROP INDEX IF EXISTS public.idx_sre_arrival_snapshot;
 
 -- produtos internos (admin/fiscal/xbz)
 DROP INDEX IF EXISTS public.idx_products_padronizacao_id;
@@ -257499,10 +257491,10 @@ DROP INDEX IF EXISTS public.idx_tpgof_tabela_qty;
 -- print_area_techniques
 DROP INDEX IF EXISTS public.idx_pat_tabela;
 DROP INDEX IF EXISTS public.idx_pat_location_code;
-
 -- <<< END 20261101205400_perf005_drop_unused_indexes.sql <<<
 
 -- >>> BEGIN 20261101210000_sb0007_drop_noop_restrictive_policies.sql >>>
+-- Rollback: supabase/rollbacks/20261101210000_rollback.sql
 -- SB-0007: DROP das 10 policies rls_restrictive_* USING (true) — código morto
 -- Severidade: MÉDIO | Tipo: SEGURANÇA (reclassificado de INVÁLIDO para INTENCIONAL/removível)
 -- Evidência: pg_policies WHERE policyname LIKE 'rls_restrictive%' AND qual = 'true' → 10 rows
@@ -266639,3 +266631,100 @@ END
 $verify$;
 
 -- <<< END 20261125180000_fix_comment_v_tabela_gravacao_publica.sql <<<
+
+-- >>> BEGIN 20261126030000_perf005_drop_unused_indexes_concurrently.sql >>>
+-- Rollback: supabase/rollbacks/20261126030000_rollback.sql
+--
+-- PERF-005 — drop dos 48 indices com idx_scan=0.
+--
+-- Historico das reemissoes deste mesmo lote (o arquivo nunca aplicado e
+-- substituido, nao editado — o gate E75 recusa editar migration pendente,
+-- `scripts/check-migrations-sync-log-gate.mjs:199-203`):
+--   1. 20261126012000 — barrada no preflight do E15 (run 45737271027):
+--      faltava a linha "-- approved-by:" exigida pelo opt-out de E63.
+--   2. 20261126020000 — barrada no preflight (run 45739911853): a linha existia,
+--      mas o valor "@adm01-debug" nao conta para `parseOptOut`
+--      (`scripts/preflight-migration-apply.mjs:121-133`): o nome tem de comecar
+--      com letra/digito (`^[\p{L}\p{N}]`), e "@" reprova. Reproducao local:
+--      parseOptOut(...) -> {"transactionNone":true,"approvedBy":null}.
+--   3. 20261126030000 — este arquivo: mesmo SQL dos anteriores, com
+--      "-- approved-by: adm01-debug" (mesmo formato do precedente aceito
+--      `20261018170000_e069_drop_redundant_prefix_index.sql`).
+--
+-- Por que reemitir em vez de editar 20261101205400: o gate E75 recusa migration
+-- MODIFICADA sem recibo valido — a 20261101205400 nunca teve linha no
+-- MIGRATIONS_SYNC_LOG.md (mesmo caminho que a 20261119081500 ja usou para
+-- reemitir a 20261117172500). O arquivo historico fica intocado.
+--
+-- Por que CONCURRENTLY: o apply do E15 (run 45730238702) falhou com
+-- "canceling statement due to lock timeout" em
+-- DROP INDEX public.idx_products_padronizacao_id. DROP INDEX sem CONCURRENTLY
+-- pede ACCESS EXCLUSIVE na tabela e o workflow usa lock_timeout=1s; em
+-- `products`, com leitura 24/7, isso nunca passa. Padrao identico ao de
+-- 20261018170000_e069_drop_redundant_prefix_index.sql.
+--
+-- transaction: none
+-- approved-by: adm01-debug
+--
+-- lock_timeout: nao sobrepoe o default do workflow (1s). Cada DROP e atomico por
+-- si (CONCURRENTLY nao roda em bloco de transacao) e todos usam IF EXISTS, entao
+-- se um alvo perder a corrida do lock o re-run continua de onde parou — preferimos
+-- falhar rapido a enfileirar leitores da loja atras de um AccessExclusiveLock.
+--
+-- Lista identica a de 20261101205400: os 64 indices originais menos os 16 que
+-- passaram a ter idx_scan > 0 (evidencia: docs/contexto/supabase/stats.md,
+-- secao 'Indices nunca usados', snapshot vivo de 2026-11-26). Apos esta
+-- migration aplicada, a 20261101205400 pode ser aplicada em seguida como
+-- no-op (todos os alvos ja nao existem) so para receber linha no ledger.
+--
+
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_stock_daily_summary_supplier_branch_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_stock_daily_summary_supplier_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_spr_import_batch_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_spr_variant_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_spr_images_pending;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_vss_org_supplier;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_vss_supplier_sku_xbz;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_variant_supplier_sources_supplier_branch_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_produto_ramo_atividade_filho;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_padvar_pad;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_padvar_sem_colorid;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_produtos_padronizacao_sub_brand_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_produtos_site_padronizacao_raw_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_kcer_component;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_kcer_kit;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_kcer_source;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_kit_component_enrichment_raw_promoted_padronizacao_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_kit_component_enrichment_raw_promoted_component_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_kit_component_padronizacao_raw_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_kcpad_kit;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_kit_components_name;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_product_kit_components_secondary_material_type_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_product_kit_components_component_product_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_product_kit_components_padronizacao_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_pkc_color_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_ai_queue_product_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_ai_queue_pending;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_backfill_queue_dispatch;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_prod_comm_product;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_product_commemorative_dates_category_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_product_properties_property_definition_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_supplier_import_batches_supplier_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_sre_variant_date;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_sre_supplier_date;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_products_padronizacao_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_products_ncm_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_products_sub_brand_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_products_xbz_reliability;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_product_fiscal_ncm_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_product_fiscal_ncm_code;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_xbz_upload_mapping_status;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_xbz_staging_status;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_frontend_telemetry_user_id;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_product_supply_sync_status;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_faixa_v11_dim;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_tpgof_tabela_qty;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_pat_tabela;
+DROP INDEX CONCURRENTLY IF EXISTS public.idx_pat_location_code;
+
+-- <<< END 20261126030000_perf005_drop_unused_indexes_concurrently.sql <<<

@@ -488,6 +488,11 @@ export const REPLAY_PIPELINE_REWRITES = new Map([
   ['20261114160000_perf_idx_sds_restock_counts.sql', { concurrentlyIndexes: 1 }],
   ['20261115130000_idx_sds_summary_date_supplier_include.sql', { concurrentlyIndexes: 1 }],
   ['20261125173000_idx_sds_summary_date_supplier_aplicavel.sql', { concurrentlyIndexes: 1 }],
+  // O drop dos 48 índices do PERF-005 cai na mesma recusa do pipeline (SQLSTATE
+  // 25001), só que no DROP. No shadow descartável não há tráfego concorrente:
+  // sem CONCURRENTLY o replay reproduz o mesmo schema, sem tocar no arquivo
+  // histórico nem esconder outros erros SQL.
+  ['20261126030000_perf005_drop_unused_indexes_concurrently.sql', { concurrentlyDrops: 48 }],
 ]);
 
   // O shadow do CLI nasce com privilégio que a produção não tem e que o role do
@@ -531,21 +536,40 @@ export function sanitizeReplayMigration(fileName, sql) {
   // temporária do replay; o arquivo histórico e qualquer U+FEFF interno ficam intactos.
   const normalizedSql = sql.startsWith('\uFEFF') ? sql.slice(1) : sql;
   const replaySql = neutralizarAclDePlataforma(fileName, normalizedSql);
-  const expected = REPLAY_PIPELINE_REWRITES.get(fileName)?.concurrentlyIndexes;
-  if (expected === undefined) return replaySql;
+  const rules = REPLAY_PIPELINE_REWRITES.get(fileName);
+  if (!rules) return replaySql;
 
-  let rewritten = 0;
-  const output = replaySql.replace(
-    /^(\s*CREATE\s+(?:UNIQUE\s+)?INDEX)\s+CONCURRENTLY\b/gim,
-    (statement) => {
-      rewritten += 1;
-      return statement.replace(/\s+CONCURRENTLY$/i, '');
-    },
-  );
-  if (rewritten !== expected) {
-    throw new Error(
-      `${fileName}: esperado(s) ${expected} CREATE INDEX CONCURRENTLY no replay; encontrado(s) ${rewritten}`,
+  let output = replaySql;
+  if (rules.concurrentlyIndexes !== undefined) {
+    output = removerConcurrently(
+      output,
+      /^(\s*CREATE\s+(?:UNIQUE\s+)?INDEX)\s+CONCURRENTLY\b/gim,
+      rules.concurrentlyIndexes,
+      `${fileName}: esperado(s) ${rules.concurrentlyIndexes} CREATE INDEX CONCURRENTLY no replay`,
     );
+  }
+  if (rules.concurrentlyDrops !== undefined) {
+    output = removerConcurrently(
+      output,
+      /^(\s*DROP\s+INDEX)\s+CONCURRENTLY\b/gim,
+      rules.concurrentlyDrops,
+      `${fileName}: esperado(s) ${rules.concurrentlyDrops} DROP INDEX CONCURRENTLY no replay`,
+    );
+  }
+  return output;
+}
+
+// Contagem fail-closed: a cópia do replay só é reescrita se o arquivo histórico
+// tiver exatamente o número de CONCURRENTLY previsto. Arquivo editado depois da
+// entrada no allowlist falha alto em vez de divergir em silêncio.
+function removerConcurrently(sql, pattern, expected, contexto) {
+  let rewritten = 0;
+  const output = sql.replace(pattern, (statement) => {
+    rewritten += 1;
+    return statement.replace(/\s+CONCURRENTLY$/i, '');
+  });
+  if (rewritten !== expected) {
+    throw new Error(`${contexto}; encontrado(s) ${rewritten}`);
   }
   return output;
 }
