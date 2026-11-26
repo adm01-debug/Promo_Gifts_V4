@@ -146,6 +146,27 @@ describe('sanitizeReplayMigration', () => {
     expect(out).toMatch(/^CREATE INDEX IF NOT EXISTS idx_sds_summary_date_supplier$/m);
   });
 
+  it('remove CONCURRENTLY dos 48 DROP INDEX do PERF-005 no replay do shadow', () => {
+    const fileName = '20261126030000_perf005_drop_unused_indexes_concurrently.sql';
+    const sql = readFileSync(join('supabase', 'migrations', fileName), 'utf8');
+    const out = sanitizeReplayMigration(fileName, sql);
+    expect(out).not.toMatch(/^\s*DROP\s+INDEX\s+CONCURRENTLY\b/im);
+    expect(out.match(/^DROP INDEX IF EXISTS /gm)).toHaveLength(48);
+  });
+
+  it('falha fechado se o PERF-005 mudar e não tiver exatamente 48 DROP INDEX', () => {
+    const fileName = '20261126030000_perf005_drop_unused_indexes_concurrently.sql';
+    for (const count of [0, 47, 49]) {
+      const sql = Array.from(
+        { length: count },
+        (_, index) => `DROP INDEX CONCURRENTLY IF EXISTS public.idx_${index};`,
+      ).join('\n');
+      expect(() => sanitizeReplayMigration(fileName, sql)).toThrow(
+        new RegExp(`esperado\\(s\\) 48 .* encontrado\\(s\\) ${count}`),
+      );
+    }
+  });
+
   it('neutraliza só a checagem de ACL da extensão gerida pela plataforma no replay', () => {
     const fileName = '20261125131000_tripwire_anon_v5_reconcilia.sql';
     const sql = readFileSync(join('supabase', 'migrations', fileName), 'utf8');
@@ -190,6 +211,25 @@ describe('allowlist de reescrita do replay', () => {
     // Só as versões posteriores ao snapshot são replayadas: as anteriores que
     // não estão no ledger de produção nunca passam pelo pipeline, e cobri-las
     // aqui só criaria entradas mortas no allowlist.
+    const pendentes = readdirSync(migrationsDir)
+      .filter((file) => /^\d{14}_[\s\S]*\.sql$/.test(file))
+      .filter((file) => file.slice(0, 14) > baseline.version)
+      .map((file) => ({ file, sql: readFileSync(join(migrationsDir, file), 'utf8') }))
+      .filter(({ sql }) => ocorrencia.test(sql));
+
+    for (const { file, sql } of pendentes) {
+      expect(
+        sanitizeReplayMigration(file, sql),
+        `${file}: falta entrada em REPLAY_PIPELINE_REWRITES (scripts/drift-baseline.mjs)`,
+      ).not.toMatch(ocorrencia);
+    }
+  });
+
+  it('cobre toda migration pós-baseline com DROP INDEX CONCURRENTLY', () => {
+    const repoRoot = join(import.meta.dirname, '..', '..');
+    const migrationsDir = join(repoRoot, 'supabase', 'migrations');
+    const baseline = findBaseline(repoRoot);
+    const ocorrencia = /^\s*DROP\s+INDEX\s+CONCURRENTLY\b/im;
     const pendentes = readdirSync(migrationsDir)
       .filter((file) => /^\d{14}_[\s\S]*\.sql$/.test(file))
       .filter((file) => file.slice(0, 14) > baseline.version)
