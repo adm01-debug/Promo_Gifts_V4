@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ff88d65a0dbd00e825f9669330e02f10ac069948",
+  "commit": "e39d2360a15463f45c5740cfd36494e33d3cb46d",
   "branch": "main",
-  "data_commit": "2026-11-26T19:56:07-03:00",
+  "data_commit": "2026-11-26T20:39:08-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e39d236",
+    "data": "2026-11-26",
+    "assunto": "fix: restaurar CONCURRENTLY no comentario de mv_product_compositions (#4194)"
+   },
+   {
+    "sha": "70b2931",
+    "data": "2026-11-26",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261126211200 (#4195)"
+   },
    {
     "sha": "ff88d65",
     "data": "2026-11-26",
@@ -121,19 +131,9 @@
     "sha": "48dbd0b",
     "data": "2026-11-26",
     "assunto": "docs(edge-deploy-log): recibo do deploy — run 45824995474 (#4170)"
-   },
-   {
-    "sha": "3a44413",
-    "data": "2026-11-26",
-    "assunto": "feat: liga a tabela stock_notes a uma tela de notas por variacao (#4168)"
-   },
-   {
-    "sha": "b934d25",
-    "data": "2026-11-26",
-    "assunto": "feat: JWT de agente na sugestao de identidade + botao montado no Kit Builder (#4167)"
    }
   ],
-  "arquivos_mudados_7d": 625,
+  "arquivos_mudados_7d": 626,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -148,12 +148,12 @@
     "mudancas": 155
    },
    {
-    "pasta": "tests/edge-functions/live",
+    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
     "mudancas": 116
    },
    {
-    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 115
+    "pasta": "tests/edge-functions/live",
+    "mudancas": 116
    },
    {
     "pasta": "src/components/quotes",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 115
+    "mudancas": 116
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -301,16 +301,16 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 222
+    "commits": 221
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 78
+    "commits": 79
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 11371,
+  "arquivos_total": 11373,
   "arquivos_codigo": 5742,
   "linhas_codigo": 1089830,
   "rotas": 143,
@@ -322,7 +322,7 @@
   "hooks": 655,
   "edge_functions": 112,
   "tabelas": 533,
-  "migrations": 3144,
+  "migrations": 3145,
   "cron_jobs": 122,
   "testes": 2743,
   "workflows": 89,

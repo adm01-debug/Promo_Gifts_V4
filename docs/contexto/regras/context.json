@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "ff88d65a0dbd00e825f9669330e02f10ac069948",
+  "sha": "e39d2360a15463f45c5740cfd36494e33d3cb46d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 23:07 UTC",
-  "files_total": 11301,
-  "code_files": 9279,
-  "code_lines": 1321977
+  "generated_at": "2026-11-26 23:45 UTC",
+  "files_total": 11303,
+  "code_files": 9281,
+  "code_lines": 1322009
  },
  "version": "1.3.2",
- "facts_hash": "8c3da56c9755f094",
+ "facts_hash": "637ec3d9754c4e7e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,7 +1130,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3538,
+   ".sql": 3540,
    ".ts": 3213,
    ".tsx": 2053,
    ".mjs": 456,
@@ -93268,6 +93268,7 @@
    "supabase/migrations/20261126191200_admin_ai_quota_summary_rpc.sql",
    "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql",
    "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql",
+   "supabase/migrations/20261126230000_doc_mv_product_compositions_refresh_concurrently.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -93424,6 +93425,7 @@
    "supabase/rollbacks/20261126191200_rollback.sql",
    "supabase/rollbacks/20261126192900_rollback.sql",
    "supabase/rollbacks/20261126211200_rollback.sql",
+   "supabase/rollbacks/20261126230000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -162047,8 +162049,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3143,
-   "lines": 229555,
+   "files": 3144,
+   "lines": 229578,
    "tables": [
     "...",
     "admin_audit_log",
@@ -162146,8 +162148,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 157,
-   "lines": 5674,
+   "files": 158,
+   "lines": 5683,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -558525,6 +558527,10 @@
    "lines": 280,
    "uses_service_role": true
   },
+  "supabase/migrations/20261126230000_doc_mv_product_compositions_refresh_concurrently.sql": {
+   "path": "supabase/migrations/20261126230000_doc_mv_product_compositions_refresh_concurrently.sql",
+   "lines": 23
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -559174,6 +559180,10 @@
   "supabase/rollbacks/20261126211200_rollback.sql": {
    "path": "supabase/rollbacks/20261126211200_rollback.sql",
    "lines": 10
+  },
+  "supabase/rollbacks/20261126230000_rollback.sql": {
+   "path": "supabase/rollbacks/20261126230000_rollback.sql",
+   "lines": 9
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -584746,10 +584756,29 @@
   }
  },
  "git": {
-  "sha": "ff88d65a0dbd00e825f9669330e02f10ac069948",
+  "sha": "e39d2360a15463f45c5740cfd36494e33d3cb46d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e39d236",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix: restaurar CONCURRENTLY no comentario de mv_product_compositions (#4194)",
+    "files": [
+     "supabase/migrations/20261126230000_doc_mv_product_compositions_refresh_concurrently.sql",
+     "supabase/rollbacks/20261126230000_rollback.sql"
+    ]
+   },
+   {
+    "sha": "70b2931",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261126211200 (#4195)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "ff88d65",
     "date": "2026-11-26",
@@ -585137,27 +585166,6 @@
      "tests/hooks/useSalesGoals.test.tsx",
      "tests/regression/qa-cycle-bugfixes.test.ts"
     ]
-   },
-   {
-    "sha": "67db74f",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix: registra recibo final da migration 20261125074200 (gate E055) (#4162)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "8e78a4d",
-    "date": "2026-11-26",
-    "author": "github-actions[bot]",
-    "subject": "chore(main): release gifts-store 1.20.5 (#4159)",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
@@ -585171,19 +585179,19 @@
    ],
    [
     ".release-please-manifest.json",
-    5
+    4
    ],
    [
     "CHANGELOG.md",
-    5
+    4
    ],
    [
     "package-lock.json",
-    5
+    4
    ],
    [
     "package.json",
-    5
+    4
    ],
    [
     "src/components/admin/security/SecurityTabsList.tsx",
@@ -585238,7 +585246,7 @@
     2
    ],
    [
-    "src/components/admin/classification-audit/ClassificationApplyDialog.tsx",
+    "supabase/migrations/20261126230000_doc_mv_product_compositions_refresh_concurrently.sql",
     1
    ]
   ]

@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: restaurar CONCURRENTLY no comentario de mv_product_compositions (#4194)",
+   "docs(migrations-log): recibo E15 — aplicação de 20261126211200 (#4195)",
    "feat: aba de classificacao sugerida em cadastros (#4188)",
    "docs(migrations-log): recibo E15 — aplicação de 20261126192900 (#4191)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261126191200 (#4190)",
-   "feat: aba Raio-x do acesso anon em seguranca e acesso (#4186)",
-   "feat: tela de cota de IA por usuario no painel de consumo (#4185)"
+   "docs(migrations-log): recibo E15 — aplicação de 20261126191200 (#4190)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
