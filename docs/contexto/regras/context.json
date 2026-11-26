@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "5649d255763ec2ebe19f266113289c12e8285282",
+  "sha": "ff88d65a0dbd00e825f9669330e02f10ac069948",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 22:29 UTC",
-  "files_total": 11290,
-  "code_files": 9268,
-  "code_lines": 1320131
+  "generated_at": "2026-11-26 23:07 UTC",
+  "files_total": 11301,
+  "code_files": 9279,
+  "code_lines": 1321977
  },
  "version": "1.3.2",
- "facts_hash": "d813ca55bc0a5fdb",
+ "facts_hash": "8c3da56c9755f094",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,9 +1130,9 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3536,
-   ".ts": 3209,
-   ".tsx": 2048,
+   ".sql": 3538,
+   ".ts": 3213,
+   ".tsx": 2053,
    ".mjs": 456,
    ".py": 18,
    ".js": 7
@@ -93267,6 +93267,7 @@
    "supabase/migrations/20261126130000_create_saved_stock_views.sql",
    "supabase/migrations/20261126191200_admin_ai_quota_summary_rpc.sql",
    "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql",
+   "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -93422,6 +93423,7 @@
    "supabase/rollbacks/20261126130000_rollback.sql",
    "supabase/rollbacks/20261126191200_rollback.sql",
    "supabase/rollbacks/20261126192900_rollback.sql",
+   "supabase/rollbacks/20261126211200_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -142053,6 +142055,102 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "fn_admin_classification_summary",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_admin_classification_summary",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_classification_summary",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_classification_summary",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_admin_classification_suggestions",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_admin_classification_suggestions",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_classification_suggestions",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_classification_suggestions",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_admin_classification_apply",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_admin_classification_apply",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_classification_apply",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_classification_apply",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -145704,6 +145802,46 @@
     "function": "fn_admin_anon_access_audit",
     "msg": "Acesso restrito a administradores.",
     "src": "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_classification_summary",
+    "msg": "Autenticacao obrigatoria.",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_classification_summary",
+    "msg": "Acesso restrito a administradores.",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_classification_suggestions",
+    "msg": "Autenticacao obrigatoria.",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_classification_suggestions",
+    "msg": "Acesso restrito a administradores.",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_classification_suggestions",
+    "msg": "Parametro _min_matches fora da faixa 1..20 (recebido %).",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_classification_apply",
+    "msg": "Autenticacao obrigatoria.",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_classification_apply",
+    "msg": "Acesso restrito a administradores.",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_classification_apply",
+    "msg": "Parametro _min_matches fora da faixa 1..20 (recebido %).",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
    },
    {
     "function": "fn_dryrun_standardize_supplier",
@@ -155253,7 +155391,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1781,
+  "components_count": 1787,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -156882,6 +157020,18 @@
    {
     "name": "useAuditLog",
     "file": "src/hooks/admin/useAuditLog.ts"
+   },
+   {
+    "name": "useClassificationSummary",
+    "file": "src/hooks/admin/useClassificationAudit.ts"
+   },
+   {
+    "name": "useClassificationSuggestions",
+    "file": "src/hooks/admin/useClassificationAudit.ts"
+   },
+   {
+    "name": "useApplyClassificationSuggestions",
+    "file": "src/hooks/admin/useClassificationAudit.ts"
    },
    {
     "name": "useCrmSellerLinks",
@@ -160026,8 +160176,8 @@
   },
   {
    "module": "src/components",
-   "files": 1505,
-   "lines": 295313,
+   "files": 1511,
+   "lines": 296195,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -160232,6 +160382,12 @@
     "src/components/admin/categories-manager/categoryMutations.ts",
     "src/components/admin/categories-manager/index.ts",
     "src/components/admin/categories-manager/__tests__/CategoriesManager.test.tsx",
+    "src/components/admin/classification-audit/ClassificationApplyDialog.tsx",
+    "src/components/admin/classification-audit/ClassificationAuditManager.tsx",
+    "src/components/admin/classification-audit/ClassificationKpis.tsx",
+    "src/components/admin/classification-audit/ClassificationSuggestionsTable.tsx",
+    "src/components/admin/classification-audit/index.ts",
+    "src/components/admin/classification-audit/__tests__/ClassificationAuditManager.test.tsx",
     "src/components/admin/connections/AiModelsTab.tsx",
     "src/components/admin/connections/AiProvidersTab.tsx",
     "src/components/admin/connections/AiRoutingTab.tsx",
@@ -160253,13 +160409,7 @@
     "src/components/admin/connections/ConnectionsOverviewTable.tsx",
     "src/components/admin/connections/ConnectionsPulseBar.tsx",
     "src/components/admin/connections/CredentialCacheMetricsPanel.tsx",
-    "src/components/admin/connections/CredentialSourceBadge.tsx",
-    "src/components/admin/connections/CredentialsChangedBanner.tsx",
-    "src/components/admin/connections/CredentialsSourceFilter.tsx",
-    "src/components/admin/connections/CredentialsSourceFilterContext.tsx",
-    "src/components/admin/connections/CredentialsSourceIndicator.tsx",
-    "src/components/admin/connections/DataSourceDebugTab.tsx",
-    "src/components/admin/connections/ErrorDetailsDialog.tsx"
+    "src/components/admin/connections/CredentialSourceBadge.tsx"
    ]
   },
   {
@@ -160390,8 +160540,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 523,
-   "lines": 95614,
+   "files": 524,
+   "lines": 95756,
    "tables": [
     "access_blocked_log",
     "admin_audit_log",
@@ -160485,6 +160635,7 @@
     "useAiQuotaSummary.ts: AI_QUOTA_SUMMARY_QUERY_KEY, AI_QUOTA_SUMMARY_LIMIT, useAiQuotaSummary",
     "useAllowedIPs.ts: useAllowedIPs",
     "useAuditLog.ts: AuditAction, AuditEntityType, useAuditLog, fetchAuditHistory, fetchAllAuditLogs",
+    "useClassificationAudit.ts: CLASSIFICATION_SUMMARY_QUERY_KEY, CLASSIFICATION_SUGGESTIONS_QUERY_KEY, UseClassificationSummaryResult, UseClassificationSuggestionsResult, useClassificationSummary, useClassificationSuggestions",
     "useCrmSellerLinks.ts: CRM_SELLER_LINKS_QUERY_KEY, LinkCrmSellerInput, useCrmSellerLinks, useLinkCrmSeller, useUnlinkCrmSeller",
     "useDevAccessAudit.ts: DevAccessProbeResult, DEV_EXPECTED_TABLES, useDevAccessAudit",
     "useDevGate.ts: useDevGate",
@@ -160508,8 +160659,7 @@
     "useAuthHydrationMetrics.ts: HydrationSample, HydrationMetrics, UseAuthHydrationMetricsResult, useAuthHydrationMetrics",
     "useAuthMFA.ts: useAuthMFA",
     "useLoginAttempts.ts: LoginAttempt, useLoginAttempts, useLoginAttemptStats",
-    "usePasswordBreachCheck.tsx: usePasswordBreachCheck",
-    "usePasswordResetRequests.ts: PasswordResetRequest, usePasswordResetRequests"
+    "usePasswordBreachCheck.tsx: usePasswordBreachCheck"
    ],
    "docs": [
     "useFutureStockPreference.ts: useFutureStockPreference Persiste a preferência do usuário para o toggle \"Estoque Futuro\" (ligado/desligado + janela de 7/15/30 dias) em localStorage. SSOT do storage key e dos valores válidos para a janela. Defensivo contra SSR, JSON inválido e janelas fora do conjunto permitido.",
@@ -160595,6 +160745,7 @@
     "src/hooks/admin/useAiQuotaSummary.ts",
     "src/hooks/admin/useAllowedIPs.ts",
     "src/hooks/admin/useAuditLog.ts",
+    "src/hooks/admin/useClassificationAudit.ts",
     "src/hooks/admin/useCrmSellerLinks.ts",
     "src/hooks/admin/useDevAccessAudit.ts",
     "src/hooks/admin/useDevGate.ts",
@@ -160632,8 +160783,7 @@
     "src/hooks/bi/index.ts",
     "src/hooks/bi/useBIDossierExport.ts",
     "src/hooks/bi/useChurnRisk.ts",
-    "src/hooks/bi/useClientAffinity.ts",
-    "src/hooks/bi/useClientBI.ts"
+    "src/hooks/bi/useClientAffinity.ts"
    ]
   },
   {
@@ -160686,8 +160836,8 @@
   },
   {
    "module": "src/lib",
-   "files": 446,
-   "lines": 70160,
+   "files": 448,
+   "lines": 70674,
    "tables": [
     "...",
     "companies",
@@ -160896,7 +161046,7 @@
   {
    "module": "src/pages",
    "files": 380,
-   "lines": 87922,
+   "lines": 87940,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -161897,8 +162047,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3142,
-   "lines": 229275,
+   "files": 3143,
+   "lines": 229555,
    "tables": [
     "...",
     "admin_audit_log",
@@ -161996,8 +162146,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 156,
-   "lines": 5664,
+   "files": 157,
+   "lines": 5674,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -173430,6 +173580,16 @@
     "values": "abandon | back | copy_link | fallback | mail | request_access | retry | view"
    },
    {
+    "file": "src/lib/admin/classificationAudit.ts",
+    "name": "ConfidenceLevel",
+    "values": "alta | altissima | baixa | boa | media"
+   },
+   {
+    "file": "src/lib/admin/classificationAudit.ts",
+    "name": "ApplyOutcome",
+    "values": "APLICADO | DRY-RUN | SEM MUDANCA"
+   },
+   {
     "file": "src/lib/analytics/cartAnalytics.ts",
     "name": "CART_SWITCH_SOURCES",
     "values": "'quick_add_selector', 'seller_carts_page'"
@@ -176283,6 +176443,10 @@
    {
     "file": "src/components/admin/categories-manager/categoryMutations.ts",
     "msg": "Uma categoria não pode ser pai de si mesma."
+   },
+   {
+    "file": "src/components/admin/classification-audit/ClassificationAuditManager.tsx",
+    "msg": "Falha ao aplicar"
    },
    {
     "file": "src/components/admin/connections/AutoTestIntervalCard.tsx",
@@ -182121,6 +182285,10 @@
     "text": "* Aba \"Feriados\" de `/admin/frete`: dias em que o prazo de produção não conta"
    },
    {
+    "file": "src/components/admin/classification-audit/ClassificationKpis.tsx",
+    "text": "* KPIs da trilha: os dois recortes de negócio (gaps e kits) mais conflitos e volume. */"
+   },
+   {
     "file": "src/components/admin/connections/BridgeProductsPreviewPanel.tsx",
     "text": "ativos/inativos, faixa de preço e estoque mínimo, com paginação server-side"
    },
@@ -185311,6 +185479,10 @@
    {
     "file": "src/lib/access/dev-route-telemetry.ts",
     "text": "Telemetria não pode quebrar UX — engole erro silenciosamente."
+   },
+   {
+    "file": "src/lib/admin/classificationAudit.ts",
+    "text": "* Traduz o resultado da aplicação para uma frase de negócio. `SEM MUDANCA` é o"
    },
    {
     "file": "src/lib/ai/quota-summary.ts",
@@ -209802,6 +209974,11 @@
     "value": "'__none__'"
    },
    {
+    "file": "src/components/admin/classification-audit/ClassificationApplyDialog.tsx",
+    "name": "LIMITE_PREVIA",
+    "value": "50"
+   },
+   {
     "file": "src/components/admin/connections/ConnectionTestDetailsDialog.tsx",
     "name": "PREVIEW_LIMIT",
     "value": "8"
@@ -211590,6 +211767,26 @@
     "file": "src/lib/access/request-dev-access.ts",
     "name": "THROTTLE_MS",
     "value": "5"
+   },
+   {
+    "file": "src/lib/admin/classificationAudit.ts",
+    "name": "MIN_MATCHES_FLOOR",
+    "value": "1"
+   },
+   {
+    "file": "src/lib/admin/classificationAudit.ts",
+    "name": "MIN_MATCHES_CEIL",
+    "value": "20"
+   },
+   {
+    "file": "src/lib/admin/classificationAudit.ts",
+    "name": "DEFAULT_MIN_MATCHES",
+    "value": "2"
+   },
+   {
+    "file": "src/lib/admin/classificationAudit.ts",
+    "name": "DEFAULT_LIMIT",
+    "value": "200"
    },
    {
     "file": "src/lib/analytics/cartAnalytics.ts",
@@ -228460,6 +228657,18 @@
     "body": "return `${prefix}-${generateSecurityHash(path)}`;"
    },
    {
+    "file": "src/lib/admin/classificationAudit.ts",
+    "name": "parseApplyResult",
+    "params": "data: unknown",
+    "body": "if (!Array.isArray(data)) return []; const rows: ClassificationApplyRow[] = []; for (const item of data) { if (!isRecord(item)) continue; const acao = asText(item.acao).toUpperCase(); rows.push({ acao: isApplyOutcome(acao) ? acao : 'APLICADO', productId: asText(item.product_id), sku: asText(item.sku), produto: asText(item.produto), categoria: asText(item.categoria), matches: asNumber(item.matches), score: asNumber(item.score), }); } return rows;"
+   },
+   {
+    "file": "src/lib/admin/classificationAudit.ts",
+    "name": "describeApplyOutcome",
+    "params": "rows: ClassificationApplyRow[]",
+    "body": "if (rows.length === 0) return 'Nenhuma sugestão atingiu o mínimo de matches informado.'; const acao = rows[0].acao; if (acao === 'DRY-RUN') { return `${rows.length} sugestão(ões) seriam aplicadas. Nada foi gravado.`; } if (acao === 'SEM MUDANCA') { return `${rows.length} sugestão(ões) avaliadas, mas nenhuma atribuição nova foi criada.`; } return `${rows.length} atribuição(ões) de categoria criadas e registradas na auditoria.`;"
+   },
+   {
     "file": "src/lib/assistant/buildReason.ts",
     "name": "trechoPreco",
     "params": "dados: DadosDoProduto",
@@ -244158,6 +244367,42 @@
    {
     "file": "src/components/admin/categories-manager/__tests__/CategoriesManager.test.tsx",
     "name": "aba Categorias está disponível em /admin/cadastros"
+   },
+   {
+    "file": "src/components/admin/classification-audit/__tests__/ClassificationAuditManager.test.tsx",
+    "name": "ClassificationAuditManager"
+   },
+   {
+    "file": "src/components/admin/classification-audit/__tests__/ClassificationAuditManager.test.tsx",
+    "name": "mostra os KPIs da trilha de classificação"
+   },
+   {
+    "file": "src/components/admin/classification-audit/__tests__/ClassificationAuditManager.test.tsx",
+    "name": "explica o estado vazio sem inventar dados"
+   },
+   {
+    "file": "src/components/admin/classification-audit/__tests__/ClassificationAuditManager.test.tsx",
+    "name": "desabilita a aplicação quando a trilha está vazia"
+   },
+   {
+    "file": "src/components/admin/classification-audit/__tests__/ClassificationAuditManager.test.tsx",
+    "name": "traduz erro de permissão em mensagem de negócio"
+   },
+   {
+    "file": "src/components/admin/classification-audit/__tests__/ClassificationAuditManager.test.tsx",
+    "name": "lista sugestões com confiança, conflito e situação"
+   },
+   {
+    "file": "src/components/admin/classification-audit/__tests__/ClassificationAuditManager.test.tsx",
+    "name": "roda a prévia (dry-run) ao abrir e só aplica depois da confirmação"
+   },
+   {
+    "file": "src/components/admin/classification-audit/__tests__/ClassificationAuditManager.test.tsx",
+    "name": "mostra mensagem própria quando a prévia não encontra candidatos"
+   },
+   {
+    "file": "src/components/admin/classification-audit/__tests__/ClassificationAuditManager.test.tsx",
+    "name": "avisa falha na aplicação sem fechar o diálogo"
    },
    {
     "file": "src/components/admin/connections/__tests__/ConnectionLogic.unit.test.ts",
@@ -264682,6 +264927,78 @@
    {
     "file": "src/lib/access/access-policy.test.ts",
     "name": "should allow aal2 sessions when requireMfa is true"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "confidenceOf"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "replica o CASE da view v_gaps_acionaveis"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "parseClassificationSummary"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "lê a primeira linha devolvida pela RPC"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "devolve zero em payload vazio ou inválido"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "parseClassificationSuggestions"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "normaliza linhas e descarta item sem produto"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "tolera data inválida sem quebrar"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "resumirSuggestions e hasConflict"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "conta gaps, kits, conflitos e alta confiança"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "detecta conflito quando qualquer flag está ligada"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "parseApplyResult e describeApplyOutcome"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "classifica os três desfechos possíveis"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "descreve cada desfecho em linguagem de negócio"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "validação de filtros e utilidades"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "limita o mínimo de matches à faixa aceita pela RPC"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "formata data ausente ou inválida como travessão"
+   },
+   {
+    "file": "src/lib/admin/__tests__/classificationAudit.test.ts",
+    "name": "traduz os erros conhecidos do banco"
    },
    {
     "file": "src/lib/ai/__tests__/quota-summary.test.ts",
@@ -364274,6 +364591,46 @@
     "src": "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql"
    },
    {
+    "function": "fn_admin_classification_summary",
+    "msg": "Autenticacao obrigatoria.",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_classification_summary",
+    "msg": "Acesso restrito a administradores.",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_classification_suggestions",
+    "msg": "Autenticacao obrigatoria.",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_classification_suggestions",
+    "msg": "Acesso restrito a administradores.",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_classification_suggestions",
+    "msg": "Parametro _min_matches fora da faixa 1..20 (recebido %).",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_classification_apply",
+    "msg": "Autenticacao obrigatoria.",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_classification_apply",
+    "msg": "Acesso restrito a administradores.",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_classification_apply",
+    "msg": "Parametro _min_matches fora da faixa 1..20 (recebido %).",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
     "function": "fn_dryrun_standardize_supplier",
     "msg": "Acesso negado: requer perfil admin ou superior",
     "src": "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"
@@ -376131,6 +376488,7 @@
    "supabase/migrations/20261126130000_create_saved_stock_views.sql",
    "supabase/migrations/20261126191200_admin_ai_quota_summary_rpc.sql",
    "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql",
+   "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260917061500_rollback.sql",
@@ -424845,6 +425203,102 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "fn_admin_classification_summary",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_admin_classification_summary",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_classification_summary",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_classification_summary",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_admin_classification_suggestions",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_admin_classification_suggestions",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_classification_suggestions",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_classification_suggestions",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_admin_classification_apply",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_admin_classification_apply",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_classification_apply",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_classification_apply",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -462890,6 +463344,66 @@
     "aba Categorias está disponível em /admin/cadastros"
    ]
   },
+  "src/components/admin/classification-audit/ClassificationApplyDialog.tsx": {
+   "path": "src/components/admin/classification-audit/ClassificationApplyDialog.tsx",
+   "lines": 101,
+   "exports": [
+    "function ClassificationApplyDialog"
+   ],
+   "params": [
+    {
+     "name": "LIMITE_PREVIA",
+     "value": "50"
+    }
+   ]
+  },
+  "src/components/admin/classification-audit/ClassificationAuditManager.tsx": {
+   "path": "src/components/admin/classification-audit/ClassificationAuditManager.tsx",
+   "lines": 270,
+   "exports": [
+    "function ClassificationAuditManager"
+   ],
+   "errors": [
+    "Falha ao aplicar"
+   ]
+  },
+  "src/components/admin/classification-audit/ClassificationKpis.tsx": {
+   "path": "src/components/admin/classification-audit/ClassificationKpis.tsx",
+   "lines": 93,
+   "exports": [
+    "function ClassificationKpis"
+   ],
+   "rule_comments": [
+    "* KPIs da trilha: os dois recortes de negócio (gaps e kits) mais conflitos e volume. */"
+   ]
+  },
+  "src/components/admin/classification-audit/ClassificationSuggestionsTable.tsx": {
+   "path": "src/components/admin/classification-audit/ClassificationSuggestionsTable.tsx",
+   "lines": 134,
+   "exports": [
+    "function ClassificationSuggestionsTable"
+   ]
+  },
+  "src/components/admin/classification-audit/index.ts": {
+   "path": "src/components/admin/classification-audit/index.ts",
+   "lines": 5
+  },
+  "src/components/admin/classification-audit/__tests__/ClassificationAuditManager.test.tsx": {
+   "path": "src/components/admin/classification-audit/__tests__/ClassificationAuditManager.test.tsx",
+   "lines": 279,
+   "is_test": true,
+   "tests": [
+    "ClassificationAuditManager",
+    "mostra os KPIs da trilha de classificação",
+    "explica o estado vazio sem inventar dados",
+    "desabilita a aplicação quando a trilha está vazia",
+    "traduz erro de permissão em mensagem de negócio",
+    "lista sugestões com confiança, conflito e situação",
+    "roda a prévia (dry-run) ao abrir e só aplica depois da confirmação",
+    "mostra mensagem própria quando a prévia não encontra candidatos",
+    "avisa falha na aplicação sem fechar o diálogo"
+   ]
+  },
   "src/components/admin/connections/AiModelsTab.tsx": {
    "path": "src/components/admin/connections/AiModelsTab.tsx",
    "lines": 457,
@@ -490738,6 +491252,25 @@
     "useAuditLog"
    ]
   },
+  "src/hooks/admin/useClassificationAudit.ts": {
+   "path": "src/hooks/admin/useClassificationAudit.ts",
+   "lines": 142,
+   "exports": [
+    "const CLASSIFICATION_SUMMARY_QUERY_KEY",
+    "const CLASSIFICATION_SUGGESTIONS_QUERY_KEY",
+    "interface UseClassificationSummaryResult",
+    "interface UseClassificationSuggestionsResult",
+    "function useClassificationSummary",
+    "function useClassificationSuggestions",
+    "interface UseApplyClassificationResult",
+    "function useApplyClassificationSuggestions"
+   ],
+   "hooks": [
+    "useClassificationSummary",
+    "useClassificationSuggestions",
+    "useApplyClassificationSuggestions"
+   ]
+  },
   "src/hooks/admin/useCrmSellerLinks.ts": {
    "path": "src/hooks/admin/useCrmSellerLinks.ts",
    "lines": 89,
@@ -506962,6 +507495,103 @@
     }
    ]
   },
+  "src/lib/admin/classificationAudit.ts": {
+   "path": "src/lib/admin/classificationAudit.ts",
+   "lines": 282,
+   "exports": [
+    "interface ClassificationSummary",
+    "type ConfidenceLevel",
+    "interface ConfidenceBadge",
+    "interface ClassificationSuggestion",
+    "type ApplyOutcome",
+    "interface ClassificationApplyRow",
+    "interface ClassificationFilters",
+    "const MIN_MATCHES_FLOOR",
+    "const MIN_MATCHES_CEIL",
+    "const DEFAULT_MIN_MATCHES",
+    "const DEFAULT_LIMIT",
+    "function confidenceOf",
+    "function isMinMatchesValid",
+    "function normalizeMinMatches",
+    "function hasConflict",
+    "function parseClassificationSummary",
+    "function parseClassificationSuggestions",
+    "interface ClassificationListSummary",
+    "function resumirSuggestions",
+    "function parseApplyResult",
+    "function describeApplyOutcome",
+    "function formatarDataHora",
+    "function describeClassificationError"
+   ],
+   "enums": [
+    {
+     "name": "ConfidenceLevel",
+     "values": "alta | altissima | baixa | boa | media"
+    },
+    {
+     "name": "ApplyOutcome",
+     "values": "APLICADO | DRY-RUN | SEM MUDANCA"
+    }
+   ],
+   "params": [
+    {
+     "name": "MIN_MATCHES_FLOOR",
+     "value": "1"
+    },
+    {
+     "name": "MIN_MATCHES_CEIL",
+     "value": "20"
+    },
+    {
+     "name": "DEFAULT_MIN_MATCHES",
+     "value": "2"
+    },
+    {
+     "name": "DEFAULT_LIMIT",
+     "value": "200"
+    }
+   ],
+   "rule_comments": [
+    "* Traduz o resultado da aplicação para uma frase de negócio. `SEM MUDANCA` é o"
+   ],
+   "calc_fns": [
+    {
+     "name": "parseApplyResult",
+     "params": "data: unknown",
+     "body": "if (!Array.isArray(data)) return []; const rows: ClassificationApplyRow[] = []; for (const item of data) { if (!isRecord(item)) continue; const acao = asText(item.acao).toUpperCase(); rows.push({ acao: isApplyOutcome(acao) ? acao : 'APLICADO', productId: asText(item.product_id), sku: asText(item.sku), produto: asText(item.produto), categoria: asText(item.categoria), matches: asNumber(item.matches), score: asNumber(item.score), }); } return rows;"
+    },
+    {
+     "name": "describeApplyOutcome",
+     "params": "rows: ClassificationApplyRow[]",
+     "body": "if (rows.length === 0) return 'Nenhuma sugestão atingiu o mínimo de matches informado.'; const acao = rows[0].acao; if (acao === 'DRY-RUN') { return `${rows.length} sugestão(ões) seriam aplicadas. Nada foi gravado.`; } if (acao === 'SEM MUDANCA') { return `${rows.length} sugestão(ões) avaliadas, mas nenhuma atribuição nova foi criada.`; } return `${rows.length} atribuição(ões) de categoria criadas e registradas na auditoria.`;"
+    }
+   ]
+  },
+  "src/lib/admin/__tests__/classificationAudit.test.ts": {
+   "path": "src/lib/admin/__tests__/classificationAudit.test.ts",
+   "lines": 232,
+   "is_test": true,
+   "tests": [
+    "confidenceOf",
+    "replica o CASE da view v_gaps_acionaveis",
+    "parseClassificationSummary",
+    "lê a primeira linha devolvida pela RPC",
+    "devolve zero em payload vazio ou inválido",
+    "parseClassificationSuggestions",
+    "normaliza linhas e descarta item sem produto",
+    "tolera data inválida sem quebrar",
+    "resumirSuggestions e hasConflict",
+    "conta gaps, kits, conflitos e alta confiança",
+    "detecta conflito quando qualquer flag está ligada",
+    "parseApplyResult e describeApplyOutcome",
+    "classifica os três desfechos possíveis",
+    "descreve cada desfecho em linguagem de negócio",
+    "validação de filtros e utilidades",
+    "limita o mínimo de matches à faixa aceita pela RPC",
+    "formata data ausente ou inválida como travessão",
+    "traduz os erros conhecidos do banco"
+   ]
+  },
   "src/lib/ai/quota-summary.ts": {
    "path": "src/lib/ai/quota-summary.ts",
    "lines": 154,
@@ -517859,7 +518489,7 @@
   },
   "src/pages/admin/AdminCadastrosPage.tsx": {
    "path": "src/pages/admin/AdminCadastrosPage.tsx",
-   "lines": 197,
+   "lines": 215,
    "exports": [
     "function AdminCadastrosPage"
    ]
@@ -557890,6 +558520,11 @@
    "lines": 52,
    "uses_service_role": true
   },
+  "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql": {
+   "path": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql",
+   "lines": 280,
+   "uses_service_role": true
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -558535,6 +559170,10 @@
   "supabase/rollbacks/20261126192900_rollback.sql": {
    "path": "supabase/rollbacks/20261126192900_rollback.sql",
    "lines": 4
+  },
+  "supabase/rollbacks/20261126211200_rollback.sql": {
+   "path": "supabase/rollbacks/20261126211200_rollback.sql",
+   "lines": 10
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -584107,10 +584746,32 @@
   }
  },
  "git": {
-  "sha": "5649d255763ec2ebe19f266113289c12e8285282",
+  "sha": "ff88d65a0dbd00e825f9669330e02f10ac069948",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "ff88d65",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "feat: aba de classificacao sugerida em cadastros (#4188)",
+    "files": [
+     "audit/supabase-reference-catalog.temporary.json",
+     "src/components/admin/classification-audit/ClassificationApplyDialog.tsx",
+     "src/components/admin/classification-audit/ClassificationAuditManager.tsx",
+     "src/components/admin/classification-audit/ClassificationKpis.tsx",
+     "src/components/admin/classification-audit/ClassificationSuggestionsTable.tsx",
+     "src/components/admin/classification-audit/__tests__/ClassificationAuditManager.test.tsx",
+     "src/components/admin/classification-audit/index.ts",
+     "src/hooks/admin/useClassificationAudit.ts",
+     "src/lib/admin/__tests__/classificationAudit.test.ts",
+     "src/lib/admin/classificationAudit.ts",
+     "src/pages/admin/AdminCadastrosPage.tsx",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql",
+     "supabase/rollbacks/20261126211200_rollback.sql"
+    ]
+   },
    {
     "sha": "5649d25",
     "date": "2026-11-26",
@@ -584497,25 +585158,16 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "65f12c5",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix: restaura COMMENT do idx_spr_images_pending no rollback do PERF005 (#4158)",
-    "files": [
-     "supabase/rollbacks/20261126030000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    11
+    12
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
-    8
+    9
    ],
    [
     ".release-please-manifest.json",
@@ -584544,6 +585196,10 @@
    [
     "docs/estado/07_EDGE_FUNCTIONS.md",
     3
+   ],
+   [
+    "src/pages/admin/AdminCadastrosPage.tsx",
+    2
    ],
    [
     "supabase/migrations/20261126060000_crm_seller_identity_admin_rpc.sql",
@@ -584582,11 +585238,7 @@
     2
    ],
    [
-    "src/components/admin/security/AnonAccessAuditPanel.tsx",
-    1
-   ],
-   [
-    "src/components/admin/security/__tests__/AnonAccessAuditPanel.test.tsx",
+    "src/components/admin/classification-audit/ClassificationApplyDialog.tsx",
     1
    ]
   ]

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5649d255763ec2ebe19f266113289c12e8285282",
+  "commit": "ff88d65a0dbd00e825f9669330e02f10ac069948",
   "branch": "main",
-  "data_commit": "2026-11-26T19:18:37-03:00",
+  "data_commit": "2026-11-26T19:56:07-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ff88d65",
+    "data": "2026-11-26",
+    "assunto": "feat: aba de classificacao sugerida em cadastros (#4188)"
+   },
    {
     "sha": "5649d25",
     "data": "2026-11-26",
@@ -126,18 +131,13 @@
     "sha": "b934d25",
     "data": "2026-11-26",
     "assunto": "feat: JWT de agente na sugestao de identidade + botao montado no Kit Builder (#4167)"
-   },
-   {
-    "sha": "480871c",
-    "data": "2026-11-26",
-    "assunto": "docs(edges): registra que os 4 achados graves de auth e os 9 crons ja foram fechados (#4166)"
    }
   ],
-  "arquivos_mudados_7d": 616,
+  "arquivos_mudados_7d": 625,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 403
+    "mudancas": 409
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 114
+    "mudancas": 115
    },
    {
     "pasta": "src/components/quotes",
@@ -172,12 +172,12 @@
     "mudancas": 92
    },
    {
-    "pasta": "src/pages/magazine",
+    "pasta": "src/pages/admin",
     "mudancas": 92
    },
    {
-    "pasta": "src/pages/admin",
-    "mudancas": 91
+    "pasta": "src/pages/magazine",
+    "mudancas": 92
    },
    {
     "pasta": "src/components/mockup",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 114
+    "mudancas": 115
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -219,7 +219,7 @@
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 13
+    "mudancas": 14
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -278,6 +278,10 @@
     "mudancas": 5
    },
    {
+    "arquivo": "src/pages/admin/AdminCadastrosPage.tsx",
+    "mudancas": 5
+   },
+   {
     "arquivo": "src/pages/admin/StockDashboardPage.tsx",
     "mudancas": 5
    },
@@ -291,10 +295,6 @@
    },
    {
     "arquivo": "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "docs/estado/07_EDGE_FUNCTIONS.md",
     "mudancas": 4
    }
   ],
@@ -310,21 +310,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11360,
-  "arquivos_codigo": 5733,
-  "linhas_codigo": 1088274,
+  "arquivos_total": 11371,
+  "arquivos_codigo": 5742,
+  "linhas_codigo": 1089830,
   "rotas": 143,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 74,
-  "modulos": 174,
-  "componentes": 1294,
-  "hooks": 654,
+  "modulos": 175,
+  "componentes": 1298,
+  "hooks": 655,
   "edge_functions": 112,
   "tabelas": 533,
-  "migrations": 3143,
+  "migrations": 3144,
   "cron_jobs": 122,
-  "testes": 2741,
+  "testes": 2743,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1512
@@ -1935,8 +1935,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1505,
-   "linhas": 295314
+   "arquivos": 1511,
+   "linhas": 296196
   },
   "src/config": {
    "arquivos": 1,
@@ -1959,16 +1959,16 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 523,
-   "linhas": 95614
+   "arquivos": 524,
+   "linhas": 95756
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66760
   },
   "src/lib": {
-   "arquivos": 445,
-   "linhas": 70150
+   "arquivos": 447,
+   "linhas": 70664
   },
   "src/logic": {
    "arquivos": 4,
@@ -1980,7 +1980,7 @@
   },
   "src/pages": {
    "arquivos": 380,
-   "linhas": 87922
+   "linhas": 87940
   },
   "src/routes": {
    "arquivos": 16,

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5649d25576` · branch `main` · 2026-11-26 22:29 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ff88d65a0d` · branch `main` · 2026-11-26 23:07 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1421,7 +1421,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `magazine_update_metadata_v2` | magazine_subtitle_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `magazine_update_metadata_v2` | magazine_template_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `magazine_update_metadata_v2` | magazine_branding_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
-| … +121 linhas — lista completa em `context.json` | | |
+| … +129 linhas — lista completa em `context.json` | | |
 
 ## E. Estados, máquinas de estado e transições
 
@@ -2032,6 +2032,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | AppRole | admin \| agente \| coordenador \| dev \| manager \| supervisor \| vendedor | `src/lib/roles.ts` |
 | Role | agente \| desconhecido \| dev \| supervisor | `src/lib/access/access-denied-strings.tsx` |
 | DevRouteUxEvent | abandon \| back \| copy_link \| fallback \| mail \| request_access \| retry \| view | `src/lib/access/dev-route-telemetry.ts` |
+| ConfidenceLevel | alta \| altissima \| baixa \| boa \| media | `src/lib/admin/classificationAudit.ts` |
+| ApplyOutcome | APLICADO \| DRY-RUN \| SEM MUDANCA | `src/lib/admin/classificationAudit.ts` |
 | CART_SWITCH_SOURCES | 'quick_add_selector', 'seller_carts_page' | `src/lib/analytics/cartAnalytics.ts` |
 | CART_CHECKOUT_SOURCES | 'carts_list_page', 'cart_detail_header' | `src/lib/analytics/cartAnalytics.ts` |
 | CART_SWITCH_FAILURE_REASONS | 'mutation_failed', 'session_expired', 'rate_limited', | `src/lib/analytics/cartAnalytics.ts` |
@@ -2165,9 +2167,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | TriggeredBy | manual \| cron \| webhook | `supabase/functions/_shared/connection-test-runner.ts` |
 | ErrorKind | timeout \| network \| dns \| http \| auth \| config \| unknown | `supabase/functions/_shared/connection-test-runner.ts` |
 | ConnectionType | supabase \| bitrix24 \| n8n \| mcp \| webhook_outbound | `supabase/functions/_shared/connection-timeouts.ts` |
-| EdgeRole | vendedor \| agente \| supervisor \| admin \| dev | `supabase/functions/_shared/createEdge.ts` |
-| CredentialSource | db \| env \| none | `supabase/functions/_shared/credentials.ts` |
-| … +22 linhas — lista completa em `context.json` | | |
+| … +24 linhas — lista completa em `context.json` | | |
 
 ## F. Validações de entrada
 
@@ -4509,6 +4509,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   return `${prefix}-${generateSecurityHash(path)}`;
   ```
+- **parseApplyResult(data: unknown)** — `src/lib/admin/classificationAudit.ts`
+  ```
+  if (!Array.isArray(data)) return []; const rows: ClassificationApplyRow[] = []; for (const item of data) { if (!isRecord(item)) continue; const acao = asText(item.acao).toUpperCase(); rows.push({ acao: isApplyOutcome(acao) ? acao : 'APLICADO', productId: asText(item.product_id), sku: asText(item.sku), produto: asText(item.produto), categoria: asText(item.categoria), matches: asNumber(item.matches), score: asNumber(item.score), }); } return rows;
+  ```
+- **describeApplyOutcome(rows: ClassificationApplyRow[])** — `src/lib/admin/classificationAudit.ts`
+  ```
+  if (rows.length === 0) return 'Nenhuma sugestão atingiu o mínimo de matches informado.'; const acao = rows[0].acao; if (acao === 'DRY-RUN') { return `${rows.length} sugestão(ões) seriam aplicadas. Nada foi gravado.`; } if (acao === 'SEM MUDANCA') { return `${rows.length} sugestão(ões) avaliadas, mas nenhuma atribuição nova foi criada.`; } return `${rows.length} atribuição(ões) de categoria criadas e registradas na auditoria.`;
+  ```
 - **trechoPreco(dados: DadosDoProduto)** — `src/lib/assistant/buildReason.ts`
   ```
   const min = ehNumeroUtil(dados.faixaMin) ? dados.faixaMin : null; const max = ehNumeroUtil(dados.faixaMax) ? dados.faixaMax : null; if (min !== null && max !== null) { return `cabe em R$ ${formatarReal(min)}–${formatarReal(max)}`; } if (max !== null) return `cabe até R$ ${formatarReal(max)}`; if (min !== null) return `cabe acima de R$ ${formatarReal(min)}`; return 'cabe na faixa de preço do cliente';
@@ -5735,6 +5743,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `FIRST_YEAR` | `2020` | `src/components/admin/business-calendar/BusinessCalendarManager.tsx` |
 | `LAST_YEAR` | `2100` | `src/components/admin/business-calendar/BusinessCalendarManager.tsx` |
 | `ROOT` | `'__none__'` | `src/components/admin/categories-manager/CategoriesManager.tsx` |
+| `LIMITE_PREVIA` | `50` | `src/components/admin/classification-audit/ClassificationApplyDialog.tsx` |
 | `PREVIEW_LIMIT` | `8` | `src/components/admin/connections/ConnectionTestDetailsDialog.tsx` |
 | `DEFAULT_PREVIEW_SIZE` | `5` | `src/components/admin/connections/ConnectionTestHistoryPanel.tsx` |
 | `TOOLTIP_LIMIT` | `12` | `src/components/admin/connections/CredentialsSourceIndicator.tsx` |
@@ -5977,8 +5986,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `NOVELTY_FRESH_DAYS` | `5` | `src/hooks/products/novelty-core.ts` |
 | `NOVELTY_EXPIRING_SOON_DAYS` | `7` | `src/hooks/products/novelty-core.ts` |
 | `ITEMS_PER_PAGE` | `500` | `src/hooks/products/useCatalogState.helpers.ts` |
-| `CHUNK` | `80` | `src/hooks/products/useColorEnrichment.ts` |
-| … +449 linhas — lista completa em `context.json` | | |
+| … +454 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6768,7 +6776,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1405 linhas — lista completa em `context.json` | |
+| … +1406 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6894,7 +6902,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (24108 testes em 2408 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (24135 testes em 2410 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7198,7 +7206,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/lib/rbac-permissions.test.ts` | 20 | RBAC Permission Matrix · admin · has access to everything · manager … |
 | `tests/pages/QuoteBuilder.test.ts` | 20 | QuoteBuilder — Item Calculations · calculates single item total · calculates quote subtotal · handles empty items list … |
 | `tests/scripts/append-migration-receipt.test.mjs` | 20 | formatReceiptRow · formata todos os campos como células markdown · usa em-dash para campos ausentes · appendReceiptRow … |
-| … +2108 linhas — lista completa em `context.json` | | |
+| … +2110 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7517,6 +7525,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Badges de sistema (is_system) não podem ser excluídas — apenas desabilitadas. | `src/components/admin/badges-manager/BadgeTable.tsx` |
 | onde/como são usadas, regra de negócio, prioridade e configuração. | `src/components/admin/badges-manager/BadgesManager.tsx` |
 | * Aba "Feriados" de `/admin/frete`: dias em que o prazo de produção não conta | `src/components/admin/business-calendar/BusinessCalendarManager.tsx` |
+| * KPIs da trilha: os dois recortes de negócio (gaps e kits) mais conflitos e volume. */ | `src/components/admin/classification-audit/ClassificationKpis.tsx` |
 | ativos/inativos, faixa de preço e estoque mínimo, com paginação server-side | `src/components/admin/connections/BridgeProductsPreviewPanel.tsx` |
 | (limit/offset) e contagem exata para revisar o catálogo externo sem precisar | `src/components/admin/connections/BridgeProductsPreviewPanel.tsx` |
 | * Erro do hook ao listar segredos (sem permissão / sessão expirada / rede). */ | `src/components/admin/connections/CardSourceDiagnostic.tsx` |
@@ -7665,5 +7674,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | de `onPlanChange` abaixo sobe o plano recém-computado no mount e não pode | `src/components/freight-plan/FreightPlanCard.tsx` |
 | `div`, não `p`: a regra global `.dark p/span/li` pinta de branco e esconderia a cor do erro. | `src/components/freight-plan/FreightPlanPanel.tsx` |
 | * Card "Prazo de produção" do orçamento: em quantos dias úteis o pedido fica | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1504 linhas — lista completa em `context.json` | |
+| … +1506 linhas — lista completa em `context.json` | |

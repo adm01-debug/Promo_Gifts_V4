@@ -8,23 +8,23 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (990)",
+   "src/components (994)",
    "src/pages (185)",
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (323)",
+   "src/hooks (324)",
    "recovery/src-legacy (196)",
    "src/components (78)"
   ],
   "servicos_logica": [
-   "src/lib (280)",
+   "src/lib (281)",
    "src/utils (34)",
    "src/services (16)"
   ],
   "testes": [
    "tests/ (1089)",
-   "co-localizado (__tests__) (810)",
+   "co-localizado (__tests__) (812)",
    "e2e/ (636)"
   ],
   "edge_functions": "supabase/functions",
@@ -47,9 +47,9 @@
   "edge_functions": "kebab-case (99%)",
   "tabelas": "snake_case (86%)"
  },
- "barrels_index": 50,
+ "barrels_index": 51,
  "extensao_componentes": [
-  ".tsx (1294)"
+  ".tsx (1298)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat: aba de classificacao sugerida em cadastros (#4188)",
    "docs(migrations-log): recibo E15 — aplicação de 20261126192900 (#4191)",
    "docs(migrations-log): recibo E15 — aplicação de 20261126191200 (#4190)",
    "feat: aba Raio-x do acesso anon em seguranca e acesso (#4186)",
-   "feat: tela de cota de IA por usuario no painel de consumo (#4185)",
-   "docs: varredura backend->UI medida (0 RPC de negocio sem consumidor) (#4184)"
+   "feat: tela de cota de IA por usuario no painel de consumo (#4185)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

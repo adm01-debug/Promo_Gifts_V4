@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1294,
+ "total": 1298,
  "orfaos": 155,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -2447,6 +2447,68 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/classification-audit/ClassificationApplyDialog.tsx",
+   "exports": [
+    "ClassificationApplyDialog"
+   ],
+   "export_default": null,
+   "linhas": 101,
+   "dominio": "components/admin",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/classification-audit/ClassificationAuditManager.tsx",
+   "exports": [
+    "ClassificationAuditManager"
+   ],
+   "export_default": null,
+   "linhas": 270,
+   "dominio": "components/admin",
+   "hooks_locais": [
+    "useApplyClassificationSuggestions",
+    "useClassificationSuggestions",
+    "useClassificationSummary",
+    "useDebouncedFilters",
+    "useToast"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/classification-audit/ClassificationKpis.tsx",
+   "exports": [
+    "ClassificationKpis"
+   ],
+   "export_default": null,
+   "linhas": 93,
+   "dominio": "components/admin",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/classification-audit/ClassificationSuggestionsTable.tsx",
+   "exports": [
+    "ClassificationSuggestionsTable"
+   ],
+   "export_default": null,
+   "linhas": 134,
+   "dominio": "components/admin",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
    "orfao": false
   },
   {
@@ -16717,7 +16779,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 38,
+   "usado_por": 39,
    "orfao": false
   },
   {
@@ -16764,7 +16826,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 498,
+   "usado_por": 499,
    "orfao": false
   },
   {
@@ -16799,7 +16861,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 667,
+   "usado_por": 668,
    "orfao": false
   },
   {
@@ -16833,7 +16895,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 367,
+   "usado_por": 368,
    "orfao": false
   },
   {
@@ -17182,7 +17244,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 277,
+   "usado_por": 278,
    "orfao": false
   },
   {
@@ -17210,7 +17272,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 157,
+   "usado_por": 158,
    "orfao": false
   },
   {
@@ -17382,7 +17444,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 146,
+   "usado_por": 147,
    "orfao": false
   },
   {
@@ -17490,7 +17552,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 196,
+   "usado_por": 199,
    "orfao": false
   },
   {
@@ -17564,7 +17626,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 69,
+   "usado_por": 70,
    "orfao": false
   },
   {
@@ -17586,7 +17648,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 61,
+   "usado_por": 62,
    "orfao": false
   },
   {
@@ -18122,7 +18184,7 @@
     "AdminCadastrosPage"
    ],
    "export_default": "AdminCadastrosPage",
-   "linhas": 197,
+   "linhas": 215,
    "dominio": "pages/admin",
    "hooks_locais": [],
    "tabelas": [],
