@@ -6322,7 +6322,7 @@
     "useRef"
    ],
    "canais_realtime": [],
-   "usado_por": 212,
+   "usado_por": 213,
    "usado_por_arquivos": [
     "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
     "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -13445,12 +13445,14 @@
   {
    "arquivo": "src/hooks/stock/useStockNotes.ts",
    "hooks_exportados": [
+    "useStockNoteSuppliers",
     "useStockNotes"
    ],
-   "linhas": 95,
+   "linhas": 178,
    "dominio": "hooks/stock",
    "tabelas": [
-    "stock_notes"
+    "stock_notes",
+    "suppliers"
    ],
    "rpcs": [],
    "edges": [],
@@ -13461,8 +13463,10 @@
     "useToast"
    ],
    "canais_realtime": [],
-   "usado_por": 0,
-   "usado_por_arquivos": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/components/inventory/VariantStockNotesDialog.tsx"
+   ],
    "coberto_por_testes": 0
   },
   {

@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `b934d25623` · branch `main` · 2026-11-26 12:50 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3a4441385b` · branch `main` · 2026-11-26 13:14 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -1255,7 +1255,7 @@ Middleware matcher (Next.js): nenhum
 | `seller_carts` | RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useSellerCarts.ts`<br>`src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
 | `supplier_products_raw` | RLS ligado sem nenhuma política → só service_role acessa |  |
 | `supplier_settings` | RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSupplierDefaultLeadTime.ts`<br>`src/services/productionLeadTimeService.ts` |
-| `suppliers` | front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/services/freightReadinessService.ts` |
+| `suppliers` | front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/hooks/stock/useStockNotes.ts`<br>`src/services/freightReadinessService.ts` |
 | `tabela_preco_gravacao_oficial` | RLS ligado sem nenhuma política → só service_role acessa | `src/lib/external-db/rpc-native.ts` |
 | `tabela_preco_gravacao_oficial_faixa` | RLS ligado sem nenhuma política → só service_role acessa | `src/services/productionLeadTimeService.ts` |
 | `target_audiences` | RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/products/productMarketingData.ts` |

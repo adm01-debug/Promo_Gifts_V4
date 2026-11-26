@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1281,
+ "total": 1282,
  "orfaos": 155,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -10215,12 +10215,30 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/inventory/VariantStockNotesDialog.tsx",
+   "exports": [
+    "VariantStockNotesDialog"
+   ],
+   "export_default": null,
+   "linhas": 342,
+   "dominio": "components/inventory",
+   "hooks_locais": [
+    "useAuth",
+    "useStockNoteSuppliers",
+    "useStockNotes"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/inventory/VariantStockRowActions.tsx",
    "exports": [
     "VariantStockRowActions"
    ],
    "export_default": null,
-   "linhas": 340,
+   "linhas": 357,
    "dominio": "components/inventory",
    "hooks_locais": [
     "useComparisonStore",
@@ -16546,7 +16564,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 35,
+   "usado_por": 36,
    "orfao": false
   },
   {
@@ -16593,7 +16611,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 489,
+   "usado_por": 490,
    "orfao": false
   },
   {
@@ -16628,7 +16646,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 656,
+   "usado_por": 657,
    "orfao": false
   },
   {
@@ -16852,7 +16870,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 140,
+   "usado_por": 141,
    "orfao": false
   },
   {
@@ -17186,7 +17204,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 94,
+   "usado_por": 95,
    "orfao": false
   },
   {
@@ -17211,7 +17229,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 143,
+   "usado_por": 144,
    "orfao": false
   },
   {
@@ -17319,7 +17337,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 189,
+   "usado_por": 190,
    "orfao": false
   },
   {
@@ -17447,7 +17465,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 64,
+   "usado_por": 65,
    "orfao": false
   },
   {
@@ -17511,7 +17529,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 178,
+   "usado_por": 179,
    "orfao": false
   },
   {
@@ -17603,7 +17621,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 212,
+   "usado_por": 213,
    "orfao": false
   },
   {

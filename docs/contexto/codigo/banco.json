@@ -46942,7 +46942,7 @@
     "organization_id->organizations"
    ],
    "criada_em": "20250102000000_gifts_production.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [
     "expert-chat"
    ],

@@ -7971,13 +7971,13 @@
   },
   {
    "modulo": "components/inventory",
-   "arquivos": 42,
-   "testes": 41,
-   "linhas": 9497,
+   "arquivos": 43,
+   "testes": 42,
+   "linhas": 9856,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 37,
+   "componentes": 38,
    "hooks_locais": [
     "useA11y",
     "useAIRecommendations",
@@ -8246,6 +8246,8 @@
     "useSpeechRecognition",
     "useStockAlerts",
     "useStockDailySummary",
+    "useStockNoteSuppliers",
+    "useStockNotes",
     "useStockNotificationCounts",
     "useStockSelection",
     "useStockVelocity",
@@ -8352,6 +8354,8 @@
     "search_analytics",
     "seller_cart_items",
     "seller_carts",
+    "stock_notes",
+    "suppliers",
     "system_kill_switches",
     "system_settings",
     "user_onboarding",
@@ -8464,6 +8468,7 @@
     "lib",
     "lib/db",
     "lib/inventory",
+    "lib/stock",
     "stores",
     "types"
    ],
@@ -22748,7 +22753,7 @@
    "modulo": "hooks/stock",
    "arquivos": 13,
    "testes": 4,
-   "linhas": 1558,
+   "linhas": 1641,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -22786,6 +22791,7 @@
     "useScrollLockFix",
     "useScrollProgress",
     "useSearchStore",
+    "useStockNoteSuppliers",
     "useStockNotes",
     "useSupplierRiskBreakdown",
     "useToast",
@@ -22800,6 +22806,7 @@
     "useRuptureHorizon",
     "useRuptureKpiSummary",
     "useSavedStockViews",
+    "useStockNoteSuppliers",
     "useStockNotes",
     "useSupplierRiskBreakdown",
     "useWhatIfScenario"
@@ -22809,6 +22816,7 @@
     "frontend_telemetry",
     "profiles",
     "stock_notes",
+    "suppliers",
     "system_kill_switches",
     "system_settings",
     "user_onboarding",
@@ -22852,7 +22860,8 @@
    "diretos": {
     "edges": [],
     "tabelas": [
-     "stock_notes"
+     "stock_notes",
+     "suppliers"
     ],
     "rpcs": [
      "fn_rupture_quick_stats"
@@ -22871,6 +22880,7 @@
     "lib",
     "lib/external-db",
     "lib/inventory",
+    "lib/stock",
     "types"
    ],
    "pacotes_externos": [
@@ -27033,6 +27043,37 @@
     "sonner",
     "zod"
    ]
+  },
+  {
+   "modulo": "lib/stock",
+   "arquivos": 1,
+   "testes": 1,
+   "linhas": 173,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "components/inventory",
+    "hooks/stock"
+   ],
+   "depende_de_modulos": [],
+   "pacotes_externos": []
   },
   {
    "modulo": "lib/supabase",

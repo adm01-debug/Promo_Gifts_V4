@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 354,
+ "total": 355,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 270,
+  "lib": 271,
   "python": 9,
   "services": 16,
   "stores": 9,
@@ -7885,6 +7885,41 @@
    "orfao": false
   },
   {
+   "arquivo": "src/lib/stock/stock-notes.ts",
+   "camada": "lib",
+   "exports": [
+    "STOCK_NOTE_MAX_LENGTH",
+    "STOCK_NOTE_MIN_LENGTH",
+    "StockNoteRow",
+    "StockNoteSummary",
+    "StockNoteValidation",
+    "describeStockNoteError",
+    "formatStockNoteAge",
+    "parseStockNote",
+    "parseStockNotes",
+    "sortStockNotes",
+    "summarizeStockNotes",
+    "validateStockNote"
+   ],
+   "export_default": null,
+   "linhas": 173,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "components/inventory",
+    "hooks/stock"
+   ],
+   "coberto_por_testes": 2,
+   "orfao": false
+  },
+  {
    "arquivo": "src/lib/supabase-direct.ts",
    "camada": "lib",
    "exports": [
@@ -8797,7 +8832,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 661,
+   "usado_por": 662,
    "usado_por_modulos": [
     "components",
     "components/admin",

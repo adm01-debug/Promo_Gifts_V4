@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `b934d25623` · branch `main` · 2026-11-26 12:50 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3a4441385b` · branch `main` · 2026-11-26 13:14 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -4343,6 +4343,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const alerts: StockAlert[] = []; products.forEach((product) => { product.variants.forEach((variant) => { const baseAlert = { productId: product.productId, productName: product.productName, productSku: product.productSku, variantId: variant.variantId, colorName: variant.colorName, currentStock: variant.currentStock, threshold: variant.minStock, createdAt: new Date().toISOString(), }; if (variant.status === 'out_of_stock') { alerts.push({ id: `alert-${variant.id}-out`, type: 'out_of_stock', severi …
   ```
+- **invalidate()** — `src/hooks/stock/useStockNotes.ts`
+  ```
+  void qc.invalidateQueries({ queryKey: [NOTES_KEY, variantId] });
+  ```
 - **calcularPreco(tabela: TabelaPrecoTecnica, quantidade: number, numeroCores?: number,)** — `src/hooks/tecnicas/usePrecoCalculation.ts`
   ```
   const faixas = tabela.faixas; if (!faixas.length) { throw new Error('Tabela de preço sem faixas configuradas'); } // Binary search for faster faixa lookup on large quantity arrays let low = 0; let high = faixas.length - 1; let foundIdx = 0; while (low <= high) { const mid = (low + high) >>> 1; if (quantidade >= faixas[mid].quantidadeMinima) { foundIdx = mid; low = mid + 1; } else { high = mid - 1; } } const faixaUtilizada = faixas[foundIdx]; let precoUnitario = faixaUtilizada.precoUnitario; if ( …
@@ -4874,6 +4878,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **shouldShowRaw()** — `src/lib/security/safeToast.ts`
   ```
   try { return devInfraGate.shouldShow(currentRoles); } catch { return false; // fail-closed: esconde técnico em caso de erro do gate }
+  ```
+- **validateStockNote(note: string)** — `src/lib/stock/stock-notes.ts`
+  ```
+  const value = note.trim(); if (value.length === 0) { return { ok: false, value, message: 'Escreva a nota antes de salvar.' }; } if (value.length < STOCK_NOTE_MIN_LENGTH) { return { ok: false, value, message: `A nota precisa de pelo menos ${STOCK_NOTE_MIN_LENGTH} caracteres.`, }; } if (value.length > STOCK_NOTE_MAX_LENGTH) { return { ok: false, value, message: `A nota passa do limite de ${STOCK_NOTE_MAX_LENGTH} caracteres.`, }; } return { ok: true, value, message: null };
   ```
 - **validateRLSPolicies()** — `src/lib/supabase/rls-validator.ts`
   ```
@@ -5731,6 +5739,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `VOLUMES_COLLAPSE_THRESHOLD` | `5` | `src/components/freight-plan/FreightPlanPanel.tsx` |
 | `WINDOW_MS` | `5` | `src/components/intelligence/RealtimeBadge.tsx` |
 | `FUTURE_STOCK_WINDOW_DAYS` | `30` | `src/components/inventory/StockDashboard.tsx` |
+| `NO_SUPPLIER` | `'__none__'` | `src/components/inventory/VariantStockNotesDialog.tsx` |
 | `ECONOMY_FREIGHT_LIMIT_G` | `5000` | `src/components/kit-builder/KitConflictAlerts.tsx` |
 | `NOTES_MAX_LENGTH` | `500` | `src/components/kit-builder/KitSummary.tsx` |
 | `VIRTUALIZED_KIT_ITEM_THRESHOLD` | `48` | `src/components/kit-builder/VirtualizedKitItemList.tsx` |
@@ -5913,8 +5922,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `CHUNK` | `80` | `src/hooks/products/useColorFanout.ts` |
 | `CART_ITEM_DEBOUNCE_MS` | `300` | `src/hooks/products/useDebouncedCartItemActions.ts` |
 | `CART_ITEM_DEBOUNCE_MS_MIN` | `0` | `src/hooks/products/useDebouncedCartItemActions.ts` |
-| `CART_ITEM_DEBOUNCE_MS_MAX` | `2000` | `src/hooks/products/useDebouncedCartItemActions.ts` |
-| … +422 linhas — lista completa em `context.json` | | |
+| … +425 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6338,6 +6346,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | 50 | `src/hooks/simulation/useSimulation.ts` |
 | 100 | `src/hooks/simulation/useTechniquePricing.ts` |
 | 20 | `src/hooks/simulator/useWizardDrafts.ts` |
+| 200 | `src/hooks/stock/useStockNotes.ts` |
 | 0 | `src/hooks/ui/useWorkspaceNotifications.tsx` |
 | 1 | `src/lib/cloud-status.ts` |
 | 1 | `src/lib/crm-db.ts` |
@@ -6703,7 +6712,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1393 linhas — lista completa em `context.json` | |
+| … +1398 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6828,7 +6837,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23747 testes em 2390 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23787 testes em 2392 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6954,6 +6963,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/inventory/__tests__/ri[REDACTED].test.tsx` | 29 | RiskKpi · renders label, value and sub · renders with alert style when alert=true · renders with warning style when warning=true … |
 | `src/components/products/__tests__/ColorSwatchTwoLineOverflow.test.tsx` | 29 | V1 ProductColorSwatches (wrap, max=14) · 7 cores → exibe TODAS, sem chip  · 14 cores → exibe TODAS, sem chip  · 20 cores → 13 bolinhas + chip  … |
 | `src/lib/freight/__tests__/packMixed.test.ts` | 29 | packMixed · 50 cadernetas + 50 squeezes cabem numa GG só · misturar nunca usa mais caixas que separar · preserva a quantidade de cada produto quando precisa de várias caixas … |
+| `src/lib/stock/__tests__/stock-notes.test.ts` | 29 | parseStockNote · lê a linha completa do PostgREST · normaliza supplier_id vazio para null e is_pinned ausente para false · descarta datas inválidas sem quebrar o registro … |
 | `tests/components/pages/KitBuilderPage.test.tsx` | 29 | KitBuilderPage · renderiza o passo box (padrão) · renderiza o passo items · renderiza o passo personalization … |
 | `tests/e2e/analytics-bi.test.ts` | 29 | E2E Analytics — BI Metrics · total = approved + rejected + pending · conversion rate is correct · avg ticket = revenue / approved … |
 | `tests/lib/kit-builder-price.test.ts` | 29 | kit-builder price-calculator · calculateBoxPrice · returns 0 for null box · multiplies box price by quantity … |
@@ -7131,8 +7141,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/inventory/__tests__/stock-alert-dialogs.test.tsx` | 19 | OutOfStockDialog · renders title  · renders empty state when alerts=[] · renders alert count badge … |
 | `src/hooks/quotes/__tests__/useDiscountApproval.test.ts` | 19 | requestApproval · retorna false imediatamente quando user = null (sem DB call) · insere em discount_approval_requests com campos corretos · retorna true quando inserção bem-sucedida … |
 | `src/lib/auth/__tests__/checkLoginGate.test.ts` | 19 | isOperationalGateBlock · allowed=false + reason operacional %s → true · %o → false · gateBlockMessage … |
-| `src/lib/auth/__tests__/oauth-error-explainer.test.ts` | 19 | explainOAuthError · config errors (admin needs to act) · mapeia redirect_uri_mismatch com hint sobre console do provedor · detecta redirect uri mismatch pela descrição quando code é genérico … |
-| … +2090 linhas — lista completa em `context.json` | | |
+| … +2092 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7600,4 +7609,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Card "Prazo de produção" do orçamento: em quantos dias úteis o pedido fica | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | deliveryMode={deliveryMode}            // 'data' \| 'prazo' do orçamento | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1491 linhas — lista completa em `context.json` | |
+| … +1495 linhas — lista completa em `context.json` | |

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "b934d25623c5786ff288c8d73595d0dcc10c6105",
+  "sha": "3a4441385b2df4c969d35ab340e4a20196a6a9d0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 12:50 UTC",
-  "files_total": 11227,
-  "code_files": 9208,
-  "code_lines": 1308890
+  "generated_at": "2026-11-26 13:14 UTC",
+  "files_total": 11231,
+  "code_files": 9212,
+  "code_lines": 1309859
  },
  "version": "1.3.2",
- "facts_hash": "c0216ec261772406",
+ "facts_hash": "86edeb3a1312d93e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1131,8 +1131,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3526,
-   ".ts": 3180,
-   ".tsx": 2027,
+   ".ts": 3182,
+   ".tsx": 2029,
    ".mjs": 456,
    ".py": 18,
    ".js": 7
@@ -154833,7 +154833,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1763,
+  "components_count": 1765,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -158036,6 +158036,10 @@
     "file": "src/hooks/stock/useStockNotes.ts"
    },
    {
+    "name": "useStockNoteSuppliers",
+    "file": "src/hooks/stock/useStockNotes.ts"
+   },
+   {
     "name": "useSupplierRiskBreakdown",
     "file": "src/hooks/stock/useSupplierRiskBreakdown.ts"
    },
@@ -159554,8 +159558,8 @@
   },
   {
    "module": "src/components",
-   "files": 1487,
-   "lines": 291193,
+   "files": 1489,
+   "lines": 291722,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -159919,7 +159923,7 @@
   {
    "module": "src/hooks",
    "files": 515,
-   "lines": 95013,
+   "lines": 95096,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -159982,6 +159986,7 @@
     "simulator_wizard_drafts",
     "stock_notes",
     "supplier_settings",
+    "suppliers",
     "system_settings",
     "tpgo",
     "tpgo_faixa",
@@ -160210,8 +160215,8 @@
   },
   {
    "module": "src/lib",
-   "files": 426,
-   "lines": 65523,
+   "files": 428,
+   "lines": 65880,
    "tables": [
     "...",
     "companies",
@@ -164065,6 +164070,9 @@
     "insert": [
      "src/hooks/stock/useStockNotes.ts"
     ],
+    "update": [
+     "src/hooks/stock/useStockNotes.ts"
+    ],
     "delete": [
      "src/hooks/stock/useStockNotes.ts"
     ],
@@ -164085,6 +164093,7 @@
    },
    "suppliers": {
     "select": [
+     "src/hooks/stock/useStockNotes.ts",
      "src/services/freightReadinessService.ts",
      "supabase/functions/expert-chat/index.ts"
     ],
@@ -177034,6 +177043,10 @@
     "msg": "\n                className="
    },
    {
+    "file": "src/components/inventory/VariantStockNotesDialog.tsx",
+    "msg": "\n                className="
+   },
+   {
     "file": "src/components/inventory/VariantStockRowActions.tsx",
     "msg": "Limite de 4 produtos para comparação atingido"
    },
@@ -178615,7 +178628,23 @@
    },
    {
     "file": "src/hooks/stock/useStockNotes.ts",
-    "msg": "Não autenticado"
+    "msg": "Erro ao adicionar nota"
+   },
+   {
+    "file": "src/hooks/stock/useStockNotes.ts",
+    "msg": "Erro ao excluir nota"
+   },
+   {
+    "file": "src/hooks/stock/useStockNotes.ts",
+    "msg": "Erro ao fixar nota"
+   },
+   {
+    "file": "src/hooks/stock/useStockNotes.ts",
+    "msg": "Sessão expirada. Entre novamente para continuar."
+   },
+   {
+    "file": "src/hooks/stock/useStockNotes.ts",
+    "msg": "Variação não selecionada."
    },
    {
     "file": "src/hooks/tecnicas/usePrecoCalculation.ts",
@@ -184302,6 +184331,10 @@
     "text": "quando o LIMIT era 2000. Com neq OK + limit 5000, cobrimos os 4.773 itens não-OK."
    },
    {
+    "file": "src/hooks/stock/useStockNotes.ts",
+    "text": "DELETE apenas do próprio autor (`*_own`). Por isso toda escrita aqui carrega"
+   },
+   {
     "file": "src/hooks/system/useKillSwitchNotice.ts",
     "text": "`public.system_kill_switches` no aviso que o USUÁRIO FINAL deve ver."
    },
@@ -185524,6 +185557,18 @@
    {
     "file": "src/lib/security/sanitize.ts",
     "text": "their entire content. Must happen BEFORE generic tag stripping so"
+   },
+   {
+    "file": "src/lib/stock/stock-notes.ts",
+    "text": "`authenticated`, escrita apenas do próprio autor via policies *_own), mas o"
+   },
+   {
+    "file": "src/lib/stock/stock-notes.ts",
+    "text": "parsing do payload do PostgREST, ordenação, resumo, validação do texto e"
+   },
+   {
+    "file": "src/lib/stock/stock-notes.ts",
+    "text": "* Converte o payload completo, descartando linhas que não têm o mínimo exigido. */"
    },
    {
     "file": "src/lib/supabase/rest-client.ts",
@@ -209415,6 +209460,11 @@
     "value": "30"
    },
    {
+    "file": "src/components/inventory/VariantStockNotesDialog.tsx",
+    "name": "NO_SUPPLIER",
+    "value": "'__none__'"
+   },
+   {
     "file": "src/components/kit-builder/KitConflictAlerts.tsx",
     "name": "ECONOMY_FREIGHT_LIMIT_G",
     "value": "5000"
@@ -211343,6 +211393,16 @@
     "file": "src/lib/security/safeToast.ts",
     "name": "PUBLIC_FALLBACK_TITLE",
     "value": "'Não foi possível concluir esta ação. Tente novamente.'"
+   },
+   {
+    "file": "src/lib/stock/stock-notes.ts",
+    "name": "STOCK_NOTE_MIN_LENGTH",
+    "value": "3"
+   },
+   {
+    "file": "src/lib/stock/stock-notes.ts",
+    "name": "STOCK_NOTE_MAX_LENGTH",
+    "value": "2000"
    },
    {
     "file": "src/lib/telemetry/bridgeCallMetrics.ts",
@@ -227308,6 +227368,12 @@
     "body": "const alerts: StockAlert[] = []; products.forEach((product) => { product.variants.forEach((variant) => { const baseAlert = { productId: product.productId, productName: product.productName, productSku: product.productSku, variantId: variant.variantId, colorName: variant.colorName, currentStock: variant.currentStock, threshold: variant.minStock, createdAt: new Date().toISOString(), }; if (variant.status === 'out_of_stock') { alerts.push({ id: `alert-${variant.id}-out`, type: 'out_of_stock', severi …"
    },
    {
+    "file": "src/hooks/stock/useStockNotes.ts",
+    "name": "invalidate",
+    "params": "",
+    "body": "void qc.invalidateQueries({ queryKey: [NOTES_KEY, variantId] });"
+   },
+   {
     "file": "src/hooks/tecnicas/usePrecoCalculation.ts",
     "name": "calcularPreco",
     "params": "tabela: TabelaPrecoTecnica, quantidade: number, numeroCores?: number,",
@@ -228104,6 +228170,12 @@
     "name": "shouldShowRaw",
     "params": "",
     "body": "try { return devInfraGate.shouldShow(currentRoles); } catch { return false; // fail-closed: esconde técnico em caso de erro do gate }"
+   },
+   {
+    "file": "src/lib/stock/stock-notes.ts",
+    "name": "validateStockNote",
+    "params": "note: string",
+    "body": "const value = note.trim(); if (value.length === 0) { return { ok: false, value, message: 'Escreva a nota antes de salvar.' }; } if (value.length < STOCK_NOTE_MIN_LENGTH) { return { ok: false, value, message: `A nota precisa de pelo menos ${STOCK_NOTE_MIN_LENGTH} caracteres.`, }; } if (value.length > STOCK_NOTE_MAX_LENGTH) { return { ok: false, value, message: `A nota passa do limite de ${STOCK_NOTE_MAX_LENGTH} caracteres.`, }; } return { ok: true, value, message: null };"
    },
    {
     "file": "src/lib/supabase/rls-validator.ts",
@@ -246486,6 +246558,50 @@
    {
     "file": "src/components/inventory/__tests__/SupplierRiskPanel.test.tsx",
     "name": "atualiza os contadores do rodapé conforme o filtro aplicado"
+   },
+   {
+    "file": "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx",
+    "name": "VariantStockNotesDialog"
+   },
+   {
+    "file": "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx",
+    "name": "não monta conteúdo com open=false"
+   },
+   {
+    "file": "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx",
+    "name": "mostra esqueleto enquanto carrega"
+   },
+   {
+    "file": "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx",
+    "name": "mostra erro com ação de repetir quando a query falha"
+   },
+   {
+    "file": "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx",
+    "name": "mostra estado vazio quando a variação não tem nota"
+   },
+   {
+    "file": "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx",
+    "name": "lista as notas com autor, fornecedor e resumo"
+   },
+   {
+    "file": "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx",
+    "name": "só oferece fixar e excluir nas notas do próprio autor (RLS *_own)"
+   },
+   {
+    "file": "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx",
+    "name": "recusa texto abaixo do mínimo sem chamar o banco"
+   },
+   {
+    "file": "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx",
+    "name": "grava a nota sem fornecedor e limpa o formulário"
+   },
+   {
+    "file": "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx",
+    "name": "fixa a nota pelo botão do próprio autor"
+   },
+   {
+    "file": "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx",
+    "name": "exclui só depois da confirmação"
    },
    {
     "file": "src/components/inventory/__tests__/VariantStockRowActions.test.tsx",
@@ -270530,6 +270646,122 @@
    {
     "file": "src/lib/security/__tests__/validation.test.ts",
     "name": "should escape quotes and special characters"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "parseStockNote"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "lê a linha completa do PostgREST"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "normaliza supplier_id vazio para null e is_pinned ausente para false"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "descarta datas inválidas sem quebrar o registro"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "rejeita objeto sem id, variant_id, created_by ou note"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "rejeita valores que não são objeto, incluindo array"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "parseStockNotes"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "mantém apenas linhas válidas"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "devolve lista vazia quando o payload não é array"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "sortStockNotes"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "coloca fixadas primeiro e, dentro do grupo, a mais recente primeiro"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "não muta o array original"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "summarizeStockNotes"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "conta total, fixadas e as do usuário atual"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "sem usuário atual, mine fica zerado"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "validateStockNote"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "recusa texto vazio ou só espaços"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "recusa texto menor que o mínimo"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "recusa texto acima do limite"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "aceita e devolve o texto sem espaços nas pontas"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "formatStockNoteAge"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "classifica agora, minutos, horas e dias"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "usa data absoluta acima de 7 dias"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "devolve vazio para data inválida"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "describeStockNoteError"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "explica bloqueio de RLS"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "explica chave estrangeira ausente"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "explica sessão expirada"
+   },
+   {
+    "file": "src/lib/stock/__tests__/stock-notes.test.ts",
+    "name": "mantém mensagem desconhecida e trata erro sem texto"
    },
    {
     "file": "src/lib/system/dev-gate/__tests__/DevInfraGate.perf.test.ts",
@@ -363240,6 +363472,10 @@
     "limit": "20"
    },
    {
+    "file": "src/hooks/stock/useStockNotes.ts",
+    "limit": "200"
+   },
+   {
     "file": "src/hooks/ui/useWorkspaceNotifications.tsx",
     "limit": "0"
    },
@@ -372654,6 +372890,7 @@
     "table": "suppliers",
     "issue": "front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários",
     "files": [
+     "src/hooks/stock/useStockNotes.ts",
      "src/services/freightReadinessService.ts"
     ]
    },
@@ -428487,6 +428724,7 @@
     "kind": "rls",
     "msg": "`suppliers`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários",
     "where": [
+     "src/hooks/stock/useStockNotes.ts",
      "src/services/freightReadinessService.ts"
     ]
    },
@@ -471936,9 +472174,26 @@
    ],
    "doc": "SupplierRiskPanel — Orchestrator for supplier risk dashboard. v4: Refactored into smaller components (SRP compliance). Sub-components: risk/ProductRiskDetail, risk/RiskKpi, risk/RiskTooltip, risk/types"
   },
+  "src/components/inventory/VariantStockNotesDialog.tsx": {
+   "path": "src/components/inventory/VariantStockNotesDialog.tsx",
+   "lines": 342,
+   "exports": [
+    "function VariantStockNotesDialog"
+   ],
+   "errors": [
+    "\n                className="
+   ],
+   "params": [
+    {
+     "name": "NO_SUPPLIER",
+     "value": "'__none__'"
+    }
+   ],
+   "doc": "VariantStockNotesDialog — CRUD das notas operacionais de uma variação (`public.stock_notes`, migration 20261031000000). A tabela existia desde 31/10 com RLS pronta e o hook `useStockNotes` órfão: nenhuma tela criava nem lia uma nota. Este diálogo é a tela que faltava — aberto pelo botão \"Notas\" nas …"
+  },
   "src/components/inventory/VariantStockRowActions.tsx": {
    "path": "src/components/inventory/VariantStockRowActions.tsx",
-   "lines": 340,
+   "lines": 357,
    "exports": [
     "function safeCopyText",
     "function VariantStockRowActions"
@@ -472416,6 +472671,24 @@
     "busca por nome filtra a lista (com debounce) e mostra vazio quando não acha",
     "seleciona produto da lista ao clicar e atualiza o detalhe",
     "atualiza os contadores do rodapé conforme o filtro aplicado"
+   ]
+  },
+  "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx": {
+   "path": "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx",
+   "lines": 170,
+   "is_test": true,
+   "tests": [
+    "VariantStockNotesDialog",
+    "não monta conteúdo com open=false",
+    "mostra esqueleto enquanto carrega",
+    "mostra erro com ação de repetir quando a query falha",
+    "mostra estado vazio quando a variação não tem nota",
+    "lista as notas com autor, fornecedor e resumo",
+    "só oferece fixar e excluir nas notas do próprio autor (RLS *_own)",
+    "recusa texto abaixo do mínimo sem chamar o banco",
+    "grava a nota sem fornecedor e limpa o formulário",
+    "fixa a nota pelo botão do próprio autor",
+    "exclui só depois da confirmação"
    ]
   },
   "src/components/inventory/__tests__/VariantStockRowActions.test.tsx": {
@@ -500316,10 +500589,12 @@
   },
   "src/hooks/stock/useStockNotes.ts": {
    "path": "src/hooks/stock/useStockNotes.ts",
-   "lines": 95,
+   "lines": 178,
    "exports": [
-    "interface StockNote",
-    "function useStockNotes"
+    "type StockNote",
+    "interface StockNoteSupplierOption",
+    "function useStockNotes",
+    "function useStockNoteSuppliers"
    ],
    "tables": [
     {
@@ -500332,21 +500607,50 @@
     },
     {
      "table": "stock_notes",
+     "op": "update"
+    },
+    {
+     "table": "stock_notes",
      "op": "delete"
+    },
+    {
+     "table": "suppliers",
+     "op": "select"
     }
    ],
    "table_cols": {
     "stock_notes": [
      "id",
      "variant_id"
+    ],
+    "suppliers": [
+     "id",
+     "name"
     ]
    },
    "errors": [
-    "Não autenticado"
+    "Erro ao adicionar nota",
+    "Erro ao excluir nota",
+    "Erro ao fixar nota",
+    "Sessão expirada. Entre novamente para continuar.",
+    "Variação não selecionada."
    ],
-   "doc": "useStockNotes — Comentários inline por variante (stock_notes). Onda 2 / Melhoria 12.",
+   "rule_comments": [
+    "DELETE apenas do próprio autor (`*_own`). Por isso toda escrita aqui carrega"
+   ],
    "hooks": [
-    "useStockNotes"
+    "useStockNotes",
+    "useStockNoteSuppliers"
+   ],
+   "calc_fns": [
+    {
+     "name": "invalidate",
+     "params": "",
+     "body": "void qc.invalidateQueries({ queryKey: [NOTES_KEY, variantId] });"
+    }
+   ],
+   "pagination": [
+    "200"
    ]
   },
   "src/hooks/stock/useSupplierRiskBreakdown.ts": {
@@ -512113,6 +512417,83 @@
     "Security Sanitization",
     "should escape HTML tags to prevent XSS",
     "should escape quotes and special characters"
+   ]
+  },
+  "src/lib/stock/stock-notes.ts": {
+   "path": "src/lib/stock/stock-notes.ts",
+   "lines": 173,
+   "exports": [
+    "interface StockNoteRow",
+    "interface StockNoteSummary",
+    "interface StockNoteValidation",
+    "const STOCK_NOTE_MIN_LENGTH",
+    "const STOCK_NOTE_MAX_LENGTH",
+    "function parseStockNote",
+    "function parseStockNotes",
+    "function sortStockNotes",
+    "function summarizeStockNotes",
+    "function validateStockNote",
+    "function formatStockNoteAge",
+    "function describeStockNoteError"
+   ],
+   "params": [
+    {
+     "name": "STOCK_NOTE_MIN_LENGTH",
+     "value": "3"
+    },
+    {
+     "name": "STOCK_NOTE_MAX_LENGTH",
+     "value": "2000"
+    }
+   ],
+   "rule_comments": [
+    "`authenticated`, escrita apenas do próprio autor via policies *_own), mas o",
+    "parsing do payload do PostgREST, ordenação, resumo, validação do texto e",
+    "* Converte o payload completo, descartando linhas que não têm o mínimo exigido. */"
+   ],
+   "doc": "Regras puras de `public.stock_notes` — notas operacionais por variação. A tabela existe desde a migration 20261031000000 (RLS: leitura para `authenticated`, escrita apenas do próprio autor via policies *_own), mas o hook `useStockNotes` nasceu órfão: nenhuma tela criava, fixava, editava ou excluía u …",
+   "calc_fns": [
+    {
+     "name": "validateStockNote",
+     "params": "note: string",
+     "body": "const value = note.trim(); if (value.length === 0) { return { ok: false, value, message: 'Escreva a nota antes de salvar.' }; } if (value.length < STOCK_NOTE_MIN_LENGTH) { return { ok: false, value, message: `A nota precisa de pelo menos ${STOCK_NOTE_MIN_LENGTH} caracteres.`, }; } if (value.length > STOCK_NOTE_MAX_LENGTH) { return { ok: false, value, message: `A nota passa do limite de ${STOCK_NOTE_MAX_LENGTH} caracteres.`, }; } return { ok: true, value, message: null };"
+    }
+   ]
+  },
+  "src/lib/stock/__tests__/stock-notes.test.ts": {
+   "path": "src/lib/stock/__tests__/stock-notes.test.ts",
+   "lines": 184,
+   "is_test": true,
+   "tests": [
+    "parseStockNote",
+    "lê a linha completa do PostgREST",
+    "normaliza supplier_id vazio para null e is_pinned ausente para false",
+    "descarta datas inválidas sem quebrar o registro",
+    "rejeita objeto sem id, variant_id, created_by ou note",
+    "rejeita valores que não são objeto, incluindo array",
+    "parseStockNotes",
+    "mantém apenas linhas válidas",
+    "devolve lista vazia quando o payload não é array",
+    "sortStockNotes",
+    "coloca fixadas primeiro e, dentro do grupo, a mais recente primeiro",
+    "não muta o array original",
+    "summarizeStockNotes",
+    "conta total, fixadas e as do usuário atual",
+    "sem usuário atual, mine fica zerado",
+    "validateStockNote",
+    "recusa texto vazio ou só espaços",
+    "recusa texto menor que o mínimo",
+    "recusa texto acima do limite",
+    "aceita e devolve o texto sem espaços nas pontas",
+    "formatStockNoteAge",
+    "classifica agora, minutos, horas e dias",
+    "usa data absoluta acima de 7 dias",
+    "devolve vazio para data inválida",
+    "describeStockNoteError",
+    "explica bloqueio de RLS",
+    "explica chave estrangeira ausente",
+    "explica sessão expirada",
+    "mantém mensagem desconhecida e trata erro sem texto"
    ]
   },
   "src/lib/supabase/empty-in-guard.ts": {
@@ -579680,10 +580061,25 @@
   }
  },
  "git": {
-  "sha": "b934d25623c5786ff288c8d73595d0dcc10c6105",
+  "sha": "3a4441385b2df4c969d35ab340e4a20196a6a9d0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "3a44413",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "feat: liga a tabela stock_notes a uma tela de notas por variacao (#4168)",
+    "files": [
+     "audit/supabase-reference-catalog.temporary.json",
+     "src/components/inventory/VariantStockNotesDialog.tsx",
+     "src/components/inventory/VariantStockRowActions.tsx",
+     "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx",
+     "src/hooks/stock/useStockNotes.ts",
+     "src/lib/stock/__tests__/stock-notes.test.ts",
+     "src/lib/stock/stock-notes.ts"
+    ]
+   },
    {
     "sha": "b934d25",
     "date": "2026-11-26",
@@ -579991,15 +580387,6 @@
      "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
      "supabase/migrations-snapshot/SNAPSHOT_META.json"
     ]
-   },
-   {
-    "sha": "5d589f5",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "docs: corrige adendo - 3137 era contagem de arquivos, nao do ledger (#4139)",
-    "files": [
-     "supabase/MIGRATIONS_RECONCILIACAO_20261125.md"
-    ]
    }
   ],
   "hot_files": [
@@ -580060,27 +580447,27 @@
     2
    ],
    [
-    "supabase/MIGRATIONS_RECONCILIACAO_20261125.md",
-    2
-   ],
-   [
-    "src/components/kit-builder/KitBuilderHeader.tsx",
+    "audit/supabase-reference-catalog.temporary.json",
     1
    ],
    [
-    "supabase/functions/kit-identity-suggest/index.ts",
+    "src/components/inventory/VariantStockNotesDialog.tsx",
     1
    ],
    [
-    "docs/FUNCIONALIDADES_E_FERRAMENTAS.md",
+    "src/components/inventory/VariantStockRowActions.tsx",
     1
    ],
    [
-    "src/components/goals/__tests__/SalesGoalsCard.test.tsx",
+    "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx",
     1
    ],
    [
-    "src/hooks/intelligence/useSalesGoals.ts",
+    "src/hooks/stock/useStockNotes.ts",
+    1
+   ],
+   [
+    "src/lib/stock/__tests__/stock-notes.test.ts",
     1
    ]
   ]

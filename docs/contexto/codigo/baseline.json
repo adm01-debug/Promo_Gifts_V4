@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b934d25623c5786ff288c8d73595d0dcc10c6105",
+  "commit": "3a4441385b2df4c969d35ab340e4a20196a6a9d0",
   "branch": "main",
-  "data_commit": "2026-11-26T09:46:30-03:00",
+  "data_commit": "2026-11-26T10:10:49-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3a44413",
+    "data": "2026-11-26",
+    "assunto": "feat: liga a tabela stock_notes a uma tela de notas por variacao (#4168)"
+   },
    {
     "sha": "b934d25",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "2e8d1ac",
     "data": "2026-11-25",
     "assunto": "fix: PERF005 derruba so os 48 indices com scans=0 e ganha rollback (#4144)"
-   },
-   {
-    "sha": "939d6fd",
-    "data": "2026-11-25",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20260629142224 (#4138)"
    }
   ],
-  "arquivos_mudados_7d": 566,
+  "arquivos_mudados_7d": 572,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -173,7 +173,7 @@
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 85
+    "mudancas": 88
    },
    {
     "pasta": "src/components/mockup",
@@ -238,12 +238,12 @@
     "mudancas": 8
    },
    {
-    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
     "mudancas": 7
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 6
+    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
+    "mudancas": 7
    },
    {
     "arquivo": "scripts/drift-baseline.mjs",
@@ -310,21 +310,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11297,
-  "arquivos_codigo": 5683,
-  "linhas_codigo": 1077652,
+  "arquivos_total": 11301,
+  "arquivos_codigo": 5687,
+  "linhas_codigo": 1078621,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 72,
-  "modulos": 169,
-  "componentes": 1281,
+  "modulos": 170,
+  "componentes": 1282,
   "hooks": 646,
   "edge_functions": 112,
   "tabelas": 532,
   "migrations": 3138,
   "cron_jobs": 122,
-  "testes": 2723,
+  "testes": 2725,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1511
@@ -1935,8 +1935,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1487,
-   "linhas": 291194
+   "arquivos": 1489,
+   "linhas": 291723
   },
   "src/config": {
    "arquivos": 1,
@@ -1960,15 +1960,15 @@
   },
   "src/hooks": {
    "arquivos": 515,
-   "linhas": 95013
+   "linhas": 95096
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66760
   },
   "src/lib": {
-   "arquivos": 425,
-   "linhas": 65513
+   "arquivos": 427,
+   "linhas": 65870
   },
   "src/logic": {
    "arquivos": 4,
