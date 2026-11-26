@@ -4713,6 +4713,21 @@
         "manual"
       ],
       "reason": "Medidor do criterio E19 (nenhum cron em :00/:30 e nenhum minuto com mais de um cron usando SUPABASE_ACCESS_TOKEN). Le os .github/workflows por regex, nao chama API e nao altera arquivos; roda na mao antes de mexer em cron."
+    },
+    {
+      "id": "legacy-7813c3bb01808a84",
+      "kind": "legacy",
+      "files": [
+        "scripts/check-service-role-rpc-consumers.mjs"
+      ],
+      "manual": [
+        "node",
+        "scripts/check-service-role-rpc-consumers.mjs"
+      ],
+      "triggers": [
+        "manual"
+      ],
+      "reason": "Legado mantido no fluxo existente; referências literais: .github/workflows/ci.yml. O dispatcher não executa esta operação."
     }
   ],
   "ci": [
