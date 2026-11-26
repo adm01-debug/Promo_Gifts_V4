@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "0ffac8e8e0accc8495c1898866564c2e22ab6bb3",
+  "sha": "a1cece013c026f1a4112161e02d4f8ce957b847d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 15:42 UTC",
-  "files_total": 11249,
-  "code_files": 9230,
-  "code_lines": 1312899
+  "generated_at": "2026-11-26 16:05 UTC",
+  "files_total": 11254,
+  "code_files": 9235,
+  "code_lines": 1313760
  },
  "version": "1.3.2",
- "facts_hash": "1c3e82e155f1ed42",
+ "facts_hash": "47d5aa67693cf478",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1131,8 +1131,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3532,
-   ".ts": 3190,
-   ".tsx": 2033,
+   ".ts": 3193,
+   ".tsx": 2035,
    ".mjs": 456,
    ".py": 18,
    ".js": 7
@@ -155085,7 +155085,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1767,
+  "components_count": 1769,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -158308,6 +158308,10 @@
     "file": "src/hooks/stock/useStockNotes.ts"
    },
    {
+    "name": "useStockVelocity",
+    "file": "src/hooks/stock/useStockVelocity.ts"
+   },
+   {
     "name": "useSupplierRiskBreakdown",
     "file": "src/hooks/stock/useSupplierRiskBreakdown.ts"
    },
@@ -159826,8 +159830,8 @@
   },
   {
    "module": "src/components",
-   "files": 1491,
-   "lines": 292203,
+   "files": 1493,
+   "lines": 292563,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -160190,8 +160194,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 517,
-   "lines": 95275,
+   "files": 518,
+   "lines": 95327,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -160261,6 +160265,7 @@
     "user_comparisons",
     "user_onboarding",
     "user_preferences",
+    "v_stock_velocity_safe",
     "video_variant_links",
     "voice_command_logs",
     "vw_products_min_quantity",
@@ -160483,8 +160488,8 @@
   },
   {
    "module": "src/lib",
-   "files": 434,
-   "lines": 67102,
+   "files": 436,
+   "lines": 67541,
    "tables": [
     "...",
     "companies",
@@ -160693,7 +160698,7 @@
   {
    "module": "src/pages",
    "files": 378,
-   "lines": 87427,
+   "lines": 87437,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -164615,6 +164620,11 @@
     "select": [
      "src/tests/ProductFetch.test.ts",
      "tests/integration/replenishment-db-integrity.test.ts"
+    ]
+   },
+   "v_stock_velocity_safe": {
+    "select": [
+     "src/hooks/stock/useStockVelocity.ts"
     ]
    },
    "video_variant_links": {
@@ -173512,6 +173522,11 @@
     "file": "src/lib/security/rls-denial-logger.ts",
     "name": "RlsOperation",
     "values": "DELETE | INSERT | SELECT | UPDATE"
+   },
+   {
+    "file": "src/lib/stock/velocity.ts",
+    "name": "VelocityBand",
+    "values": "alta | baixa | media | parada"
    },
    {
     "file": "src/lib/telemetry/bridgeAlertThresholds.ts",
@@ -184655,6 +184670,10 @@
    {
     "file": "src/hooks/stock/useStockNotes.ts",
     "text": "DELETE apenas do próprio autor (`*_own`). Por isso toda escrita aqui carrega"
+   },
+   {
+    "file": "src/hooks/stock/useStockVelocity.ts",
+    "text": "por isso a UI não precisa (nem deve) recalcular o cap."
    },
    {
     "file": "src/hooks/system/useKillSwitchNotice.ts",
@@ -210965,6 +210984,11 @@
     "value": "'saved_stock_views'"
    },
    {
+    "file": "src/hooks/stock/useStockVelocity.ts",
+    "name": "STOCK_VELOCITY_LIMIT",
+    "value": "500"
+   },
+   {
     "file": "src/hooks/ui/use-mobile.tsx",
     "name": "MOBILE_BREAKPOINT",
     "value": "768"
@@ -211768,6 +211792,21 @@
     "file": "src/lib/stock/stock-notes.ts",
     "name": "STOCK_NOTE_MAX_LENGTH",
     "value": "2000"
+   },
+   {
+    "file": "src/lib/stock/velocity.ts",
+    "name": "HIGH_ROTATION_MIN",
+    "value": "5"
+   },
+   {
+    "file": "src/lib/stock/velocity.ts",
+    "name": "MEDIUM_ROTATION_MIN",
+    "value": "1"
+   },
+   {
+    "file": "src/lib/stock/velocity.ts",
+    "name": "CRITICAL_COVERAGE_DAYS",
+    "value": "15"
    },
    {
     "file": "src/lib/telemetry/bridgeCallMetrics.ts",
@@ -231011,6 +231050,14 @@
     "line": "const SESSION_TTL = 2 * 60 * 60 * 1000; // 2 hours"
    },
    {
+    "file": "src/hooks/stock/useStockVelocity.ts",
+    "line": "gcTime: 30 * 60 * 1000,"
+   },
+   {
+    "file": "src/hooks/stock/useStockVelocity.ts",
+    "line": "staleTime: 10 * 60 * 1000,"
+   },
+   {
     "file": "src/hooks/tecnicas/useTabelasPreco.ts",
     "line": "staleTime: 10 * 60 * 1000,"
    },
@@ -246965,6 +247012,38 @@
    {
     "file": "src/components/inventory/__tests__/StockThresholdsLegend.test.tsx",
     "name": "sets the rule text as the title attribute of each chip"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockVelocityPanel.test.tsx",
+    "name": "StockVelocityPanel"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockVelocityPanel.test.tsx",
+    "name": "lista o giro por variante, com nome, cobertura e faixa"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockVelocityPanel.test.tsx",
+    "name": "conta as faixas e sinaliza o pico suavizado do p99"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockVelocityPanel.test.tsx",
+    "name": "filtra por texto digitado"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockVelocityPanel.test.tsx",
+    "name": "filtra pela faixa ao clicar no contador"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockVelocityPanel.test.tsx",
+    "name": "mostra estado vazio quando não há histórico"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockVelocityPanel.test.tsx",
+    "name": "mostra o erro com botão de nova tentativa"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockVelocityPanel.test.tsx",
+    "name": "mostra esqueleto enquanto carrega"
    },
    {
     "file": "src/components/inventory/__tests__/SupplierRiskPanel.test.tsx",
@@ -271537,6 +271616,102 @@
    {
     "file": "src/lib/stock/__tests__/stock-notes.test.ts",
     "name": "mantém mensagem desconhecida e trata erro sem texto"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "classifyVelocity"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "marca 5 un/dia ou mais como alta rotação"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "marca entre 1 e 5 como média rotação"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "marca fração positiva como baixa rotação"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "trata zero, null, undefined e NaN como sem saída"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "daysOfCoverage"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "divide o estoque atual pelo ritmo de 30 dias"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "devolve null sem ritmo ou sem estoque conhecido"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "buildVelocityViews"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "junta o giro com nome de produto e variação do cache de estoque"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "preserva o bruto e a marca de pico suavizado quando o p99 cortou o giro"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "cai para o SKU quando a variante não tem cor nem tamanho"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "prefere cor e tamanho ao SKU quando existem"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "não quebra quando a variante não está no cache de estoque"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "ignora linha sem variant_id"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "normaliza null como zero em vez de propagar NaN"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "filterVelocityViews e sortVelocityViews"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "filtra por faixa"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "filtra por texto em produto, variação e id"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "combina busca e faixa"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "ordena do maior giro para o menor e mantém o array original intacto"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "summarizeVelocity"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "conta faixas, picos suavizados e cobertura crítica"
+   },
+   {
+    "file": "src/lib/stock/__tests__/velocity.test.ts",
+    "name": "zera tudo em lista vazia"
    },
    {
     "file": "src/lib/system/dev-gate/__tests__/DevInfraGate.perf.test.ts",
@@ -473179,6 +473354,14 @@
     "function StockThresholdsLegend"
    ]
   },
+  "src/components/inventory/StockVelocityPanel.tsx": {
+   "path": "src/components/inventory/StockVelocityPanel.tsx",
+   "lines": 218,
+   "exports": [
+    "function StockVelocityPanel"
+   ],
+   "doc": "StockVelocityPanel — tela do giro por variante. Fecha o buraco entre o backend e a UI: `public.v_stock_velocity_safe` existe desde 2026-06-23 (winsorização p99 do giro diário) e não tinha nenhum consumidor no `src/`. Montado em `/estoque` (StockDashboardPage). Nome de produto/variante e estoque atua …"
+  },
   "src/components/inventory/SupplierRiskPanel.tsx": {
    "path": "src/components/inventory/SupplierRiskPanel.tsx",
    "lines": 385,
@@ -473682,6 +473865,21 @@
     "hides the heading label when compact",
     "applies a custom className to the container",
     "sets the rule text as the title attribute of each chip"
+   ]
+  },
+  "src/components/inventory/__tests__/StockVelocityPanel.test.tsx": {
+   "path": "src/components/inventory/__tests__/StockVelocityPanel.test.tsx",
+   "lines": 142,
+   "is_test": true,
+   "tests": [
+    "StockVelocityPanel",
+    "lista o giro por variante, com nome, cobertura e faixa",
+    "conta as faixas e sinaliza o pico suavizado do p99",
+    "filtra por texto digitado",
+    "filtra pela faixa ao clicar no contador",
+    "mostra estado vazio quando não há histórico",
+    "mostra o erro com botão de nova tentativa",
+    "mostra esqueleto enquanto carrega"
    ]
   },
   "src/components/inventory/__tests__/SupplierRiskPanel.test.tsx": {
@@ -501734,6 +501932,39 @@
     "200"
    ]
   },
+  "src/hooks/stock/useStockVelocity.ts": {
+   "path": "src/hooks/stock/useStockVelocity.ts",
+   "lines": 52,
+   "exports": [
+    "const STOCK_VELOCITY_LIMIT",
+    "const STOCK_VELOCITY_QUERY_KEY",
+    "interface UseStockVelocityResult",
+    "function useStockVelocity"
+   ],
+   "tables": [
+    {
+     "table": "v_stock_velocity_safe",
+     "op": "select"
+    }
+   ],
+   "params": [
+    {
+     "name": "STOCK_VELOCITY_LIMIT",
+     "value": "500"
+    }
+   ],
+   "rule_comments": [
+    "por isso a UI não precisa (nem deve) recalcular o cap."
+   ],
+   "doc": "useStockVelocity — leitura de `public.v_stock_velocity_safe`. É a única porta da aplicação para essa view: `security_invoker=true` com `SELECT` para `authenticated` e `anon` revogado, então a RLS das tabelas subjacentes continua valendo. A view já entrega o giro winsorizado no p99, por isso a UI não …",
+   "hooks": [
+    "useStockVelocity"
+   ],
+   "temporal": [
+    "gcTime: 30 * 60 * 1000,",
+    "staleTime: 10 * 60 * 1000,"
+   ]
+  },
   "src/hooks/stock/useSupplierRiskBreakdown.ts": {
    "path": "src/hooks/stock/useSupplierRiskBreakdown.ts",
    "lines": 49,
@@ -513767,6 +513998,50 @@
     }
    ]
   },
+  "src/lib/stock/velocity.ts": {
+   "path": "src/lib/stock/velocity.ts",
+   "lines": 210,
+   "exports": [
+    "interface StockVelocityRow",
+    "type VelocityBand",
+    "const VELOCITY_BAND_LABELS",
+    "const HIGH_ROTATION_MIN",
+    "const MEDIUM_ROTATION_MIN",
+    "function classifyVelocity",
+    "function daysOfCoverage",
+    "interface VelocityIdentity",
+    "interface VelocityView",
+    "function buildVelocityIdentityMap",
+    "function buildVelocityViews",
+    "interface VelocityFilter",
+    "function filterVelocityViews",
+    "function sortVelocityViews",
+    "interface VelocitySummary",
+    "const CRITICAL_COVERAGE_DAYS",
+    "function summarizeVelocity"
+   ],
+   "enums": [
+    {
+     "name": "VelocityBand",
+     "values": "alta | baixa | media | parada"
+    }
+   ],
+   "params": [
+    {
+     "name": "HIGH_ROTATION_MIN",
+     "value": "5"
+    },
+    {
+     "name": "MEDIUM_ROTATION_MIN",
+     "value": "1"
+    },
+    {
+     "name": "CRITICAL_COVERAGE_DAYS",
+     "value": "15"
+    }
+   ],
+   "doc": "Regras puras do \"giro por variante\" — velocidade de saída. Fonte: `public.v_stock_velocity_safe` (SECURITY INVOKER, SELECT para `authenticated`), view sobre `analytics.mv_stock_velocity` com winsorização p99 dinâmica de `avg_daily_depletion_*`. O motivo declarado no próprio catálogo é que um pedido …"
+  },
   "src/lib/stock/__tests__/saved-views.test.ts": {
    "path": "src/lib/stock/__tests__/saved-views.test.ts",
    "lines": 237,
@@ -513843,6 +514118,37 @@
     "explica chave estrangeira ausente",
     "explica sessão expirada",
     "mantém mensagem desconhecida e trata erro sem texto"
+   ]
+  },
+  "src/lib/stock/__tests__/velocity.test.ts": {
+   "path": "src/lib/stock/__tests__/velocity.test.ts",
+   "lines": 229,
+   "is_test": true,
+   "tests": [
+    "classifyVelocity",
+    "marca 5 un/dia ou mais como alta rotação",
+    "marca entre 1 e 5 como média rotação",
+    "marca fração positiva como baixa rotação",
+    "trata zero, null, undefined e NaN como sem saída",
+    "daysOfCoverage",
+    "divide o estoque atual pelo ritmo de 30 dias",
+    "devolve null sem ritmo ou sem estoque conhecido",
+    "buildVelocityViews",
+    "junta o giro com nome de produto e variação do cache de estoque",
+    "preserva o bruto e a marca de pico suavizado quando o p99 cortou o giro",
+    "cai para o SKU quando a variante não tem cor nem tamanho",
+    "prefere cor e tamanho ao SKU quando existem",
+    "não quebra quando a variante não está no cache de estoque",
+    "ignora linha sem variant_id",
+    "normaliza null como zero em vez de propagar NaN",
+    "filterVelocityViews e sortVelocityViews",
+    "filtra por faixa",
+    "filtra por texto em produto, variação e id",
+    "combina busca e faixa",
+    "ordena do maior giro para o menor e mantém o array original intacto",
+    "summarizeVelocity",
+    "conta faixas, picos suavizados e cobertura crítica",
+    "zera tudo em lista vazia"
    ]
   },
   "src/lib/supabase/empty-in-guard.ts": {
@@ -516347,7 +516653,7 @@
   },
   "src/pages/admin/StockDashboardPage.tsx": {
    "path": "src/pages/admin/StockDashboardPage.tsx",
-   "lines": 119,
+   "lines": 129,
    "exports": [
     "function StockDashboardPage"
    ]
@@ -581472,10 +581778,25 @@
   }
  },
  "git": {
-  "sha": "0ffac8e8e0accc8495c1898866564c2e22ab6bb3",
+  "sha": "a1cece013c026f1a4112161e02d4f8ce957b847d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "a1cece0",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "feat: tela de giro por variante lendo v_stock_velocity_safe (#4177)",
+    "files": [
+     "audit/supabase-reference-catalog.temporary.json",
+     "src/components/inventory/StockVelocityPanel.tsx",
+     "src/components/inventory/__tests__/StockVelocityPanel.test.tsx",
+     "src/hooks/stock/useStockVelocity.ts",
+     "src/lib/stock/__tests__/velocity.test.ts",
+     "src/lib/stock/velocity.ts",
+     "src/pages/admin/StockDashboardPage.tsx"
+    ]
+   },
    {
     "sha": "0ffac8e",
     "date": "2026-11-26",
@@ -581815,15 +582136,6 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "da92fae",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "chore: allowlist E06 recebe as 21 migrations efetivas por equivalencia (#4146)",
-    "files": [
-     "docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json"
-    ]
    }
   ],
   "hot_files": [
@@ -581833,7 +582145,7 @@
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
-    4
+    5
    ],
    [
     ".release-please-manifest.json",
@@ -581854,6 +582166,10 @@
    [
     "docs/estado/07_EDGE_FUNCTIONS.md",
     3
+   ],
+   [
+    "src/pages/admin/StockDashboardPage.tsx",
+    2
    ],
    [
     ".file-size-baseline.json",
@@ -581892,19 +582208,15 @@
     2
    ],
    [
-    "docs/coordenacao/conflitos-semanticos.md",
+    "src/components/inventory/StockVelocityPanel.tsx",
     1
    ],
    [
-    "src/hooks/admin/useCrmSellerLinks.ts",
+    "src/components/inventory/__tests__/StockVelocityPanel.test.tsx",
     1
    ],
    [
-    "src/lib/crm/__tests__/seller-links.test.ts",
-    1
-   ],
-   [
-    "src/lib/crm/seller-links.ts",
+    "src/hooks/stock/useStockVelocity.ts",
     1
    ]
   ]

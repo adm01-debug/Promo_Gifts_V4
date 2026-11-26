@@ -7971,13 +7971,13 @@
   },
   {
    "modulo": "components/inventory",
-   "arquivos": 44,
-   "testes": 43,
-   "linhas": 10147,
+   "arquivos": 45,
+   "testes": 44,
+   "linhas": 10365,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 39,
+   "componentes": 40,
    "hooks_locais": [
     "useA11y",
     "useAIRecommendations",
@@ -8361,6 +8361,7 @@
     "system_settings",
     "user_onboarding",
     "user_roles",
+    "v_stock_velocity_safe",
     "video_variant_links",
     "voice_command_logs",
     "workspace_notifications"
@@ -9694,6 +9695,7 @@
     "user_onboarding",
     "user_preferences",
     "user_roles",
+    "v_stock_velocity_safe",
     "video_variant_links",
     "voice_command_logs",
     "vw_products_min_quantity",
@@ -10986,6 +10988,7 @@
     "user_onboarding",
     "user_preferences",
     "user_roles",
+    "v_stock_velocity_safe",
     "video_variant_links",
     "voice_command_logs",
     "vw_products_min_quantity",
@@ -22764,9 +22767,9 @@
   },
   {
    "modulo": "hooks/stock",
-   "arquivos": 13,
+   "arquivos": 14,
    "testes": 4,
-   "linhas": 1700,
+   "linhas": 1752,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -22806,6 +22809,7 @@
     "useSearchStore",
     "useStockNoteSuppliers",
     "useStockNotes",
+    "useStockVelocity",
     "useSupplierRiskBreakdown",
     "useToast",
     "useWhatIfScenario",
@@ -22821,6 +22825,7 @@
     "useSavedStockViews",
     "useStockNoteSuppliers",
     "useStockNotes",
+    "useStockVelocity",
     "useSupplierRiskBreakdown",
     "useWhatIfScenario"
    ],
@@ -22834,6 +22839,7 @@
     "system_settings",
     "user_onboarding",
     "user_roles",
+    "v_stock_velocity_safe",
     "workspace_notifications"
    ],
    "rpcs": [
@@ -22874,7 +22880,8 @@
     "edges": [],
     "tabelas": [
      "stock_notes",
-     "suppliers"
+     "suppliers",
+     "v_stock_velocity_safe"
     ],
     "rpcs": [
      "fn_rupture_quick_stats"
@@ -24091,6 +24098,7 @@
     "user_onboarding",
     "user_preferences",
     "user_roles",
+    "v_stock_velocity_safe",
     "video_variant_links",
     "voice_command_logs",
     "vw_products_min_quantity",
@@ -27122,9 +27130,9 @@
   },
   {
    "modulo": "lib/stock",
-   "arquivos": 2,
-   "testes": 2,
-   "linhas": 320,
+   "arquivos": 3,
+   "testes": 3,
+   "linhas": 530,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -28434,7 +28442,7 @@
    "modulo": "pages/admin",
    "arquivos": 62,
    "testes": 4,
-   "linhas": 16401,
+   "linhas": 16411,
    "itens_menu": [
     "Acesso & Bots",
     "Auditoria RBAC",
@@ -29089,6 +29097,7 @@
     "user_known_devices",
     "user_onboarding",
     "user_roles",
+    "v_stock_velocity_safe",
     "video_variant_links",
     "voice_command_logs",
     "vw_products_min_quantity",
@@ -36568,6 +36577,7 @@
     "user_onboarding",
     "user_preferences",
     "user_roles",
+    "v_stock_velocity_safe",
     "video_variant_links",
     "visual_search_feedback",
     "voice_command_logs",

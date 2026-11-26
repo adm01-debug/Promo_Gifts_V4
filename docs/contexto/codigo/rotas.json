@@ -6,7 +6,7 @@
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 74,
-  "lazy": 178
+  "lazy": 179
  },
  "urls": [
   {
@@ -18603,6 +18603,7 @@
     "system_settings",
     "user_onboarding",
     "user_roles",
+    "v_stock_velocity_safe",
     "video_variant_links",
     "voice_command_logs",
     "workspace_notifications"
@@ -18666,7 +18667,7 @@
     "supervisor",
     "table"
    ],
-   "arquivos_puxados": 529
+   "arquivos_puxados": 532
   },
   {
    "protegida": false,
@@ -39566,6 +39567,7 @@
   "StockDashboardPage": "src/pages/admin/StockDashboardPage.tsx",
   "StockHealthBreakdownDrawer": "src/components/inventory/StockHealthBreakdownDrawer.tsx",
   "StockHistoryChart": "src/components/products/StockHistoryChart.tsx",
+  "StockVelocityPanel": "src/components/inventory/StockVelocityPanel.tsx",
   "StorageTestPage": "src/pages/admin/StorageTestPage.tsx",
   "SupplierComparisonModal": "src/components/compare/SupplierComparisonModal.tsx",
   "SupplierReliabilityTab": "src/components/inventory/supplier-reliability/SupplierReliabilityTab.tsx",

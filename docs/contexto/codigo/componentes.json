@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1285,
+ "total": 1286,
  "orfaos": 155,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -10117,6 +10117,23 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/inventory/StockVelocityPanel.tsx",
+   "exports": [
+    "StockVelocityPanel"
+   ],
+   "export_default": null,
+   "linhas": 218,
+   "dominio": "components/inventory",
+   "hooks_locais": [
+    "useStockVelocity",
+    "useVariantStock"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/inventory/supplier-reliability/ReliabilityBadge.tsx",
    "exports": [
     "ReliabilityBadge"
@@ -16628,7 +16645,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 492,
+   "usado_por": 493,
    "orfao": false
   },
   {
@@ -16663,7 +16680,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 659,
+   "usado_por": 660,
    "orfao": false
   },
   {
@@ -16697,7 +16714,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 362,
+   "usado_por": 363,
    "orfao": false
   },
   {
@@ -17046,7 +17063,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 270,
+   "usado_por": 271,
    "orfao": false
   },
   {
@@ -17354,7 +17371,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 190,
+   "usado_por": 191,
    "orfao": false
   },
   {
@@ -18730,7 +18747,7 @@
     "StockDashboardPage"
    ],
    "export_default": "StockDashboardPage",
-   "linhas": 119,
+   "linhas": 129,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useKeyboardShortcut",

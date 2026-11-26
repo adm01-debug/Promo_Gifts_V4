@@ -6368,6 +6368,16 @@
    "src/lib/inventory/health-score.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/inventory/StockVelocityPanel.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/hooks/products/useVariantStock.ts",
+   "src/hooks/stock/useStockVelocity.ts",
+   "src/lib/stock/velocity.ts"
+  ],
   "src/components/inventory/SupplierRiskPanel.tsx": [
    "src/components/inventory/risk/ProductRiskDetail.tsx",
    "src/components/inventory/risk/types.ts",
@@ -12030,6 +12040,10 @@
    "src/integrations/supabase/client.ts",
    "src/lib/stock/stock-notes.ts"
   ],
+  "src/hooks/stock/useStockVelocity.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/stock/velocity.ts"
+  ],
   "src/hooks/stock/useSupplierRiskBreakdown.ts": [
    "src/integrations/supabase/client.ts",
    "src/lib/feature-flags.ts"
@@ -13668,6 +13682,7 @@
    "src/components/inventory/StockDashboard.tsx",
    "src/components/inventory/StockHeroRiskBanner.tsx",
    "src/components/inventory/StockSavedViewsMenu.tsx",
+   "src/components/inventory/StockVelocityPanel.tsx",
    "src/components/inventory/risk/RupturePanelEma.tsx",
    "src/components/inventory/risk/WhatIfPanel.tsx",
    "src/components/seo/PageSEO.tsx",

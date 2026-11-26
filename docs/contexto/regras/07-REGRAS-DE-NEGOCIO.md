@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0ffac8e8e0` · branch `main` · 2026-11-26 15:42 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a1cece013c` · branch `main` · 2026-11-26 16:05 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2099,6 +2099,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | RouteRole | admin \| authenticated \| dev \| public | `src/lib/rbac/route-matrix.ts` |
 | RouteGuard | AdminRoute \| DevRoute \| ProtectedRoute \| public | `src/lib/rbac/route-matrix.ts` |
 | RlsOperation | DELETE \| INSERT \| SELECT \| UPDATE | `src/lib/security/rls-denial-logger.ts` |
+| VelocityBand | alta \| baixa \| media \| parada | `src/lib/stock/velocity.ts` |
 | AlertSeverity | crit \| warn | `src/lib/telemetry/bridgeAlertThresholds.ts` |
 | AlertMetric | avgResp \| p95 | `src/lib/telemetry/bridgeAlertThresholds.ts` |
 | BridgeName | crm-db-bridge \| external-db-bridge | `src/lib/telemetry/bridgeCallMetrics.ts` |
@@ -2166,8 +2167,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | DispatcherAuthMode | secret \| user_jwt | `supabase/functions/_shared/dispatcher-auth.ts` |
 | CronAuthMode | secret \| secret_vault | `supabase/functions/_shared/dispatcher-auth.ts` |
 | AuthzCategory | public \| authenticated \| supervisor \| dev \| service \| scoped | `supabase/functions/_shared/edge-authz-manifest.ts` |
-| ResourceGroup | products \| companies \| views | `supabase/functions/_shared/external-db-config.ts` |
-| … +17 linhas — lista completa em `context.json` | | |
+| … +18 linhas — lista completa em `context.json` | | |
 
 ## F. Validações de entrada
 
@@ -5947,7 +5947,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `CHUNK` | `80` | `src/hooks/products/useColorFanout.ts` |
 | `CART_ITEM_DEBOUNCE_MS` | `300` | `src/hooks/products/useDebouncedCartItemActions.ts` |
 | `CART_ITEM_DEBOUNCE_MS_MIN` | `0` | `src/hooks/products/useDebouncedCartItemActions.ts` |
-| … +432 linhas — lista completa em `context.json` | | |
+| … +436 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6253,7 +6253,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/auth/useRBAC.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientAffinity.ts` |
 | `const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;` | `src/hooks/bi/useClientCategoryAffinity.ts` |
-| … +403 linhas — lista completa em `context.json` | |
+| … +405 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -6862,7 +6862,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23877 testes em 2396 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23909 testes em 2398 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7053,6 +7053,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/freight/__tests__/fromKit.test.ts` | 24 | kitToPackInput — kit com caixa própria · uma peça = a caixa (id real, medida externa), peso = caixa + itens · alimenta planFreight: 5 kits de 680 g pesam 5 × 680 = 3.400 g · usa a medida EXTERNA da caixa real 94659 (11,5 × 11,5 × 19,5), não a interna … |
 | `src/lib/freight/__tests__/packSingleProduct.test.ts` | 24 | packSingleProduct — caderneta · 7 unidades: a menor caixa que fecha é a P (cabem 64) · 100 unidades: a P não fecha (64), a M fecha (128) · 250 unidades: a GG fecha exatamente no peso máximo … |
 | `src/lib/security/__tests__/magazine-guard-adversarial.test.ts` | 24 | validateBranding — G6 color key whitelist · drops unknown key  · drops unknown key  · drops unknown key  … |
+| `src/lib/stock/__tests__/velocity.test.ts` | 24 | classifyVelocity · marca 5 un/dia ou mais como alta rotação · marca entre 1 e 5 como média rotação · marca fração positiva como baixa rotação … |
 | `tests/fuzz/freight-quest-fuzzer.test.ts` | 24 | fuzz: injeções no campo event · SQL injection em event= · XSS em event= · fuzz: path traversal em campos de texto … |
 | `tests/hooks/useSupplierComparison.test.ts` | 24 | useSupplierComparison · should return null when no product is provided · should query by category name when the product has no category id · should pass undefined filters when the product has no category at all … |
 | `tests/lib/query-config-extended.test.ts` | 24 | CACHE_TIMES constants · VERY_STABLE is 24 hours · STABLE is 1 hour · TECNICAS is 30 min … |
@@ -7165,8 +7166,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/scripts/inventario-banco.test.mjs` | 20 | extrairInventario · aceita a resposta da Management API, do MCP (texto embrulhado), a linha do psql e o objeto direto · recusa entrada incompleta, vazia ou de outra versao · montarInventario … |
 | `tests/types/quote-types.test.ts` | 20 | QuoteHistoryEntry shape · has all required fields · allows nullable fields · metadata defaults to empty object … |
 | `e2e/flows/03b-product-thumb-quickview.spec.ts` | 19 | QuickView na foto — paridade entre módulos · ${mod.label}: clique na foto abre QuickView sem navegar · ${mod.label}: a11y — thumb é ativável via teclado (Enter) · Estoque • QuickView — estados de borda … |
-| `e2e/flows/freight-quest-complete-flow.spec.ts` | 19 | Plano de volumes — Kit Builder @freight · navega para Kit Builder e verifica painel de volumes visível · painel de volumes lista o resumo do plano (volumes e peso) · painel de volumes mostra rodapé de estimativa por caixas padrão … |
-| … +2096 linhas — lista completa em `context.json` | | |
+| … +2098 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7634,4 +7634,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Card "Prazo de produção" do orçamento: em quantos dias úteis o pedido fica | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | deliveryMode={deliveryMode}            // 'data' \| 'prazo' do orçamento | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1498 linhas — lista completa em `context.json` | |
+| … +1499 linhas — lista completa em `context.json` | |
