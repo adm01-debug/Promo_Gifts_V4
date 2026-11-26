@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7cde4847c675e263790838f1b0a5dbd00c56dca4",
+  "commit": "be120cf361cbd0a46aacf36ed410418f399edaf5",
   "branch": "main",
-  "data_commit": "2026-11-25T23:43:12-03:00",
+  "data_commit": "2026-11-26T00:13:49-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "be120cf",
+    "data": "2026-11-26",
+    "assunto": "chore(main): release gifts-store 1.20.4 (#4143)"
+   },
+   {
+    "sha": "f240a63",
+    "data": "2026-11-25",
+    "assunto": "fix: replay do shadow aceita DROP INDEX CONCURRENTLY (#4156)"
+   },
    {
     "sha": "7cde484",
     "data": "2026-11-25",
@@ -121,16 +131,6 @@
     "sha": "121a114",
     "data": "2026-11-25",
     "assunto": "chore: rollback das migrations ops (E30/E33/E40) (#4120)"
-   },
-   {
-    "sha": "6aad536",
-    "data": "2026-11-25",
-    "assunto": "docs(db): reconciliacao das 125 migrations fora do ledger com evidencia do dump (#4129)"
-   },
-   {
-    "sha": "06894b0",
-    "data": "2026-11-25",
-    "assunto": "fix: reverte E25 falso-positivo (jobs nao eram orfaos) (#4134)"
    }
   ],
   "arquivos_mudados_7d": 562,
@@ -207,15 +207,15 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 22
+    "mudancas": 23
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -246,6 +246,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "scripts/drift-baseline.mjs",
+    "mudancas": 6
+   },
+   {
     "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
     "mudancas": 6
    },
@@ -258,11 +262,11 @@
     "mudancas": 6
    },
    {
-    "arquivo": "scripts/automation.config.json",
-    "mudancas": 5
+    "arquivo": "tests/scripts/drift-baseline.test.mjs",
+    "mudancas": 6
    },
    {
-    "arquivo": "scripts/drift-baseline.mjs",
+    "arquivo": "scripts/automation.config.json",
     "mudancas": 5
    },
    {
@@ -275,10 +279,6 @@
    },
    {
     "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "tests/scripts/drift-baseline.test.mjs",
     "mudancas": 5
    },
    {
@@ -301,18 +301,18 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 235
+    "commits": 234
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 65
+    "commits": 66
    }
   ]
  },
  "contagens": {
   "arquivos_total": 11294,
   "arquivos_codigo": 5682,
-  "linhas_codigo": 1077287,
+  "linhas_codigo": 1077351,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1528,7 +1528,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 1654
+   "linhas": 1678
   },
   "scripts/dry-run-migration-draft.mjs": {
    "arquivos": 1,
@@ -2192,7 +2192,7 @@
   },
   "tests/scripts": {
    "arquivos": 182,
-   "linhas": 29820
+   "linhas": 29860
   },
   "tests/search": {
    "arquivos": 1,
@@ -2325,12 +2325,12 @@
    "linhas": 1729
   },
   {
-   "arquivo": "eslint.config.js",
-   "linhas": 1660
+   "arquivo": "scripts/drift-baseline.mjs",
+   "linhas": 1678
   },
   {
-   "arquivo": "scripts/drift-baseline.mjs",
-   "linhas": 1654
+   "arquivo": "eslint.config.js",
+   "linhas": 1660
   },
   {
    "arquivo": "supabase/functions/expert-chat/index.ts",
@@ -2706,7 +2706,7 @@
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",
-   "linha": 799,
+   "linha": 823,
    "tipo": "TODO",
    "texto": "objeto (ex.: `.*`, `^create table`, `public`)."
   },

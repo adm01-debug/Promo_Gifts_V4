@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "7cde4847c675e263790838f1b0a5dbd00c56dca4",
+  "sha": "be120cf361cbd0a46aacf36ed410418f399edaf5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 02:51 UTC",
+  "generated_at": "2026-11-26 03:19 UTC",
   "files_total": 11224,
   "code_files": 9207,
-  "code_lines": 1308515
+  "code_lines": 1308579
  },
  "version": "1.3.2",
- "facts_hash": "38ce103b45bc71ab",
+ "facts_hash": "c32e921ffe4b2a1f",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -159254,7 +159254,7 @@
   {
    "module": "scripts",
    "files": 301,
-   "lines": 65990,
+   "lines": 66014,
    "tables": [
     "a",
     "b",
@@ -161635,7 +161635,7 @@
   {
    "module": "tests",
    "files": 1106,
-   "lines": 176630,
+   "lines": 176670,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -174953,11 +174953,11 @@
    },
    {
     "file": "scripts/drift-baseline.mjs",
-    "msg": "${fileName}: esperada 1 ocorrencia da checagem de ACL de plataforma; encontrada(s) ${ocorrencias}. "
+    "msg": "${contexto}; encontrado(s) ${rewritten}"
    },
    {
     "file": "scripts/drift-baseline.mjs",
-    "msg": "${fileName}: esperado(s) ${expected} CREATE INDEX CONCURRENTLY no replay; encontrado(s) ${rewritten}"
+    "msg": "${fileName}: esperada 1 ocorrencia da checagem de ACL de plataforma; encontrada(s) ${ocorrencias}. "
    },
    {
     "file": "scripts/drift-baseline.mjs",
@@ -318199,6 +318199,14 @@
    },
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "remove CONCURRENTLY dos 48 DROP INDEX do PERF-005 no replay do shadow"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "falha fechado se o PERF-005 mudar e não tiver exatamente 48 DROP INDEX"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
     "name": "neutraliza só a checagem de ACL da extensão gerida pela plataforma no replay"
    },
    {
@@ -318216,6 +318224,10 @@
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
     "name": "cobre toda migration pós-baseline com CREATE INDEX CONCURRENTLY"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "cobre toda migration pós-baseline com DROP INDEX CONCURRENTLY"
    },
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
@@ -318460,18 +318472,6 @@
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
     "name": "sanitizeBaselineForReplay — round-trip do dump"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "popula materialized views vazias no shadow sem alterar a definição nem texto fora da cláusula"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "passa o ARRAY de varchar por "
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "não reescreve dentro de corpo de função (dollar-quote)"
    },
    {
     "file": "tests/scripts/e2e-cart-artifact-safety.test.mjs",
@@ -454864,7 +454864,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "path": "scripts/drift-baseline.mjs",
-   "lines": 1654,
+   "lines": 1678,
    "exports": [
     "const BASELINE_DIR",
     "const BASELINE_NAME_RE",
@@ -454906,8 +454906,8 @@
     "SUPABASE_PROJECT_REF"
    ],
    "errors": [
+    "${contexto}; encontrado(s) ${rewritten}",
     "${fileName}: esperada 1 ocorrencia da checagem de ACL de plataforma; encontrada(s) ${ocorrencias}. ",
-    "${fileName}: esperado(s) ${expected} CREATE INDEX CONCURRENTLY no replay; encontrado(s) ${rewritten}",
     "${label} ilegível: ${error.message}",
     "${label} não é um objeto JSON",
     "${label}: ",
@@ -574447,7 +574447,7 @@
   },
   "tests/scripts/drift-baseline.test.mjs": {
    "path": "tests/scripts/drift-baseline.test.mjs",
-   "lines": 1336,
+   "lines": 1376,
    "is_test": true,
    "params": [
     {
@@ -574484,11 +574484,14 @@
     "aceita a migration real da #3550 (1 índice CONCURRENTLY) no replay do shadow",
     "não reescreve migrations fora do allowlist de compatibilidade do pipeline",
     "aceita a migration real da #4093 (1 índice CONCURRENTLY) no replay do shadow",
+    "remove CONCURRENTLY dos 48 DROP INDEX do PERF-005 no replay do shadow",
+    "falha fechado se o PERF-005 mudar e não tiver exatamente 48 DROP INDEX",
     "neutraliza só a checagem de ACL da extensão gerida pela plataforma no replay",
     "não neutraliza a v4 do tripwire, que registra a mesma checagem sem abortar",
     "falha fechado se a migration do caveat não tiver exatamente uma checagem de ACL",
     "allowlist de reescrita do replay",
     "cobre toda migration pós-baseline com CREATE INDEX CONCURRENTLY",
+    "cobre toda migration pós-baseline com DROP INDEX CONCURRENTLY",
     "cada entrada do allowlist bate com a contagem real do arquivo",
     "prepareWorkdir",
     "reescreve CONCURRENTLY somente na cópia temporária do replay",
@@ -574549,10 +574552,7 @@
     "export-schema-snapshot — credenciais presentes e CLI ausente",
     "com token (schedule/dispatch) sai com erro em vez de verde sem dump",
     "sem token (PR/push) só pula o dump",
-    "sanitizeBaselineForReplay — round-trip do dump",
-    "popula materialized views vazias no shadow sem alterar a definição nem texto fora da cláusula",
-    "passa o ARRAY de varchar por ",
-    "não reescreve dentro de corpo de função (dollar-quote)"
+    "sanitizeBaselineForReplay — round-trip do dump"
    ],
    "uses_service_role": true
   },
@@ -579422,10 +579422,32 @@
   }
  },
  "git": {
-  "sha": "7cde4847c675e263790838f1b0a5dbd00c56dca4",
+  "sha": "be120cf361cbd0a46aacf36ed410418f399edaf5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "be120cf",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.20.4 (#4143)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "f240a63",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix: replay do shadow aceita DROP INDEX CONCURRENTLY (#4156)",
+    "files": [
+     "scripts/drift-baseline.mjs",
+     "tests/scripts/drift-baseline.test.mjs"
+    ]
+   },
    {
     "sha": "7cde484",
     "date": "2026-11-25",
@@ -579722,30 +579744,28 @@
      "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql",
      "supabase/rollbacks/20261125213000_rollback.sql"
     ]
-   },
-   {
-    "sha": "036e217",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261114160000 (#4130)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "6f1d3e4",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "chore: autoriza a aplicacao do indice de restock (approved-by) (#4117)",
-    "files": [
-     "supabase/migrations/20261114160000_perf_idx_sds_restock_counts.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    15
+    14
+   ],
+   [
+    ".release-please-manifest.json",
+    3
+   ],
+   [
+    "CHANGELOG.md",
+    3
+   ],
+   [
+    "package-lock.json",
+    3
+   ],
+   [
+    "package.json",
+    3
    ],
    [
     "supabase/MIGRATIONS_RECONCILIACAO_20261125.md",
@@ -579754,22 +579774,6 @@
    [
     "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql",
     3
-   ],
-   [
-    ".release-please-manifest.json",
-    2
-   ],
-   [
-    "CHANGELOG.md",
-    2
-   ],
-   [
-    "package-lock.json",
-    2
-   ],
-   [
-    "package.json",
-    2
    ],
    [
     "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
@@ -579782,6 +579786,14 @@
    [
     "supabase/rollbacks/20261125213000_rollback.sql",
     2
+   ],
+   [
+    "scripts/drift-baseline.mjs",
+    1
+   ],
+   [
+    "tests/scripts/drift-baseline.test.mjs",
+    1
    ],
    [
     "supabase/migrations/20261126030000_perf005_drop_unused_indexes_concurrently.sql",
@@ -579813,14 +579825,6 @@
    ],
    [
     "docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
-    1
-   ],
-   [
-    "supabase/migrations/20261101205400_perf005_drop_unused_indexes.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261101205400_rollback.sql",
     1
    ]
   ]

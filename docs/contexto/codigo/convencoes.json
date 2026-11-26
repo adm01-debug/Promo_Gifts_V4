@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(main): release gifts-store 1.20.4 (#4143)",
+   "fix: replay do shadow aceita DROP INDEX CONCURRENTLY (#4156)",
    "docs(migrations-log): recibo E15 — aplicação de 20261126030000 (#4155)",
    "fix: reemite PERF005 como 20261126030000 com approved-by valido (#4153)",
-   "fix: reemite PERF005 como 20261126020000 com approved-by no cabecalho (#4152)",
-   "chore: inclui o schema ops no baseline de drift e snapshot (#4151)",
-   "fix: reemite PERF005 com DROP INDEX CONCURRENTLY (sem editar o historico) (#4147)"
+   "fix: reemite PERF005 como 20261126020000 com approved-by no cabecalho (#4152)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
