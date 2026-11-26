@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 23:38 UTC
+
+- **functions** adicionado (3): `public.fn_admin_classification_apply(_dry_run boolean, _min_matches integer)`, `public.fn_admin_classification_suggestions(_search text, _somente_gaps boolean, _min_matches integer, _limit integer)`, `public.fn_admin_classification_summary()`
+- **functions** alterado (3): `classification_audit.apply_high_confidence_suggestions(p_dry_run boolean, p_min_matches integer)`, `public.is_admin_or_above(_user_id uuid)`, `public.log_audit(_action text, _resource_type text, _resource_id text, _details jsonb)`
+- **migrations** adicionado (1): `20261126211200_admin_classification_audit_rpc`
+
 ## 2026-11-26 22:26 UTC
 
 - **functions** adicionado (2): `public.fn_admin_ai_quota_summary(_search text, _limit integer)`, `public.fn_admin_anon_access_audit()`

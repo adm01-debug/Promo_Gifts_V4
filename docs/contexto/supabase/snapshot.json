@@ -141632,11 +141632,17 @@
             {
               "file": "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql",
               "hits": 4
+            },
+            {
+              "file": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql",
+              "hits": 3
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
-          "db": [],
+          "db": [
+            "public.fn_admin_classification_apply"
+          ],
           "triggers": [],
           "views": []
         },
@@ -149519,6 +149525,96 @@
         "name": "fn_admin_anon_access_audit",
         "owner": "postgres",
         "returns": "TABLE(categoria text, objeto text, anon_grant boolean, auth_grant boolean, severidade text, descricao text)",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "_dry_run boolean, _min_matches integer",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Executa classification_audit.apply_high_confidence_suggestions em nome de um administrador (dry-run ou aplicacao real). Retorna acao = DRY-RUN | APLICADO | SEM MUDANCA (SEM MUDANCA quando nenhuma atribuicao foi criada, caso em que nada e auditado). Registra em public.log_audit somente quando cria atribuicao. Consumida pela aba Classificacao de /admin/cadastros.",
+        "config": [
+          "search_path=public, classification_audit, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "ab9a96ed8d61981f",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "fn_admin_classification_apply",
+        "owner": "postgres",
+        "returns": "TABLE(acao text, product_id uuid, sku text, produto text, categoria text, matches integer, score integer)",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "_search text, _somente_gaps boolean, _min_matches integer, _limit integer",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Lista a trilha de classificacao (classification_audit.category_suggestions) com produto, categoria sugerida, categorias atuais e flags de conflito. Filtros: termo, somente gaps e minimo de matches. Consumida pela aba Classificacao de /admin/cadastros.",
+        "config": [
+          "search_path=public, classification_audit, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "3a4f532c2f2a7cf4",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "fn_admin_classification_suggestions",
+        "owner": "postgres",
+        "returns": "TABLE(id bigint, product_id uuid, sku text, produto text, is_kit boolean, categoria_sugerida text, nivel integer, matches integer, score integer, tokens_matched text, already_assigned boolean, categorias_atuais text, material_conflict boolean, type_conflict boolean, approved_auto boolean, computed_at timestamp with time zone)",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "KPIs da trilha de classificacao (classification_audit.category_suggestions) para administradores. Consumida pela aba Classificacao de /admin/cadastros.",
+        "config": [
+          "search_path=public, classification_audit, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "4a69c2c9d8d1bde3",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "fn_admin_classification_summary",
+        "owner": "postgres",
+        "returns": "TABLE(total_sugestoes bigint, nao_atribuidas bigint, kits_para_revisao bigint, conflitos bigint, alta_confianca bigint, ultima_analise timestamp with time zone)",
         "schema": "public",
         "security_definer": true,
         "strict": false,
@@ -184777,12 +184873,15 @@
               "hits": 1
             }
           ],
-          "code_total_files": 105,
+          "code_total_files": 106,
           "cron": [],
           "db": [
             "public.enforce_user_id_owner",
             "public.fn_admin_ai_quota_summary",
             "public.fn_admin_anon_access_audit",
+            "public.fn_admin_classification_apply",
+            "public.fn_admin_classification_suggestions",
+            "public.fn_admin_classification_summary",
             "public.fn_admin_link_crm_seller",
             "public.fn_admin_list_crm_seller_links",
             "public.fn_admin_run_smoke_tests",
@@ -186285,11 +186384,16 @@
             {
               "file": "supabase/migrations/20261126060000_crm_seller_identity_admin_rpc.sql",
               "hits": 3
+            },
+            {
+              "file": "supabase/migrations/20261126211200_admin_classification_audit_rpc.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [
+            "public.fn_admin_classification_apply",
             "public.fn_admin_link_crm_seller",
             "public.fn_admin_unlink_crm_seller"
           ],
@@ -242342,6 +242446,12 @@
         "statements": 6,
         "statements_sha": "63c69eb54e970106",
         "version": "20261126192900"
+      },
+      {
+        "name": "admin_classification_audit_rpc",
+        "statements": 21,
+        "statements_sha": "6d4f50de71733fa6",
+        "version": "20261126211200"
       }
     ],
     "policies": [
