@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(main): release gifts-store 1.24.0 (#4183)",
    "feat: tela de exposicao anon no painel de seguranca (#4182)",
    "chore(main): release gifts-store 1.23.0 (#4181)",
    "feat: tela de ramos de atividade e segmentos (#4180)",
-   "chore(main): release gifts-store 1.22.0 (#4176)",
-   "fix: cabecalho de rollback e transacao unica na migration das RPCs de CRM (#4178)"
+   "chore(main): release gifts-store 1.22.0 (#4176)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

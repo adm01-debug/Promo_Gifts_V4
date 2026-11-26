@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "156532ccbd218db4fae94cb9efcc844bd07d997b",
+  "sha": "cbe7b2d8b66a436ddcfb17a4694a7b9d466b7c4c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 18:25 UTC",
+  "generated_at": "2026-11-26 18:41 UTC",
   "files_total": 11275,
   "code_files": 9254,
   "code_lines": 1318383
@@ -583379,10 +583379,22 @@
   }
  },
  "git": {
-  "sha": "156532ccbd218db4fae94cb9efcc844bd07d997b",
+  "sha": "cbe7b2d8b66a436ddcfb17a4694a7b9d466b7c4c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "cbe7b2d",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.24.0 (#4183)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "156532c",
     "date": "2026-11-26",
@@ -583761,41 +583773,32 @@
      "scripts/drift-baseline.mjs",
      "tests/scripts/drift-baseline.test.mjs"
     ]
-   },
-   {
-    "sha": "7cde484",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261126030000 (#4155)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    8
+    7
+   ],
+   [
+    ".release-please-manifest.json",
+    6
+   ],
+   [
+    "CHANGELOG.md",
+    6
+   ],
+   [
+    "package-lock.json",
+    6
+   ],
+   [
+    "package.json",
+    6
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
     6
-   ],
-   [
-    ".release-please-manifest.json",
-    5
-   ],
-   [
-    "CHANGELOG.md",
-    5
-   ],
-   [
-    "package-lock.json",
-    5
-   ],
-   [
-    "package.json",
-    5
    ],
    [
     "docs/estado/07_EDGE_FUNCTIONS.md",

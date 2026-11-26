@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "156532ccbd218db4fae94cb9efcc844bd07d997b",
+  "commit": "cbe7b2d8b66a436ddcfb17a4694a7b9d466b7c4c",
   "branch": "main",
-  "data_commit": "2026-11-26T15:23:42-03:00",
+  "data_commit": "2026-11-26T15:40:14-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "cbe7b2d",
+    "data": "2026-11-26",
+    "assunto": "chore(main): release gifts-store 1.24.0 (#4183)"
+   },
    {
     "sha": "156532c",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "65f12c5",
     "data": "2026-11-26",
     "assunto": "fix: restaura COMMENT do idx_spr_images_pending no rollback do PERF005 (#4158)"
-   },
-   {
-    "sha": "a42709a",
-    "data": "2026-11-26",
-    "assunto": "infra: serializa snapshot de schema e apply de migration no mesmo grupo (#4136)"
    }
   ],
   "arquivos_mudados_7d": 613,
@@ -207,15 +207,15 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 27
+    "mudancas": 28
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 24
+    "mudancas": 25
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 21
+    "mudancas": 22
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 225
+    "commits": 224
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 75
+    "commits": 76
    }
   ]
  },
