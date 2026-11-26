@@ -1,6 +1,6 @@
 -- ==============================================================
 -- ALL_IN_ONE.sql — snapshot concatenado de supabase/migrations/
--- Gerado em: 2026-11-25T20:49:37.869Z
+-- Gerado em: 2026-11-25T23:55:37.382Z
 -- Total de arquivos: 3137
 -- Ordem: alfabética (mesmo critério do Supabase CLI)
 -- Uso: APENAS auditoria/leitura. NÃO aplicar direto no banco.
@@ -176418,6 +176418,10 @@ begin
 end;
 $$;
 
+-- Trigger functions are invoked by the trigger machinery, never called directly, so no role
+-- needs EXECUTE on them. Required by the SECURITY DEFINER ACL gate (lints Supabase 0028/0029).
+revoke execute on function public.set_quote_sent_at() from public, anon, authenticated;
+
 drop trigger if exists trg_set_quote_sent_at on public.quotes;
 create trigger trg_set_quote_sent_at
   before insert or update on public.quotes
@@ -208594,6 +208598,10 @@ BEGIN
   RETURN NEW;
 END;
 $$;
+
+-- Trigger functions are invoked by the trigger machinery, never called directly, so no role
+-- needs EXECUTE on them. Required by the SECURITY DEFINER ACL gate (lints Supabase 0028/0029).
+REVOKE EXECUTE ON FUNCTION public.prevent_non_admin_quote_item_price_change() FROM public, anon, authenticated;
 
 DROP TRIGGER IF EXISTS trg_prevent_non_admin_quote_item_price_change ON public.quote_items;
 CREATE TRIGGER trg_prevent_non_admin_quote_item_price_change
@@ -260400,6 +260408,7 @@ END $$;
 
 -- >>> BEGIN 20261114160000_perf_idx_sds_restock_counts.sql >>>
 -- transaction: none
+-- approved-by: adm01-debug
 -- (CREATE INDEX CONCURRENTLY não pode rodar dentro de transação — psql -1. O opt-out exige também
 --  uma linha própria "-- approved-by: <dono>": é a aprovação humana e entra só no momento da
 --  aplicação, nunca antes. Sem ela o preflight bloqueia, como deve.)

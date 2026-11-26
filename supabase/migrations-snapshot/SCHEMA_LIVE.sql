@@ -1,7 +1,7 @@
 -- ==============================================================
 -- SCHEMA_LIVE.sql — dump do schema do projeto canônico
 -- Projeto: doufsxqlfjyuvxuezpln
--- Gerado em: 2026-11-25T20:55:49.510Z
+-- Gerado em: 2026-11-26T00:01:41.628Z
 -- Fonte: supabase db dump --linked
 -- ==============================================================
 
@@ -102996,6 +102996,10 @@ CREATE INDEX "idx_sdl_ran_at" ON "public"."schema_drift_log" USING "btree" ("ran
 
 
 CREATE INDEX "idx_sds_cenario_a" ON "public"."stock_daily_summary" USING "btree" ("summary_date", "stock_open", "stock_close") WHERE ("restock_detected" = true);
+
+
+
+CREATE INDEX "idx_sds_restock_zero_to_pos_date" ON "public"."stock_daily_summary" USING "btree" ("summary_date") INCLUDE ("product_id") WHERE (("restock_detected" = true) AND (COALESCE("stock_open", 0) = 0) AND (COALESCE("stock_close", 0) > 0));
 
 
 
