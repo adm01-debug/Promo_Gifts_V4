@@ -5,6 +5,13 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.23.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.22.0...gifts-store-v1.23.0) (2026-11-26)
+
+
+### Features
+
+* tela de ramos de atividade e segmentos ([#4180](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4180)) ([a895096](https://github.com/adm01-debug/Promo_Gifts_V4/commit/a895096aa45eaeb41a5fb9438e141cadc395a0a4))
+
 ## [1.22.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.21.0...gifts-store-v1.22.0) (2026-11-26)
 
 
