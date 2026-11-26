@@ -149,11 +149,11 @@ Credenciais marcadas `[vault]` vêm de `_shared/credentials.ts` (tabela `integra
 | 43 | **get-visitor-info** | Retorna IP + cidade + país do visitante (geo server-side) | `src/hooks/admin/useIPValidation.ts:21`; `src/pages/auth/Auth.tsx:166` | — | `http://ip-api.com/json/` (`:31`) — ⚠️ **HTTP puro, não HTTPS** | apenas `runBotProtection` `:11-16` (30 req/60s) | ✅ público por design (pré-login) + `runBotProtection` 30/60s; `https://ip-api.com` `:50` |
 | 44 | **github-credentials-test** | Valida `GITHUB_TOKEN`/`REPO`/`DEFAULT_BRANCH` na API do GitHub | `src/components/admin/connections/GitHubCredentialsTester.tsx:48` | `SB:56-58` | `api.github.com/user` (`:103`), `/repos/` (`:161`,`:226`) | `getUser()` `:63` + `is_dev` | ✅ |
 | 45 | **hash-product-images** | SHA-256 hex de cada `product_image` (download completo) | cron `supabase/migrations/20260617000002_hash_product_images_cron.sql:38-42` | `SB:14-15`, `HASH_PRODUCT_IMAGES_CRON_SECRET:75` | CDNs de imagem | `authorizeCron` `:73-76` | ✅ |
-| 46 | **health-check** | Sonda `products`/`profiles` + credenciais externas; snapshot cacheado, `X-Health-Version` | `scripts/observability-check.mjs:143-150` (só se env configurado) | `SB:28-29`, `EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY:42` [vault] | Supabase externo | ❌ nenhuma (`:166`) — aceitável: read-only | 🟨 |
+| 46 | **health-check** | Sonda `products`/`profiles` + credenciais externas; snapshot cacheado, `X-Health-Version` | `scripts/observability-check.mjs:143-150` (só se env configurado) | `SB:28-29`, `EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY:42` [vault] | Supabase externo | ✅ público por design (manifest `edge-authz-manifest.ts`: "Health endpoint para uptime monitors"); resposta expõe só `status`/`timestamp`/`checks`, nunca valores de credencial (`index.ts:203-211`) | ✅ |
 | 47 | **image-proxy** | Proxy CORS de imagens de fornecedores com allowlist de domínio | `src/utils/imageProxy.ts:77` ← `src/components/products/ProductCardImage.tsx:211` | `IMAGE_PROXY_ALLOW_LOCALHOST:48`, `IMAGE_PROXY_MAX_BYTES:129` | CDNs dos fornecedores (allowlist `:1-10`) | `runBotProtection` `:71` + 403 `:83`,`:110`; `verify_jwt=false` (`config.toml:12`) | ✅ |
 | 48 | **intelligence-substitute-applied** | Espelha evento `intelligence.substitute_applied` em `ai_usage_events` | `src/lib/analytics/intelligenceAnalytics.ts:17` (`MIRROR_FN`), invocado em `:163` | — | — | `authenticateRequest` `:69` | ✅ |
 | 49 | **kit-ai-builder** | Prompt natural → sugestão estruturada de kit | `src/components/kit-builder/KitAIPromptDialog.tsx:47` | `LOVABLE_API_KEY` [vault] | `ai.gateway.lovable.dev` (`:57`) | `authenticateRequest:26` + `requireRole:27` | ✅ |
-| 50 | **kit-identity-suggest** | Sugere tag + cor hex + ícone lucide para o kit (tool-calling) | `src/hooks/kit-builder/useKitIdentitySuggestion.ts:33` | `LOVABLE_API_KEY` [vault] | `ai.gateway.lovable.dev` (`:89`) | ⚠️ **apenas `runBotProtection` `:45`** — sem JWT, mas **gasta crédito de IA** | 🟨 |
+| 50 | **kit-identity-suggest** | Sugere tag + cor hex + ícone lucide para o kit (tool-calling) | `src/hooks/kit-builder/useKitIdentitySuggestion.ts:33` ← `KitBuilderHeader.tsx:314` | `LOVABLE_API_KEY` [vault] | `ai.gateway.lovable.dev` (`:89`) | `authenticateRequest` + `requireRole('agente')` (`:45-51`) | ✅ |
 | 51 | **load-test** | Dispara N requests concorrentes contra `targetEndpoint` arbitrário usando a **service_role key** no header | `supabase/functions/tests/shockwave-load-test.ts:14` (teste) | `SUPABASE_URL:43`, `SUPABASE_SERVICE_ROLE_KEY:66` | qualquer endpoint passado no body | ❌ **NENHUMA** (`:11`) | ✅ `authorize(dev)` `:14-15` (remediado) |
 | 52 | **log-login-attempt** | Registra tentativa de login em `login_attempts` (contrato "nunca-5xx") | `src/contexts/AuthContext.tsx:365`; `src/hooks/admin/useIPValidation.ts:176` | `SB:108,156` | — | `applyRateLimit` `:117`; sem JWT (`config.toml:81`) — intencional (pré-login) | ✅ |
 | 53 | **magazine-import-local** | Migra revistas de `localStorage` → Gold (`magazines`/`magazine_items`) | `src/pages/magazine/hooks/useMagazineGoldImport.ts:35` | `SUPABASE_URL`,`SUPABASE_ANON_KEY:65` | — | `getUser()` `:68` (gateway em false por HS256, `config.toml:148`) | ✅ |
@@ -164,7 +164,7 @@ Credenciais marcadas `[vault]` vêm de `_shared/credentials.ts` (tabela `integra
 | 58 | **magic-up-score** | Diagnóstico de qualidade criativa (score) | `src/hooks/intelligence/useMagicUpGeneration.ts:100` | `requireAiApiKey('magic-up-score')` [vault] | gateway de IA | `authenticateRequest` `:52` | ✅ |
 | 59 | **manage-users** | Promove/rebaixa role, gestão de usuários (dev>supervisor>vendedor) | `src/components/admin/users/useUserManagement.ts:129,158`; `PromotionDialog.tsx:82` | `SB:78-79`, `SUPABASE_ANON_KEY:88` | — | `getUser()` `:92` + `has_role` inline | ✅ |
 | 60 | **market-intelligence-insights** | Insights de IA do dashboard Market Intelligence; cache server-side + quota | `src/components/intelligence/MarketIntelligenceInsightsCard.tsx:145` | `LOVABLE_API_KEY` [vault] | `ai.gateway.lovable.dev` (`:333`) | `authenticateRequest` `:260` | ✅ |
-| 61 | **materials-api** | Catálogo de materiais (proxy ao Supabase externo) | `src/services/materialService.ts:58` | `SUPABASE_URL:29`, `SUPABASE_ANON_KEY:30`, `EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY:50` [vault] | Supabase externo | ⚠️ **JWT decorativo**: `:25-33` valida e só faz `console.log`; resultado nunca usado como gate | 🟨 |
+| 61 | **materials-api** | Catálogo de materiais (proxy ao Supabase externo) | `src/services/materialService.ts:58` | `SUPABASE_URL:29`, `SUPABASE_ANON_KEY:30`, `EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY:50` [vault] | Supabase externo | ✅ sem gate **por design** (manifest `public`: "Catálogo de materiais público"; consumido pela rota pública `/filtros` via `RoutePrefetcher.tsx:76`); o bloco `:41-52` só emite `console.log` e **não** é gate — mantido porque o dado é catálogo de materiais, não dado de cliente | ✅ |
 | 62 | **mcp-keys-issue** | Emite chave MCP (escopos, TTL); gate extra `mcp_full_grantors` p/ FULL | `src/components/admin/connections/IssueMcpKeyForm.tsx:117`; `src/contexts/DevChallengeContext.tsx:13`; `src/lib/security/sanitize-error.ts:91` | `SB:40-41`, `SUPABASE_ANON_KEY:42` | — | `Authorization` `:193` + `getUser` `:203` + `has_role` + `step_up_token` `:58`, gate FULL `:270` | ✅ |
 | 63 | **mcp-keys-revoke** | Revoga chave MCP com auditoria IP/UA/request_id | `src/components/admin/connections/McpTab.tsx:91`; `src/components/admin/security/keys/useMcpKeys.ts:254` | `SB:21-22`, `SUPABASE_ANON_KEY:23` | — | `Authorization` `:92` + step-up `:29` | ✅ |
 | 64 | **mcp-keys-rotate** | Duplica chave preservando nome/escopos/expiração | `src/components/admin/security/keys/RotateMcpKeyDialog.tsx:80`; `src/pages/admin/DevChallengeExamplesPage.tsx:100` | `SB:28-29`, `SUPABASE_ANON_KEY:30` | — | `Authorization` `:109` + step-up `:37` | ✅ |
@@ -213,15 +213,18 @@ Credenciais marcadas `[vault]` vêm de `_shared/credentials.ts` (tabela `integra
 
 | Classe | Qtd | % |
 |---|---|---|
-| ✅ IMPLEMENTADO_TOTAL | 86 | 83% |
-| 🟨 IMPLEMENTADO_PARCIAL | 3 | 3% |
+| ✅ IMPLEMENTADO_TOTAL | 89 | 86% |
+| 🟨 IMPLEMENTADO_PARCIAL | 0 | 0% |
 | 🟦 SUGERIDO_OU_INICIADO | 13 | 12% |
 | ⬛ MORTO_OU_ABANDONADO | 2 | 2% |
 | **Total** | **104** | **100%** |
 
-Detalhe dos 3 🟨 remanescentes (medido 2026-11-26): `kit-identity-suggest` (consome crédito de IA
-sem JWT), `materials-api` (auth decorativa) e `health-check` (read-only, sem gate). Os 4 achados do §C.1
-e as 9 edges de cron do §0.2 foram fechados.
+Nenhum 🟨 remanescente (medido 2026-11-26). Os 3 últimos foram fechados: `kit-identity-suggest`
+ganhou `authenticateRequest` + `requireRole('agente')` e o botão de sugestão
+(`IdentitySuggestionButton`), que existia sem uso, passou a ser renderizado no `KitBuilderHeader`;
+`materials-api` e `health-check` são **públicos por design** (manifest `edge-authz-manifest.ts`) —
+catálogo de materiais da rota pública `/filtros` e sonda de uptime read-only. Os 4 achados do §C.1
+e as 9 edges de cron do §0.2 também foram fechados.
 
 ---
 
@@ -304,11 +307,11 @@ Lembrete da §0.1: `verify_jwt=true` do gateway **aceita a anon key pública** �
 
 | Função | Linha | Mitigação presente | Ressalva |
 |---|---|---|---|
-| **kit-identity-suggest** | `index.ts:45` — só `runBotProtection` (10 req/60s, block 1h) | rate limit por IP | Chama `ai.gateway.lovable.dev` (`:89`) → **consome crédito de IA sem JWT**. Todas as outras 3 edges de kit/IA usam `authenticateRequest` + `requireRole('agente')` (ex.: `kit-ai-builder/index.ts:26-27`). É a exceção inconsistente. |
+| **kit-identity-suggest** | ✅ Resolvido (2026-11-26): `authenticateRequest` + `requireRole('agente')` em `index.ts:45-51`, antes de `runBotProtection`; `IdentitySuggestionButton` montado em `KitBuilderHeader.tsx:314`. | JWT (agente+) + rate limit por IP | Chama `ai.gateway.lovable.dev` (`:89`) → crédito de IA só para vendedor autenticado, alinhado às outras 3 edges de kit/IA (`kit-ai-builder/index.ts:26-27`). |
 | **get-visitor-info** | `index.ts:11` — só `runBotProtection` (30 req/60s) | read-only | Corrigido: hoje chama **`https://ip-api.com/json/...`** (`:50`), com TLS. Continua sem JWT — correto por design, já que roda na tela de login antes de existir sessão. |
 | **image-proxy** | `index.ts:71` — `runBotProtection` + allowlist de domínio + `IMAGE_PROXY_MAX_BYTES:129` | proxy read-only com allowlist e teto de bytes | Aceitável para a função. |
-| **health-check** | `index.ts:166` | read-only, snapshot cacheado | Expõe status de dependências internas publicamente; baixo impacto. |
-| **materials-api** | `index.ts:25-33` | — | **Auth decorativa**: valida o Bearer e o único efeito é `console.log('Materials API authenticated request')` `:33`. O `user` nunca vira gate. Funcionalmente equivale a ausência de auth. |
+| **health-check** | `index.ts:166` | ✅ público por design (manifest `public`, uptime monitors); resposta sem valor de credencial (`:203-211`) | Expõe status de dependências internas publicamente; baixo impacto. |
+| **materials-api** | ✅ público por design (manifest `public`, "Catálogo de materiais público") | rota pública `/filtros` (`RoutePrefetcher.tsx:76`) consome via `materialService.ts:58`; bloco `:41-52` só emite `console.log` e não decide nada | Funcionalmente correto: o dado é catálogo de materiais. O bloco decorativo `:41-52` fica documentado aqui para não ser confundido com gate. |
 | **test-cart-concurrency** / **test-cart-limit** / **test-cart-rls** / **test-inventory-orchestrator** | `:23` / `:25` / `:29` / `:13` | `authorize(req, { requireRole: 'dev' })` nas 4 (medido 2026-11-26) | **Remediado** — nenhuma delas usa service_role antes do gate |
 | **rate-limit-check** | `:29` | nenhuma | Read-only e o estado é um `Map` em memória do isolate (`:58`) — some a cada cold start, então nem serve como rate-limiter distribuído. |
 | **check-login** | — | público por design (`config.toml:84`) | Correto para o caso de uso (pré-login), mas sem chamador (§B.1). |
@@ -324,7 +327,7 @@ Lembrete da §0.1: `verify_jwt=true` do gateway **aceita a anon key pública** �
 |---|---|---|
 | ~~`audit-suite`: `has_role(dev) inline`~~ | **Resolvido**: o manifesto agora diz `authorize(dev) + finally cleanup` e o código tem `authorize(req, { requireRole: 'dev' })` | `_shared/edge-authz-manifest.ts`; `audit-suite/index.ts:33` |
 | ~~`load-test`: "sem auth no caller"~~ | **Resolvido**: manifesto e código exigem `authorize(dev)` | `load-test/index.ts:14-15` |
-| `materials-api`: `category: "public"` (`:61`) | coerente com o comportamento, mas o código simula uma validação de JWT que não decide nada | `materials-api/index.ts:25-33` |
+| ~~`materials-api`: `category: "public"` (`:61`)~~ | **Resolvido**: manifesto e comportamento coincidem (catálogo público consumido por `/filtros`); o bloco `:41-52` é log decorativo, agora documentado como tal em vez de divergência | `materials-api/index.ts:41-52` |
 | ~~`test-cart-*`: "service_role interno"~~ | **Resolvido**: as 4 exigem `authorize(dev)` antes de tocar em service_role | `test-cart-limit/index.ts:25` e irmãs |
 
 ---

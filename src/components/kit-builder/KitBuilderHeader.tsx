@@ -54,6 +54,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { KitAIPromptDialog } from '@/components/kit-builder/KitAIPromptDialog';
 import { KitIdentityPicker } from '@/components/kit-builder/KitIdentityPicker';
+import { IdentitySuggestionButton } from '@/components/kit-builder/IdentitySuggestionButton';
 import { useRBAC } from '@/hooks/auth';
 import { useTemplateSnapshot } from '@/hooks/kit-builder';
 import type {
@@ -309,6 +310,22 @@ export function KitBuilderHeader({
             </TooltipProvider>
 
             <KitIdentityPicker identity={identity} onChange={onIdentityChange} />
+
+            <IdentitySuggestionButton
+              kitName={kitName}
+              items={kitState?.items ?? []}
+              description={identity?.description}
+              current={identity}
+              onApply={(next) =>
+                onIdentityChange({
+                  color: next.color ?? identity?.color ?? '#3B82F6',
+                  icon: next.icon ?? identity?.icon ?? 'Package',
+                  tag: next.tag ?? identity?.tag ?? '',
+                  description: identity?.description ?? '',
+                  isFavorite: identity?.isFavorite ?? false,
+                })
+              }
+            />
 
             <TooltipProvider>
               <Tooltip>
