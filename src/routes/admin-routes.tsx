@@ -12,6 +12,7 @@ import {
   AdminDesignTokensPage,
   AdminExternalDbPage,
   AdminFreteSettingsPage,
+  AdminInfraOpsPage,
   AdminLoginAttemptsPage,
   AdminSessionsPage,
   AdminMigracaoPapeisPage,
@@ -148,6 +149,7 @@ export const adminRoutes = (
       <Route path="/admin/qa/sidebar" element={<SidebarQAPage />} />
       <Route path="/admin/audit-suite" element={<AuditSuitePage />} />
       <Route path="/admin/observabilidade" element={<ObservabilityDashboardPage />} />
+      <Route path="/admin/infra-ops" element={<AdminInfraOpsPage />} />
       <Route path="/admin/cloudflare-images" element={<AdminCloudflareImagesPage />} />
     </Route>
   </>

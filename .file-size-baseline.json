@@ -52,7 +52,7 @@
     "src/components/kit-builder/KitMakerLanding.tsx": 563,
     "src/components/kit-builder/PersonalizationConfig.tsx": 1402,
     "src/components/layout/Header.tsx": 561,
-    "src/components/layout/SidebarReorganized.tsx": 686,
+    "src/components/layout/SidebarReorganized.tsx": 694,
     "src/components/loading/ModernSkeletons.tsx": 755,
     "src/components/mockup/MockupHistoryPanel.tsx": 828,
     "src/components/mockup/approval/MockupApprovalTemplate.tsx": 737,

@@ -1,9 +1,10 @@
 /**
- * VariantStockRowActions — Replica as 7 ações do ProductCard do Catálogo na
- * tabela de Estoque (uma linha = uma variação SKU).
+ * VariantStockRowActions — Replica as ações do ProductCard do Catálogo na
+ * tabela de Estoque (uma linha = uma variação SKU), mais as notas operacionais
+ * da variação (`public.stock_notes`), que só existem aqui.
  *
  * Ordem (esquerda → direita): Copiar SKU · Carrinho · Orçamento · Coleção ·
- * Favoritar · Comparar · Visualizar · Compartilhar.
+ * Favoritar · Comparar · Visualizar · Notas · Compartilhar.
  *
  * Como cada linha já representa um SKU específico, dispensamos o
  * VariantPickerDialog do catálogo e aplicamos a ação direto na variação.
@@ -22,6 +23,7 @@ import {
   Heart,
   GitCompare,
   Eye,
+  StickyNote,
   Share2,
   Loader2,
 } from 'lucide-react';
@@ -32,6 +34,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { cn } from '@/lib/utils';
 import { QuickAddToQuote } from '@/components/products/QuickAddToQuote';
 import { AddToCollectionModal } from '@/components/collections/AddToCollectionModal';
+import { VariantStockNotesDialog } from './VariantStockNotesDialog';
 import { useFavoritesStore } from '@/stores/useFavoritesStore';
 import { useComparisonStore } from '@/stores/useComparisonStore';
 import type { ProductStockSummary, VariantStock } from '@/types/stock';
@@ -73,6 +76,7 @@ export async function safeCopyText(text: string): Promise<boolean> {
 export function VariantStockRowActions({ product, variant }: VariantStockRowActionsProps) {
   const navigate = useNavigate();
   const [collectionOpen, setCollectionOpen] = useState(false);
+  const [notesOpen, setNotesOpen] = useState(false);
   const [pending, setPending] = useState<PendingAction>(null);
 
   const isFavorite = useFavoritesStore((s) => s.isFavorite(product.productId));
@@ -202,7 +206,7 @@ export function VariantStockRowActions({ product, variant }: VariantStockRowActi
   return (
     <>
       <div
-        className="flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100"
+        className="flex items-center gap-0.5 opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100"
         data-testid="stock-row-actions"
       >
         <IconAction
@@ -269,6 +273,12 @@ export function VariantStockRowActions({ product, variant }: VariantStockRowActi
           testId="stock-row-view"
         />
         <IconAction
+          label="Notas da variação"
+          icon={StickyNote}
+          onClick={() => setNotesOpen(true)}
+          testId="stock-row-notes"
+        />
+        <IconAction
           label="Compartilhar"
           icon={pending === 'share' ? Loader2 : Share2}
           onClick={handleShare}
@@ -290,6 +300,13 @@ export function VariantStockRowActions({ product, variant }: VariantStockRowActi
           variant_id: variant.variantId,
           thumbnail: variant.imageUrl ?? product.productImageUrl,
         }}
+      />
+
+      <VariantStockNotesDialog
+        open={notesOpen}
+        onOpenChange={setNotesOpen}
+        variantId={variant.variantId}
+        variantLabel={`${product.productName}${variant.colorName ? ` — ${variant.colorName}` : ''} — SKU ${variant.variantSku}`}
       />
     </>
   );

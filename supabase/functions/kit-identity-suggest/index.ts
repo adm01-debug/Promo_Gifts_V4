@@ -5,9 +5,10 @@ import { safeErrorResponse } from "../_shared/error-response.ts";
 // Recebe nome + lista de itens do kit e sugere identidade visual
 // (tag curta + cor hex + ícone lucide). Usa Lovable AI Gateway
 // com tool-calling para JSON estrito. Modelo barato e rápido.
-// Hardening: Zod validation + bot protection (rate limit).
+// Hardening: JWT (agente+) + Zod validation + bot protection (rate limit).
 // ============================================================
 import { z } from '../_shared/zod-validate.ts';
+import { authenticateRequest, requireRole, authErrorResponse } from '../_shared/auth.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';
 import { requireAiApiKey } from '../_shared/ai-credentials.ts';
 import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from '../_shared/external-fetch.ts';
@@ -40,6 +41,14 @@ const BodySchema = z.object({
 Deno.serve(async (req: Request) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === 'OPTIONS') return new Response(null, { headers: getCorsHeaders(req) });
+
+  // Auth: exige vendedor autenticado (agente ou acima) — consome crédito de IA
+  try {
+    const authCtx = await authenticateRequest(req);
+    requireRole(authCtx, 'agente');
+  } catch (authErr) {
+    return authErrorResponse(authErr, corsHeaders);
+  }
 
   try {
     // Bot protection + rate limit (10 req / 60s, block 1h)

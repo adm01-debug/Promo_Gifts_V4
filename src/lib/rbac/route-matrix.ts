@@ -370,6 +370,16 @@ export const RBAC_ROUTES: RbacRouteEntry[] = [
     category: 'ops',
   },
   {
+    path: '/admin/infra-ops',
+    label: 'Infra do Banco',
+    guard: 'DevRoute',
+    role: 'dev',
+    mfaAal2: true,
+    rlsHelper: 'can_view_telemetry',
+    notes: 'Telemetria ops.* via RPC dev-gated fn_dev_ops_infra_telemetry (E30/E33/E40)',
+    category: 'ops',
+  },
+  {
     path: '/admin/login-attempts',
     label: 'Tentativas de login',
     guard: 'DevRoute',
