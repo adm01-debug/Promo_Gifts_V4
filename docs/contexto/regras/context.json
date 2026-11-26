@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "aacb9e534ebfe2de9e95f126a418645b0ba32647",
+  "sha": "d2f3c85c9e67dd95cb59cf012a9031235a8b0c03",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 01:05 UTC",
+  "generated_at": "2026-11-26 01:19 UTC",
   "files_total": 11222,
   "code_files": 9205,
   "code_lines": 1308366
@@ -579405,10 +579405,28 @@
   }
  },
  "git": {
-  "sha": "aacb9e534ebfe2de9e95f126a418645b0ba32647",
+  "sha": "d2f3c85c9e67dd95cb59cf012a9031235a8b0c03",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "d2f3c85",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20260916211500 (#4148)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
+   {
+    "sha": "da92fae",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore: allowlist E06 recebe as 21 migrations efetivas por equivalencia (#4146)",
+    "files": [
+     "docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json"
+    ]
+   },
    {
     "sha": "aacb9e5",
     "date": "2026-11-25",
@@ -579704,25 +579722,6 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "99c6a41",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261027230000 (#4113)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "3ea746a",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(migration): allowlist do dispatcher com pg_temp no search_path (E066) (#4111)",
-    "files": [
-     "supabase/migrations/20261027230000_cleanup_get_edge_function_secret_allowlist.sql",
-     "supabase/rollbacks/20261027230000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -579787,6 +579786,10 @@
     2
    ],
    [
+    "docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+    1
+   ],
+   [
     "supabase/migrations/20261101205400_perf005_drop_unused_indexes.sql",
     1
    ],
@@ -579800,10 +579803,6 @@
    ],
    [
     "supabase/rollbacks/20261101210000_rollback.sql",
-    1
-   ],
-   [
-    "docs/db/BACKUP_CHECKSUMS_2026-11-26.txt",
     1
    ]
   ]
