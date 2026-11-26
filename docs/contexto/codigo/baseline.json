@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8e78a4d5d3893d13207824e4107161b195bbf51d",
+  "commit": "67db74f06337842bdbf6fff2a2919f595294b005",
   "branch": "main",
-  "data_commit": "2026-11-26T02:08:01-03:00",
+  "data_commit": "2026-11-26T08:25:11-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "67db74f",
+    "data": "2026-11-26",
+    "assunto": "fix: registra recibo final da migration 20261125074200 (gate E055) (#4162)"
+   },
    {
     "sha": "8e78a4d",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "9fa5514",
     "data": "2026-11-25",
     "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45723739862) (#4137)"
-   },
-   {
-    "sha": "5d589f5",
-    "data": "2026-11-25",
-    "assunto": "docs: corrige adendo - 3137 era contagem de arquivos, nao do ledger (#4139)"
    }
   ],
-  "arquivos_mudados_7d": 567,
+  "arquivos_mudados_7d": 556,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 122
+    "mudancas": 120
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 104
+    "mudancas": 105
    },
    {
     "pasta": "src/lib/freight",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 104
+    "mudancas": 105
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",

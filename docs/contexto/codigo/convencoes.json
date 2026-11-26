@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: registra recibo final da migration 20261125074200 (gate E055) (#4162)",
    "chore(main): release gifts-store 1.20.5 (#4159)",
    "fix: restaura COMMENT do idx_spr_images_pending no rollback do PERF005 (#4158)",
    "infra: serializa snapshot de schema e apply de migration no mesmo grupo (#4136)",
-   "chore(security): atualiza baseline assinado de RLS policies (#4154)",
-   "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45746283733) (#4157)"
+   "chore(security): atualiza baseline assinado de RLS policies (#4154)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
