@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cbe7b2d8b66a436ddcfb17a4694a7b9d466b7c4c` (2026-11-26T15:40:14-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `25c44033994be0b48c7f978c470e244b74fd20f9` (2026-11-26T15:56:51-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (5247), SQL (3532), Markdown (1511), JavaScript (463), JSON (141), YAML (117), Shell (27), HTML (20)
+- linguagens: TypeScript (5247), SQL (3532), Markdown (1512), JavaScript (463), JSON (141), YAML (117), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 11345 |
+| arquivos_total | 11346 |
 | arquivos_codigo | 5723 |
 | linhas_codigo | 1086704 |
 | rotas | 143 |
@@ -51,7 +51,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | testes | 2737 |
 | workflows | 89 |
 | scripts | 285 |
-| docs_md | 1511 |
+| docs_md | 1512 |
 
 ## Onde ficam as coisas
 - telas: src/pages (116), src/components (3), api/health.ts (1)
@@ -601,8 +601,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 51421 nós · 87205 arestas · 2907 comunidades · grafo do commit `cbe7b2d8`
-- comunidades maiores: ref_components (751), ref_hooks (737), ref_integrations (674), ref_node_child_process (510), ref_lib (414), vitest (407), @tanstack/react-query (397), ref_types (336), sonner (328), scripts (312), ref_node_fs (300), cors.ts (290)
+- 51426 nós · 87211 arestas · 2842 comunidades · grafo do commit `25c44033`
+- comunidades maiores: vitest (972), ref_components (882), ref_integrations (682), ref_node_child_process (503), @tanstack/react-query (463), ref_hooks (449), ref_types (382), sonner (369), ref_node_fs (366), react (358), react-router-dom (352), cors.ts (322)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1196,10 +1196,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/motor-v2-test-report.md` — 🧪 Relatório Exaustivo de Testes — Motor V2 (Bronze Layer) (401 linhas)
 - `docs/notifications-module-audit.md` — Auditoria — Módulo "Notificações de Estoque" (sino do header) (110 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — inventário e prova (1148 linhas)
-- subpastas de docs/: docs/arquivo (92), docs/agentes (27), docs/redeploy (27), docs/estado (26), docs/plans (24), docs/db (14), docs/qa (14), docs/audits (12), docs/ci (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/pendencias (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/coordenacao (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/edge-functions (2), docs/frete (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
+- subpastas de docs/: docs/arquivo (92), docs/agentes (27), docs/estado (27), docs/redeploy (27), docs/plans (24), docs/db (14), docs/qa (14), docs/audits (12), docs/ci (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/pendencias (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/coordenacao (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/edge-functions (2), docs/frete (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
 - CHANGELOG topo: [1.24.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.23.0...gifts-store-v1.24.0) (2026-11-26)
 
 ## Últimos commits
+- 2026-11-26 `25c4403` docs: varredura backend->UI medida (0 RPC de negocio sem consumidor) (#4184)
 - 2026-11-26 `cbe7b2d` chore(main): release gifts-store 1.24.0 (#4183)
 - 2026-11-26 `156532c` feat: tela de exposicao anon no painel de seguranca (#4182)
 - 2026-11-26 `29120bc` chore(main): release gifts-store 1.23.0 (#4181)
@@ -1214,7 +1215,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `b23ed21` chore(main): release gifts-store 1.21.0 (#4163)
 - 2026-11-26 `6d73c11` docs(migrations-log): recibo E15 — aplicação de 20261126052000 (#4171)
 - 2026-11-26 `0d772c1` docs(migrations-log): recibo E15 — aplicação de 20261126130000 (#4172)
-- 2026-11-26 `caba552` feat: liga views salvas do painel de estoque a uma tela (#4169)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -149932,6 +149932,14 @@
         "callers": {
           "code": [
             {
+              "file": "src/hooks/security/useAnonExposureAudit.ts",
+              "hits": 1
+            },
+            {
+              "file": "src/lib/security/anonExposure.ts",
+              "hits": 1
+            },
+            {
               "file": "supabase/migrations/20260717144811_schedule_anon_catalog_grant_audit_v1.sql",
               "hits": 1
             },
@@ -149940,7 +149948,7 @@
               "hits": 2
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 4,
           "cron": [
             "303:anon-catalog-grant-audit-6h"
           ],
@@ -176763,6 +176771,10 @@
         "callers": {
           "code": [
             {
+              "file": "src/lib/security/anonExposure.ts",
+              "hits": 1
+            },
+            {
               "file": "supabase/migrations/20260717144811_schedule_anon_catalog_grant_audit_v1.sql",
               "hits": 1
             },
@@ -176787,7 +176799,7 @@
               "hits": 3
             }
           ],
-          "code_total_files": 6,
+          "code_total_files": 7,
           "cron": [],
           "db": [
             "public.fn_anon_catalog_grant_audit_run"

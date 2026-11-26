@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "cbe7b2d8b66a436ddcfb17a4694a7b9d466b7c4c",
+  "sha": "25c44033994be0b48c7f978c470e244b74fd20f9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 18:41 UTC",
-  "files_total": 11275,
+  "generated_at": "2026-11-26 19:15 UTC",
+  "files_total": 11276,
   "code_files": 9254,
   "code_lines": 1318383
  },
@@ -583379,10 +583379,19 @@
   }
  },
  "git": {
-  "sha": "cbe7b2d8b66a436ddcfb17a4694a7b9d466b7c4c",
+  "sha": "25c44033994be0b48c7f978c470e244b74fd20f9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "25c4403",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "docs: varredura backend->UI medida (0 RPC de negocio sem consumidor) (#4184)",
+    "files": [
+     "docs/estado/15_VARREDURA_BACKEND_UI.md"
+    ]
+   },
    {
     "sha": "cbe7b2d",
     "date": "2026-11-26",
@@ -583762,16 +583771,6 @@
      "CHANGELOG.md",
      "package-lock.json",
      "package.json"
-    ]
-   },
-   {
-    "sha": "f240a63",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: replay do shadow aceita DROP INDEX CONCURRENTLY (#4156)",
-    "files": [
-     "scripts/drift-baseline.mjs",
-     "tests/scripts/drift-baseline.test.mjs"
     ]
    }
   ],

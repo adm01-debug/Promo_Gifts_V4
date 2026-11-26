@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "cbe7b2d8b66a436ddcfb17a4694a7b9d466b7c4c",
+  "commit": "25c44033994be0b48c7f978c470e244b74fd20f9",
   "branch": "main",
-  "data_commit": "2026-11-26T15:40:14-03:00",
+  "data_commit": "2026-11-26T15:56:51-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "25c4403",
+    "data": "2026-11-26",
+    "assunto": "docs: varredura backend->UI medida (0 RPC de negocio sem consumidor) (#4184)"
+   },
    {
     "sha": "cbe7b2d",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "8e78a4d",
     "data": "2026-11-26",
     "assunto": "chore(main): release gifts-store 1.20.5 (#4159)"
-   },
-   {
-    "sha": "65f12c5",
-    "data": "2026-11-26",
-    "assunto": "fix: restaura COMMENT do idx_spr_images_pending no rollback do PERF005 (#4158)"
    }
   ],
-  "arquivos_mudados_7d": 613,
+  "arquivos_mudados_7d": 614,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -310,7 +310,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11345,
+  "arquivos_total": 11346,
   "arquivos_codigo": 5723,
   "linhas_codigo": 1086704,
   "rotas": 143,
@@ -327,7 +327,7 @@
   "testes": 2737,
   "workflows": 89,
   "scripts": 285,
-  "docs_md": 1511
+  "docs_md": 1512
  },
  "por_pasta": {
   ".github/scripts": {

@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 19:18 UTC
+
+- **functions** alterado (2): `public.fn_anon_catalog_grant_audit_run()`, `public.fn_verify_anon_catalog_grants()`
+
 ## 2026-11-26 16:21 UTC
 
 - **functions** adicionado (3): `public.fn_admin_link_crm_seller(_crm_seller_id bigint, _auth_user_id uuid, _email text)`, `public.fn_admin_list_crm_seller_links(_search text, _limit integer)`, `public.fn_admin_unlink_crm_seller(_auth_user_id uuid)`
