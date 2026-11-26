@@ -1,3 +1,4 @@
+-- Rollback: supabase/rollbacks/20261101210000_rollback.sql
 -- SB-0007: DROP das 10 policies rls_restrictive_* USING (true) — código morto
 -- Severidade: MÉDIO | Tipo: SEGURANÇA (reclassificado de INVÁLIDO para INTENCIONAL/removível)
 -- Evidência: pg_policies WHERE policyname LIKE 'rls_restrictive%' AND qual = 'true' → 10 rows
