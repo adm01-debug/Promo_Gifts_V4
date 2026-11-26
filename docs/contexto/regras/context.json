@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "9b092c310dc26cc251820de1f7b5b0fc3ae1ddb3",
+  "sha": "f2107d5331b976c4bad3f55b41c9541b72a9027e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 16:56 UTC",
+  "generated_at": "2026-11-26 17:10 UTC",
   "files_total": 11262,
   "code_files": 9241,
-  "code_lines": 1315048
+  "code_lines": 1315056
  },
  "version": "1.3.2",
- "facts_hash": "bf9f6f7a5bf278fa",
+ "facts_hash": "57f5872f96eecd92",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -161801,7 +161801,7 @@
   {
    "module": "supabase/migrations",
    "files": 3140,
-   "lines": 229102,
+   "lines": 229110,
    "tables": [
     "...",
     "admin_audit_log",
@@ -556171,7 +556171,7 @@
   },
   "supabase/migrations/20261126060000_crm_seller_identity_admin_rpc.sql": {
    "path": "supabase/migrations/20261126060000_crm_seller_identity_admin_rpc.sql",
-   "lines": 205,
+   "lines": 213,
    "uses_service_role": true
   },
   "supabase/migrations/20261126130000_create_saved_stock_views.sql": {
@@ -582387,10 +582387,20 @@
   }
  },
  "git": {
-  "sha": "9b092c310dc26cc251820de1f7b5b0fc3ae1ddb3",
+  "sha": "f2107d5331b976c4bad3f55b41c9541b72a9027e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "f2107d5",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix: cabecalho de rollback e transacao unica na migration das RPCs de CRM (#4178)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261126060000_crm_seller_identity_admin_rpc.sql"
+    ]
+   },
    {
     "sha": "9b092c3",
     "date": "2026-11-26",
@@ -582751,15 +582761,6 @@
      "supabase/migrations/20261126012000_perf005_drop_unused_indexes_concurrently.sql",
      "supabase/rollbacks/20261126012000_rollback.sql"
     ]
-   },
-   {
-    "sha": "ea1788c",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20260917160000 (#4150)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
@@ -582790,6 +582791,10 @@
    [
     "docs/estado/07_EDGE_FUNCTIONS.md",
     3
+   ],
+   [
+    "supabase/migrations/20261126060000_crm_seller_identity_admin_rpc.sql",
+    2
    ],
    [
     "docs/db/BACKUP_CHECKSUMS_2026-11-26.txt",
@@ -582837,10 +582842,6 @@
    ],
    [
     "src/routes/admin-routes.tsx",
-    2
-   ],
-   [
-    "src/routes/lazy-pages.ts",
     2
    ]
   ]

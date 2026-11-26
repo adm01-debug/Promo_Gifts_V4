@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9b092c310dc26cc251820de1f7b5b0fc3ae1ddb3",
+  "commit": "f2107d5331b976c4bad3f55b41c9541b72a9027e",
   "branch": "main",
-  "data_commit": "2026-11-26T13:54:05-03:00",
+  "data_commit": "2026-11-26T14:09:05-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "f2107d5",
+    "data": "2026-11-26",
+    "assunto": "fix: cabecalho de rollback e transacao unica na migration das RPCs de CRM (#4178)"
+   },
    {
     "sha": "9b092c3",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "f240a63",
     "data": "2026-11-25",
     "assunto": "fix: replay do shadow aceita DROP INDEX CONCURRENTLY (#4156)"
-   },
-   {
-    "sha": "7cde484",
-    "data": "2026-11-25",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261126030000 (#4155)"
    }
   ],
   "arquivos_mudados_7d": 604,
@@ -156,11 +156,11 @@
     "mudancas": 115
    },
    {
-    "pasta": "src/hooks/products",
+    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
     "mudancas": 110
    },
    {
-    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "pasta": "src/hooks/products",
     "mudancas": 109
    },
    {
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 109
+    "mudancas": 110
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
