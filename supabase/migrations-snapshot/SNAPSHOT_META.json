@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-11-26T00:01:41.826Z",
+  "generated_at": "2026-11-26T03:13:01.983Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
-  "migrations_count": 3137,
+  "migrations_count": 3138,
   "live_schema": {
-    "bytes": 5212230
+    "bytes": 5211217
   },
   "drift": "calculado por .github/workflows/db-schema-drift-check.yml a partir do baseline",
   "blocking_remote_only_count": 0,
   "baseline": {
-    "version": "20261125180000",
-    "ledger_versions": 3022
+    "version": "20261126030000",
+    "ledger_versions": 3029
   }
 }
