@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a42709a8506dc9fec94cce89ab5ce45dc534681b",
+  "commit": "65f12c5482e7daff3bce4bc8f4557e1b792c41d0",
   "branch": "main",
-  "data_commit": "2026-11-26T00:51:41-03:00",
+  "data_commit": "2026-11-26T00:55:05-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "65f12c5",
+    "data": "2026-11-26",
+    "assunto": "fix: restaura COMMENT do idx_spr_images_pending no rollback do PERF005 (#4158)"
+   },
    {
     "sha": "a42709a",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "7221b0b",
     "data": "2026-11-25",
     "assunto": "fix: cabecalho de rollback e pg_temp nas migrations resgatadas (#4133)"
-   },
-   {
-    "sha": "0792fac",
-    "data": "2026-11-25",
-    "assunto": "fix(ci): snapshot de cron/event triggers via pooler (E037) (#4124)"
    }
   ],
   "arquivos_mudados_7d": 567,
