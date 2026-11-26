@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `aab21f0595` · branch `main` · 2026-11-26 16:44 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `9b092c310d` · branch `main` · 2026-11-26 16:56 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -1155,7 +1155,7 @@ Middleware matcher (Next.js): nenhum
 | grant | service_role | select, insert, update, delete, references, trigger, truncate | `v_products_public` |
 | grant | service_role, authenticated | execute | `record_mcp_access_violation`, `fn_sm_pipeline_health`, `fn_expire_novelties`, `fn_check_schema_signature_drift` |
 | grant | service_role, postgres | execute | `increment_webhook_stats` |
-| revoke | PUBLIC | all | `classification_audit.apply_high_confidence_suggestions`, `_can_act_on_behalf_of_others`, `_get_user_primary_role`, `acquire_ai_quota`, `admin_active_sessions`, `admin_execute_role_migration_batch`, `admin_revoke_user_sessions`, `apply_transform`, `assert_quote_discount_integrity`, `audit_mcp_api_keys_changes`, `audit_mcp_key_insert`, `audit_mcp_key_revoke`, `audit_ownership_orphans`, `audit_rls_coverage`, `audit_rls_matrix` … +3983 |
+| revoke | PUBLIC | all | `classification_audit.apply_high_confidence_suggestions`, `_can_act_on_behalf_of_others`, `_get_user_primary_role`, `acquire_ai_quota`, `admin_active_sessions`, `admin_execute_role_migration_batch`, `admin_revoke_user_sessions`, `apply_transform`, `assert_quote_discount_integrity`, `audit_mcp_api_keys_changes`, `audit_mcp_key_insert`, `audit_mcp_key_revoke`, `audit_ownership_orphans`, `audit_rls_coverage`, `audit_rls_matrix` … +3995 |
 | revoke | PUBLIC | execute | `fn_magazine_public_token`, `public`, `can_access_quote`, `org_has_any_members`, `org_has_any_members`, `get_edge_function_secret`, `create_organization_with_owner`, `get_quote_token_by_value`, `submit_quote_response`, `get_public_schema_signatures`, `public`, `check_webhook_dedup`, `process_notifications_queue`, `process_notifications_queue`, `process_notifications_queue` … +43 |
 | revoke | PUBLIC | insert, update, delete, truncate, trigger, references | `anon_catalog_grant_audit_log`, `anon_catalog_grant_audit_log` |
 | revoke | PUBLIC | select | `vw_product_availability`, `extensions.pg_stat_statements`, `extensions.pg_stat_statements_info` |

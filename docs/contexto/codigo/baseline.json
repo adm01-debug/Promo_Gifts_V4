@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "aab21f0595abdacdd874f89d0bfbd81dd00bf944",
+  "commit": "9b092c310dc26cc251820de1f7b5b0fc3ae1ddb3",
   "branch": "main",
-  "data_commit": "2026-11-26T13:42:39-03:00",
+  "data_commit": "2026-11-26T13:54:05-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "9b092c3",
+    "data": "2026-11-26",
+    "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45859951403) (#4173)"
+   },
    {
     "sha": "aab21f0",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "7cde484",
     "data": "2026-11-25",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261126030000 (#4155)"
-   },
-   {
-    "sha": "e61dc37",
-    "data": "2026-11-25",
-    "assunto": "fix: reemite PERF005 como 20261126030000 com approved-by valido (#4153)"
    }
   ],
-  "arquivos_mudados_7d": 600,
+  "arquivos_mudados_7d": 604,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -227,15 +227,15 @@
    },
    {
     "arquivo": "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "supabase/migrations-snapshot/SNAPSHOT_META.json",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "src/lib/freight/index.ts",
@@ -301,16 +301,16 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 228
+    "commits": 227
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 72
+    "commits": 73
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 11330,
+  "arquivos_total": 11332,
   "arquivos_codigo": 5710,
   "linhas_codigo": 1083377,
   "rotas": 143,

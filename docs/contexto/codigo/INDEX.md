@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `aab21f0595abdacdd874f89d0bfbd81dd00bf944` (2026-11-26T13:42:39-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9b092c310dc26cc251820de1f7b5b0fc3ae1ddb3` (2026-11-26T13:54:05-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (5234), SQL (3532), Markdown (1511), JavaScript (463), JSON (139), YAML (117), Shell (27), HTML (20)
+- linguagens: TypeScript (5234), SQL (3532), Markdown (1511), JavaScript (463), JSON (141), YAML (117), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 11330 |
+| arquivos_total | 11332 |
 | arquivos_codigo | 5710 |
 | linhas_codigo | 1083377 |
 | rotas | 143 |
@@ -601,7 +601,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 51290 nós · 86968 arestas · 2835 comunidades · grafo do commit `aab21f05`
+- 51290 nós · 86968 arestas · 2835 comunidades · grafo do commit `9b092c31`
 - comunidades maiores: ref_components (820), vitest (667), react (595), ref_hooks (529), @tanstack/react-query (506), ref_node_child_process (497), @testing-library/react (476), ref_node_fs (376), sonner (355), ref_utils (329), ref_pages (328), scripts (312)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -614,9 +614,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG.md (19)
 - audit/supabase-reference-catalog.temporary.json (11)
 - docs/coordenacao/conflitos-semanticos.md (10)
-- supabase/migrations-snapshot/ALL_IN_ONE.sql (9)
-- supabase/migrations-snapshot/SCHEMA_LIVE.sql (9)
-- supabase/migrations-snapshot/SNAPSHOT_META.json (9)
+- supabase/migrations-snapshot/ALL_IN_ONE.sql (10)
+- supabase/migrations-snapshot/SCHEMA_LIVE.sql (10)
+- supabase/migrations-snapshot/SNAPSHOT_META.json (10)
 - src/lib/freight/index.ts (8)
 - scripts/drift-baseline.mjs (6)
 - src/components/layout/SidebarReorganized.tsx (6)
@@ -1200,6 +1200,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.21.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.5...gifts-store-v1.21.0) (2026-11-26)
 
 ## Últimos commits
+- 2026-11-26 `9b092c3` chore(schema-snapshot): snapshot semanal 2026-W48 (run 45859951403) (#4173)
 - 2026-11-26 `aab21f0` feat: tela de acessos bloqueados lendo access_blocked_log (#4179)
 - 2026-11-26 `a1cece0` feat: tela de giro por variante lendo v_stock_velocity_safe (#4177)
 - 2026-11-26 `0ffac8e` feat: tela de vinculos de vendedor do CRM (/admin/vinculos-vendedor-crm) (#4165)
@@ -1214,7 +1215,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `b934d25` feat: JWT de agente na sugestao de identidade + botao montado no Kit Builder (#4167)
 - 2026-11-26 `480871c` docs(edges): registra que os 4 achados graves de auth e os 9 crons ja foram fechados (#4166)
 - 2026-11-26 `2e0c748` docs: mede cron das edges e corrige status N01/N15/N21/I01 (#4164)
-- 2026-11-26 `47346c1` feat: liga a Meta de Vendas ao dashboard com progresso real (#4161)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
