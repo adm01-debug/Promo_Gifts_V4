@@ -551,6 +551,30 @@
       "occurrences": 1,
       "stage": 115,
       "reason": "RPC versionada na migration 20261115034500 (assistente Encaixe do Cliente), ainda pendente do workflow E15 — conferido no canônico em 2026-11-15: pg_proc = 0 e version fora de schema_migrations. Remover esta exceção source-scoped e promover a RPC a `rpcs` somente após a aplicação por db-apply-migration.yml, verificação via pg_catalog e recaptura administrativa."
+    },
+    {
+      "kind": "rpc",
+      "name": "fn_admin_list_crm_seller_links",
+      "file": "src/hooks/admin/useCrmSellerLinks.ts",
+      "occurrences": 1,
+      "stage": 105,
+      "reason": "RPC criada na migration 20261126060000 (tela /admin/vinculos-vendedor-crm), ainda pendente de aplicacao em producao por Regra 8. Remover esta excecao source-scoped e promover ao catalogo somente apos o apply via db-apply-migration.yml e recaptura administrativa, com confirmacao em pg_proc."
+    },
+    {
+      "kind": "rpc",
+      "name": "fn_admin_link_crm_seller",
+      "file": "src/hooks/admin/useCrmSellerLinks.ts",
+      "occurrences": 1,
+      "stage": 105,
+      "reason": "RPC criada na migration 20261126060000 (tela /admin/vinculos-vendedor-crm), ainda pendente de aplicacao em producao por Regra 8. Remover esta excecao source-scoped e promover ao catalogo somente apos o apply via db-apply-migration.yml e recaptura administrativa, com confirmacao em pg_proc."
+    },
+    {
+      "kind": "rpc",
+      "name": "fn_admin_unlink_crm_seller",
+      "file": "src/hooks/admin/useCrmSellerLinks.ts",
+      "occurrences": 1,
+      "stage": 105,
+      "reason": "RPC criada na migration 20261126060000 (tela /admin/vinculos-vendedor-crm), ainda pendente de aplicacao em producao por Regra 8. Remover esta excecao source-scoped e promover ao catalogo somente apos o apply via db-apply-migration.yml e recaptura administrativa, com confirmacao em pg_proc."
     }
   ],
   "dynamic_baseline": [

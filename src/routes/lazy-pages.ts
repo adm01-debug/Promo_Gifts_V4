@@ -90,6 +90,9 @@ export const AdminV4CallbacksPage = lazyWithRetry(
 export const AdminClientPerformancePage = lazyWithRetry(
   () => import('@/pages/admin/AdminClientPerformancePage'),
 );
+export const AdminCrmSellerLinksPage = lazyWithRetry(
+  () => import('@/pages/admin/AdminCrmSellerLinksPage'),
+);
 export const AdminDesignTokensPage = lazyWithRetry(
   () => import('@/pages/admin/AdminDesignTokensPage'),
 );

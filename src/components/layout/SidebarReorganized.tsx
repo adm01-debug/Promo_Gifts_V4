@@ -36,6 +36,7 @@ import {
   ChevronsDownUp,
   Cloud,
   BookOpen,
+  UserCheck,
   Database,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -258,6 +259,13 @@ const navGroups: NavGroup[] = [
         badgeKey: 'pending-discount-approvals',
         adminOnly: true,
         tooltip: 'Gerencie a equipe: cadastre vendedores, defina permissões e alçadas.',
+      },
+      {
+        icon: UserCheck,
+        label: 'Vínculos CRM',
+        href: '/admin/vinculos-vendedor-crm',
+        adminOnly: true,
+        tooltip: 'Ligue cada usuário ao vendedor certo no CRM e corrija vínculos errados.',
       },
       {
         icon: Settings,

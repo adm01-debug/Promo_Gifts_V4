@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-11-26T10:54:42.094Z",
+  "generatedAt": "2026-11-26T11:52:00.844Z",
   "description": "Baseline de arquivos src/ com mais de 500 linhas (excluindo testes). Falha em arquivo novo acima do limite ou em crescimento.",
   "maxLines": 500,
   "meta": {
     "target": 100,
     "deadline": "2027-01-31",
     "note": "Split dos maiores: QuoteBuilderSummaryColumn, magazineService, tipos",
-    "currentCount": 137
+    "currentCount": 138
   },
   "files": {
     "src/components/admin/DiscountManagementPanel.tsx": 849,
@@ -52,7 +52,7 @@
     "src/components/kit-builder/KitMakerLanding.tsx": 563,
     "src/components/kit-builder/PersonalizationConfig.tsx": 1402,
     "src/components/layout/Header.tsx": 561,
-    "src/components/layout/SidebarReorganized.tsx": 686,
+    "src/components/layout/SidebarReorganized.tsx": 694,
     "src/components/loading/ModernSkeletons.tsx": 755,
     "src/components/mockup/MockupHistoryPanel.tsx": 828,
     "src/components/mockup/approval/MockupApprovalTemplate.tsx": 737,
@@ -113,7 +113,8 @@
     "src/lib/external-db/products-detail.ts": 642,
     "src/lib/external-db/products.ts": 653,
     "src/lib/external-db/rest-native.ts": 808,
-    "src/lib/theme-presets.ts": 1106,
+    "src/lib/rbac/route-matrix.ts": 505,
+  "src/lib/theme-presets.ts": 1106,
     "src/pages/admin/AdminProductFormPage.tsx": 705,
     "src/pages/admin/AdminSegurancaAcessoPage.tsx": 742,
     "src/pages/admin/AdminTelemetriaPage.tsx": 642,

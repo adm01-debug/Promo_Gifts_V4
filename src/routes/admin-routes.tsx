@@ -8,6 +8,7 @@ import {
   AdminCadastrosPage,
   AdminConexoesPage,
   AdminConexoesStatusPage,
+  AdminCrmSellerLinksPage,
   AdminDesignTokensPage,
   AdminExternalDbPage,
   AdminFreteSettingsPage,
@@ -68,6 +69,7 @@ export const adminRoutes = (
       <Route path="/admin" element={<Navigate to="/admin/usuarios" replace />} />
       <Route path="/admin/usuarios" element={<AdminUsuariosPage />} />
       <Route path="/admin/usuarios/promover" element={<AdminPromoverUsuarioPage />} />
+      <Route path="/admin/vinculos-vendedor-crm" element={<AdminCrmSellerLinksPage />} />
       <Route path="/admin/limites-desconto" element={<SellerDiscountLimitsAdminPage />} />
       <Route path="/admin/rls-denials" element={<RlsDenialsAdminPage />} />
       <Route path="/admin/auditoria-propriedade" element={<OwnershipAuditAdminPage />} />
