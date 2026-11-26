@@ -2008,6 +2008,7 @@ version,name
 20260620170500,
 20260620180000,fix_security_definer_search_path
 20260620190000,
+20260620190001,populate_quotes_sent_at
 20260620190002,
 20260620190003,
 20260620190004,
@@ -2544,6 +2545,7 @@ version,name
 20260627200100,
 20260628192131,add_art_file_attachments_lookup_indexes_step6
 20260629102207,seller_carts_status_two_state_em_separacao
+20260629142224,7e644177-527b-4b92-93a3-79ffee40ca4a
 20260629142245,
 20260702163543,cnpj_normalize_backfill_and_check_constraints
 20260702171630,cnpj_checks_ascii_hardening
@@ -2863,7 +2865,10 @@ version,name
 20260916155725,catalog_stats_price_range_top_colors_materials
 20260916193000,e25_supplier_history_partition_automation
 20260916202000,e23_force_rls_secret_tables
+20260916211500,e30_ops_table_size_history
 20260917061500,e18_revoke_authenticated_authz_gaps
+20260917150000,e40_ops_pgss_history
+20260917160000,e33_ops_wraparound_monitor
 20260922170000,signup_identity_safe_default
 20260923114500,quote_rpc_lineage_atomicity
 20261005124500,discount_approval_requests_version
@@ -2944,6 +2949,7 @@ version,name
 20261101202426,fix_auth001_revoke_execute_cleanup_sessions
 20261101202432,fix_perf002_recreate_captured_at_index
 20261101202500,cron001_stagger_schedules_reduce_concurrent
+20261101210000,sb0007_drop_noop_restrictive_policies
 20261101220000,
 20261101223908,20261101202500_cron001_stagger_schedules_reduce_concurrent
 20261101232022,cron001_stagger_schedules
@@ -3024,3 +3030,4 @@ version,name
 20261125160000,restaura_grant_anon_mv_product_compositions
 20261125173000,idx_sds_summary_date_supplier_aplicavel
 20261125180000,fix_comment_v_tabela_gravacao_publica
+20261126030000,perf005_drop_unused_indexes_concurrently
