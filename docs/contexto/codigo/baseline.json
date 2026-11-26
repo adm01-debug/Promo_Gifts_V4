@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3a4441385b2df4c969d35ab340e4a20196a6a9d0",
+  "commit": "48dbd0bb772d1ee71b585ae6d6e59cd758b194e0",
   "branch": "main",
-  "data_commit": "2026-11-26T10:10:49-03:00",
+  "data_commit": "2026-11-26T10:40:50-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "48dbd0b",
+    "data": "2026-11-26",
+    "assunto": "docs(edge-deploy-log): recibo do deploy — run 45824995474 (#4170)"
+   },
    {
     "sha": "3a44413",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "0ab1b7a",
     "data": "2026-11-25",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20260620190001 (#4141)"
-   },
-   {
-    "sha": "2e8d1ac",
-    "data": "2026-11-25",
-    "assunto": "fix: PERF005 derruba so os 48 indices com scans=0 e ganha rollback (#4144)"
    }
   ],
-  "arquivos_mudados_7d": 572,
+  "arquivos_mudados_7d": 573,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 231
+    "commits": 230
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 69
+    "commits": 70
    }
   ]
  },

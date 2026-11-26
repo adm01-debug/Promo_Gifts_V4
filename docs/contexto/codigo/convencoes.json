@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(edge-deploy-log): recibo do deploy — run 45824995474 (#4170)",
    "feat: liga a tabela stock_notes a uma tela de notas por variacao (#4168)",
    "feat: JWT de agente na sugestao de identidade + botao montado no Kit Builder (#4167)",
    "docs(edges): registra que os 4 achados graves de auth e os 9 crons ja foram fechados (#4166)",
-   "docs: mede cron das edges e corrige status N01/N15/N21/I01 (#4164)",
-   "feat: liga a Meta de Vendas ao dashboard com progresso real (#4161)"
+   "docs: mede cron das edges e corrige status N01/N15/N21/I01 (#4164)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

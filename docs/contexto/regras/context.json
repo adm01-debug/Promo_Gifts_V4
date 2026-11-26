@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "3a4441385b2df4c969d35ab340e4a20196a6a9d0",
+  "sha": "48dbd0bb772d1ee71b585ae6d6e59cd758b194e0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 13:14 UTC",
+  "generated_at": "2026-11-26 13:46 UTC",
   "files_total": 11231,
   "code_files": 9212,
   "code_lines": 1309859
@@ -580061,10 +580061,19 @@
   }
  },
  "git": {
-  "sha": "3a4441385b2df4c969d35ab340e4a20196a6a9d0",
+  "sha": "48dbd0bb772d1ee71b585ae6d6e59cd758b194e0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "48dbd0b",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "docs(edge-deploy-log): recibo do deploy — run 45824995474 (#4170)",
+    "files": [
+     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
+    ]
+   },
    {
     "sha": "3a44413",
     "date": "2026-11-26",
@@ -580368,25 +580377,6 @@
     "files": [
      "supabase/MIGRATIONS_RECONCILIACAO_20261125.md"
     ]
-   },
-   {
-    "sha": "9fa5514",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45723739862) (#4137)",
-    "files": [
-     "docs/db/BACKUP_CHECKSUMS_2026-11-26.txt",
-     "docs/db/BACKUP_SCHEMA_ONLY_2026-11-26.sql",
-     "docs/db/LEDGER_DATA_2026-09-16.sql",
-     "docs/db/LEDGER_DATA_2026-11-26.sql",
-     "supabase/baseline/20261125180000_baseline_schema.sql",
-     "supabase/baseline/20261125180000_cron_jobs.json",
-     "supabase/baseline/20261125180000_event_triggers.json",
-     "supabase/baseline/20261125180000_ledger_versions.json",
-     "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-     "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-     "supabase/migrations-snapshot/SNAPSHOT_META.json"
-    ]
    }
   ],
   "hot_files": [
@@ -580423,28 +580413,8 @@
     2
    ],
    [
-    "docs/db/BACKUP_CHECKSUMS_2026-11-26.txt",
-    2
-   ],
-   [
-    "docs/db/BACKUP_SCHEMA_ONLY_2026-11-26.sql",
-    2
-   ],
-   [
-    "docs/db/LEDGER_DATA_2026-11-26.sql",
-    2
-   ],
-   [
-    "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-    2
-   ],
-   [
-    "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-    2
-   ],
-   [
-    "supabase/migrations-snapshot/SNAPSHOT_META.json",
-    2
+    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    1
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
@@ -580468,6 +580438,26 @@
    ],
    [
     "src/lib/stock/__tests__/stock-notes.test.ts",
+    1
+   ],
+   [
+    "src/lib/stock/stock-notes.ts",
+    1
+   ],
+   [
+    "src/components/kit-builder/KitBuilderHeader.tsx",
+    1
+   ],
+   [
+    "supabase/functions/kit-identity-suggest/index.ts",
+    1
+   ],
+   [
+    "docs/FUNCIONALIDADES_E_FERRAMENTAS.md",
+    1
+   ],
+   [
+    "src/components/goals/__tests__/SalesGoalsCard.test.tsx",
     1
    ]
   ]
