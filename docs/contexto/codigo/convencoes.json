@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: cabecalho de rollback e pg_temp nas migrations resgatadas (#4133)",
    "fix(ci): snapshot de cron/event triggers via pooler (E037) (#4124)",
    "chore(test): liga 9 specs Playwright orfaos de tests/e2e/ ao runner (#4122)",
    "chore(main): release gifts-store 1.20.2 (#4112)",
-   "chore: rollback das migrations ops (E30/E33/E40) (#4120)",
-   "docs(db): reconciliacao das 125 migrations fora do ledger com evidencia do dump (#4129)"
+   "chore: rollback das migrations ops (E30/E33/E40) (#4120)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

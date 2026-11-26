@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "0792fac96b007e5d545af7710af73f342466eaf2",
+  "sha": "7221b0b8b860888405a6388d5b0b16c4d5635651",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 23:56 UTC",
+  "generated_at": "2026-11-26 00:02 UTC",
   "files_total": 11217,
   "code_files": 9202,
-  "code_lines": 1305275
+  "code_lines": 1305277
  },
  "version": "1.3.2",
- "facts_hash": "7ae16a43a354c056",
+ "facts_hash": "3a0eb3dacce6bc8a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -153865,7 +153865,7 @@
   {
    "module": "supabase/migrations",
    "files": 3136,
-   "lines": 228608,
+   "lines": 228610,
    "tables": [
     "...",
     "admin_audit_log",
@@ -533565,7 +533565,7 @@
   },
   "supabase/migrations/20260620190001_populate_quotes_sent_at.sql": {
    "path": "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
-   "lines": 42
+   "lines": 43
   },
   "supabase/migrations/20260620190002_faxina_tier3b_b1_archive_dead_fns_views.sql": {
    "path": "supabase/migrations/20260620190002_faxina_tier3b_b1_archive_dead_fns_views.sql",
@@ -535969,7 +535969,7 @@
   },
   "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql": {
    "path": "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql",
-   "lines": 54,
+   "lines": 55,
    "role_checks": [
     "admin",
     "supervisor"
@@ -564719,10 +564719,21 @@
   }
  },
  "git": {
-  "sha": "0792fac96b007e5d545af7710af73f342466eaf2",
+  "sha": "7221b0b8b860888405a6388d5b0b16c4d5635651",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7221b0b",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix: cabecalho de rollback e pg_temp nas migrations resgatadas (#4133)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
+     "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql"
+    ]
+   },
    {
     "sha": "0792fac",
     "date": "2026-11-25",
@@ -565019,22 +565030,12 @@
      "scripts/append-migration-receipt.mjs",
      "tests/scripts/append-migration-receipt.test.mjs"
     ]
-   },
-   {
-    "sha": "4db7811",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(ci): destrava o replay do E40 (ACL de extensao da plataforma) (#4089)",
-    "files": [
-     "scripts/drift-baseline.mjs",
-     "tests/scripts/drift-baseline.test.mjs"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    14
+    15
    ],
    [
     "package-lock.json",
@@ -565047,6 +565048,14 @@
    [
     "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql",
     3
+   ],
+   [
+    "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
+    2
+   ],
+   [
+    "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql",
+    2
    ],
    [
     ".release-please-manifest.json",
@@ -565102,14 +565111,6 @@
    ],
    [
     "e2e/stock-regression.spec.ts",
-    1
-   ],
-   [
-    "supabase/rollbacks/20260916211500_rollback.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20260917150000_rollback.sql",
     1
    ]
   ]

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0792fac96b007e5d545af7710af73f342466eaf2",
+  "commit": "7221b0b8b860888405a6388d5b0b16c4d5635651",
   "branch": "main",
-  "data_commit": "2026-11-25T20:44:52-03:00",
+  "data_commit": "2026-11-25T20:56:53-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7221b0b",
+    "data": "2026-11-25",
+    "assunto": "fix: cabecalho de rollback e pg_temp nas migrations resgatadas (#4133)"
+   },
    {
     "sha": "0792fac",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "36833fd",
     "data": "2026-11-25",
     "assunto": "fix: snapshot de cron jobs com os jobs da E25 (destrava o drift E037) (#4106)"
-   },
-   {
-    "sha": "7987262",
-    "data": "2026-11-25",
-    "assunto": "docs(e25): registra a aplicacao em producao e resolve o risco em prod-readiness (#4104)"
    }
   ],
-  "arquivos_mudados_7d": 570,
+  "arquivos_mudados_7d": 569,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 93
+    "mudancas": 94
    },
    {
     "pasta": "src/pages/magazine",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 93
+    "mudancas": 94
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
