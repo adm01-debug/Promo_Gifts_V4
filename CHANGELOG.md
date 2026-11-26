@@ -5,6 +5,14 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.20.3](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.2...gifts-store-v1.20.3) (2026-11-26)
+
+
+### Bug Fixes
+
+* cabecalho de rollback e pg_temp nas migrations resgatadas ([#4133](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4133)) ([7221b0b](https://github.com/adm01-debug/Promo_Gifts_V4/commit/7221b0b8b860888405a6388d5b0b16c4d5635651))
+* **ci:** snapshot de cron/event triggers via pooler (E037) ([#4124](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4124)) ([0792fac](https://github.com/adm01-debug/Promo_Gifts_V4/commit/0792fac96b007e5d545af7710af73f342466eaf2))
+
 ## [1.20.2](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.1...gifts-store-v1.20.2) (2026-11-25)
 
 
