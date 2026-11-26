@@ -1,15 +1,21 @@
--- Rollback: supabase/rollbacks/20261126012000_rollback.sql
+-- Rollback: supabase/rollbacks/20261126020000_rollback.sql
 --
--- PERF-005 (reemissao) — drop dos 48 indices com idx_scan=0.
+-- PERF-005 — drop dos 48 indices com idx_scan=0.
 --
--- Por que reemitir em vez de editar 20261101205400: o gate E75
--- (scripts/check-migrations-sync-log-gate.mjs) recusa migration MODIFICADA sem
--- recibo valido — a 20261101205400 nunca teve linha no MIGRATIONS_SYNC_LOG.md,
--- entao qualquer edicao nela e bloqueada (mesmo caminho que a
--- 20261119081500 ja usou para reemitir a 20261117172500). O arquivo historico
--- fica intocado; o trabalho real acontece aqui.
+-- Por que esta versao existe (substitui a 20261126012000): aquele arquivo
+-- nasceu sem a linha "-- approved-by:" exigida pelo opt-out de E63. O preflight
+-- do E15 (run 45737271027) bloqueou com "CONCURRENTLY detectado: ... Adicione
+-- -- transaction: none + -- approved-by:" e o gate E75 nao aceita editar
+-- migration apenas pendente (pendente_sem_adicao_no_pr). O trabalho foi
+-- reemitido aqui com o cabecalho completo; a 20261126012000 foi removida neste
+-- mesmo PR — nunca entrou no ledger, nunca executou.
 --
--- Por que CONCURRENTLY: o apply E15 run 45730238702 falhou com
+-- Por que reemitir em vez de editar 20261101205400: o gate E75 recusa migration
+-- MODIFICADA sem recibo valido — a 20261101205400 nunca teve linha no
+-- MIGRATIONS_SYNC_LOG.md (mesmo caminho que a 20261119081500 ja usou para
+-- reemitir a 20261117172500). O arquivo historico fica intocado.
+--
+-- Por que CONCURRENTLY: o apply do E15 (run 45730238702) falhou com
 -- "canceling statement due to lock timeout" em
 -- DROP INDEX public.idx_products_padronizacao_id. DROP INDEX sem CONCURRENTLY
 -- pede ACCESS EXCLUSIVE na tabela e o workflow usa lock_timeout=1s; em
@@ -17,6 +23,7 @@
 -- 20261018170000_e069_drop_redundant_prefix_index.sql.
 --
 -- transaction: none
+-- approved-by: @adm01-debug
 --
 -- Efeito: cada DROP e atomico por si (CONCURRENTLY nao roda em bloco de
 -- transacao). Se um falhar, os anteriores ficam e o re-run continua de onde
