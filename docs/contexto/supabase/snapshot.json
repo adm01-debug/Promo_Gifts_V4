@@ -149465,6 +149465,66 @@
         "volatility": "volatile"
       },
       {
+        "args": "_search text, _limit integer",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Cota de IA por usuario para o painel /admin/consumo-ia. Guard: auth.uid() + is_admin_or_above (SQLSTATE 42501). Mesma agregacao de fn_ai_quota_summary (user_roles x auth.users x ai_usage_quotas x ai_usage_logs). remaining = -1 significa cota ilimitada; _search filtra e-mail/papel; _limit e limitado a 500.",
+        "config": [
+          "search_path=public, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "7af74fdf64ec0a44",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "fn_admin_ai_quota_summary",
+        "owner": "postgres",
+        "returns": "TABLE(user_id uuid, email text, role text, monthly_limit integer, is_unlimited boolean, used_this_month integer, remaining integer, success_month integer, error_month integer, pending_count integer, last_activity timestamp with time zone)",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "stable"
+      },
+      {
+        "args": "",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Wrapper admin (guard 42501) do diagnostico fn_anon_access_audit: RLS sem policy, funcao em policy sem EXECUTE para anon, view sensivel exposta a anon e tabela de badge sem grant. Alimenta a aba \"Raio-x do acesso anon\" em /admin/seguranca-acesso.",
+        "config": [
+          "search_path=public, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "ec0a92d1e420f782",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "fn_admin_anon_access_audit",
+        "owner": "postgres",
+        "returns": "TABLE(categoria text, objeto text, anon_grant boolean, auth_grant boolean, severidade text, descricao text)",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
         "args": "_crm_seller_id bigint, _auth_user_id uuid, _email text",
         "callers": {
           "code": [],
@@ -149902,13 +149962,23 @@
         "callers": {
           "code": [
             {
+              "file": "src/lib/security/anonAccessAudit.ts",
+              "hits": 1
+            },
+            {
               "file": "supabase/migrations/20260623190039_fn_anon_access_audit_diagnostic.sql",
+              "hits": 2
+            },
+            {
+              "file": "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql",
               "hits": 2
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 3,
           "cron": [],
-          "db": [],
+          "db": [
+            "public.fn_admin_anon_access_audit"
+          ],
           "triggers": [],
           "views": []
         },
@@ -184707,10 +184777,12 @@
               "hits": 1
             }
           ],
-          "code_total_files": 104,
+          "code_total_files": 105,
           "cron": [],
           "db": [
             "public.enforce_user_id_owner",
+            "public.fn_admin_ai_quota_summary",
+            "public.fn_admin_anon_access_audit",
             "public.fn_admin_link_crm_seller",
             "public.fn_admin_list_crm_seller_links",
             "public.fn_admin_run_smoke_tests",
@@ -242258,6 +242330,18 @@
         "statements": 18,
         "statements_sha": "c51707adb9533025",
         "version": "20261126130000"
+      },
+      {
+        "name": "admin_ai_quota_summary_rpc",
+        "statements": 4,
+        "statements_sha": "68a53ad8fe9b5e69",
+        "version": "20261126191200"
+      },
+      {
+        "name": "admin_anon_access_audit_rpc",
+        "statements": 6,
+        "statements_sha": "63c69eb54e970106",
+        "version": "20261126192900"
       }
     ],
     "policies": [

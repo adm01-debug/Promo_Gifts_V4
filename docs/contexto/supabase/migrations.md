@@ -3039,3 +3039,5 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261126052000 | [ops_infra_telemetry_dev_rpc](migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql) | 5 |
 | 20261126060000 | [crm_seller_identity_admin_rpc](migrations/20261126060000_crm_seller_identity_admin_rpc.sql) | 0 |
 | 20261126130000 | [create_saved_stock_views](migrations/20261126130000_create_saved_stock_views.sql) | 18 |
+| 20261126191200 | [admin_ai_quota_summary_rpc](migrations/20261126191200_admin_ai_quota_summary_rpc.sql) | 4 |
+| 20261126192900 | [admin_anon_access_audit_rpc](migrations/20261126192900_admin_anon_access_audit_rpc.sql) | 6 |

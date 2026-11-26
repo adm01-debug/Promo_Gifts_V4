@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 22:26 UTC
+
+- **functions** adicionado (2): `public.fn_admin_ai_quota_summary(_search text, _limit integer)`, `public.fn_admin_anon_access_audit()`
+- **functions** alterado (2): `public.fn_anon_access_audit()`, `public.is_admin_or_above(_user_id uuid)`
+- **migrations** adicionado (2): `20261126191200_admin_ai_quota_summary_rpc`, `20261126192900_admin_anon_access_audit_rpc`
+
 ## 2026-11-26 21:21 UTC
 
 - **functions** alterado (2): `public.fn_ai_quota_summary()`, `public.is_admin_or_above(_user_id uuid)`
