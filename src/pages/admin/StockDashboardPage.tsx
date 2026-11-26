@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { StockDashboard } from '@/components/inventory/StockDashboard';
 import { StockHeroRiskBanner } from '@/components/inventory/StockHeroRiskBanner';
+import { StockSavedViewsMenu } from '@/components/inventory/StockSavedViewsMenu';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Activity } from 'lucide-react';
@@ -98,6 +99,10 @@ export default function StockDashboardPage() {
                 filtro: {emaActiveLevel} ×
               </Badge>
             )}
+            <StockSavedViewsMenu
+              filters={{ activeLevel: emaActiveLevel }}
+              onApply={(next) => setEmaActiveLevel(next.activeLevel)}
+            />
             <span className="ml-auto hidden text-[10px] text-muted-foreground/60 lg:inline">
               <kbd className="rounded border px-1">Ctrl+E</kbd> navegar ·{' '}
               <kbd className="rounded border px-1">Ctrl+W</kbd> what-if

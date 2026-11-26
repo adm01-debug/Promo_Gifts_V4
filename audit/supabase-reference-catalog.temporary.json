@@ -710,9 +710,9 @@
       "kind": "relation",
       "file": "src/hooks/stock/useSavedStockViews.ts",
       "receiver": "client",
-      "occurrences": 3,
+      "occurrences": 5,
       "stage": 53,
-      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+      "reason": "Despacho dinamico legado inventariado na etapa 053. Elevado de 3 para 5 em 2026-11-26 ao terminar a feature: o hook orfao ganhou UI (StockSavedViewsMenu em /estoque) e a tabela public.saved_stock_views foi criada em supabase/migrations/20261126130000_create_saved_stock_views.sql (RLS + 4 policies). Nao pode ir para `relations` antes do apply em producao; remover esta excecao e declarar a relation depois do apply."
     },
     {
       "kind": "relation",
