@@ -153,7 +153,7 @@ Credenciais marcadas `[vault]` vêm de `_shared/credentials.ts` (tabela `integra
 | 47 | **image-proxy** | Proxy CORS de imagens de fornecedores com allowlist de domínio | `src/utils/imageProxy.ts:77` ← `src/components/products/ProductCardImage.tsx:211` | `IMAGE_PROXY_ALLOW_LOCALHOST:48`, `IMAGE_PROXY_MAX_BYTES:129` | CDNs dos fornecedores (allowlist `:1-10`) | `runBotProtection` `:71` + 403 `:83`,`:110`; `verify_jwt=false` (`config.toml:12`) | ✅ |
 | 48 | **intelligence-substitute-applied** | Espelha evento `intelligence.substitute_applied` em `ai_usage_events` | `src/lib/analytics/intelligenceAnalytics.ts:17` (`MIRROR_FN`), invocado em `:163` | — | — | `authenticateRequest` `:69` | ✅ |
 | 49 | **kit-ai-builder** | Prompt natural → sugestão estruturada de kit | `src/components/kit-builder/KitAIPromptDialog.tsx:47` | `LOVABLE_API_KEY` [vault] | `ai.gateway.lovable.dev` (`:57`) | `authenticateRequest:26` + `requireRole:27` | ✅ |
-| 50 | **kit-identity-suggest** | Sugere tag + cor hex + ícone lucide para o kit (tool-calling) | `src/hooks/kit-builder/useKitIdentitySuggestion.ts:33` | `LOVABLE_API_KEY` [vault] | `ai.gateway.lovable.dev` (`:89`) | ⚠️ **apenas `runBotProtection` `:45`** — sem JWT, mas **gasta crédito de IA** | 🟨 |
+| 50 | **kit-identity-suggest** | Sugere tag + cor hex + ícone lucide para o kit (tool-calling) | `src/hooks/kit-builder/useKitIdentitySuggestion.ts:33` ← `KitBuilderHeader.tsx:314` | `LOVABLE_API_KEY` [vault] | `ai.gateway.lovable.dev` (`:89`) | `authenticateRequest` + `requireRole('agente')` (`:45-51`) | ✅ |
 | 51 | **load-test** | Dispara N requests concorrentes contra `targetEndpoint` arbitrário usando a **service_role key** no header | `supabase/functions/tests/shockwave-load-test.ts:14` (teste) | `SUPABASE_URL:43`, `SUPABASE_SERVICE_ROLE_KEY:66` | qualquer endpoint passado no body | ❌ **NENHUMA** (`:11`) | ✅ `authorize(dev)` `:14-15` (remediado) |
 | 52 | **log-login-attempt** | Registra tentativa de login em `login_attempts` (contrato "nunca-5xx") | `src/contexts/AuthContext.tsx:365`; `src/hooks/admin/useIPValidation.ts:176` | `SB:108,156` | — | `applyRateLimit` `:117`; sem JWT (`config.toml:81`) — intencional (pré-login) | ✅ |
 | 53 | **magazine-import-local** | Migra revistas de `localStorage` → Gold (`magazines`/`magazine_items`) | `src/pages/magazine/hooks/useMagazineGoldImport.ts:35` | `SUPABASE_URL`,`SUPABASE_ANON_KEY:65` | — | `getUser()` `:68` (gateway em false por HS256, `config.toml:148`) | ✅ |
@@ -213,14 +213,16 @@ Credenciais marcadas `[vault]` vêm de `_shared/credentials.ts` (tabela `integra
 
 | Classe | Qtd | % |
 |---|---|---|
-| ✅ IMPLEMENTADO_TOTAL | 86 | 83% |
-| 🟨 IMPLEMENTADO_PARCIAL | 3 | 3% |
+| ✅ IMPLEMENTADO_TOTAL | 87 | 84% |
+| 🟨 IMPLEMENTADO_PARCIAL | 2 | 2% |
 | 🟦 SUGERIDO_OU_INICIADO | 13 | 12% |
 | ⬛ MORTO_OU_ABANDONADO | 2 | 2% |
 | **Total** | **104** | **100%** |
 
-Detalhe dos 3 🟨 remanescentes (medido 2026-11-26): `kit-identity-suggest` (consome crédito de IA
-sem JWT), `materials-api` (auth decorativa) e `health-check` (read-only, sem gate). Os 4 achados do §C.1
+Detalhe dos 2 🟨 remanescentes (medido 2026-11-26): `materials-api` (auth decorativa) e
+`health-check` (read-only, sem gate). `kit-identity-suggest` saiu de 🟨 para ✅: ganhou
+`authenticateRequest` + `requireRole('agente')` e o botão de sugestão (`IdentitySuggestionButton`),
+que existia sem uso, passou a ser renderizado no `KitBuilderHeader`. Os 4 achados do §C.1
 e as 9 edges de cron do §0.2 foram fechados.
 
 ---
@@ -304,7 +306,7 @@ Lembrete da §0.1: `verify_jwt=true` do gateway **aceita a anon key pública** �
 
 | Função | Linha | Mitigação presente | Ressalva |
 |---|---|---|---|
-| **kit-identity-suggest** | `index.ts:45` — só `runBotProtection` (10 req/60s, block 1h) | rate limit por IP | Chama `ai.gateway.lovable.dev` (`:89`) → **consome crédito de IA sem JWT**. Todas as outras 3 edges de kit/IA usam `authenticateRequest` + `requireRole('agente')` (ex.: `kit-ai-builder/index.ts:26-27`). É a exceção inconsistente. |
+| **kit-identity-suggest** | ✅ Resolvido (2026-11-26): `authenticateRequest` + `requireRole('agente')` em `index.ts:45-51`, antes de `runBotProtection`; `IdentitySuggestionButton` montado em `KitBuilderHeader.tsx:314`. | JWT (agente+) + rate limit por IP | Chama `ai.gateway.lovable.dev` (`:89`) → crédito de IA só para vendedor autenticado, alinhado às outras 3 edges de kit/IA (`kit-ai-builder/index.ts:26-27`). |
 | **get-visitor-info** | `index.ts:11` — só `runBotProtection` (30 req/60s) | read-only | Corrigido: hoje chama **`https://ip-api.com/json/...`** (`:50`), com TLS. Continua sem JWT — correto por design, já que roda na tela de login antes de existir sessão. |
 | **image-proxy** | `index.ts:71` — `runBotProtection` + allowlist de domínio + `IMAGE_PROXY_MAX_BYTES:129` | proxy read-only com allowlist e teto de bytes | Aceitável para a função. |
 | **health-check** | `index.ts:166` | read-only, snapshot cacheado | Expõe status de dependências internas publicamente; baixo impacto. |
