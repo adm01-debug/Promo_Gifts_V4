@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1283,
+ "total": 1284,
  "orfaos": 155,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -10070,6 +10070,23 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/inventory/StockSavedViewsMenu.tsx",
+   "exports": [
+    "StockSavedViewsMenu",
+    "StockSavedViewsMenuProps"
+   ],
+   "export_default": null,
+   "linhas": 291,
+   "dominio": "components/inventory",
+   "hooks_locais": [
+    "useSavedStockViews"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/inventory/StockStatCard.tsx",
    "exports": [
     "StatCard"
@@ -16564,7 +16581,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 36,
+   "usado_por": 37,
    "orfao": false
   },
   {
@@ -16611,7 +16628,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 490,
+   "usado_por": 491,
    "orfao": false
   },
   {
@@ -16646,7 +16663,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 657,
+   "usado_por": 658,
    "orfao": false
   },
   {
@@ -16870,7 +16887,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 141,
+   "usado_por": 142,
    "orfao": false
   },
   {
@@ -17029,7 +17046,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 268,
+   "usado_por": 269,
    "orfao": false
   },
   {
@@ -17057,7 +17074,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 152,
+   "usado_por": 153,
    "orfao": false
   },
   {
@@ -17465,7 +17482,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 65,
+   "usado_por": 66,
    "orfao": false
   },
   {
@@ -18695,7 +18712,7 @@
     "StockDashboardPage"
    ],
    "export_default": "StockDashboardPage",
-   "linhas": 114,
+   "linhas": 119,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useKeyboardShortcut",

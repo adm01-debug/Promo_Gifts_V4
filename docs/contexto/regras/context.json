@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "c3f747f0d00d55ee650491eac00fac1a812c7aaa",
+  "sha": "caba55243216d1a49dd730b4261560ac8dd591d2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 13:52 UTC",
-  "files_total": 11237,
-  "code_files": 9218,
-  "code_lines": 1310827
+  "generated_at": "2026-11-26 14:28 UTC",
+  "files_total": 11243,
+  "code_files": 9224,
+  "code_lines": 1311834
  },
  "version": "1.3.2",
- "facts_hash": "c477c93f3bd8a2cd",
+ "facts_hash": "da5a210748e837e5",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,9 +1130,9 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3528,
-   ".ts": 3185,
-   ".tsx": 2030,
+   ".sql": 3530,
+   ".ts": 3187,
+   ".tsx": 2032,
    ".mjs": 456,
    ".py": 18,
    ".js": 7
@@ -50049,6 +50049,46 @@
     "src": "supabase/migrations/20261120180000_restore_quote_comments_scoped_threads.sql"
    },
    {
+    "name": "saved_stock_views_select_own",
+    "table": "saved_stock_views",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "user_id = auth.uid()",
+    "check": "",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
+   },
+   {
+    "name": "saved_stock_views_insert_own",
+    "table": "saved_stock_views",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "user_id = auth.uid()",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
+   },
+   {
+    "name": "saved_stock_views_update_own",
+    "table": "saved_stock_views",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "user_id = auth.uid()",
+    "check": "user_id = auth.uid()",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
+   },
+   {
+    "name": "saved_stock_views_delete_own",
+    "table": "saved_stock_views",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "user_id = auth.uid()",
+    "check": "",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
+   },
+   {
     "name": "product_ai_anon_select",
     "table": "product_ai_content",
     "cmd": "SELECT",
@@ -55118,6 +55158,15 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20261120180000_restore_quote_comments_scoped_threads.sql"
+   },
+   {
+    "name": "set_saved_stock_views_updated_at",
+    "when": "BEFORE UPDATE",
+    "table": "saved_stock_views",
+    "function": "handle_updated_at",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
    },
    {
     "name": "trigger_update_notification_updated_at",
@@ -87605,6 +87654,14 @@
     "src": "supabase/migrations/20261125173000_idx_sds_summary_date_supplier_aplicavel.sql"
    },
    {
+    "name": "saved_stock_views_user_order_idx",
+    "table": "saved_stock_views",
+    "columns": "user_id, is_pinned DESC, created_at DESC",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
+   },
+   {
     "name": "idx_user_organizations_user",
     "table": "user_organizations",
     "columns": "user_id",
@@ -93206,6 +93263,7 @@
    "supabase/migrations/20261125180000_fix_comment_v_tabela_gravacao_publica.sql",
    "supabase/migrations/20261126030000_perf005_drop_unused_indexes_concurrently.sql",
    "supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql",
+   "supabase/migrations/20261126130000_create_saved_stock_views.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -93357,6 +93415,7 @@
    "supabase/rollbacks/20261125180000_rollback.sql",
    "supabase/rollbacks/20261126030000_rollback.sql",
    "supabase/rollbacks/20261126052000_rollback.sql",
+   "supabase/rollbacks/20261126130000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -93957,7 +94016,8 @@
    "stock_movements": "enabled",
    "spot_cf_upload_queue": "enabled",
    "spot_eu_image_diff_queue": "enabled",
-   "_backup_stock_daily_summary_20260618": "enabled"
+   "_backup_stock_daily_summary_20260618": "enabled",
+   "saved_stock_views": "enabled"
   },
   "grants": [
    {
@@ -141771,6 +141831,30 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "saved_stock_views",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert, update, delete",
+    "object": "saved_stock_views",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "all",
+    "object": "saved_stock_views",
+    "objkind": "table",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -147394,7 +147478,10 @@
    "function:fn_pipeline_health_monitor": "Monitor de saúde do pipeline de imagens CF. Detecta orphans, inconsistências,\n imagens stuck, swatches duplicados e tokens expirados. Criado em 2026-07-10.",
    "function:fn_super_filtro": "Catálogo principal do storefront (SECURITY DEFINER). fix_version 20260717: ",
    "function:fn_global_search": "Busca global. anon EXECUTE OK (quotes gated por auth.uid() IS NOT NULL). fix_version 20260717_grant_anon_catalog_rpcs_v1. ANTI-REGRESSAO: nao revogar anon.",
-   "function:fn_backfill_queue_reap_stuck": "Rede de segurança de idempotência: reclama linhas de image_backfill_queue travadas em processing, incrementa attempts e desiste (failed) após N tentativas em vez de tentar para sempre. Agendada via pg_cron (incidente 2026-10-13)."
+   "function:fn_backfill_queue_reap_stuck": "Rede de segurança de idempotência: reclama linhas de image_backfill_queue travadas em processing, incrementa attempts e desiste (failed) após N tentativas em vez de tentar para sempre. Agendada via pg_cron (incidente 2026-10-13).",
+   "table:saved_stock_views": "Views salvas do painel de estoque: nome, filtros (jsonb), descricao, fixacao e contador de uso, por usuario autenticado.",
+   "column:saved_stock_views.filters": "Filtros do painel /estoque serializados: {\"activeLevel\": <nivel EMA|null>}; schema validado em src/lib/stock/saved-views.ts.",
+   "column:saved_stock_views.use_count": "Quantas vezes o operador aplicou a view; incrementado pela UI do menu de views salvas."
   },
   "types_file": ""
  },
@@ -154871,7 +154958,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1765,
+  "components_count": 1767,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -159600,8 +159687,8 @@
   },
   {
    "module": "src/components",
-   "files": 1489,
-   "lines": 291730,
+   "files": 1491,
+   "lines": 292195,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -159965,7 +160052,7 @@
   {
    "module": "src/hooks",
    "files": 516,
-   "lines": 95127,
+   "lines": 95186,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -160257,8 +160344,8 @@
   },
   {
    "module": "src/lib",
-   "files": 430,
-   "lines": 66318,
+   "files": 432,
+   "lines": 66702,
    "tables": [
     "...",
     "companies",
@@ -160467,7 +160554,7 @@
   {
    "module": "src/pages",
    "files": 377,
-   "lines": 87069,
+   "lines": 87074,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -161468,8 +161555,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3138,
-   "lines": 228811,
+   "files": 3139,
+   "lines": 228897,
    "tables": [
     "...",
     "admin_audit_log",
@@ -161567,8 +161654,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 152,
-   "lines": 5638,
+   "files": 153,
+   "lines": 5646,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -168228,7 +168315,7 @@
    },
    {
     "file": "src/hooks/stock/useSavedStockViews.ts",
-    "count": 3
+    "count": 5
    },
    {
     "file": "src/integrations/supabase/gold.ts",
@@ -172064,6 +172151,16 @@
     "file": "src/components/inventory/PurchaseOrderModal.tsx",
     "field": "po-qty",
     "rules": "type=number, min=1"
+   },
+   {
+    "file": "src/components/inventory/StockSavedViewsMenu.tsx",
+    "field": "stock-view-name",
+    "rules": "max"
+   },
+   {
+    "file": "src/components/inventory/StockSavedViewsMenu.tsx",
+    "field": "stock-view-description",
+    "rules": "max"
    },
    {
     "file": "src/components/kit-builder/KitMarginSimulator.tsx",
@@ -177090,6 +177187,14 @@
     "msg": "\n                className="
    },
    {
+    "file": "src/components/inventory/StockSavedViewsMenu.tsx",
+    "msg": " data-testid="
+   },
+   {
+    "file": "src/components/inventory/StockSavedViewsMenu.tsx",
+    "msg": ">\n                  {error}\n                </p>\n                <Button variant="
+   },
+   {
     "file": "src/components/inventory/VariantStockNotesDialog.tsx",
     "msg": "\n                className="
    },
@@ -178667,11 +178772,19 @@
    },
    {
     "file": "src/hooks/stock/useSavedStockViews.ts",
-    "msg": "Erro ao salvar"
+    "msg": "Erro ao fixar view"
    },
    {
     "file": "src/hooks/stock/useSavedStockViews.ts",
-    "msg": "Não autenticado"
+    "msg": "Erro ao remover view"
+   },
+   {
+    "file": "src/hooks/stock/useSavedStockViews.ts",
+    "msg": "Erro ao salvar view"
+   },
+   {
+    "file": "src/hooks/stock/useSavedStockViews.ts",
+    "msg": "Sessão expirada. Entre novamente para usar views salvas."
    },
    {
     "file": "src/hooks/stock/useStockNotes.ts",
@@ -184376,6 +184489,10 @@
    {
     "file": "src/hooks/stock/useRuptureAlerts.ts",
     "text": "quando o LIMIT era 2000. Com neq OK + limit 5000, cobrimos os 4.773 itens não-OK."
+   },
+   {
+    "file": "src/hooks/stock/useSavedStockViews.ts",
+    "text": "Falha em registrar uso não pode impedir o operador de aplicar a view."
    },
    {
     "file": "src/hooks/stock/useStockNotes.ts",
@@ -211476,6 +211593,11 @@
     "value": "'Não foi possível concluir esta ação. Tente novamente.'"
    },
    {
+    "file": "src/lib/stock/saved-views.ts",
+    "name": "STOCK_VIEW_DESCRIPTION_MAX_LENGTH",
+    "value": "200"
+   },
+   {
     "file": "src/lib/stock/stock-notes.ts",
     "name": "STOCK_NOTE_MIN_LENGTH",
     "value": "3"
@@ -227455,6 +227577,12 @@
     "body": "const alerts: StockAlert[] = []; products.forEach((product) => { product.variants.forEach((variant) => { const baseAlert = { productId: product.productId, productName: product.productName, productSku: product.productSku, variantId: variant.variantId, colorName: variant.colorName, currentStock: variant.currentStock, threshold: variant.minStock, createdAt: new Date().toISOString(), }; if (variant.status === 'out_of_stock') { alerts.push({ id: `alert-${variant.id}-out`, type: 'out_of_stock', severi …"
    },
    {
+    "file": "src/hooks/stock/useSavedStockViews.ts",
+    "name": "invalidate",
+    "params": "",
+    "body": "qc.invalidateQueries({ queryKey: QUERY_KEY });"
+   },
+   {
     "file": "src/hooks/stock/useStockNotes.ts",
     "name": "invalidate",
     "params": "",
@@ -228269,6 +228397,12 @@
     "name": "shouldShowRaw",
     "params": "",
     "body": "try { return devInfraGate.shouldShow(currentRoles); } catch { return false; // fail-closed: esconde técnico em caso de erro do gate }"
+   },
+   {
+    "file": "src/lib/stock/saved-views.ts",
+    "name": "validateSavedStockViewName",
+    "params": "raw: string, existing: readonly SavedStockViewRow[],",
+    "body": "const value = normalizeViewName(raw); if (value === '') return { ok: false, error: 'Informe um nome para a view.' }; if (value.length < STOCK_VIEW_NAME_MIN_LENGTH) { return { ok: false, error: `O nome precisa ter pelo menos ${STOCK_VIEW_NAME_MIN_LENGTH} caracteres.` }; } if (value.length > STOCK_VIEW_NAME_MAX_LENGTH) { return { ok: false, error: `O nome pode ter no máximo ${STOCK_VIEW_NAME_MAX_LENGTH} caracteres.` }; } const duplicate = existing.some( (view) => view.name.localeCompare(value, 'pt …"
    },
    {
     "file": "src/lib/stock/stock-notes.ts",
@@ -246585,6 +246719,54 @@
    {
     "file": "src/components/inventory/__tests__/StockHelpTooltip.test.tsx",
     "name": "renders without crashing when optional example and emptyHint are provided"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockSavedViewsMenu.test.tsx",
+    "name": "StockSavedViewsMenu"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockSavedViewsMenu.test.tsx",
+    "name": "abre pelo botao e mostra o estado vazio"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockSavedViewsMenu.test.tsx",
+    "name": "mostra carregamento enquanto busca as views"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockSavedViewsMenu.test.tsx",
+    "name": "lista views com filtro, uso e descricao"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockSavedViewsMenu.test.tsx",
+    "name": "aplica a view escolhida e registra o uso"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockSavedViewsMenu.test.tsx",
+    "name": "explica erro de leitura e oferece nova tentativa"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockSavedViewsMenu.test.tsx",
+    "name": "recusa nome curto demais sem chamar o banco"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockSavedViewsMenu.test.tsx",
+    "name": "recusa nome que ja existe"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockSavedViewsMenu.test.tsx",
+    "name": "salva o filtro atual com nome normalizado"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockSavedViewsMenu.test.tsx",
+    "name": "fixa e desafixa a view"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockSavedViewsMenu.test.tsx",
+    "name": "remove apenas depois da confirmacao"
+   },
+   {
+    "file": "src/components/inventory/__tests__/StockSavedViewsMenu.test.tsx",
+    "name": "mostra o filtro atual no cabecalho"
    },
    {
     "file": "src/components/inventory/__tests__/StockThresholdsLegend.test.tsx",
@@ -270837,6 +271019,146 @@
    {
     "file": "src/lib/security/__tests__/validation.test.ts",
     "name": "should escape quotes and special characters"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "normalizeViewName"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "colapsa espacos e apara as pontas"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "devolve string vazia quando so ha espaco"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "normalizeFilters"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "le o nivel ativo do jsonb"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "trata valor ausente, nulo, vazio ou nao-texto como sem filtro"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "tolera payload que nao e objeto"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "serializeFilters / describeFilters"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "serializa apenas o nivel ativo"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "descreve o filtro para o operador"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "parseSavedStockView"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "normaliza um registro completo do PostgREST"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "descarta registro sem id, usuario, nome ou created_at"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "assume zeros seguros quando use_count vem invalido"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "sortSavedStockViews"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "coloca fixadas antes e ordena por nome"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "nao muta o array recebido"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "parseSavedStockViews"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "filtra registros invalidos e entrega ordenado"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "devolve lista vazia quando o payload nao e array"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "validateSavedStockViewName"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "recusa nome vazio"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "recusa nome curto demais"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "recusa nome longo demais"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "recusa duplicata ignorando caixa e espacos"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "aceita nome novo e devolve o valor normalizado"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "formatViewUsage"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "descreve o contador de uso"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "describeSavedStockViewError"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "traduz a violacao de nome unico"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "traduz falta de permissao e usuario invalido"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "explica tabela ausente (migration pendente)"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "explica sessao expirada"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "usa Error, string e mensagem crua quando nao ha codigo conhecido"
+   },
+   {
+    "file": "src/lib/stock/__tests__/saved-views.test.ts",
+    "name": "cai na mensagem generica quando o erro nao traz nada"
    },
    {
     "file": "src/lib/stock/__tests__/stock-notes.test.ts",
@@ -336227,6 +336549,46 @@
     "src": "supabase/migrations/20261120180000_restore_quote_comments_scoped_threads.sql"
    },
    {
+    "name": "saved_stock_views_select_own",
+    "table": "saved_stock_views",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "user_id = auth.uid()",
+    "check": "",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
+   },
+   {
+    "name": "saved_stock_views_insert_own",
+    "table": "saved_stock_views",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "user_id = auth.uid()",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
+   },
+   {
+    "name": "saved_stock_views_update_own",
+    "table": "saved_stock_views",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "user_id = auth.uid()",
+    "check": "user_id = auth.uid()",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
+   },
+   {
+    "name": "saved_stock_views_delete_own",
+    "table": "saved_stock_views",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "user_id = auth.uid()",
+    "check": "",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
+   },
+   {
     "name": "product_ai_anon_select",
     "table": "product_ai_content",
     "cmd": "SELECT",
@@ -341296,6 +341658,15 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20261120180000_restore_quote_comments_scoped_threads.sql"
+   },
+   {
+    "name": "set_saved_stock_views_updated_at",
+    "when": "BEFORE UPDATE",
+    "table": "saved_stock_views",
+    "function": "handle_updated_at",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
    },
    {
     "name": "trigger_update_notification_updated_at",
@@ -373921,6 +374292,7 @@
    "supabase/migrations/20261124163000_revoke_anon_unit_cost_print_areas.sql",
    "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql",
    "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
+   "supabase/migrations/20261126130000_create_saved_stock_views.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260917061500_rollback.sql",
@@ -422418,6 +422790,30 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "saved_stock_views",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert, update, delete",
+    "object": "saved_stock_views",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "all",
+    "object": "saved_stock_views",
+    "objkind": "table",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126130000_create_saved_stock_views.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -429478,7 +429874,7 @@
    },
    {
     "kind": "dinâmico",
-    "msg": "3 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
+    "msg": "5 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
     "where": [
      "src/hooks/stock/useSavedStockViews.ts"
     ]
@@ -472372,6 +472768,29 @@
    ],
    "doc": "StockHeroRiskBanner — Onda 3 (completo). Adicionado: counters \"Próximas Rupturas 7d/15d/30d\" com net_ruptura."
   },
+  "src/components/inventory/StockSavedViewsMenu.tsx": {
+   "path": "src/components/inventory/StockSavedViewsMenu.tsx",
+   "lines": 291,
+   "exports": [
+    "interface StockSavedViewsMenuProps",
+    "function StockSavedViewsMenu"
+   ],
+   "errors": [
+    " data-testid=",
+    ">\n                  {error}\n                </p>\n                <Button variant="
+   ],
+   "html_constraints": [
+    {
+     "field": "stock-view-name",
+     "rules": "max"
+    },
+    {
+     "field": "stock-view-description",
+     "rules": "max"
+    }
+   ],
+   "doc": "StockSavedViewsMenu — views salvas do painel de risco EMA (Melhoria 18 da Onda 3). Fecha o trabalho que estava pela metade: o hook useSavedStockViews existia sem nenhum consumidor e escrevia em public.saved_stock_views, tabela que nao existia (criada na migration 20261126130000). Aqui o operador sal …"
+  },
   "src/components/inventory/StockStatCard.tsx": {
    "path": "src/components/inventory/StockStatCard.tsx",
    "lines": 228,
@@ -472857,6 +473276,25 @@
     "renders provided children instead of default icon",
     "renders accessible label derived from the title prop",
     "renders without crashing when optional example and emptyHint are provided"
+   ]
+  },
+  "src/components/inventory/__tests__/StockSavedViewsMenu.test.tsx": {
+   "path": "src/components/inventory/__tests__/StockSavedViewsMenu.test.tsx",
+   "lines": 174,
+   "is_test": true,
+   "tests": [
+    "StockSavedViewsMenu",
+    "abre pelo botao e mostra o estado vazio",
+    "mostra carregamento enquanto busca as views",
+    "lista views com filtro, uso e descricao",
+    "aplica a view escolhida e registra o uso",
+    "explica erro de leitura e oferece nova tentativa",
+    "recusa nome curto demais sem chamar o banco",
+    "recusa nome que ja existe",
+    "salva o filtro atual com nome normalizado",
+    "fixa e desafixa a view",
+    "remove apenas depois da confirmacao",
+    "mostra o filtro atual no cabecalho"
    ]
   },
   "src/components/inventory/__tests__/StockThresholdsLegend.test.tsx": {
@@ -500797,15 +501235,18 @@
   },
   "src/hooks/stock/useSavedStockViews.ts": {
    "path": "src/hooks/stock/useSavedStockViews.ts",
-   "lines": 111,
+   "lines": 170,
    "exports": [
-    "interface SavedStockView",
+    "type SavedStockView",
+    "interface SaveStockViewInput",
     "function useSavedStockViews"
    ],
-   "dyn_from": 3,
+   "dyn_from": 5,
    "errors": [
-    "Erro ao salvar",
-    "Não autenticado"
+    "Erro ao fixar view",
+    "Erro ao remover view",
+    "Erro ao salvar view",
+    "Sessão expirada. Entre novamente para usar views salvas."
    ],
    "params": [
     {
@@ -500813,9 +501254,19 @@
      "value": "'saved_stock_views'"
     }
    ],
-   "doc": "useSavedStockViews — Gerencia views salvas do painel EMA. Onda 3 / Melhoria 18.",
+   "rule_comments": [
+    "Falha em registrar uso não pode impedir o operador de aplicar a view."
+   ],
+   "doc": "useSavedStockViews — Views salvas do painel de risco EMA (public.saved_stock_views). Onda 3 / Melhoria 18. Historico: o hook existia desde a Onda 3 escrevendo em `saved_stock_views`, tabela que nunca foi criada (zero ocorrencias em supabase/migrations/ e no dump vivo SCHEMA_LIVE.sql de 2026-11-26), …",
    "hooks": [
     "useSavedStockViews"
+   ],
+   "calc_fns": [
+    {
+     "name": "invalidate",
+     "params": "",
+     "body": "qc.invalidateQueries({ queryKey: QUERY_KEY });"
+    }
    ]
   },
   "src/hooks/stock/useStockNotes.ts": {
@@ -512764,6 +513215,42 @@
     "should escape quotes and special characters"
    ]
   },
+  "src/lib/stock/saved-views.ts": {
+   "path": "src/lib/stock/saved-views.ts",
+   "lines": 147,
+   "exports": [
+    "interface StockViewFilters",
+    "interface SavedStockViewRow",
+    "const STOCK_VIEW_NAME_MIN_LENGTH",
+    "const STOCK_VIEW_NAME_MAX_LENGTH",
+    "const STOCK_VIEW_DESCRIPTION_MAX_LENGTH",
+    "type ViewNameValidation",
+    "function normalizeViewName",
+    "function normalizeFilters",
+    "function serializeFilters",
+    "function describeFilters",
+    "function parseSavedStockView",
+    "function sortSavedStockViews",
+    "function parseSavedStockViews",
+    "function validateSavedStockViewName",
+    "function formatViewUsage",
+    "function describeSavedStockViewError"
+   ],
+   "params": [
+    {
+     "name": "STOCK_VIEW_DESCRIPTION_MAX_LENGTH",
+     "value": "200"
+    }
+   ],
+   "doc": "Regras puras de `public.saved_stock_views` (views salvas do painel /estoque). Sem dependencia de React ou Supabase: contrato da tabela, parse defensivo do que vem do PostgREST (jsonb chega como objeto solto) e traducao de erro para o operador. A tabela nasceu na migration 20261126130000, que fecha o …",
+   "calc_fns": [
+    {
+     "name": "validateSavedStockViewName",
+     "params": "raw: string, existing: readonly SavedStockViewRow[],",
+     "body": "const value = normalizeViewName(raw); if (value === '') return { ok: false, error: 'Informe um nome para a view.' }; if (value.length < STOCK_VIEW_NAME_MIN_LENGTH) { return { ok: false, error: `O nome precisa ter pelo menos ${STOCK_VIEW_NAME_MIN_LENGTH} caracteres.` }; } if (value.length > STOCK_VIEW_NAME_MAX_LENGTH) { return { ok: false, error: `O nome pode ter no máximo ${STOCK_VIEW_NAME_MAX_LENGTH} caracteres.` }; } const duplicate = existing.some( (view) => view.name.localeCompare(value, 'pt …"
+    }
+   ]
+  },
   "src/lib/stock/stock-notes.ts": {
    "path": "src/lib/stock/stock-notes.ts",
    "lines": 173,
@@ -512803,6 +513290,48 @@
      "params": "note: string",
      "body": "const value = note.trim(); if (value.length === 0) { return { ok: false, value, message: 'Escreva a nota antes de salvar.' }; } if (value.length < STOCK_NOTE_MIN_LENGTH) { return { ok: false, value, message: `A nota precisa de pelo menos ${STOCK_NOTE_MIN_LENGTH} caracteres.`, }; } if (value.length > STOCK_NOTE_MAX_LENGTH) { return { ok: false, value, message: `A nota passa do limite de ${STOCK_NOTE_MAX_LENGTH} caracteres.`, }; } return { ok: true, value, message: null };"
     }
+   ]
+  },
+  "src/lib/stock/__tests__/saved-views.test.ts": {
+   "path": "src/lib/stock/__tests__/saved-views.test.ts",
+   "lines": 237,
+   "is_test": true,
+   "tests": [
+    "normalizeViewName",
+    "colapsa espacos e apara as pontas",
+    "devolve string vazia quando so ha espaco",
+    "normalizeFilters",
+    "le o nivel ativo do jsonb",
+    "trata valor ausente, nulo, vazio ou nao-texto como sem filtro",
+    "tolera payload que nao e objeto",
+    "serializeFilters / describeFilters",
+    "serializa apenas o nivel ativo",
+    "descreve o filtro para o operador",
+    "parseSavedStockView",
+    "normaliza um registro completo do PostgREST",
+    "descarta registro sem id, usuario, nome ou created_at",
+    "assume zeros seguros quando use_count vem invalido",
+    "sortSavedStockViews",
+    "coloca fixadas antes e ordena por nome",
+    "nao muta o array recebido",
+    "parseSavedStockViews",
+    "filtra registros invalidos e entrega ordenado",
+    "devolve lista vazia quando o payload nao e array",
+    "validateSavedStockViewName",
+    "recusa nome vazio",
+    "recusa nome curto demais",
+    "recusa nome longo demais",
+    "recusa duplicata ignorando caixa e espacos",
+    "aceita nome novo e devolve o valor normalizado",
+    "formatViewUsage",
+    "descreve o contador de uso",
+    "describeSavedStockViewError",
+    "traduz a violacao de nome unico",
+    "traduz falta de permissao e usuario invalido",
+    "explica tabela ausente (migration pendente)",
+    "explica sessao expirada",
+    "usa Error, string e mensagem crua quando nao ha codigo conhecido",
+    "cai na mensagem generica quando o erro nao traz nada"
    ]
   },
   "src/lib/stock/__tests__/stock-notes.test.ts": {
@@ -515330,7 +515859,7 @@
   },
   "src/pages/admin/StockDashboardPage.tsx": {
    "path": "src/pages/admin/StockDashboardPage.tsx",
-   "lines": 114,
+   "lines": 119,
    "exports": [
     "function StockDashboardPage"
    ]
@@ -554231,6 +554760,11 @@
    "path": "supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql",
    "lines": 117
   },
+  "supabase/migrations/20261126130000_create_saved_stock_views.sql": {
+   "path": "supabase/migrations/20261126130000_create_saved_stock_views.sql",
+   "lines": 86,
+   "uses_service_role": true
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -554859,6 +555393,10 @@
   "supabase/rollbacks/20261126052000_rollback.sql": {
    "path": "supabase/rollbacks/20261126052000_rollback.sql",
    "lines": 9
+  },
+  "supabase/rollbacks/20261126130000_rollback.sql": {
+   "path": "supabase/rollbacks/20261126130000_rollback.sql",
+   "lines": 8
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -580431,10 +580969,29 @@
   }
  },
  "git": {
-  "sha": "c3f747f0d00d55ee650491eac00fac1a812c7aaa",
+  "sha": "caba55243216d1a49dd730b4261560ac8dd591d2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "caba552",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "feat: liga views salvas do painel de estoque a uma tela (#4169)",
+    "files": [
+     "audit/supabase-reference-catalog.temporary.json",
+     "docs/estado/backlog/funcionalidades.md",
+     "src/components/inventory/StockSavedViewsMenu.tsx",
+     "src/components/inventory/__tests__/StockSavedViewsMenu.test.tsx",
+     "src/hooks/stock/useSavedStockViews.ts",
+     "src/lib/stock/__tests__/saved-views.test.ts",
+     "src/lib/stock/saved-views.ts",
+     "src/pages/admin/StockDashboardPage.tsx",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261126130000_create_saved_stock_views.sql",
+     "supabase/rollbacks/20261126130000_rollback.sql"
+    ]
+   },
    {
     "sha": "c3f747f",
     "date": "2026-11-26",
@@ -580749,51 +581306,39 @@
      "supabase/migrations/20261101210000_sb0007_drop_noop_restrictive_policies.sql",
      "supabase/rollbacks/20261101210000_rollback.sql"
     ]
-   },
-   {
-    "sha": "c8e9bd9",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "chore(main): release gifts-store 1.20.3 (#4135)",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    12
+    13
+   ],
+   [
+    "audit/supabase-reference-catalog.temporary.json",
+    3
    ],
    [
     "docs/estado/07_EDGE_FUNCTIONS.md",
     3
    ],
    [
-    ".release-please-manifest.json",
-    3
-   ],
-   [
-    "CHANGELOG.md",
-    3
-   ],
-   [
-    "package-lock.json",
-    3
-   ],
-   [
-    "package.json",
-    3
-   ],
-   [
-    "audit/supabase-reference-catalog.temporary.json",
+    "docs/estado/12_PLANEJADO_E_SUGERIDO.md",
     2
    ],
    [
-    "docs/estado/12_PLANEJADO_E_SUGERIDO.md",
+    ".release-please-manifest.json",
+    2
+   ],
+   [
+    "CHANGELOG.md",
+    2
+   ],
+   [
+    "package-lock.json",
+    2
+   ],
+   [
+    "package.json",
     2
    ],
    [
@@ -580801,47 +581346,47 @@
     2
    ],
    [
+    "docs/estado/backlog/funcionalidades.md",
+    1
+   ],
+   [
+    "src/components/inventory/StockSavedViewsMenu.tsx",
+    1
+   ],
+   [
+    "src/components/inventory/__tests__/StockSavedViewsMenu.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/stock/useSavedStockViews.ts",
+    1
+   ],
+   [
+    "src/lib/stock/__tests__/saved-views.test.ts",
+    1
+   ],
+   [
+    "src/lib/stock/saved-views.ts",
+    1
+   ],
+   [
+    "src/pages/admin/StockDashboardPage.tsx",
+    1
+   ],
+   [
+    "supabase/migrations/20261126130000_create_saved_stock_views.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261126130000_rollback.sql",
+    1
+   ],
+   [
     ".file-size-baseline.json",
     1
    ],
    [
     ".security/rls-no-policy-allowlist.json",
-    1
-   ],
-   [
-    "src/components/layout/SidebarReorganized.tsx",
-    1
-   ],
-   [
-    "src/hooks/admin/useOpsInfraTelemetry.ts",
-    1
-   ],
-   [
-    "src/lib/navigation/restricted-routes.ts",
-    1
-   ],
-   [
-    "src/lib/ops/__tests__/infra-telemetry.test.ts",
-    1
-   ],
-   [
-    "src/lib/ops/infra-telemetry.ts",
-    1
-   ],
-   [
-    "src/lib/rbac/route-matrix.ts",
-    1
-   ],
-   [
-    "src/pages/admin/AdminInfraOpsPage.tsx",
-    1
-   ],
-   [
-    "src/routes/admin-routes.tsx",
-    1
-   ],
-   [
-    "src/routes/lazy-pages.ts",
     1
    ]
   ]

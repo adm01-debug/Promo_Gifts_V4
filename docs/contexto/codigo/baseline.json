@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c3f747f0d00d55ee650491eac00fac1a812c7aaa",
+  "commit": "caba55243216d1a49dd730b4261560ac8dd591d2",
   "branch": "main",
-  "data_commit": "2026-11-26T10:48:42-03:00",
+  "data_commit": "2026-11-26T11:20:33-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "caba552",
+    "data": "2026-11-26",
+    "assunto": "feat: liga views salvas do painel de estoque a uma tela (#4169)"
+   },
    {
     "sha": "c3f747f",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "da92fae",
     "data": "2026-11-25",
     "assunto": "chore: allowlist E06 recebe as 21 migrations efetivas por equivalencia (#4146)"
-   },
-   {
-    "sha": "aacb9e5",
-    "data": "2026-11-25",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261101210000 (#4145)"
    }
   ],
-  "arquivos_mudados_7d": 580,
+  "arquivos_mudados_7d": 588,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 106
+    "mudancas": 107
    },
    {
     "pasta": "src/lib/freight",
@@ -173,7 +173,7 @@
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 88
+    "mudancas": 90
    },
    {
     "pasta": "src/components/mockup",
@@ -181,11 +181,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 82
-   },
-   {
-    "pasta": "src/pages/quotes",
-    "mudancas": 81
+    "mudancas": 83
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -194,12 +190,16 @@
    {
     "pasta": "src/hooks/quotes",
     "mudancas": 79
+   },
+   {
+    "pasta": "src/pages/quotes",
+    "mudancas": 77
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 106
+    "mudancas": 107
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -218,6 +218,10 @@
     "mudancas": 18
    },
    {
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 9
+   },
+   {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
     "mudancas": 9
    },
@@ -232,10 +236,6 @@
    {
     "arquivo": "supabase/migrations-snapshot/SNAPSHOT_META.json",
     "mudancas": 9
-   },
-   {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 8
    },
    {
     "arquivo": "src/lib/freight/index.ts",
@@ -310,21 +310,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11307,
-  "arquivos_codigo": 5691,
-  "linhas_codigo": 1079463,
+  "arquivos_total": 11313,
+  "arquivos_codigo": 5695,
+  "linhas_codigo": 1080376,
   "rotas": 142,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 73,
   "modulos": 171,
-  "componentes": 1283,
+  "componentes": 1284,
   "hooks": 647,
   "edge_functions": 112,
-  "tabelas": 532,
-  "migrations": 3139,
+  "tabelas": 533,
+  "migrations": 3140,
   "cron_jobs": 122,
-  "testes": 2726,
+  "testes": 2728,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1511
@@ -1935,8 +1935,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1489,
-   "linhas": 291731
+   "arquivos": 1491,
+   "linhas": 292196
   },
   "src/config": {
    "arquivos": 1,
@@ -1960,15 +1960,15 @@
   },
   "src/hooks": {
    "arquivos": 516,
-   "linhas": 95127
+   "linhas": 95186
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66760
   },
   "src/lib": {
-   "arquivos": 429,
-   "linhas": 66308
+   "arquivos": 431,
+   "linhas": 66692
   },
   "src/logic": {
    "arquivos": 4,
@@ -1980,7 +1980,7 @@
   },
   "src/pages": {
    "arquivos": 377,
-   "linhas": 87069
+   "linhas": 87074
   },
   "src/routes": {
    "arquivos": 16,

@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2965,
- "arestas": 11722,
+ "nos": 2967,
+ "arestas": 11733,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -10,11 +10,11 @@
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 662
+   "importado_por": 663
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
-   "importado_por": 490
+   "importado_por": 491
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
@@ -34,7 +34,7 @@
   },
   {
    "arquivo": "src/components/ui/input.tsx",
-   "importado_por": 268
+   "importado_por": 269
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
@@ -46,7 +46,7 @@
   },
   {
    "arquivo": "src/components/ui/label.tsx",
-   "importado_por": 155
+   "importado_por": 156
   },
   {
    "arquivo": "src/components/ui/select.tsx",
@@ -54,7 +54,7 @@
   },
   {
    "arquivo": "src/components/ui/dialog.tsx",
-   "importado_por": 143
+   "importado_por": 144
   },
   {
    "arquivo": "src/hooks/products/index.ts",
@@ -102,7 +102,7 @@
   },
   {
    "arquivo": "src/components/ui/textarea.tsx",
-   "importado_por": 65
+   "importado_por": 66
   },
   {
    "arquivo": "src/types/stock.ts",

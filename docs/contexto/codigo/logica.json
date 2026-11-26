@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 356,
+ "total": 357,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 272,
+  "lib": 273,
   "python": 9,
   "services": 16,
   "stores": 9,
@@ -7930,6 +7930,45 @@
     "components/products"
    ],
    "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/stock/saved-views.ts",
+   "camada": "lib",
+   "exports": [
+    "STOCK_VIEW_DESCRIPTION_MAX_LENGTH",
+    "STOCK_VIEW_NAME_MAX_LENGTH",
+    "STOCK_VIEW_NAME_MIN_LENGTH",
+    "SavedStockViewRow",
+    "StockViewFilters",
+    "ViewNameValidation",
+    "describeFilters",
+    "describeSavedStockViewError",
+    "formatViewUsage",
+    "normalizeFilters",
+    "normalizeViewName",
+    "parseSavedStockView",
+    "parseSavedStockViews",
+    "serializeFilters",
+    "sortSavedStockViews",
+    "validateSavedStockViewName"
+   ],
+   "export_default": null,
+   "linhas": 147,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "components/inventory",
+    "hooks/stock"
+   ],
+   "coberto_por_testes": 2,
    "orfao": false
   },
   {

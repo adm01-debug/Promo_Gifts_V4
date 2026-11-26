@@ -13446,7 +13446,7 @@
    "hooks_exportados": [
     "useSavedStockViews"
    ],
-   "linhas": 111,
+   "linhas": 170,
    "dominio": "hooks/stock",
    "tabelas": [],
    "rpcs": [],
@@ -13458,8 +13458,10 @@
     "useToast"
    ],
    "canais_realtime": [],
-   "usado_por": 0,
-   "usado_por_arquivos": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/components/inventory/StockSavedViewsMenu.tsx"
+   ],
    "coberto_por_testes": 0
   },
   {

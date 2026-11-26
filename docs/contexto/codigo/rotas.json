@@ -18106,6 +18106,7 @@
     "useSalesHistoryMacro",
     "useSalesScope",
     "useSavedMockupProject",
+    "useSavedStockViews",
     "useScheduledReports",
     "useScribe",
     "useScroll",
@@ -18429,6 +18430,7 @@
     "useSalesHistoryMacro",
     "useSalesScope",
     "useSavedMockupProject",
+    "useSavedStockViews",
     "useScheduledReports",
     "useScroll",
     "useScrollDirection",
@@ -18615,7 +18617,7 @@
     "supervisor",
     "table"
    ],
-   "arquivos_puxados": 526
+   "arquivos_puxados": 529
   },
   {
    "protegida": false,

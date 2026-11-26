@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `c3f747f0d0` · branch `main` · 2026-11-26 13:52 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `caba552432` · branch `main` · 2026-11-26 14:28 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -503,7 +503,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `user_token_revocations` | revocations_supervisor_delete | DELETE | public | permissive | `"public"."is_supervisor_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |  |
 | `user_token_revocations` | revocations_supervisor_insert | INSERT | public | permissive |  | `"public"."is_supervisor_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |
 | `saved_filters` | saved_filters_delete | DELETE | public | permissive | `(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")` |  |
-| … +534 linhas — lista completa em `context.json` | | | | | | |
+| … +538 linhas — lista completa em `context.json` | | | | | | |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 
@@ -1115,7 +1115,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | trg_validate_approval_token_status | BEFORE INSERT OR UPDATE | `quote_approval_tokens` | `validate_status_fields` |  |
 | update_seller_discount_limits_updated_at | BEFORE UPDATE | `seller_discount_limits` | `update_updated_at_column` |  |
 | update_discount_approval_requests_updated_at | BEFORE UPDATE | `discount_approval_requests` | `update_updated_at_column` |  |
-| … +181 linhas — lista completa em `context.json` | | | | |
+| … +182 linhas — lista completa em `context.json` | | | | |
 
 Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banco):
 
@@ -3235,6 +3235,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `su-otp` | pattern=[0-9]{6, max | `src/components/auth/StepUpAuthDialog.tsx` |
 | `estimated-delivery-days` | type=number, min=0 | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | `po-qty` | type=number, min=1 | `src/components/inventory/PurchaseOrderModal.tsx` |
+| `stock-view-name` | max | `src/components/inventory/StockSavedViewsMenu.tsx` |
+| `stock-view-description` | max | `src/components/inventory/StockSavedViewsMenu.tsx` |
 | `markup` | type=number, min=0, max=500, step=5 | `src/components/kit-builder/KitMarginSimulator.tsx` |
 | `kit-qty` | type=number, min=1 | `src/components/kit-builder/kit-summary/KitIdentificationCard.tsx` |
 | `qtyInputId` | type=number, min=minQuantity | `src/components/products/QuickAddToQuote.tsx` |
@@ -4343,6 +4345,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const alerts: StockAlert[] = []; products.forEach((product) => { product.variants.forEach((variant) => { const baseAlert = { productId: product.productId, productName: product.productName, productSku: product.productSku, variantId: variant.variantId, colorName: variant.colorName, currentStock: variant.currentStock, threshold: variant.minStock, createdAt: new Date().toISOString(), }; if (variant.status === 'out_of_stock') { alerts.push({ id: `alert-${variant.id}-out`, type: 'out_of_stock', severi …
   ```
+- **invalidate()** — `src/hooks/stock/useSavedStockViews.ts`
+  ```
+  qc.invalidateQueries({ queryKey: QUERY_KEY });
+  ```
 - **invalidate()** — `src/hooks/stock/useStockNotes.ts`
   ```
   void qc.invalidateQueries({ queryKey: [NOTES_KEY, variantId] });
@@ -4886,6 +4892,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **shouldShowRaw()** — `src/lib/security/safeToast.ts`
   ```
   try { return devInfraGate.shouldShow(currentRoles); } catch { return false; // fail-closed: esconde técnico em caso de erro do gate }
+  ```
+- **validateSavedStockViewName(raw: string, existing: readonly SavedStockViewRow[],)** — `src/lib/stock/saved-views.ts`
+  ```
+  const value = normalizeViewName(raw); if (value === '') return { ok: false, error: 'Informe um nome para a view.' }; if (value.length < STOCK_VIEW_NAME_MIN_LENGTH) { return { ok: false, error: `O nome precisa ter pelo menos ${STOCK_VIEW_NAME_MIN_LENGTH} caracteres.` }; } if (value.length > STOCK_VIEW_NAME_MAX_LENGTH) { return { ok: false, error: `O nome pode ter no máximo ${STOCK_VIEW_NAME_MAX_LENGTH} caracteres.` }; } const duplicate = existing.some( (view) => view.name.localeCompare(value, 'pt …
   ```
 - **validateStockNote(note: string)** — `src/lib/stock/stock-notes.ts`
   ```
@@ -5932,7 +5942,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `CHUNK` | `80` | `src/hooks/products/useColorFanout.ts` |
 | `CART_ITEM_DEBOUNCE_MS` | `300` | `src/hooks/products/useDebouncedCartItemActions.ts` |
 | `CART_ITEM_DEBOUNCE_MS_MIN` | `0` | `src/hooks/products/useDebouncedCartItemActions.ts` |
-| … +431 linhas — lista completa em `context.json` | | |
+| … +432 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6722,7 +6732,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1398 linhas — lista completa em `context.json` | |
+| … +1402 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6847,7 +6857,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23808 testes em 2393 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23855 testes em 2395 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6937,6 +6947,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/e2e/phase4-admin-grid.test.ts` | 36 | Phase 4.1 — Variation Axes Config · detects color-only axes · detects color + size axes · detects all three axes … |
 | `tests/lib/kit-builder-volume.test.ts` | 36 | kit-builder volume-calculator · calculateVolume · returns w*h*d · calculateUsableVolume … |
 | `src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts` | 35 | sem cliente ou sem sinal · não chama a RPC quando não há sinais · não chama a RPC quando não há cliente · não chama a RPC quando o cliente não tem ramo nem cor … |
+| `src/lib/stock/__tests__/saved-views.test.ts` | 35 | normalizeViewName · colapsa espacos e apara as pontas · devolve string vazia quando so ha espaco · normalizeFilters … |
 | `tests/e2e/phase5-propagation.test.ts` | 35 | Phase 5.1 — Quote Items with size_code · quote item with color and size · quote item without size (non-apparel) · quote item subtotal calculation … |
 | `tests/lib/date-utils.test.ts` | 35 | date-utils · formatDate · formats ISO string with default pattern · formats Date object … |
 | `tests/scripts/check-types-inventory-drift.test.mjs` | 35 | extractTypesInventory (TypeScript Compiler API) · rejeita entrada vazia, truncada ou desconhecida: %s · extrai Tables/Views/Functions/Enums por schema e ignora __InternalSupabase · countsOf reduz o inventário a contagens por schema/categoria … |
@@ -7150,8 +7161,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/flows/03b-product-thumb-quickview.spec.ts` | 19 | QuickView na foto — paridade entre módulos · ${mod.label}: clique na foto abre QuickView sem navegar · ${mod.label}: a11y — thumb é ativável via teclado (Enter) · Estoque • QuickView — estados de borda … |
 | `e2e/flows/freight-quest-complete-flow.spec.ts` | 19 | Plano de volumes — Kit Builder @freight · navega para Kit Builder e verifica painel de volumes visível · painel de volumes lista o resumo do plano (volumes e peso) · painel de volumes mostra rodapé de estimativa por caixas padrão … |
 | `src/components/inventory/__tests__/stock-alert-dialogs.test.tsx` | 19 | OutOfStockDialog · renders title  · renders empty state when alerts=[] · renders alert count badge … |
-| `src/hooks/quotes/__tests__/useDiscountApproval.test.ts` | 19 | requestApproval · retorna false imediatamente quando user = null (sem DB call) · insere em discount_approval_requests com campos corretos · retorna true quando inserção bem-sucedida … |
-| … +2093 linhas — lista completa em `context.json` | | |
+| … +2095 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7619,4 +7629,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Card "Prazo de produção" do orçamento: em quantos dias úteis o pedido fica | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | deliveryMode={deliveryMode}            // 'data' \| 'prazo' do orçamento | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1496 linhas — lista completa em `context.json` | |
+| … +1497 linhas — lista completa em `context.json` | |

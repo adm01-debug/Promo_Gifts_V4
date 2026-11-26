@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3139,
+ "migrations": 3140,
  "seeds": [],
  "avisos": [
   "325 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -2999,6 +2999,13 @@
    "evento": "insert or update of is_default",
    "tabela": "saved_filters",
    "funcao": "ensure_single_default_filter"
+  },
+  {
+   "nome": "set_saved_stock_views_updated_at",
+   "quando": "before",
+   "evento": "update",
+   "tabela": "saved_stock_views",
+   "funcao": "handle_updated_at"
   },
   {
    "nome": "update_saved_trends_views_updated_at",
@@ -41356,6 +41363,118 @@
    ],
    "sem_rls": false,
    "nao_usada": false
+  },
+  "saved_stock_views": {
+   "colunas": {
+    "created_at": {
+     "tipo": "timestamptz",
+     "nn": true,
+     "pk": false,
+     "default": "now()",
+     "ref": null
+    },
+    "description": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "filters": {
+     "tipo": "jsonb",
+     "nn": true,
+     "pk": false,
+     "default": "'{}'::jsonb",
+     "ref": null
+    },
+    "id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": true,
+     "default": "gen_random_uuid()",
+     "ref": null
+    },
+    "is_pinned": {
+     "tipo": "boolean",
+     "nn": true,
+     "pk": false,
+     "default": "false",
+     "ref": null
+    },
+    "name": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "updated_at": {
+     "tipo": "timestamptz",
+     "nn": true,
+     "pk": false,
+     "default": "now()",
+     "ref": null
+    },
+    "use_count": {
+     "tipo": "integer",
+     "nn": true,
+     "pk": false,
+     "default": "0",
+     "ref": null
+    },
+    "user_id": {
+     "tipo": "uuid",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": "auth"
+    }
+   },
+   "rls": true,
+   "policies": [
+    {
+     "nome": "saved_stock_views_delete_own",
+     "comando": "delete",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "saved_stock_views_insert_own",
+     "comando": "insert",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "saved_stock_views_select_own",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "saved_stock_views_update_own",
+     "comando": "update",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
+   "indices": [
+    {
+     "nome": "saved_stock_views_user_order_idx",
+     "colunas": "user_id, is_pinned DESC, created_at DESC",
+     "unico": false
+    }
+   ],
+   "fks": [
+    "user_id->auth"
+   ],
+   "criada_em": "20261126130000_create_saved_stock_views.sql",
+   "usada_no_front": 0,
+   "usada_em_edges": [],
+   "triggers": [
+    "set_saved_stock_views_updated_at"
+   ],
+   "sem_rls": false,
+   "nao_usada": true
   },
   "saved_trends_views": {
    "colunas": {

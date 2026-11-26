@@ -6349,6 +6349,17 @@
    "src/integrations/supabase/client.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/inventory/StockSavedViewsMenu.tsx": [
+   "src/components/ui/alert-dialog.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/textarea.tsx",
+   "src/hooks/stock/useSavedStockViews.ts",
+   "src/lib/stock/saved-views.ts"
+  ],
   "src/components/inventory/StockStatCard.tsx": [
    "src/components/ui/tooltip.tsx",
    "src/lib/utils.ts"
@@ -12006,7 +12017,8 @@
   ],
   "src/hooks/stock/useSavedStockViews.ts": [
    "src/hooks/ui/index.ts",
-   "src/integrations/supabase/client.ts"
+   "src/integrations/supabase/client.ts",
+   "src/lib/stock/saved-views.ts"
   ],
   "src/hooks/stock/useStockNotes.ts": [
    "src/hooks/ui/index.ts",
@@ -13637,6 +13649,7 @@
    "src/components/a11y/index.ts",
    "src/components/inventory/StockDashboard.tsx",
    "src/components/inventory/StockHeroRiskBanner.tsx",
+   "src/components/inventory/StockSavedViewsMenu.tsx",
    "src/components/inventory/risk/RupturePanelEma.tsx",
    "src/components/inventory/risk/WhatIfPanel.tsx",
    "src/components/seo/PageSEO.tsx",
