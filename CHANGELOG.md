@@ -5,6 +5,13 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.20.5](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.4...gifts-store-v1.20.5) (2026-11-26)
+
+
+### Bug Fixes
+
+* restaura COMMENT do idx_spr_images_pending no rollback do PERF005 ([#4158](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4158)) ([65f12c5](https://github.com/adm01-debug/Promo_Gifts_V4/commit/65f12c5482e7daff3bce4bc8f4557e1b792c41d0))
+
 ## [1.20.4](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.3...gifts-store-v1.20.4) (2026-11-26)
 
 
