@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2973,
- "arestas": 11759,
+ "nos": 2977,
+ "arestas": 11772,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -10,19 +10,19 @@
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 665
+   "importado_por": 666
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
-   "importado_por": 493
+   "importado_por": 494
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 470
+   "importado_por": 471
   },
   {
    "arquivo": "src/components/ui/card.tsx",
-   "importado_por": 363
+   "importado_por": 364
   },
   {
    "arquivo": "src/lib/logger.ts",
@@ -34,7 +34,7 @@
   },
   {
    "arquivo": "src/components/ui/input.tsx",
-   "importado_por": 271
+   "importado_por": 272
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
@@ -42,7 +42,7 @@
   },
   {
    "arquivo": "src/components/ui/skeleton.tsx",
-   "importado_por": 191
+   "importado_por": 192
   },
   {
    "arquivo": "src/components/ui/label.tsx",
@@ -118,11 +118,15 @@
   },
   {
    "arquivo": "src/components/ui/table.tsx",
-   "importado_por": 58
+   "importado_por": 59
   },
   {
    "arquivo": "src/utils/image-utils.ts",
    "importado_por": 56
+  },
+  {
+   "arquivo": "src/components/ui/tabs.tsx",
+   "importado_por": 55
   },
   {
    "arquivo": "src/lib/security/sanitize-error.ts",
@@ -130,10 +134,6 @@
   },
   {
    "arquivo": "src/components/ui/popover.tsx",
-   "importado_por": 54
-  },
-  {
-   "arquivo": "src/components/ui/tabs.tsx",
    "importado_por": 54
   },
   {
@@ -639,7 +639,7 @@
   {
    "modulo": "integrations/supabase",
    "depende_de": 3,
-   "importado_por": 72
+   "importado_por": 73
   },
   {
    "modulo": "hooks/products",
@@ -667,14 +667,14 @@
    "importado_por": 25
   },
   {
+   "modulo": "components/admin",
+   "depende_de": 35,
+   "importado_por": 8
+  },
+  {
    "modulo": "pages/products",
    "depende_de": 38,
    "importado_por": 5
-  },
-  {
-   "modulo": "components/admin",
-   "depende_de": 34,
-   "importado_por": 8
   },
   {
    "modulo": "pages/admin",
@@ -699,7 +699,7 @@
   {
    "modulo": "lib/security",
    "depende_de": 5,
-   "importado_por": 29
+   "importado_por": 30
   },
   {
    "modulo": "lib/edge",

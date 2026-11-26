@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "a1cece013c026f1a4112161e02d4f8ce957b847d",
+  "sha": "aab21f0595abdacdd874f89d0bfbd81dd00bf944",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 16:05 UTC",
-  "files_total": 11254,
-  "code_files": 9235,
-  "code_lines": 1313760
+  "generated_at": "2026-11-26 16:44 UTC",
+  "files_total": 11260,
+  "code_files": 9241,
+  "code_lines": 1315045
  },
  "version": "1.3.2",
- "facts_hash": "47d5aa67693cf478",
+ "facts_hash": "a2cc10c20185fc0a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1131,8 +1131,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3532,
-   ".ts": 3193,
-   ".tsx": 2035,
+   ".ts": 3196,
+   ".tsx": 2038,
    ".mjs": 456,
    ".py": 18,
    ".js": 7
@@ -155085,7 +155085,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1769,
+  "components_count": 1772,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -158128,6 +158128,10 @@
     "file": "src/hooks/quotes/useSellerDiscountLimits.ts"
    },
    {
+    "name": "useBlockedAccessLog",
+    "file": "src/hooks/security/useBlockedAccessLog.ts"
+   },
+   {
     "name": "useCustomizationPriceCalculator",
     "file": "src/hooks/simulation/useCustomizationPrice.ts"
    },
@@ -159830,8 +159834,8 @@
   },
   {
    "module": "src/components",
-   "files": 1493,
-   "lines": 292563,
+   "files": 1496,
+   "lines": 293168,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -160194,9 +160198,10 @@
   },
   {
    "module": "src/hooks",
-   "files": 518,
-   "lines": 95327,
+   "files": 519,
+   "lines": 95387,
    "tables": [
+    "access_blocked_log",
     "admin_audit_log",
     "admin_settings",
     "ai_function_routing",
@@ -160488,8 +160493,8 @@
   },
   {
    "module": "src/lib",
-   "files": 436,
-   "lines": 67541,
+   "files": 438,
+   "lines": 68182,
    "tables": [
     "...",
     "companies",
@@ -160698,7 +160703,7 @@
   {
    "module": "src/pages",
    "files": 378,
-   "lines": 87437,
+   "lines": 87416,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -162202,7 +162207,8 @@
    },
    "access_blocked_log": {
     "select": [
-     "recovery/src-legacy/src/hooks/useAccessSecurity.ts"
+     "recovery/src-legacy/src/hooks/useAccessSecurity.ts",
+     "src/hooks/security/useBlockedAccessLog.ts"
     ],
     "insert": [
      "supabase/functions/validate-access/index.ts"
@@ -173519,6 +173525,16 @@
     "values": "AdminRoute | DevRoute | ProtectedRoute | public"
    },
    {
+    "file": "src/lib/security/blockedAccess.ts",
+    "name": "BlockedAccessSeverity",
+    "values": "atencao | critico | info"
+   },
+   {
+    "file": "src/lib/security/blockedAccess.ts",
+    "name": "BlockedAccessPeriod",
+    "values": "7d | 24h | 30d | tudo"
+   },
+   {
     "file": "src/lib/security/rls-denial-logger.ts",
     "name": "RlsOperation",
     "values": "DELETE | INSERT | SELECT | UPDATE"
@@ -184614,6 +184630,10 @@
    {
     "file": "src/hooks/quotes/useSellerDiscountLimits.ts",
     "text": "Delete limit"
+   },
+   {
+    "file": "src/hooks/security/useBlockedAccessLog.ts",
+    "text": "* Permissão: `GRANT SELECT ... TO authenticated` e a policy"
    },
    {
     "file": "src/hooks/simulation/simulationPriceFetcher.ts",
@@ -209634,6 +209654,11 @@
     "value": "100"
    },
    {
+    "file": "src/components/admin/security/BlockedAccessLogTab.tsx",
+    "name": "MAX_ROWS_RENDERED",
+    "value": "200"
+   },
+   {
     "file": "src/components/admin/security/keys/McpKeysFilters.tsx",
     "name": "ALL_CREATORS",
     "value": "'__all__'"
@@ -210959,6 +210984,11 @@
     "value": "50"
    },
    {
+    "file": "src/hooks/security/useBlockedAccessLog.ts",
+    "name": "BLOCKED_ACCESS_LIMIT",
+    "value": "500"
+   },
+   {
     "file": "src/hooks/simulation/useLogoColorAnalysis.ts",
     "name": "MAX_SIZE",
     "value": "200"
@@ -211772,6 +211802,11 @@
     "file": "src/lib/quotes/templateTotal.ts",
     "name": "VALOR_INDISPONIVEL",
     "value": "'Valor indisponível'"
+   },
+   {
+    "file": "src/lib/security/blockedAccess.ts",
+    "name": "BLOCKED_ACCESS_ALL_REASONS",
+    "value": "'todos'"
    },
    {
     "file": "src/lib/security/safeToast.ts",
@@ -231010,6 +231045,14 @@
     "line": "staleTime: 60 * 60 * 1000,"
    },
    {
+    "file": "src/hooks/security/useBlockedAccessLog.ts",
+    "line": "gcTime: 15 * 60 * 1000,"
+   },
+   {
+    "file": "src/hooks/security/useBlockedAccessLog.ts",
+    "line": "staleTime: 2 * 60 * 1000,"
+   },
+   {
     "file": "src/hooks/simulation/simulationClipboard.ts",
     "line": "setTimeout(() => setCopiedId(null), 2000);"
    },
@@ -231160,6 +231203,14 @@
    {
     "file": "src/lib/lead-time/productionLeadTime.ts",
     "line": "return previous.ok ? addBusinessDays(previous.value, 1, holidays) : previous;"
+   },
+   {
+    "file": "src/lib/security/blockedAccess.ts",
+    "line": "const dayMs = 24 * 60 * 60 * 1000;"
+   },
+   {
+    "file": "src/lib/security/blockedAccess.ts",
+    "line": "return ts >= nowMs - hours * 60 * 60 * 1000;"
    },
    {
     "file": "src/pages/admin/AdminCloudflareImagesPage.tsx",
@@ -244136,6 +244187,54 @@
    {
     "file": "src/components/admin/products/sections/engraving/__tests__/useEngravingWizard.productionDays.test.tsx",
     "name": "RLS nega o update em silêncio (0 linhas, sem erro do Postgres): mostra erro, não sucesso"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
+    "name": "BlockedAccessLogTab"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
+    "name": "mostra esqueleto enquanto carrega"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
+    "name": "mostra o erro com a policy exigida e permite tentar de novo"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
+    "name": "explica o estado vazio quando a tabela não tem registros"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
+    "name": "lista os bloqueios com motivo traduzido e código técnico"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
+    "name": "marca no badge o motivo que não está no catálogo"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
+    "name": "filtra pela busca e avisa quando nada casa"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
+    "name": "recorta a tabela pelo chip de motivo"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
+    "name": "recorta a tabela pelo período de 24 horas"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
+    "name": "avisa quando o limite de leitura foi atingido"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
+    "name": "exporta o CSV do que está visível no filtro"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
+    "name": "recarrega pelo botão Atualizar"
    },
    {
     "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
@@ -270308,6 +270407,142 @@
    {
     "file": "src/lib/security/sanitize-error.test.ts",
     "name": "não vaza detalhe técnico de falha upstream em texto cru"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "describeBlockReason"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "traduz motivo catalogado com gravidade real"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "trata excesso de tentativas como atenção, não como crítico"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "cai no fallback para motivo não catalogado"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "cai no fallback quando o motivo é nulo ou vazio"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "filterBlockedAccess"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "corta o período de 24h"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "mantém o registro exatamente na borda de 24h"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "descarta data inválida em período e mantém em "
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "busca por e-mail sem diferenciar maiúsculas"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "busca por IP parcial e por navegador"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "recorta por motivo específico"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "combina período, motivo e busca"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "não filtra nada com "
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "summarizeBlockedAccess"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "conta total, 24h e 7d"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "ignora data inválida nas janelas sem perder o total"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "conta IPs e e-mails distintos sem contar nulos nem vazios"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "conta gravidade crítica apenas pelo motivo"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "ordena IPs por quantidade, respeita o limite e guarda a última vez"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "ordena motivos por quantidade decrescente"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "sortBlockedAccess"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "ordena do mais recente para o mais antigo e joga data inválida para o fim"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "formatBlockedAccessLocation"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "monta cidade, estado e país"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "usa apenas o que existe"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "devolve travessão quando não há local nenhum"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "truncateUserAgent"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "devolve travessão para vazio ou nulo"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "mantém texto curto e corta texto longo com reticências"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "buildBlockedAccessCsv"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "escreve cabeçalho e uma linha por registro, com motivo traduzido"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "protege campos com ponto e vírgula, aspas e quebra de linha"
+   },
+   {
+    "file": "src/lib/security/__tests__/blockedAccess.test.ts",
+    "name": "deixa e-mail nulo como campo vazio e ordena do mais recente para o mais antigo"
    },
    {
     "file": "src/lib/security/__tests__/file-validation.test.ts",
@@ -466299,6 +466534,19 @@
     }
    ]
   },
+  "src/components/admin/security/BlockedAccessLogTab.tsx": {
+   "path": "src/components/admin/security/BlockedAccessLogTab.tsx",
+   "lines": 379,
+   "exports": [
+    "function BlockedAccessLogTab"
+   ],
+   "params": [
+    {
+     "name": "MAX_ROWS_RENDERED",
+     "value": "200"
+    }
+   ]
+  },
   "src/components/admin/security/ForceGlobalLogoutDialog.tsx": {
    "path": "src/components/admin/security/ForceGlobalLogoutDialog.tsx",
    "lines": 114,
@@ -466431,6 +466679,14 @@
     "function SecurityAnalytics"
    ]
   },
+  "src/components/admin/security/SecurityTabsList.tsx": {
+   "path": "src/components/admin/security/SecurityTabsList.tsx",
+   "lines": 46,
+   "exports": [
+    "function SecurityTabsList"
+   ],
+   "doc": "SecurityTabsList — barra de abas de /admin/seguranca-acesso. Extraída da página para respeitar o ratchet de tamanho de arquivo (`scripts/check-file-size-baseline.mjs`), que não permite crescimento de `AdminSegurancaAcessoPage.tsx`. Mesmo markup, mesma ordem e mesmos rótulos de antes — a única difere …"
+  },
   "src/components/admin/security/TopOffenderIpsCard.tsx": {
    "path": "src/components/admin/security/TopOffenderIpsCard.tsx",
    "lines": 134,
@@ -466472,6 +466728,34 @@
    ],
    "pagination": [
     "2000"
+   ]
+  },
+  "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx": {
+   "path": "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
+   "lines": 180,
+   "is_test": true,
+   "params": [
+    {
+     "name": "HOUR",
+     "value": "60"
+    }
+   ],
+   "temporal": [
+    "const HOUR = 60 * 60 * 1000;"
+   ],
+   "tests": [
+    "BlockedAccessLogTab",
+    "mostra esqueleto enquanto carrega",
+    "mostra o erro com a policy exigida e permite tentar de novo",
+    "explica o estado vazio quando a tabela não tem registros",
+    "lista os bloqueios com motivo traduzido e código técnico",
+    "marca no badge o motivo que não está no catálogo",
+    "filtra pela busca e avisa quando nada casa",
+    "recorta a tabela pelo chip de motivo",
+    "recorta a tabela pelo período de 24 horas",
+    "avisa quando o limite de leitura foi atingido",
+    "exporta o CSV do que está visível no filtro",
+    "recarrega pelo botão Atualizar"
    ]
   },
   "src/components/admin/security/keys/McpKeyDetailsDrawer.tsx": {
@@ -500681,6 +500965,39 @@
     "retorna false e toast.error quando Supabase falha"
    ]
   },
+  "src/hooks/security/useBlockedAccessLog.ts": {
+   "path": "src/hooks/security/useBlockedAccessLog.ts",
+   "lines": 60,
+   "exports": [
+    "const BLOCKED_ACCESS_LIMIT",
+    "const BLOCKED_ACCESS_QUERY_KEY",
+    "interface UseBlockedAccessLogResult",
+    "function useBlockedAccessLog"
+   ],
+   "tables": [
+    {
+     "table": "access_blocked_log",
+     "op": "select"
+    }
+   ],
+   "params": [
+    {
+     "name": "BLOCKED_ACCESS_LIMIT",
+     "value": "500"
+    }
+   ],
+   "rule_comments": [
+    "* Permissão: `GRANT SELECT ... TO authenticated` e a policy"
+   ],
+   "doc": "useBlockedAccessLog — leitura de `public.access_blocked_log`. É a única porta da aplicação para essa tabela de auditoria. Permissão: `GRANT SELECT ... TO authenticated` e a policy `access_blocked_log_admin_read` (`USING is_admin_or_above(auth.uid())`) — portanto a leitura funciona sem nenhuma altera …",
+   "hooks": [
+    "useBlockedAccessLog"
+   ],
+   "temporal": [
+    "gcTime: 15 * 60 * 1000,",
+    "staleTime: 2 * 60 * 1000,"
+   ]
+  },
   "src/hooks/simulation/index.ts": {
    "path": "src/hooks/simulation/index.ts",
    "lines": 19,
@@ -513263,6 +513580,56 @@
    ],
    "doc": "SSOT auditável da matriz de acesso por rota. Esta tabela é a fonte única para a página /admin/rbac-rotas. Atualize SEMPRE que adicionar/remover uma rota técnica ou trocar guard. Convenções: - guard: componente real usado no roteador (App.tsx). - role: papel mínimo necessário, na nomenclatura do app. …"
   },
+  "src/lib/security/blockedAccess.ts": {
+   "path": "src/lib/security/blockedAccess.ts",
+   "lines": 359,
+   "exports": [
+    "interface BlockedAccessRow",
+    "type BlockedAccessSeverity",
+    "interface BlockReasonInfo",
+    "const SEVERITY_LABELS",
+    "const UNKNOWN_BLOCK_REASON",
+    "const BLOCK_REASON_CATALOG",
+    "function describeBlockReason",
+    "function isCatalogedBlockReason",
+    "type BlockedAccessPeriod",
+    "const BLOCKED_ACCESS_PERIODS",
+    "const BLOCKED_ACCESS_PERIOD_LABELS",
+    "const BLOCKED_ACCESS_ALL_REASONS",
+    "interface BlockedAccessFilters",
+    "const DEFAULT_BLOCKED_ACCESS_FILTERS",
+    "function filterBlockedAccess",
+    "function sortBlockedAccess",
+    "interface BlockedAccessReasonCount",
+    "function listBlockedAccessReasons",
+    "interface BlockedAccessIpCount",
+    "interface BlockedAccessSummary",
+    "function summarizeBlockedAccess",
+    "function formatBlockedAccessLocation",
+    "function truncateUserAgent",
+    "function buildBlockedAccessCsv"
+   ],
+   "enums": [
+    {
+     "name": "BlockedAccessSeverity",
+     "values": "atencao | critico | info"
+    },
+    {
+     "name": "BlockedAccessPeriod",
+     "values": "7d | 24h | 30d | tudo"
+    }
+   ],
+   "params": [
+    {
+     "name": "BLOCKED_ACCESS_ALL_REASONS",
+     "value": "'todos'"
+    }
+   ],
+   "temporal": [
+    "const dayMs = 24 * 60 * 60 * 1000;",
+    "return ts >= nowMs - hours * 60 * 60 * 1000;"
+   ]
+  },
   "src/lib/security/file-validation.ts": {
    "path": "src/lib/security/file-validation.ts",
    "lines": 94,
@@ -513518,6 +513885,56 @@
      "refines": [],
      "chain": []
     }
+   ]
+  },
+  "src/lib/security/__tests__/blockedAccess.test.ts": {
+   "path": "src/lib/security/__tests__/blockedAccess.test.ts",
+   "lines": 282,
+   "is_test": true,
+   "params": [
+    {
+     "name": "HOUR",
+     "value": "60"
+    }
+   ],
+   "temporal": [
+    "const HOUR = 60 * 60 * 1000;"
+   ],
+   "tests": [
+    "describeBlockReason",
+    "traduz motivo catalogado com gravidade real",
+    "trata excesso de tentativas como atenção, não como crítico",
+    "cai no fallback para motivo não catalogado",
+    "cai no fallback quando o motivo é nulo ou vazio",
+    "filterBlockedAccess",
+    "corta o período de 24h",
+    "mantém o registro exatamente na borda de 24h",
+    "descarta data inválida em período e mantém em ",
+    "busca por e-mail sem diferenciar maiúsculas",
+    "busca por IP parcial e por navegador",
+    "recorta por motivo específico",
+    "combina período, motivo e busca",
+    "não filtra nada com ",
+    "summarizeBlockedAccess",
+    "conta total, 24h e 7d",
+    "ignora data inválida nas janelas sem perder o total",
+    "conta IPs e e-mails distintos sem contar nulos nem vazios",
+    "conta gravidade crítica apenas pelo motivo",
+    "ordena IPs por quantidade, respeita o limite e guarda a última vez",
+    "ordena motivos por quantidade decrescente",
+    "sortBlockedAccess",
+    "ordena do mais recente para o mais antigo e joga data inválida para o fim",
+    "formatBlockedAccessLocation",
+    "monta cidade, estado e país",
+    "usa apenas o que existe",
+    "devolve travessão quando não há local nenhum",
+    "truncateUserAgent",
+    "devolve travessão para vazio ou nulo",
+    "mantém texto curto e corta texto longo com reticências",
+    "buildBlockedAccessCsv",
+    "escreve cabeçalho e uma linha por registro, com motivo traduzido",
+    "protege campos com ponto e vírgula, aspas e quebra de linha",
+    "deixa e-mail nulo como campo vazio e ordena do mais recente para o mais antigo"
    ]
   },
   "src/lib/security/__tests__/file-validation.test.ts": {
@@ -515944,7 +516361,7 @@
   },
   "src/pages/admin/AdminSegurancaAcessoPage.tsx": {
    "path": "src/pages/admin/AdminSegurancaAcessoPage.tsx",
-   "lines": 743,
+   "lines": 722,
    "exports": [
     "function AdminSegurancaAcessoPage"
    ],
@@ -581778,10 +582195,25 @@
   }
  },
  "git": {
-  "sha": "a1cece013c026f1a4112161e02d4f8ce957b847d",
+  "sha": "aab21f0595abdacdd874f89d0bfbd81dd00bf944",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "aab21f0",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "feat: tela de acessos bloqueados lendo access_blocked_log (#4179)",
+    "files": [
+     "src/components/admin/security/BlockedAccessLogTab.tsx",
+     "src/components/admin/security/SecurityTabsList.tsx",
+     "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
+     "src/hooks/security/useBlockedAccessLog.ts",
+     "src/lib/security/__tests__/blockedAccess.test.ts",
+     "src/lib/security/blockedAccess.ts",
+     "src/pages/admin/AdminSegurancaAcessoPage.tsx"
+    ]
+   },
    {
     "sha": "a1cece0",
     "date": "2026-11-26",
@@ -582127,21 +582559,12 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "d2f3c85",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20260916211500 (#4148)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    13
+    12
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
@@ -582208,15 +582631,15 @@
     2
    ],
    [
-    "src/components/inventory/StockVelocityPanel.tsx",
+    "src/components/admin/security/BlockedAccessLogTab.tsx",
     1
    ],
    [
-    "src/components/inventory/__tests__/StockVelocityPanel.test.tsx",
+    "src/components/admin/security/SecurityTabsList.tsx",
     1
    ],
    [
-    "src/hooks/stock/useStockVelocity.ts",
+    "src/components/admin/security/__tests__/BlockedAccessLogTab.test.tsx",
     1
    ]
   ]

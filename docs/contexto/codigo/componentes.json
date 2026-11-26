@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1286,
+ "total": 1288,
  "orfaos": 155,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -5202,6 +5202,22 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/admin/security/BlockedAccessLogTab.tsx",
+   "exports": [
+    "BlockedAccessLogTab"
+   ],
+   "export_default": null,
+   "linhas": 379,
+   "dominio": "components/admin",
+   "hooks_locais": [
+    "useBlockedAccessLog"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/admin/security/BlockIpButton.tsx",
    "exports": [
     "BlockIpButton"
@@ -5521,6 +5537,20 @@
    ],
    "export_default": null,
    "linhas": 324,
+   "dominio": "components/admin",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/security/SecurityTabsList.tsx",
+   "exports": [
+    "SecurityTabsList"
+   ],
+   "export_default": null,
+   "linhas": 46,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -16645,7 +16675,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 493,
+   "usado_por": 494,
    "orfao": false
   },
   {
@@ -16680,7 +16710,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 660,
+   "usado_por": 661,
    "orfao": false
   },
   {
@@ -16714,7 +16744,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 363,
+   "usado_por": 364,
    "orfao": false
   },
   {
@@ -17063,7 +17093,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 271,
+   "usado_por": 272,
    "orfao": false
   },
   {
@@ -17371,7 +17401,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 191,
+   "usado_por": 192,
    "orfao": false
   },
   {
@@ -17467,7 +17497,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 58,
+   "usado_por": 59,
    "orfao": false
   },
   {
@@ -17484,7 +17514,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 54,
+   "usado_por": 55,
    "orfao": false
   },
   {
@@ -18258,7 +18288,7 @@
     "AdminSegurancaAcessoPage"
    ],
    "export_default": "AdminSegurancaAcessoPage",
-   "linhas": 743,
+   "linhas": 722,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useToast"

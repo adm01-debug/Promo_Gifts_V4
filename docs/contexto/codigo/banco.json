@@ -5590,7 +5590,7 @@
     "user_id->auth"
    ],
    "criada_em": "20260220001443_54c4d527-34ff-47cb-b192-8821dee4b9ae.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [
     "validate-access"
    ],

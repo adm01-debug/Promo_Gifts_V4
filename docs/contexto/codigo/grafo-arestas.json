@@ -3947,6 +3947,16 @@
    "src/hooks/ui/index.ts",
    "src/lib/edge/safeInvokeCall.ts"
   ],
+  "src/components/admin/security/BlockedAccessLogTab.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/components/ui/table.tsx",
+   "src/hooks/security/useBlockedAccessLog.ts",
+   "src/lib/security/blockedAccess.ts"
+  ],
   "src/components/admin/security/ForceGlobalLogoutDialog.tsx": [
    "src/components/ui/button.tsx",
    "src/components/ui/dialog.tsx",
@@ -4003,6 +4013,9 @@
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/table.tsx"
+  ],
+  "src/components/admin/security/SecurityTabsList.tsx": [
+   "src/components/ui/tabs.tsx"
   ],
   "src/components/admin/security/TopOffenderIpsCard.tsx": [
    "src/components/admin/security/BlockIpButton.tsx",
@@ -11843,6 +11856,10 @@
    "src/integrations/supabase/client.ts",
    "src/lib/logger.ts"
   ],
+  "src/hooks/security/useBlockedAccessLog.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/security/blockedAccess.ts"
+  ],
   "src/hooks/simulation/index.ts": [
    "src/hooks/simulation/useCustomizationPrice.ts",
    "src/hooks/simulation/useExternalSimulator.ts",
@@ -13368,10 +13385,12 @@
    "src/components/admin/security/ActiveIpsList.tsx",
    "src/components/admin/security/AnomalyCards.tsx",
    "src/components/admin/security/AutoDefenseTab.tsx",
+   "src/components/admin/security/BlockedAccessLogTab.tsx",
    "src/components/admin/security/ForceGlobalLogoutDialog.tsx",
    "src/components/admin/security/HardeningHealthCard.tsx",
    "src/components/admin/security/RecentAuditTable.tsx",
    "src/components/admin/security/SecurityAnalytics.tsx",
+   "src/components/admin/security/SecurityTabsList.tsx",
    "src/components/seo/PageSEO.tsx",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",

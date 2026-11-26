@@ -258,13 +258,13 @@
   },
   {
    "modulo": "components/admin",
-   "arquivos": 326,
-   "testes": 28,
-   "linhas": 73441,
+   "arquivos": 328,
+   "testes": 29,
+   "linhas": 73866,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 254,
+   "componentes": 256,
    "hooks_locais": [
     "useA11y",
     "useAIRecommendations",
@@ -295,6 +295,7 @@
     "useAvailableSizes",
     "useBadgeVisibilityStore",
     "useBadgesManager",
+    "useBlockedAccessLog",
     "useBusinessCalendarMutations",
     "useBusinessCalendarYear",
     "useCanGrantMcpFull",
@@ -699,6 +700,7 @@
     "webhook-inbound"
    ],
    "tabelas": [
+    "access_blocked_log",
     "admin_audit_log",
     "admin_settings",
     "ai_function_routing",
@@ -979,6 +981,7 @@
     "hooks/intelligence",
     "hooks/products",
     "hooks/quotes",
+    "hooks/security",
     "hooks/simulation",
     "hooks/ui",
     "integrations/supabase",
@@ -22463,6 +22466,59 @@
    ]
   },
   {
+   "modulo": "hooks/security",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 60,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [
+    "useBlockedAccessLog"
+   ],
+   "hooks_definidos": [
+    "useBlockedAccessLog"
+   ],
+   "edges": [],
+   "tabelas": [
+    "access_blocked_log"
+   ],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "MODE",
+    "PROD",
+    "VITE_SENTRY_DSN",
+    "VITE_SENTRY_ENVIRONMENT",
+    "VITE_SUPABASE_ANON_KEY",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL",
+    "VITE_VERCEL_GIT_COMMIT_SHA"
+   ],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "access_blocked_log"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "components/admin"
+   ],
+   "depende_de_modulos": [
+    "integrations/supabase",
+    "lib/security"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query"
+   ]
+  },
+  {
    "modulo": "hooks/simulation",
    "arquivos": 17,
    "testes": 2,
@@ -23479,6 +23535,7 @@
     "hooks/mockup",
     "hooks/products",
     "hooks/quotes",
+    "hooks/security",
     "hooks/simulation",
     "hooks/simulator",
     "hooks/stock",
@@ -27036,9 +27093,9 @@
   },
   {
    "modulo": "lib/security",
-   "arquivos": 10,
-   "testes": 12,
-   "linhas": 1034,
+   "arquivos": 11,
+   "testes": 13,
+   "linhas": 1393,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -27106,6 +27163,7 @@
     "hooks/kit-builder",
     "hooks/products",
     "hooks/quotes",
+    "hooks/security",
     "lib/auth",
     "pages/admin",
     "pages/kit-builder",
@@ -28442,7 +28500,7 @@
    "modulo": "pages/admin",
    "arquivos": 62,
    "testes": 4,
-   "linhas": 16411,
+   "linhas": 16390,
    "itens_menu": [
     "Acesso & Bots",
     "Auditoria RBAC",
@@ -28544,6 +28602,7 @@
     "useAvailableSizes",
     "useBadgeVisibilityStore",
     "useBadgesManager",
+    "useBlockedAccessLog",
     "useBusinessCalendarMutations",
     "useBusinessCalendarYear",
     "useCallbackBuckets",
@@ -28988,6 +29047,7 @@
     "webhook-inbound"
    ],
    "tabelas": [
+    "access_blocked_log",
     "admin_audit_log",
     "admin_settings",
     "ai_function_routing",
@@ -35919,6 +35979,7 @@
     "useBIDossierExport",
     "useBadgeVisibilityStore",
     "useBadgesManager",
+    "useBlockedAccessLog",
     "useBluePremiumTheme",
     "useBulkSelection",
     "useBusinessCalendarMutations",
@@ -36456,6 +36517,7 @@
     "webhook-inbound"
    ],
    "tabelas": [
+    "access_blocked_log",
     "admin_audit_log",
     "admin_settings",
     "ai_function_routing",

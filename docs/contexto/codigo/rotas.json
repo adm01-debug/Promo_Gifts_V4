@@ -8153,6 +8153,7 @@
    "hooks": [
     "useAuth",
     "useAuthMFA",
+    "useBlockedAccessLog",
     "useCallback",
     "useCloudStatus",
     "useContext",
@@ -8196,6 +8197,7 @@
    "hooks_locais": [
     "useAuth",
     "useAuthMFA",
+    "useBlockedAccessLog",
     "useCloudStatus",
     "useCountUp",
     "useCurrentSection",
@@ -8225,6 +8227,7 @@
     "useWorkspaceNotifications"
    ],
    "tabelas": [
+    "access_blocked_log",
     "admin_audit_log",
     "bot_detection_log",
     "frontend_telemetry",
@@ -8258,7 +8261,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 80
+   "arquivos_puxados": 85
   },
   {
    "protegida": true,
