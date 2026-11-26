@@ -5,6 +5,22 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.21.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.5...gifts-store-v1.21.0) (2026-11-26)
+
+
+### Features
+
+* JWT de agente na sugestao de identidade + botao montado no Kit Builder ([#4167](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4167)) ([b934d25](https://github.com/adm01-debug/Promo_Gifts_V4/commit/b934d25623c5786ff288c8d73595d0dcc10c6105))
+* liga a Meta de Vendas ao dashboard com progresso real ([#4161](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4161)) ([47346c1](https://github.com/adm01-debug/Promo_Gifts_V4/commit/47346c1f84a12ea88321b572a1afe91b3d1a6dcf))
+* liga a tabela stock_notes a uma tela de notas por variacao ([#4168](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4168)) ([3a44413](https://github.com/adm01-debug/Promo_Gifts_V4/commit/3a4441385b2df4c969d35ab340e4a20196a6a9d0))
+* liga views salvas do painel de estoque a uma tela ([#4169](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4169)) ([caba552](https://github.com/adm01-debug/Promo_Gifts_V4/commit/caba55243216d1a49dd730b4261560ac8dd591d2))
+* tela Infra do Banco (/admin/infra-ops) para a telemetria ops.* sem consumidor ([#4160](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4160)) ([c3f747f](https://github.com/adm01-debug/Promo_Gifts_V4/commit/c3f747f0d00d55ee650491eac00fac1a812c7aaa))
+
+
+### Bug Fixes
+
+* registra recibo final da migration 20261125074200 (gate E055) ([#4162](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4162)) ([67db74f](https://github.com/adm01-debug/Promo_Gifts_V4/commit/67db74f06337842bdbf6fff2a2919f595294b005))
+
 ## [1.20.5](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.4...gifts-store-v1.20.5) (2026-11-26)
 
 
