@@ -6,7 +6,17 @@
  * `AdminSegurancaAcessoPage.tsx`. Mesmo markup, mesma ordem e mesmos rótulos de
  * antes — a única diferença é a aba "Bloqueios", que passa a existir aqui.
  */
-import { BarChart3, Ban, Eye, History, KeySquare, Network, Siren, TrendingUp } from 'lucide-react';
+import {
+  BarChart3,
+  Ban,
+  Eye,
+  History,
+  KeySquare,
+  Network,
+  ScanEye,
+  Siren,
+  TrendingUp,
+} from 'lucide-react';
 import { TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface SecurityTabsListProps {
@@ -30,6 +40,9 @@ export function SecurityTabsList({ ipCount }: SecurityTabsListProps) {
       </TabsTrigger>
       <TabsTrigger value="anon-exposure">
         <Eye className="mr-1.5 h-3.5 w-3.5" /> Exposição anon
+      </TabsTrigger>
+      <TabsTrigger value="raio-x-anon">
+        <ScanEye className="mr-1.5 h-3.5 w-3.5" /> Raio-x do anon
       </TabsTrigger>
       <TabsTrigger value="active-ips">
         <Network className="mr-1.5 h-3.5 w-3.5" /> IPs ativos
