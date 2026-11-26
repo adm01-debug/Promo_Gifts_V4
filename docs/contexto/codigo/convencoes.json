@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: reemite PERF005 como 20261126020000 com approved-by no cabecalho (#4152)",
    "chore: inclui o schema ops no baseline de drift e snapshot (#4151)",
    "fix: reemite PERF005 com DROP INDEX CONCURRENTLY (sem editar o historico) (#4147)",
    "docs(migrations-log): recibo E15 — aplicação de 20260917160000 (#4150)",
-   "docs(migrations-log): recibo E15 — aplicação de 20260917150000 (#4149)",
-   "docs(migrations-log): recibo E15 — aplicação de 20260916211500 (#4148)"
+   "docs(migrations-log): recibo E15 — aplicação de 20260917150000 (#4149)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
