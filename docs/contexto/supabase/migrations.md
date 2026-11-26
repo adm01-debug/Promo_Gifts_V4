@@ -3036,3 +3036,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261125173000 | [idx_sds_summary_date_supplier_aplicavel](migrations/20261125173000_idx_sds_summary_date_supplier_aplicavel.sql) | 3 |
 | 20261125180000 | [fix_comment_v_tabela_gravacao_publica](migrations/20261125180000_fix_comment_v_tabela_gravacao_publica.sql) | 2 |
 | 20261126030000 | [perf005_drop_unused_indexes_concurrently](migrations/20261126030000_perf005_drop_unused_indexes_concurrently.sql) | 48 |
+| 20261126052000 | [ops_infra_telemetry_dev_rpc](migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql) | 5 |

@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 14:19 UTC
+
+- **functions** adicionado (1): `public.fn_dev_ops_infra_telemetry(_days integer, _top integer)`
+- **functions** alterado (2): `public.fn_dev_medallion_health()`, `public.is_dev(_user_id uuid)`
+- **migrations** adicionado (1): `20261126052000_ops_infra_telemetry_dev_rpc`
+
 ## 2026-11-26 02:30 UTC
 
 - **colunas** adicionado (21): `ops.pgss_history.calls`, `ops.pgss_history.captured_at`, `ops.pgss_history.fn_name`, `ops.pgss_history.max_exec_time`, `ops.pgss_history.mean_exec_time`, `ops.pgss_history.queryid`, `ops.pgss_history.stddev_exec_time`, `ops.pgss_history.total_exec_time`, `ops.table_size_history.captured_at`, `ops.table_size_history.live_tup`, `ops.table_size_history.schema_name`, `ops.table_size_history.table_name`, `ops.table_size_history.total_bytes`, `ops.wraparound_monitor_log.captured_at`, `ops.wraparound_monitor_log.detail`, `ops.wraparound_monitor_log.id`, `ops.wraparound_monitor_log.metric`, `ops.wraparound_monitor_log.object_name`, `ops.wraparound_monitor_log.unit`, `ops.wraparound_monitor_log.value_numeric`, `ops.wraparound_monitor_log.value_pct`

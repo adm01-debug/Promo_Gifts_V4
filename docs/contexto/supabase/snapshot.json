@@ -155629,8 +155629,13 @@
       {
         "args": "",
         "callers": {
-          "code": [],
-          "code_total_files": 0,
+          "code": [
+            {
+              "file": "supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -155649,6 +155654,36 @@
         "language": "plpgsql",
         "leakproof": false,
         "name": "fn_dev_medallion_health",
+        "owner": "postgres",
+        "returns": "jsonb",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "stable"
+      },
+      {
+        "args": "_days integer, _top integer",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Telemetria operacional interna (schema ops: E30 table_size_history, E40 pgss_history, E33 wraparound_monitor_log) para a tela /admin/infra-ops. Só papel dev (42501 para os demais). O schema ops segue deny-all e sem GRANT a anon/authenticated; esta RPC devolve apenas agregados (top _top itens na janela de _days dias).",
+        "config": [
+          "search_path=public, pg_catalog, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "6fe8993ca75775d6",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "fn_dev_ops_infra_telemetry",
         "owner": "postgres",
         "returns": "jsonb",
         "schema": "public",
@@ -184759,7 +184794,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 39,
+          "code_total_files": 40,
           "cron": [],
           "db": [
             "public.auto_revoke_orphan_full_keys",
@@ -184771,6 +184806,7 @@
             "public.enqueue_optimization",
             "public.fn_admin_sync_external_connections",
             "public.fn_dev_medallion_health",
+            "public.fn_dev_ops_infra_telemetry",
             "public.is_admin_strict",
             "public.request_step_up_challenge",
             "public.reset_optimization_queue",
@@ -241780,6 +241816,12 @@
         "statements": 48,
         "statements_sha": "deab881287bd8636",
         "version": "20261126030000"
+      },
+      {
+        "name": "ops_infra_telemetry_dev_rpc",
+        "statements": 5,
+        "statements_sha": "55fe510ee3639d72",
+        "version": "20261126052000"
       }
     ],
     "policies": [
