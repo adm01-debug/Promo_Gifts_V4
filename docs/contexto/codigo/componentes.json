@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1288,
+ "total": 1291,
  "orfaos": 155,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -5125,6 +5125,61 @@
    "dominio": "components/admin",
    "hooks_locais": [
     "useProductsManager"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/ramos-atividade/RamoFormDialog.tsx",
+   "exports": [
+    "RamoFormDialog"
+   ],
+   "export_default": null,
+   "linhas": 293,
+   "dominio": "components/admin",
+   "hooks_locais": [
+    "useCreateRamoAtividade",
+    "useUpdateRamoAtividade"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/ramos-atividade/RamosAtividadeManager.tsx",
+   "exports": [
+    "RamosAtividadeManager"
+   ],
+   "export_default": null,
+   "linhas": 427,
+   "dominio": "components/admin",
+   "hooks_locais": [
+    "useDeleteRamoAtividade",
+    "useDeleteSegmento",
+    "useImpactoProdutos",
+    "useRamosAdministracao",
+    "useToggleRamoAtividade",
+    "useToggleSegmento"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/ramos-atividade/SegmentoFormDialog.tsx",
+   "exports": [
+    "SegmentoFormDialog"
+   ],
+   "export_default": null,
+   "linhas": 276,
+   "dominio": "components/admin",
+   "hooks_locais": [
+    "useCreateSegmento",
+    "useUpdateSegmento"
    ],
    "tabelas": [],
    "edges": [],
@@ -16602,7 +16657,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 10,
+   "usado_por": 11,
    "orfao": false
   },
   {
@@ -16675,7 +16730,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 494,
+   "usado_por": 495,
    "orfao": false
   },
   {
@@ -16710,7 +16765,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 661,
+   "usado_por": 664,
    "orfao": false
   },
   {
@@ -16862,7 +16917,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 47,
+   "usado_por": 48,
    "orfao": false
   },
   {
@@ -16934,7 +16989,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 143,
+   "usado_por": 145,
    "orfao": false
   },
   {
@@ -17093,7 +17148,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 272,
+   "usado_por": 275,
    "orfao": false
   },
   {
@@ -17121,7 +17176,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 154,
+   "usado_por": 157,
    "orfao": false
   },
   {
@@ -17293,7 +17348,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 144,
+   "usado_por": 146,
    "orfao": false
   },
   {
@@ -17401,7 +17456,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 192,
+   "usado_por": 193,
    "orfao": false
   },
   {
@@ -17475,7 +17530,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 66,
+   "usado_por": 69,
    "orfao": false
   },
   {
@@ -17529,7 +17584,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 66,
+   "usado_por": 68,
    "orfao": false
   },
   {
@@ -18033,7 +18088,7 @@
     "AdminCadastrosPage"
    ],
    "export_default": "AdminCadastrosPage",
-   "linhas": 171,
+   "linhas": 197,
    "dominio": "pages/admin",
    "hooks_locais": [],
    "tabelas": [],

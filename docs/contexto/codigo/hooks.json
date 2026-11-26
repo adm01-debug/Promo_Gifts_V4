@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 650,
+ "total": 651,
  "hooks": [
   {
    "arquivo": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -8568,10 +8568,13 @@
     "useQueryClient"
    ],
    "canais_realtime": [],
-   "usado_por": 2,
+   "usado_por": 5,
    "usado_por_arquivos": [
+    "src/components/admin/ramos-atividade/RamoFormDialog.tsx",
+    "src/components/admin/ramos-atividade/RamosAtividadeManager.tsx",
     "src/hooks/assistant/useClientBrandSignals.ts",
-    "src/hooks/crm/index.ts"
+    "src/hooks/crm/index.ts",
+    "src/hooks/crm/useRamosAdministracao.ts"
    ],
    "coberto_por_testes": 0
   },
@@ -8598,9 +8601,12 @@
     "useQueryClient"
    ],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 4,
    "usado_por_arquivos": [
-    "src/hooks/crm/index.ts"
+    "src/components/admin/ramos-atividade/RamosAtividadeManager.tsx",
+    "src/components/admin/ramos-atividade/SegmentoFormDialog.tsx",
+    "src/hooks/crm/index.ts",
+    "src/hooks/crm/useRamosAdministracao.ts"
    ],
    "coberto_por_testes": 0
   },
@@ -8626,6 +8632,30 @@
     "src/hooks/crm/index.ts"
    ],
    "coberto_por_testes": 1
+  },
+  {
+   "arquivo": "src/hooks/crm/useRamosAdministracao.ts",
+   "hooks_exportados": [
+    "useImpactoProdutos",
+    "useRamosAdministracao"
+   ],
+   "linhas": 63,
+   "dominio": "hooks/crm",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useMemo",
+    "useQuery",
+    "useRamosAtividade",
+    "useSegmentos"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/components/admin/ramos-atividade/RamosAtividadeManager.tsx"
+   ],
+   "coberto_por_testes": 0
   },
   {
    "arquivo": "src/hooks/customization/useCustomizationCollapsePrefs.ts",

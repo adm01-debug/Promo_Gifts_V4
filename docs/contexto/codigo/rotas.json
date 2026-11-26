@@ -6,7 +6,7 @@
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 74,
-  "lazy": 179
+  "lazy": 180
  },
  "urls": [
   {
@@ -3019,6 +3019,7 @@
     "useHasPrintAreas",
     "useIPValidation",
     "useId",
+    "useImpactoProdutos",
     "useInfiniteQuery",
     "useInfiniteScroll",
     "useIntelligenceBadgeSettings",
@@ -3121,6 +3122,7 @@
     "useRamoAtividade",
     "useRamoAtividadeFilter",
     "useRamoAtividadeGroups",
+    "useRamosAdministracao",
     "useRamosAtividade",
     "useRamosAtividadeGroups",
     "useRecentProducts",
@@ -3343,6 +3345,7 @@
     "useGroupPersonalization",
     "useHasPrintAreas",
     "useIPValidation",
+    "useImpactoProdutos",
     "useInfiniteScroll",
     "useIntelligenceBadgeSettings",
     "useIntelligenceBadgeSettingsValue",
@@ -3435,6 +3438,7 @@
     "useRamoAtividade",
     "useRamoAtividadeFilter",
     "useRamoAtividadeGroups",
+    "useRamosAdministracao",
     "useRamosAtividade",
     "useRamosAtividadeGroups",
     "useRecentProducts",
@@ -3627,7 +3631,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 573
+   "arquivos_puxados": 579
   },
   {
    "protegida": true,
@@ -39542,6 +39546,7 @@
   "QuotesDashboardPage": "src/pages/quotes/QuotesDashboardPage.tsx",
   "QuotesKanbanPage": "src/pages/quotes/QuotesKanbanPage.tsx",
   "QuotesListPage": "src/pages/quotes/QuotesListPage.tsx",
+  "RamosAtividadeManager": "src/components/admin/ramos-atividade/index.ts",
   "RateLimitDashboard": "src/pages/system/RateLimitDashboardPage.tsx",
   "RegressionGuardrailBanner": "src/components/admin/telemetry/RegressionGuardrailBanner.tsx",
   "ReplenishmentsPage": "src/pages/products/ReplenishmentsPage.tsx",

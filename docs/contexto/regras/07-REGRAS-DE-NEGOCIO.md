@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5f0529c009` · branch `main` · 2026-11-26 17:17 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a895096aa4` · branch `main` · 2026-11-26 17:31 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1861,7 +1861,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `unconfigured` | compara | `src/components/admin/connections/DataSourceDebugTab.tsx` |
 | `status` | `underindex` | compara | `src/components/bi/ClientCategoryRadar.tsx` |
 | `status` | `unhealthy` | compara, escreve | `supabase/functions/health-check/index.ts` |
-| … +124 linhas — lista completa em `context.json` | | | |
+| … +126 linhas — lista completa em `context.json` | | | |
 
 ### E.4 Enums e listas de valores
 
@@ -2050,6 +2050,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | BICategorySlug | agendas \| blocos \| canetas \| eletronicos \| garrafas \| kits \| mochilas \| necessaires \| outros \| vestuario | `src/lib/bi/categoryResolver.ts` |
 | ShippingDeadlineStatus | none \| ok \| overdue \| soon | `src/lib/carts/shipping-deadline.ts` |
 | DeadlineFilter | all \| month \| none \| overdue \| soon \| week | `src/lib/carts/shipping-deadline.ts` |
+| AlvoExclusao | ramo \| segmento | `src/lib/crm/ramos-catalogo.ts` |
 | CrmSellerLinkAction | created \| unchanged \| updated | `src/lib/crm/seller-links.ts` |
 | Operation | batch_insert \| delete \| insert \| select \| update \| upsert | `src/lib/db/postgrest.ts` |
 | EndpointCategory | auth \| comparison \| connection \| crm \| dropbox \| magazine \| magic-up \| mcp \| other \| quote \| secrets \| visual-search \| webhook | `src/lib/edge/invokeBottlenecks.ts` |
@@ -2166,8 +2167,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | EdgeRole | vendedor \| agente \| supervisor \| admin \| dev | `supabase/functions/_shared/createEdge.ts` |
 | CredentialSource | db \| env \| none | `supabase/functions/_shared/credentials.ts` |
 | AppRole | dev \| supervisor \| admin \| agente \| vendedor | `supabase/functions/_shared/dispatcher-auth.ts` |
-| DispatcherAuthMode | secret \| user_jwt | `supabase/functions/_shared/dispatcher-auth.ts` |
-| … +20 linhas — lista completa em `context.json` | | |
+| … +21 linhas — lista completa em `context.json` | | |
 
 ## F. Validações de entrada
 
@@ -3215,6 +3215,13 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `stock_quantity` | min=0 | `src/components/admin/products/sections/ProductPriceSection.tsx` |
 | `min_quantity` | min, min, min=1 | `src/components/admin/products/sections/ProductPriceSection.tsx` |
 | `min_order_quantity` | min, min, min=0 | `src/components/admin/products/sections/ProductPriceSection.tsx` |
+| `ramo-nome` | max | `src/components/admin/ramos-atividade/RamoFormDialog.tsx` |
+| `ramo-slug` | max | `src/components/admin/ramos-atividade/RamoFormDialog.tsx` |
+| `ramo-ordem` | type=number, min=0 | `src/components/admin/ramos-atividade/RamoFormDialog.tsx` |
+| `segmento-nome` | max | `src/components/admin/ramos-atividade/SegmentoFormDialog.tsx` |
+| `segmento-slug` | max | `src/components/admin/ramos-atividade/SegmentoFormDialog.tsx` |
+| `segmento-icone` | max | `src/components/admin/ramos-atividade/SegmentoFormDialog.tsx` |
+| `segmento-ordem` | type=number, min=0 | `src/components/admin/ramos-atividade/SegmentoFormDialog.tsx` |
 | `block-hours` | type=number, min=1, max=720 | `src/components/admin/security/BlockIpButton.tsx` |
 | `dev-test-upload` | disabled=isUploading | `src/components/admin/security/SecureUploadManager.tsx` |
 | `upd-mcp-expires` | type=datetime-local | `src/components/admin/security/keys/UpdateMcpKeyDialog.tsx` |
@@ -4525,6 +4532,26 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **generateBIPptx({ clientName, ramoAtividade, health, bi, affinity, trends, seasonality, vs, categorySection, }: Args)** — `src/lib/bi/pptxGenerator.ts`
   ```
   const pptx = new PptxGenJS(); pptx.layout = 'LAYOUT_WIDE'; // 13.33 x 7.5 pptx.title = `Briefing BI — ${clientName}`; pptx.company = 'Promo Gifts'; // ====================== SLIDE 1 — CAPA / HERO ====================== const s1 = pptx.addSlide(); s1.background = { color: C.bg }; // Faixa de cor à esquerda s1.addShape('rect', { x: 0, y: 0, w: 0.5, h: 7.5, fill: { color: C.primary } }); s1.addText('BUSINESS ANALYTIC', { x: 0.8, y: 0.4, w: 8, h: 0.4, fontSize: 11, fontFace: 'Calibri', color: C.acce …
+  ```
+- **ordemValida(valor: string)** — `src/lib/crm/ramos-catalogo.ts`
+  ```
+  const texto = normalizarTexto(valor); if (!texto) return 0; const numero = Number.parseInt(texto, 10); if (!Number.isInteger(numero) || numero < 0) return null; return numero;
+  ```
+- **validarRamo(valores: RamoFormValues, contexto: ContextoValidacaoRamo,)** — `src/lib/crm/ramos-catalogo.ts`
+  ```
+  const erros: RamoErros = {}; const nome = normalizarTexto(valores.nome); if (!nome) { erros.nome = 'Informe o nome do ramo.'; } else if (nome.length > RAMO_NOME_MAX) { erros.nome = `O nome aceita no máximo ${RAMO_NOME_MAX} caracteres.`; } const slug = normalizarTexto(valores.slug).toLowerCase() || slugify(nome); if (!slug) { erros.slug = 'Informe o identificador (slug) do ramo.'; } else if (slug.length > RAMO_SLUG_MAX) { erros.slug = `O identificador aceita no máximo ${RAMO_SLUG_MAX} caracteres. …
+  ```
+- **validarSegmento(valores: SegmentoFormValues, contexto: ContextoValidacaoSegmento,)** — `src/lib/crm/ramos-catalogo.ts`
+  ```
+  const erros: SegmentoErros = {}; const ramoId = normalizarTexto(valores.ramoId); if (!ramoId) { erros.ramoId = 'Escolha o ramo ao qual o segmento pertence.'; } else if (!contexto.ramosConhecidos.includes(ramoId)) { erros.ramoId = 'Ramo não encontrado na lista. Recarregue a tela.'; } const nome = normalizarTexto(valores.nome); if (!nome) { erros.nome = 'Informe o nome do segmento.'; } else if (nome.length > SEGMENTO_NOME_MAX) { erros.nome = `O nome aceita no máximo ${SEGMENTO_NOME_MAX} caracteres …
+  ```
+- **valoresIniciaisRamo(ramo: RamoAtividade | undefined, ordemSugerida: number,)** — `src/lib/crm/ramos-catalogo.ts`
+  ```
+  return { nome: ramo?.nome ?? '', slug: ramo?.slug ?? '', descricao: ramo?.descricao ?? '', icone: ramo?.icone ?? RAMO_ICONE_PADRAO, cor: ramo?.cor ?? RAMO_COR_PADRAO, ativo: ramo?.ativo ?? true, ordem: String(ramo ? ramo.ordem : ordemSugerida), };
+  ```
+- **valoresIniciaisSegmento(ramoId: string, segmento: RamoAtividadeFilho | undefined, ordemSugerida: number,)** — `src/lib/crm/ramos-catalogo.ts`
+  ```
+  return { ramoId: segmento?.ramo_atividade_id ?? ramoId, nome: segmento?.nome ?? '', slug: segmento?.slug ?? '', descricao: segmento?.descricao ?? '', icone: segmento?.icone ?? '', ativo: segmento?.ativo ?? true, ordem: String(segmento ? segmento.ordem : ordemSugerida), };
   ```
 - **validateLinkInput(email: string, sellerIdInput: string)** — `src/lib/crm/seller-links.ts`
   ```
@@ -5947,7 +5974,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `CHUNK` | `80` | `src/hooks/products/useColorEnrichment.ts` |
 | `CHUNK` | `80` | `src/hooks/products/useColorFanout.ts` |
 | `CART_ITEM_DEBOUNCE_MS` | `300` | `src/hooks/products/useDebouncedCartItemActions.ts` |
-| … +439 linhas — lista completa em `context.json` | | |
+| … +444 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6862,7 +6889,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23955 testes em 2400 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (24000 testes em 2402 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6937,6 +6964,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/e2e/phase3-detail-experience.test.ts` | 39 | Phase 3.1 — ProductSizeSelector · builds size options from variations · aggregates stock across same size_code · excludes null/undefined size_codes … |
 | `tests/unit/freight-quest/freight-calculations.test.ts` | 39 | FreightEstimator — SEDEX · 0g → R$ 22,50 (faixa ≤ 1kg) · 500g, 1 kit → R$ 22,50 (≤ 1kg) · 1000g, 1 kit → R$ 22,50 (exatamente 1kg, faixa ≤ 1kg) … |
 | `e2e/tools-module.spec.ts` | 38 | Tools Module - Public Access (No Auth) · should redirect to auth when accessing ${route.path} unauthenticated · should display auth page for all tool routes · should not expose tool data to unauthenticated users … |
+| `src/lib/crm/__tests__/ramos-catalogo.test.ts` | 38 | slugify · remove acentos, colapsa separadores e apara as pontas · sugerirSlug · devolve o slug base quando está livre … |
 | `src/pages/products/__tests__/applyVoiceFilters.test.ts` | 38 | applyVoiceFilters — mapeamento de filtros de voz · payload vazio não altera o estado · color acumula sem duplicar · category acumula sem duplicar … |
 | `tests/e2e/phase2-filters-catalog.test.ts` | 38 | Phase 2.1 — Gender Filter Integration · no filter returns all products · filter masculino · filter feminino … |
 | `tests/edge-functions/integration/auth-security.test.ts` | 38 | validate-access · usuário com permissão → 200 + allowed=true · usuário sem permissão → 200 + allowed=false · sem Authorization → 401 … |
@@ -7165,8 +7193,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/scripts/check-anon-write-grants.test.mjs` | 20 | loadAllowlist · devolve grants=[] quando o arquivo não existe · lê grants de um arquivo válido · tolera arquivo sem campo grants (array vazio) … |
 | `tests/scripts/check-no-inline-cors.test.mjs` | 20 | check-no-inline-cors — repositório real · passa (exit 0) contra supabase/functions/ real do repo · check-no-inline-cors — cenários básicos · passa quando supabase/functions/ está vazio … |
 | `tests/scripts/inventario-banco.test.mjs` | 20 | extrairInventario · aceita a resposta da Management API, do MCP (texto embrulhado), a linha do psql e o objeto direto · recusa entrada incompleta, vazia ou de outra versao · montarInventario … |
-| `tests/types/quote-types.test.ts` | 20 | QuoteHistoryEntry shape · has all required fields · allows nullable fields · metadata defaults to empty object … |
-| … +2100 linhas — lista completa em `context.json` | | |
+| … +2102 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7553,6 +7580,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Texto digitado em "Prazo (dias úteis)"; vazio = null */ | `src/components/admin/products/sections/engraving/types.ts` |
 | * useEngravingWizard — Business logic for the engraving wizard | `src/components/admin/products/sections/engraving/useEngravingWizard.ts` |
 | * Grava o prazo da técnica (null = usa a tabela). Área ainda não salva só muda na memória. */ | `src/components/admin/products/sections/engraving/useEngravingWizard.ts` |
+| * A validacao vive em `@/lib/crm/ramos-catalogo` (mesmas regras testadas na | `src/components/admin/ramos-atividade/RamoFormDialog.tsx` |
 | - Somente FULL (chaves com escopo *) | `src/components/admin/security/keys/McpKeysFilters.tsx` |
 | gateamos por `useUserRole` para evitar mostrar a UI a quem não pode usar. | `src/components/admin/security/role-migration/RoleMigrationPanel.tsx` |
 | nunca vão no payload. O peso máximo é digitado em kg e gravado em gramas. | `src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx` |
@@ -7633,5 +7661,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `div`, não `p`: a regra global `.dark p/span/li` pinta de branco e esconderia a cor do erro. | `src/components/freight-plan/FreightPlanPanel.tsx` |
 | * Card "Prazo de produção" do orçamento: em quantos dias úteis o pedido fica | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| deliveryMode={deliveryMode}            // 'data' \| 'prazo' do orçamento | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1500 linhas — lista completa em `context.json` | |
+| … +1502 linhas — lista completa em `context.json` | |

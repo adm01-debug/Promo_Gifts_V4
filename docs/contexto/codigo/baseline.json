@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5f0529c009a271f962e4aa631d6e4c7ab8c0ab6d",
+  "commit": "a895096aa45eaeb41a5fb9438e141cadc395a0a4",
   "branch": "main",
-  "data_commit": "2026-11-26T14:10:53-03:00",
+  "data_commit": "2026-11-26T14:27:50-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "a895096",
+    "data": "2026-11-26",
+    "assunto": "feat: tela de ramos de atividade e segmentos (#4180)"
+   },
    {
     "sha": "5f0529c",
     "data": "2026-11-26",
@@ -126,18 +131,13 @@
     "sha": "a85fea6",
     "data": "2026-11-26",
     "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45746283733) (#4157)"
-   },
-   {
-    "sha": "be120cf",
-    "data": "2026-11-26",
-    "assunto": "chore(main): release gifts-store 1.20.4 (#4143)"
    }
   ],
-  "arquivos_mudados_7d": 604,
+  "arquivos_mudados_7d": 610,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 391
+    "mudancas": 397
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 115
+    "mudancas": 110
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 86
+    "mudancas": 87
    },
    {
     "pasta": "src/components/mockup",
@@ -266,6 +266,10 @@
     "mudancas": 5
    },
    {
+    "arquivo": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "mudancas": 5
+   },
+   {
     "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
     "mudancas": 5
    },
@@ -292,10 +296,6 @@
    {
     "arquivo": "docs/estado/07_EDGE_FUNCTIONS.md",
     "mudancas": 4
-   },
-   {
-    "arquivo": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
-    "mudancas": 4
    }
   ],
   "autores_30d": [
@@ -310,21 +310,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11332,
-  "arquivos_codigo": 5710,
-  "linhas_codigo": 1083377,
+  "arquivos_total": 11340,
+  "arquivos_codigo": 5718,
+  "linhas_codigo": 1085597,
   "rotas": 143,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 74,
   "modulos": 173,
-  "componentes": 1288,
-  "hooks": 650,
+  "componentes": 1291,
+  "hooks": 651,
   "edge_functions": 112,
   "tabelas": 533,
   "migrations": 3141,
   "cron_jobs": 122,
-  "testes": 2733,
+  "testes": 2735,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1511
@@ -1935,8 +1935,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1496,
-   "linhas": 293169
+   "arquivos": 1501,
+   "linhas": 294398
   },
   "src/config": {
    "arquivos": 1,
@@ -1959,16 +1959,16 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 519,
-   "linhas": 95387
+   "arquivos": 520,
+   "linhas": 95450
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66760
   },
   "src/lib": {
-   "arquivos": 437,
-   "linhas": 68172
+   "arquivos": 439,
+   "linhas": 69033
   },
   "src/logic": {
    "arquivos": 4,
@@ -1980,7 +1980,7 @@
   },
   "src/pages": {
    "arquivos": 378,
-   "linhas": 87416
+   "linhas": 87442
   },
   "src/routes": {
    "arquivos": 16,
@@ -1988,7 +1988,7 @@
   },
   "src/services": {
    "arquivos": 40,
-   "linhas": 7335
+   "linhas": 7376
   },
   "src/stores": {
    "arquivos": 12,
