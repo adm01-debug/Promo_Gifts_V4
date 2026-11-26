@@ -6,33 +6,33 @@
 --
 -- ROLLBACK: reconstruir índice individualmente com CREATE INDEX CONCURRENTLY; scripts em docs/perf/perf005_rollback_indexes.sql
 -- Nota: DROP INDEX sem CONCURRENTLY adquire ShareUpdateExclusiveLock (não bloqueia leitura/escrita)
+-- Rollback: supabase/rollbacks/20261101205400_rollback.sql
+-- ATUALIZADO 2026-11-26: 16 dos 64 DROP foram retirados porque estes indices
+-- passaram a ter idx_scan > 0 (evidencia: docs/contexto/supabase/stats.md,
+-- secao 'Indices nunca usados', snapshot vivo de 2026-11-26 — 48 dos 64
+-- continuam com scans=0 e 16 ja aparecem em uso).
+-- Mantidos de fora deste lote: idx_kcpa_component, idx_kit_components_kit, idx_pad_product, idx_padvar_raw_id, idx_pkc_enrichment_status, idx_pkc_material, idx_pkg_compat_packaging, idx_pkg_compat_product, idx_product_commemorative_dates_commemorative_date_id, idx_product_properties_source, idx_produto_ramo_atividade_produto, idx_sds_variant_id, idx_spr_supplier_source_channel, idx_sre_arrival_snapshot, idx_sre_pending, idx_vss_cost
 
 -- stock_daily_summary FK indexes (~82MB)
 DROP INDEX IF EXISTS public.idx_stock_daily_summary_supplier_branch_id;
 DROP INDEX IF EXISTS public.idx_stock_daily_summary_supplier_id;
-DROP INDEX IF EXISTS public.idx_sds_variant_id;
 
 -- supplier_products_raw indexes obsoletos (não criados pelo PERF-001)
-DROP INDEX IF EXISTS public.idx_spr_supplier_source_channel;
 DROP INDEX IF EXISTS public.idx_spr_import_batch_id;
 DROP INDEX IF EXISTS public.idx_spr_variant_id;
 DROP INDEX IF EXISTS public.idx_spr_images_pending;
 
 -- variant_supplier_sources menos usados
-DROP INDEX IF EXISTS public.idx_vss_cost;
 DROP INDEX IF EXISTS public.idx_vss_org_supplier;
 DROP INDEX IF EXISTS public.idx_vss_supplier_sku_xbz;
 DROP INDEX IF EXISTS public.idx_variant_supplier_sources_supplier_branch_id;
 
 -- produto_ramo_atividade
 DROP INDEX IF EXISTS public.idx_produto_ramo_atividade_filho;
-DROP INDEX IF EXISTS public.idx_produto_ramo_atividade_produto;
 
 -- produtos_padronizacao e variantes (tabelas internas de mapeamento)
-DROP INDEX IF EXISTS public.idx_padvar_raw_id;
 DROP INDEX IF EXISTS public.idx_padvar_pad;
 DROP INDEX IF EXISTS public.idx_padvar_sem_colorid;
-DROP INDEX IF EXISTS public.idx_pad_product;
 DROP INDEX IF EXISTS public.idx_produtos_padronizacao_sub_brand_id;
 DROP INDEX IF EXISTS public.idx_produtos_site_padronizacao_raw_id;
 
@@ -44,13 +44,9 @@ DROP INDEX IF EXISTS public.idx_kit_component_enrichment_raw_promoted_padronizac
 DROP INDEX IF EXISTS public.idx_kit_component_enrichment_raw_promoted_component_id;
 DROP INDEX IF EXISTS public.idx_kit_component_padronizacao_raw_id;
 DROP INDEX IF EXISTS public.idx_kcpad_kit;
-DROP INDEX IF EXISTS public.idx_kcpa_component;
-DROP INDEX IF EXISTS public.idx_pkc_enrichment_status;
 DROP INDEX IF EXISTS public.idx_kit_components_name;
-DROP INDEX IF EXISTS public.idx_kit_components_kit;
 DROP INDEX IF EXISTS public.idx_product_kit_components_secondary_material_type_id;
 DROP INDEX IF EXISTS public.idx_product_kit_components_component_product_id;
-DROP INDEX IF EXISTS public.idx_pkc_material;
 DROP INDEX IF EXISTS public.idx_product_kit_components_padronizacao_id;
 DROP INDEX IF EXISTS public.idx_pkc_color_id;
 
@@ -63,16 +59,12 @@ DROP INDEX IF EXISTS public.idx_backfill_queue_dispatch;
 
 -- product_commemorative_dates FK indexes
 DROP INDEX IF EXISTS public.idx_prod_comm_product;
-DROP INDEX IF EXISTS public.idx_product_commemorative_dates_commemorative_date_id;
 DROP INDEX IF EXISTS public.idx_product_commemorative_dates_category_id;
 
 -- product_properties FK indexes
-DROP INDEX IF EXISTS public.idx_product_properties_source;
 DROP INDEX IF EXISTS public.idx_product_properties_property_definition_id;
 
 -- product_packaging_compatibility
-DROP INDEX IF EXISTS public.idx_pkg_compat_product;
-DROP INDEX IF EXISTS public.idx_pkg_compat_packaging;
 
 -- supplier_import_batches FK
 DROP INDEX IF EXISTS public.idx_supplier_import_batches_supplier_id;
@@ -80,8 +72,6 @@ DROP INDEX IF EXISTS public.idx_supplier_import_batches_supplier_id;
 -- supplier_replenishment_events
 DROP INDEX IF EXISTS public.idx_sre_variant_date;
 DROP INDEX IF EXISTS public.idx_sre_supplier_date;
-DROP INDEX IF EXISTS public.idx_sre_pending;
-DROP INDEX IF EXISTS public.idx_sre_arrival_snapshot;
 
 -- produtos internos (admin/fiscal/xbz)
 DROP INDEX IF EXISTS public.idx_products_padronizacao_id;
