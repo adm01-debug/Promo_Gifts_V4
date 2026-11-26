@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "a85fea6981951a61057050ebe2b2a478043c08f0",
+  "sha": "a42709a8506dc9fec94cce89ab5ce45dc534681b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 03:28 UTC",
+  "generated_at": "2026-11-26 03:54 UTC",
   "files_total": 11226,
   "code_files": 9207,
   "code_lines": 1308586
@@ -579518,10 +579518,29 @@
   }
  },
  "git": {
-  "sha": "a85fea6981951a61057050ebe2b2a478043c08f0",
+  "sha": "a42709a8506dc9fec94cce89ab5ce45dc534681b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "a42709a",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "infra: serializa snapshot de schema e apply de migration no mesmo grupo (#4136)",
+    "files": [
+     ".github/workflows/db-apply-migration.yml",
+     ".github/workflows/schema-snapshot-export.yml"
+    ]
+   },
+   {
+    "sha": "e9aef61",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "chore(security): atualiza baseline assinado de RLS policies (#4154)",
+    "files": [
+     ".security/policies-baseline.json"
+    ]
+   },
    {
     "sha": "a85fea6",
     "date": "2026-11-26",
@@ -579825,34 +579844,12 @@
      "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql",
      "supabase/rollbacks/20261125213000_rollback.sql"
     ]
-   },
-   {
-    "sha": "48fa6b5",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "chore: rollbacks das migrations de sent_at e anti-fraude de preco (#4131)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
-     "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql",
-     "supabase/rollbacks/20260620190001_rollback.sql",
-     "supabase/rollbacks/20260629142224_rollback.sql"
-    ]
-   },
-   {
-    "sha": "26aa4a8",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: cabecalho de rollback na 20261125213000 (destrava preflight E15) (#4132)",
-    "files": [
-     "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    13
+    12
    ],
    [
     ".release-please-manifest.json",
@@ -579873,6 +579870,10 @@
    [
     "supabase/MIGRATIONS_RECONCILIACAO_20261125.md",
     3
+   ],
+   [
+    ".github/workflows/schema-snapshot-export.yml",
+    2
    ],
    [
     "docs/db/BACKUP_CHECKSUMS_2026-11-26.txt",
@@ -579899,16 +579900,12 @@
     2
    ],
    [
-    "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
-    2
+    ".github/workflows/db-apply-migration.yml",
+    1
    ],
    [
-    "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql",
-    2
-   ],
-   [
-    "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql",
-    2
+    ".security/policies-baseline.json",
+    1
    ],
    [
     "supabase/baseline/20261126030000_baseline_schema.sql",

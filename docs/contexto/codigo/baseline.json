@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a85fea6981951a61057050ebe2b2a478043c08f0",
+  "commit": "a42709a8506dc9fec94cce89ab5ce45dc534681b",
   "branch": "main",
-  "data_commit": "2026-11-26T00:21:14-03:00",
+  "data_commit": "2026-11-26T00:51:41-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "a42709a",
+    "data": "2026-11-26",
+    "assunto": "infra: serializa snapshot de schema e apply de migration no mesmo grupo (#4136)"
+   },
+   {
+    "sha": "e9aef61",
+    "data": "2026-11-26",
+    "assunto": "chore(security): atualiza baseline assinado de RLS policies (#4154)"
+   },
    {
     "sha": "a85fea6",
     "data": "2026-11-26",
@@ -121,19 +131,9 @@
     "sha": "0792fac",
     "data": "2026-11-25",
     "assunto": "fix(ci): snapshot de cron/event triggers via pooler (E037) (#4124)"
-   },
-   {
-    "sha": "0c2d7c6",
-    "data": "2026-11-25",
-    "assunto": "chore(test): liga 9 specs Playwright orfaos de tests/e2e/ ao runner (#4122)"
-   },
-   {
-    "sha": "872034f",
-    "data": "2026-11-25",
-    "assunto": "chore(main): release gifts-store 1.20.2 (#4112)"
    }
   ],
-  "arquivos_mudados_7d": 566,
+  "arquivos_mudados_7d": 567,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 233
+    "commits": 232
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 67
+    "commits": 68
    }
   ]
  },
