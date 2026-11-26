@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "c8e9bd93ba6027fa1ebce1d9684d62102027cc29",
+  "sha": "0ab1b7ad5b3d1d75929942e0d40dd9d54212d266",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 00:37 UTC",
-  "files_total": 11220,
-  "code_files": 9203,
-  "code_lines": 1308304
+  "generated_at": "2026-11-26 00:52 UTC",
+  "files_total": 11222,
+  "code_files": 9205,
+  "code_lines": 1308366
  },
  "version": "1.3.2",
- "facts_hash": "7fced1cdbdecd59f",
+ "facts_hash": "a92e115e22fc77db",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,7 +1130,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3522,
+   ".sql": 3524,
    ".ts": 3180,
    ".tsx": 2026,
    ".mjs": 456,
@@ -93264,6 +93264,8 @@
    "supabase/rollbacks/20261101190101_rollback.sql",
    "supabase/rollbacks/20261101201000_rollback.sql",
    "supabase/rollbacks/20261101202000_rollback.sql",
+   "supabase/rollbacks/20261101205400_rollback.sql",
+   "supabase/rollbacks/20261101210000_rollback.sql",
    "supabase/rollbacks/20261102063000_rollback.sql",
    "supabase/rollbacks/20261104100000_rollback.sql",
    "supabase/rollbacks/20261106232045_rollback.sql",
@@ -161356,7 +161358,7 @@
   {
    "module": "supabase/migrations",
    "files": 3136,
-   "lines": 228610,
+   "lines": 228600,
    "tables": [
     "...",
     "admin_audit_log",
@@ -161454,8 +161456,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 148,
-   "lines": 5499,
+   "files": 150,
+   "lines": 5571,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -161522,6 +161524,8 @@
     "supabase/rollbacks/20261101190101_rollback.sql",
     "supabase/rollbacks/20261101201000_rollback.sql",
     "supabase/rollbacks/20261101202000_rollback.sql",
+    "supabase/rollbacks/20261101205400_rollback.sql",
+    "supabase/rollbacks/20261101210000_rollback.sql",
     "supabase/rollbacks/20261102063000_rollback.sql",
     "supabase/rollbacks/20261104100000_rollback.sql",
     "supabase/rollbacks/20261106232045_rollback.sql",
@@ -161539,9 +161543,7 @@
     "supabase/rollbacks/20261108235500_rollback.sql",
     "supabase/rollbacks/20261111191000_rollback.sql",
     "supabase/rollbacks/20261111222500_rollback.sql",
-    "supabase/rollbacks/20261112011000_rollback.sql",
-    "supabase/rollbacks/20261112120000_rollback.sql",
-    "supabase/rollbacks/20261112120100_rollback.sql"
+    "supabase/rollbacks/20261112011000_rollback.sql"
    ]
   },
   {
@@ -373350,6 +373352,7 @@
    "supabase/rollbacks/20261022193000_rollback.sql",
    "supabase/rollbacks/20261027230000_rollback.sql",
    "supabase/rollbacks/20261027233000_rollback.sql",
+   "supabase/rollbacks/20261101210000_rollback.sql",
    "supabase/rollbacks/20261112120200_rollback.sql",
    "supabase/rollbacks/20261112120500_rollback.sql",
    "supabase/rollbacks/20261112120600_rollback.sql",
@@ -552754,11 +552757,11 @@
   },
   "supabase/migrations/20261101205400_perf005_drop_unused_indexes.sql": {
    "path": "supabase/migrations/20261101205400_perf005_drop_unused_indexes.sql",
-   "lines": 111
+   "lines": 100
   },
   "supabase/migrations/20261101210000_sb0007_drop_noop_restrictive_policies.sql": {
    "path": "supabase/migrations/20261101210000_sb0007_drop_noop_restrictive_policies.sql",
-   "lines": 21
+   "lines": 22
   },
   "supabase/migrations/20261101220000_cron001_stagger_schedules.sql": {
    "path": "supabase/migrations/20261101220000_cron001_stagger_schedules.sql",
@@ -553473,6 +553476,15 @@
   "supabase/rollbacks/20261101202000_rollback.sql": {
    "path": "supabase/rollbacks/20261101202000_rollback.sql",
    "lines": 12
+  },
+  "supabase/rollbacks/20261101205400_rollback.sql": {
+   "path": "supabase/rollbacks/20261101205400_rollback.sql",
+   "lines": 55
+  },
+  "supabase/rollbacks/20261101210000_rollback.sql": {
+   "path": "supabase/rollbacks/20261101210000_rollback.sql",
+   "lines": 17,
+   "uses_service_role": true
   },
   "supabase/rollbacks/20261102063000_rollback.sql": {
    "path": "supabase/rollbacks/20261102063000_rollback.sql",
@@ -579393,10 +579405,48 @@
   }
  },
  "git": {
-  "sha": "c8e9bd93ba6027fa1ebce1d9684d62102027cc29",
+  "sha": "0ab1b7ad5b3d1d75929942e0d40dd9d54212d266",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "0ab1b7a",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20260620190001 (#4141)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
+   {
+    "sha": "2e8d1ac",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix: PERF005 derruba so os 48 indices com scans=0 e ganha rollback (#4144)",
+    "files": [
+     "supabase/migrations/20261101205400_perf005_drop_unused_indexes.sql",
+     "supabase/rollbacks/20261101205400_rollback.sql"
+    ]
+   },
+   {
+    "sha": "939d6fd",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20260629142224 (#4138)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
+   {
+    "sha": "faedf4a",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix: rollback das policies no-op e cabecalho na 20261101210000 (#4142)",
+    "files": [
+     "supabase/migrations/20261101210000_sb0007_drop_noop_restrictive_policies.sql",
+     "supabase/rollbacks/20261101210000_rollback.sql"
+    ]
+   },
    {
     "sha": "c8e9bd9",
     "date": "2026-11-25",
@@ -579676,49 +579726,12 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "51afdbd",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "docs(ledger): dispensa medida de 3 migrations de cron e de allowlist (#4110)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "31d96d8",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "docs(ledger): reconhece as 22 migrations sem aplicação com evidência do canônico (#4108)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "36833fd",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: snapshot de cron jobs com os jobs da E25 (destrava o drift E037) (#4106)",
-    "files": [
-     "supabase/baseline/20261125173000_cron_jobs.json"
-    ]
-   },
-   {
-    "sha": "7987262",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "docs(e25): registra a aplicacao em producao e resolve o risco em prod-readiness (#4104)",
-    "files": [
-     "docs/prod-readiness.md",
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    13
+    12
    ],
    [
     "package-lock.json",
@@ -579777,23 +579790,23 @@
     2
    ],
    [
+    "supabase/migrations/20261101205400_perf005_drop_unused_indexes.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261101205400_rollback.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261101210000_sb0007_drop_noop_restrictive_policies.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261101210000_rollback.sql",
+    1
+   ],
+   [
     "docs/db/BACKUP_CHECKSUMS_2026-11-26.txt",
-    1
-   ],
-   [
-    "docs/db/BACKUP_SCHEMA_ONLY_2026-11-26.sql",
-    1
-   ],
-   [
-    "docs/db/LEDGER_DATA_2026-09-16.sql",
-    1
-   ],
-   [
-    "docs/db/LEDGER_DATA_2026-11-26.sql",
-    1
-   ],
-   [
-    "supabase/baseline/20261125180000_cron_jobs.json",
     1
    ]
   ]

@@ -32127,6 +32127,11 @@
    ],
    "indices": [
     {
+     "nome": "idx_kit_components_kit",
+     "colunas": "kit_product_id",
+     "unico": false
+    },
+    {
      "nome": "uq_pkc_component_code",
      "colunas": "component_code",
      "unico": true
@@ -36477,6 +36482,11 @@
     }
    ],
    "indices": [
+    {
+     "nome": "idx_pad_product",
+     "colunas": "product_id",
+     "unico": false
+    },
     {
      "nome": "idx_pad_promovidos",
      "colunas": "supplier_id",
@@ -46484,8 +46494,18 @@
    ],
    "indices": [
     {
+     "nome": "idx_sre_arrival_snapshot",
+     "colunas": "arrival_snapshot_id",
+     "unico": false
+    },
+    {
      "nome": "idx_sre_fulfilled_at",
      "colunas": "resolved_at DESC",
+     "unico": false
+    },
+    {
+     "nome": "idx_sre_pending",
+     "colunas": "resolution",
      "unico": false
     },
     {

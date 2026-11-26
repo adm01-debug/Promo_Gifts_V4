@@ -2,11 +2,31 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c8e9bd93ba6027fa1ebce1d9684d62102027cc29",
+  "commit": "0ab1b7ad5b3d1d75929942e0d40dd9d54212d266",
   "branch": "main",
-  "data_commit": "2026-11-25T21:20:37-03:00",
+  "data_commit": "2026-11-25T21:39:15-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "0ab1b7a",
+    "data": "2026-11-25",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20260620190001 (#4141)"
+   },
+   {
+    "sha": "2e8d1ac",
+    "data": "2026-11-25",
+    "assunto": "fix: PERF005 derruba so os 48 indices com scans=0 e ganha rollback (#4144)"
+   },
+   {
+    "sha": "939d6fd",
+    "data": "2026-11-25",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20260629142224 (#4138)"
+   },
+   {
+    "sha": "faedf4a",
+    "data": "2026-11-25",
+    "assunto": "fix: rollback das policies no-op e cabecalho na 20261101210000 (#4142)"
+   },
    {
     "sha": "c8e9bd9",
     "data": "2026-11-25",
@@ -111,29 +131,9 @@
     "sha": "fd4bdb0",
     "data": "2026-11-25",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261125074200 (#4116)"
-   },
-   {
-    "sha": "b389b08",
-    "data": "2026-11-25",
-    "assunto": "docs(ledger): recibo da 20261108230000 e encerra as linhas \"segue sem aplicação\" (#4115)"
-   },
-   {
-    "sha": "1d75179",
-    "data": "2026-11-25",
-    "assunto": "chore(deps): atualiza 6 dependências de desenvolvimento sem major (#4105)"
-   },
-   {
-    "sha": "99c6a41",
-    "data": "2026-11-25",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261027230000 (#4113)"
-   },
-   {
-    "sha": "3ea746a",
-    "data": "2026-11-25",
-    "assunto": "fix(migration): allowlist do dispatcher com pg_temp no search_path (E066) (#4111)"
    }
   ],
-  "arquivos_mudados_7d": 571,
+  "arquivos_mudados_7d": 575,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 94
+    "mudancas": 96
    },
    {
     "pasta": "src/pages/magazine",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 94
+    "mudancas": 96
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -207,11 +207,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 23
+    "mudancas": 22
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 20
+    "mudancas": 19
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -301,16 +301,16 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 242
+    "commits": 240
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 58
+    "commits": 60
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 11290,
+  "arquivos_total": 11292,
   "arquivos_codigo": 5682,
   "linhas_codigo": 1077287,
   "rotas": 141,
