@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e61dc37eee29231a8ee566c64a170bb2b7a61678",
+  "commit": "7cde4847c675e263790838f1b0a5dbd00c56dca4",
   "branch": "main",
-  "data_commit": "2026-11-25T23:17:29-03:00",
+  "data_commit": "2026-11-25T23:43:12-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7cde484",
+    "data": "2026-11-25",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261126030000 (#4155)"
+   },
    {
     "sha": "e61dc37",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "06894b0",
     "data": "2026-11-25",
     "assunto": "fix: reverte E25 falso-positivo (jobs nao eram orfaos) (#4134)"
-   },
-   {
-    "sha": "48fa6b5",
-    "data": "2026-11-25",
-    "assunto": "chore: rollbacks das migrations de sent_at e anti-fraude de preco (#4131)"
    }
   ],
-  "arquivos_mudados_7d": 571,
+  "arquivos_mudados_7d": 562,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -160,11 +160,11 @@
     "mudancas": 113
    },
    {
-    "pasta": "src/lib/freight",
-    "mudancas": 103
+    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "mudancas": 104
    },
    {
-    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "pasta": "src/lib/freight",
     "mudancas": 103
    },
    {
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 103
+    "mudancas": 104
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 236
+    "commits": 235
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 64
+    "commits": 65
    }
   ]
  },

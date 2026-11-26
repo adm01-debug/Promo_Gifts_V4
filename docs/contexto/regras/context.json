@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "e61dc37eee29231a8ee566c64a170bb2b7a61678",
+  "sha": "7cde4847c675e263790838f1b0a5dbd00c56dca4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 02:21 UTC",
+  "generated_at": "2026-11-26 02:51 UTC",
   "files_total": 11224,
   "code_files": 9207,
   "code_lines": 1308515
@@ -579422,10 +579422,19 @@
   }
  },
  "git": {
-  "sha": "e61dc37eee29231a8ee566c64a170bb2b7a61678",
+  "sha": "7cde4847c675e263790838f1b0a5dbd00c56dca4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7cde484",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261126030000 (#4155)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "e61dc37",
     "date": "2026-11-25",
@@ -579731,21 +579740,12 @@
     "files": [
      "supabase/migrations/20261114160000_perf_idx_sds_restock_counts.sql"
     ]
-   },
-   {
-    "sha": "446d867",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "chore: refresh do snapshot de cron jobs (144 jobs) (#4125)",
-    "files": [
-     "supabase/baseline/20261125220000_cron_jobs.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    14
+    15
    ],
    [
     "supabase/MIGRATIONS_RECONCILIACAO_20261125.md",
