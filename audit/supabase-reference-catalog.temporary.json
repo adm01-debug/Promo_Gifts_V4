@@ -359,6 +359,14 @@
   },
   "exceptions": [
     {
+      "kind": "rpc",
+      "name": "fn_dev_ops_infra_telemetry",
+      "file": "src/hooks/admin/useOpsInfraTelemetry.ts",
+      "occurrences": 1,
+      "stage": 103,
+      "reason": "RPC criada pela migration supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql (SECURITY DEFINER, exige is_dev(auth.uid()) e levanta 42501 para os demais) que serve a tela /admin/infra-ops a partir do schema ops (deny-all, sem GRANT a anon/authenticated). Ainda nao aplicada no canonico via db-apply-migration.yml. Remover esta excecao e registrar o RPC em rpcs so depois de aplicada e confirmada via pg_catalog."
+    },
+    {
       "kind": "relation",
       "name": "crm_seller_identity_links",
       "file": "supabase/functions/crm-db-bridge/index.ts",
