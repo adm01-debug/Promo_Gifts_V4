@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2725,
+ "total": 2726,
  "por_tipo": {
   "contrato": 70,
   "e2e": 678,
   "pytest": 8,
   "qa": 17,
-  "unit": 1952
+  "unit": 1953
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 794
+   "arquivos": 795
   },
   {
    "padrao": "e2e/",
@@ -10741,6 +10741,15 @@
     "src/lib/navigation/active-match.ts"
    ],
    "casos": 20
+  },
+  {
+   "arquivo": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+   "tipo": "unit",
+   "linhas": 179,
+   "testa": [
+    "src/lib/ops/infra-telemetry.ts"
+   ],
+   "casos": 14
   },
   {
    "arquivo": "src/lib/payments/__tests__/order-payment-simulator.test.ts",
@@ -24107,6 +24116,7 @@
   "src/lib/navigation/restricted-routes.ts": 2,
   "src/lib/notifications-metrics.ts": 9,
   "src/lib/novelty-dates.ts": 1,
+  "src/lib/ops/infra-telemetry.ts": 1,
   "src/lib/password-reset-status-config.ts": 1,
   "src/lib/payments/order-payment-simulator.ts": 1,
   "src/lib/personalization/adapters/index.ts": 5,
@@ -24410,6 +24420,7 @@
    "src/pages/admin/AdminCloudflareImagesPage.tsx",
    "src/pages/admin/AdminDesignTokensPage.tsx",
    "src/pages/admin/AdminExternalDbPage.tsx",
+   "src/pages/admin/AdminInfraOpsPage.tsx",
    "src/pages/admin/AdminMigracaoPapeisPage.tsx",
    "src/pages/admin/AdminPromoverUsuarioPage.tsx",
    "src/pages/admin/AdminPromptsIAPage.tsx",
@@ -24734,6 +24745,7 @@
    "src/hooks/admin/useDevAccessAudit.ts",
    "src/hooks/admin/useKillSwitchObservability.ts",
    "src/hooks/admin/useMedallionHealth.ts",
+   "src/hooks/admin/useOpsInfraTelemetry.ts",
    "src/hooks/admin/useRetestCooldownSetting.ts",
    "src/hooks/admin/useRoleMigration.ts",
    "src/hooks/admin/useSecretsManager.ts",

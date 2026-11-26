@@ -3,8 +3,8 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (5211)",
-   "SQL (3526)",
+   "TypeScript (5215)",
+   "SQL (3528)",
    "Markdown (1511)",
    "JavaScript (463)",
    "JSON (139)",
@@ -5785,7 +5785,7 @@
    "src/components/layout/ProtectedRoute.tsx",
    "src/components/system/RootInteractivityGuard.tsx"
   ],
-  "rotas_protegidas": 32,
+  "rotas_protegidas": 33,
   "rotas_publicas": [
    "/",
    "/__test/alert-dialog",

@@ -2,11 +2,11 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "resumo": {
-  "urls": 141,
+  "urls": 142,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
-  "itens_menu": 72,
-  "lazy": 176
+  "itens_menu": 73,
+  "lazy": 177
  },
  "urls": [
   {
@@ -6780,6 +6780,34 @@
     "status"
    ],
    "arquivos_puxados": 92
+  },
+  {
+   "protegida": true,
+   "wrappers": [],
+   "pai": null,
+   "indice": false,
+   "lazy": true,
+   "tipo": "tela",
+   "caminho": "/admin/infra-ops",
+   "componente": "AdminInfraOpsPage",
+   "arquivo": "src/pages/admin/AdminInfraOpsPage.tsx",
+   "definida_em": "src/routes/admin-routes.tsx",
+   "redireciona": null,
+   "hooks": [
+    "useEffect",
+    "useOpsInfraTelemetry",
+    "useQuery"
+   ],
+   "hooks_locais": [
+    "useOpsInfraTelemetry"
+   ],
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "canais_realtime": [],
+   "flags": [],
+   "papeis": [],
+   "arquivos_puxados": 14
   },
   {
    "protegida": true,
@@ -38980,6 +39008,15 @@
    "resolve_para": null
   },
   {
+   "rotulo": "Infra do Banco",
+   "destino": "/admin/infra-ops",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/layout/SidebarReorganized.tsx",
+   "resolve_para": "src/pages/admin/AdminInfraOpsPage.tsx"
+  },
+  {
    "rotulo": "Início",
    "destino": "/",
    "grupo": null,
@@ -39316,6 +39353,7 @@
   "AdminDesignTokensPage": "src/pages/admin/AdminDesignTokensPage.tsx",
   "AdminExternalDbPage": "src/pages/admin/AdminExternalDbPage.tsx",
   "AdminFreteSettingsPage": "src/pages/admin/AdminFreteSettingsPage.tsx",
+  "AdminInfraOpsPage": "src/pages/admin/AdminInfraOpsPage.tsx",
   "AdminLoginAttemptsPage": "src/pages/admin/AdminLoginAttemptsPage.tsx",
   "AdminMigracaoPapeisPage": "src/pages/admin/AdminMigracaoPapeisPage.tsx",
   "AdminProductFormPage": "src/pages/admin/AdminProductFormPage.tsx",

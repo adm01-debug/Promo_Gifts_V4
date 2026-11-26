@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "48dbd0bb772d1ee71b585ae6d6e59cd758b194e0",
+  "commit": "c3f747f0d00d55ee650491eac00fac1a812c7aaa",
   "branch": "main",
-  "data_commit": "2026-11-26T10:40:50-03:00",
+  "data_commit": "2026-11-26T10:48:42-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "c3f747f",
+    "data": "2026-11-26",
+    "assunto": "feat: tela Infra do Banco (/admin/infra-ops) para a telemetria ops.* sem consumidor (#4160)"
+   },
    {
     "sha": "48dbd0b",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "aacb9e5",
     "data": "2026-11-25",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261101210000 (#4145)"
-   },
-   {
-    "sha": "0ab1b7a",
-    "data": "2026-11-25",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20260620190001 (#4141)"
    }
   ],
-  "arquivos_mudados_7d": 573,
+  "arquivos_mudados_7d": 580,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 105
+    "mudancas": 106
    },
    {
     "pasta": "src/lib/freight",
@@ -180,26 +180,26 @@
     "mudancas": 83
    },
    {
-    "pasta": "src/pages/quotes",
-    "mudancas": 83
-   },
-   {
     "pasta": "src/pages/admin",
-    "mudancas": 81
+    "mudancas": 82
    },
    {
-    "pasta": "src/hooks/quotes",
-    "mudancas": 80
+    "pasta": "src/pages/quotes",
+    "mudancas": 81
    },
    {
     "pasta": "supabase/functions/_shared",
     "mudancas": 80
+   },
+   {
+    "pasta": "src/hooks/quotes",
+    "mudancas": 79
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 105
+    "mudancas": 106
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -234,16 +234,12 @@
     "mudancas": 9
    },
    {
-    "arquivo": "src/lib/freight/index.ts",
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
     "mudancas": 8
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
-    "mudancas": 7
+    "arquivo": "src/lib/freight/index.ts",
+    "mudancas": 8
    },
    {
     "arquivo": "scripts/drift-baseline.mjs",
@@ -262,6 +258,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
+    "mudancas": 6
+   },
+   {
     "arquivo": "tests/scripts/drift-baseline.test.mjs",
     "mudancas": 6
    },
@@ -270,15 +270,15 @@
     "mudancas": 5
    },
    {
+    "arquivo": "src/components/layout/SidebarReorganized.tsx",
+    "mudancas": 5
+   },
+   {
     "arquivo": "src/components/quotes/AdminTemplatesManager.tsx",
     "mudancas": 5
    },
    {
     "arquivo": "src/components/quotes/QuoteTemplatesList.tsx",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
     "mudancas": 5
    },
    {
@@ -310,21 +310,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11301,
-  "arquivos_codigo": 5687,
-  "linhas_codigo": 1078621,
-  "rotas": 141,
+  "arquivos_total": 11307,
+  "arquivos_codigo": 5691,
+  "linhas_codigo": 1079463,
+  "rotas": 142,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
-  "itens_menu": 72,
-  "modulos": 170,
-  "componentes": 1282,
-  "hooks": 646,
+  "itens_menu": 73,
+  "modulos": 171,
+  "componentes": 1283,
+  "hooks": 647,
   "edge_functions": 112,
   "tabelas": 532,
-  "migrations": 3138,
+  "migrations": 3139,
   "cron_jobs": 122,
-  "testes": 2725,
+  "testes": 2726,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1511
@@ -1936,7 +1936,7 @@
   },
   "src/components": {
    "arquivos": 1489,
-   "linhas": 291723
+   "linhas": 291731
   },
   "src/config": {
    "arquivos": 1,
@@ -1959,16 +1959,16 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 515,
-   "linhas": 95096
+   "arquivos": 516,
+   "linhas": 95127
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66760
   },
   "src/lib": {
-   "arquivos": 427,
-   "linhas": 65870
+   "arquivos": 429,
+   "linhas": 66308
   },
   "src/logic": {
    "arquivos": 4,
@@ -1979,12 +1979,12 @@
    "linhas": 63
   },
   "src/pages": {
-   "arquivos": 376,
-   "linhas": 86707
+   "arquivos": 377,
+   "linhas": 87069
   },
   "src/routes": {
    "arquivos": 16,
-   "linhas": 1473
+   "linhas": 1476
   },
   "src/services": {
    "arquivos": 40,

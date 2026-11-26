@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `48dbd0bb77` · branch `main` · 2026-11-26 13:46 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `c3f747f0d0` · branch `main` · 2026-11-26 13:52 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1421,7 +1421,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `magazine_update_metadata_v2` | magazine_subtitle_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `magazine_update_metadata_v2` | magazine_template_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `magazine_update_metadata_v2` | magazine_branding_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
-| … +102 linhas — lista completa em `context.json` | | |
+| … +103 linhas — lista completa em `context.json` | | |
 
 ## E. Estados, máquinas de estado e transições
 
@@ -2085,6 +2085,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | KNOWN_SCOPES | 'quotes:read', 'orders:read', 'crm:read', 'products:read', 'code:read', 'code:write', '*', | `src/lib/mcp/scopes.ts` |
 | DEV_ONLY_ROUTE_PREFIXES | '/simulacao', '/admin/telemetria', '/admin/conexoes', '/admin/seguranca', '/admin/seguranca-acesso', '/admin/workflows', '/admin/prompts-ia', '/admin/validade-precos', '/admin/rate-limit', '/admin/login-attempts', '/admin/sessoes', '/admin/status', '/admin/rbac-rotas', '/admin/qa', '/admin/observabi … | `src/lib/navigation/restricted-routes.ts` |
 | ADMIN_ONLY_ROUTE_PREFIXES | '/admin/usuarios', '/admin/cadastros' | `src/lib/navigation/restricted-routes.ts` |
+| InfraStatus | critical \| ok \| unknown \| warn | `src/lib/ops/infra-telemetry.ts` |
 | PaymentGatewayStatus | approved \| pending \| rejected | `src/lib/payments/order-payment-simulator.ts` |
 | OrderFinalStatus | cancelled \| confirmed \| pending | `src/lib/payments/order-payment-simulator.ts` |
 | TotalsColorScheme | discount-hero \| total-hero | `src/lib/pdf/totalsColorScheme.ts` |
@@ -2166,8 +2167,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ResourceGroup | products \| companies \| views | `supabase/functions/_shared/external-db-config.ts` |
 | Operation | select \| insert \| update \| delete \| rpc \| upsert \| batch_insert | `supabase/functions/_shared/external-db-config.ts` |
 | ALLOWED_RPCS | 'fn_get_product_print_areas', 'fn_get_product_print_areas_v2', 'fn_get_product_customization_options', 'fn_link_product_print_areas', 'fn_backfill_product_print_areas', 'fn_get_customization_price', 'fn_get_customization_price_v2', 'fn_find_fornecedor_price_table', 'get_category_descendants', | `supabase/functions/_shared/external-db-config.ts` |
-| COMPANY_TABLES | 'bitrix_clients', 'client_contacts', 'client_notes', 'organizations', 'user_organizations', 'business_sectors', | `supabase/functions/_shared/external-db-config.ts` |
-| … +14 linhas — lista completa em `context.json` | | |
+| … +15 linhas — lista completa em `context.json` | | |
 
 ## F. Validações de entrada
 
@@ -4727,6 +4727,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   if (isDevOnlyPath(pathname)) return opts.isDev; if (isAdminOnlyPath(pathname)) return opts.isAdmin || opts.isDev; return true;
   ```
+- **wraparoundStatus(row: OpsWraparoundRow)** — `src/lib/ops/infra-telemetry.ts`
+  ```
+  const pct = row.value_pct; if (pct !== null && pct !== undefined && Number.isFinite(pct)) { if (pct >= PCT_CRITICAL) return 'critical'; if (pct >= PCT_WARN) return 'warn'; return 'ok'; } const bytes = row.value_numeric; if (bytes === null || bytes === undefined || !Number.isFinite(bytes)) return 'unknown'; if (row.unit === 'bytes' || row.metric === 'replication_slot_retained_bytes') { if (bytes >= RETAINED_CRITICAL_BYTES) return 'critical'; if (bytes >= RETAINED_WARN_BYTES) return 'warn'; return …
+  ```
+- **round(value: number, digits: number)** — `src/lib/ops/infra-telemetry.ts`
+  ```
+  const factor = 10 ** digits; return Math.round(value * factor) / factor;
+  ```
 - **totalsSchemeMarker(scheme: TotalsColorScheme)** — `src/lib/pdf/totalsColorScheme.ts`
   ```
   return { 'data-totals-scheme': scheme };
@@ -5538,10 +5546,12 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `// Fator de folga para empacotamento (itens não ocupam 100% do volume)` | `src/lib/kit-builder/volume-calculator.ts` |
 | `const PACKING_EFFICIENCY = 0.75; // 75% de eficiência` | `src/lib/kit-builder/volume-calculator.ts` |
 | `const VOLUME_WARNING_THRESHOLD = 0.85; // 85%` | `src/lib/kit-builder/volume-calculator.ts` |
+| `/** Percentual de consumo de uma métrica: >= 90% crítico, >= 75% atenção. */` | `src/lib/ops/infra-telemetry.ts` |
 | `cost *= 1 + (positions - 1) * 0.25; // +25% por posição adicional` | `src/lib/personalization/validators.ts` |
 | `realDiscountPercent > maxDiscountPercent * 0.7 &&` | `src/lib/quotes/discount-validation-messages.ts` |
 | `* Sample rate: 10% (configurável via VITE_NAV_METRICS_SAMPLE_RATE).` | `src/lib/telemetry/navigationMetrics.ts` |
 | `Item <strong>hover</strong>: fundo accent ~70% + texto mais forte (sem brilho).` | `src/pages/SidebarQAPage.tsx` |
+| `)}) — atenção a partir de 75% do limite, crítico a partir de 90%`}` | `src/pages/admin/AdminInfraOpsPage.tsx` |
 | `// Evita PGRST204/23502/23514 que tornavam o formulário 100% inoperante.` | `src/pages/admin/AdminProductFormPage.tsx` |
 | `custom={2.5 + i * 0.05}` | `src/pages/admin/AdminTemasPage.tsx` |
 | `custom={3 + i * 0.05}` | `src/pages/admin/AdminTemasPage.tsx` |
@@ -5922,7 +5932,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `CHUNK` | `80` | `src/hooks/products/useColorFanout.ts` |
 | `CART_ITEM_DEBOUNCE_MS` | `300` | `src/hooks/products/useDebouncedCartItemActions.ts` |
 | `CART_ITEM_DEBOUNCE_MS_MIN` | `0` | `src/hooks/products/useDebouncedCartItemActions.ts` |
-| … +425 linhas — lista completa em `context.json` | | |
+| … +431 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6837,7 +6847,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23787 testes em 2392 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23808 testes em 2393 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7081,6 +7091,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/hooks/quotes/__tests__/useQuoteConcurrencyGuard.test.ts` | 21 | estado inicial · baseline é null quando quote=null · retorna funções estáveis (useCallback) · checkForConflict — sem consulta ao DB … |
 | `src/lib/auth/auth-utils.test.ts` | 21 | auth-utils · getGreeting · returns  · returns  … |
 | `src/lib/freight/__tests__/quoteContract.test.ts` | 21 | quoteRequestSchema · aceita o pedido válido, com e sem ready_date · recusa: %s · quoteResponseSchema … |
+| `src/lib/ops/__tests__/infra-telemetry.test.ts` | 21 | formatBytes / formatSignedBytes · formata unidades binárias e trata ausência de dado · mostra sinal explícito na variação · formatDurationMs / formatCount / formatPct / formatCapturedAt … |
 | `src/utils/cnpj-schema.test.ts` | 21 | cnpjOptionalSchema · normalizes masked CNPJ to 14-digit string on parse · accepts already-normalized 14-digit input · coerces empty / null / undefined to null … |
 | `supabase/functions/generate-mockup/index.geometry.test.ts` | 21 | geometry (generate-mockup) — sem dimensões cadastradas, o fallback é a estimativa do editor · sem dimensões a conta usa 8×20 cm (o que o editor mostra), não o produto-referência de 20 cm do canvas · dimensões inválidas (0, negativa, string) valem como ausentes — mesmo fallback, nunca NaN · o handler recusa payload sem nenhuma dimensão real (422 missing_dimensions) … |
 | `tests/components/PriceFreshnessBadge.a11y.test.tsx` | 21 | PriceFreshnessBadge — acessibilidade · aria-label rico por status · fresh: menciona  · aging: menciona  … |
@@ -7140,8 +7151,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/flows/freight-quest-complete-flow.spec.ts` | 19 | Plano de volumes — Kit Builder @freight · navega para Kit Builder e verifica painel de volumes visível · painel de volumes lista o resumo do plano (volumes e peso) · painel de volumes mostra rodapé de estimativa por caixas padrão … |
 | `src/components/inventory/__tests__/stock-alert-dialogs.test.tsx` | 19 | OutOfStockDialog · renders title  · renders empty state when alerts=[] · renders alert count badge … |
 | `src/hooks/quotes/__tests__/useDiscountApproval.test.ts` | 19 | requestApproval · retorna false imediatamente quando user = null (sem DB call) · insere em discount_approval_requests com campos corretos · retorna true quando inserção bem-sucedida … |
-| `src/lib/auth/__tests__/checkLoginGate.test.ts` | 19 | isOperationalGateBlock · allowed=false + reason operacional %s → true · %o → false · gateBlockMessage … |
-| … +2092 linhas — lista completa em `context.json` | | |
+| … +2093 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7609,4 +7619,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Card "Prazo de produção" do orçamento: em quantos dias úteis o pedido fica | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | deliveryMode={deliveryMode}            // 'data' \| 'prazo' do orçamento | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1495 linhas — lista completa em `context.json` | |
+| … +1496 linhas — lista completa em `context.json` | |

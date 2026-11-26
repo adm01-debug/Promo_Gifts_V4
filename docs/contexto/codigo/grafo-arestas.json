@@ -10281,6 +10281,10 @@
    "src/integrations/supabase/gold.ts",
    "src/lib/supabase-untyped.ts"
   ],
+  "src/hooks/admin/useOpsInfraTelemetry.ts": [
+   "src/lib/ops/infra-telemetry.ts",
+   "src/lib/supabase-untyped.ts"
+  ],
   "src/hooks/admin/useRetestCooldownSetting.ts": [
    "src/integrations/supabase/client.ts",
    "src/lib/security/sanitize-error.ts"
@@ -13248,6 +13252,13 @@
    "src/components/ui/tabs.tsx",
    "src/hooks/freight/index.ts"
   ],
+  "src/pages/admin/AdminInfraOpsPage.tsx": [
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/card.tsx",
+   "src/hooks/admin/useOpsInfraTelemetry.ts",
+   "src/lib/ops/infra-telemetry.ts",
+   "src/lib/to-error-message.ts"
+  ],
   "src/pages/admin/AdminLoginAttemptsPage.tsx": [
    "src/components/seo/PageSEO.tsx",
    "src/components/ui/badge.tsx",
@@ -15310,6 +15321,7 @@
    "src/pages/admin/AdminDesignTokensPage.tsx",
    "src/pages/admin/AdminExternalDbPage.tsx",
    "src/pages/admin/AdminFreteSettingsPage.tsx",
+   "src/pages/admin/AdminInfraOpsPage.tsx",
    "src/pages/admin/AdminLoginAttemptsPage.tsx",
    "src/pages/admin/AdminMigracaoPapeisPage.tsx",
    "src/pages/admin/AdminProductFormPage.tsx",

@@ -3,28 +3,28 @@
  "format_version": 2,
  "onde_ficam": {
   "telas": [
-   "src/pages (114)",
+   "src/pages (115)",
    "src/components (3)",
    "api/health.ts (1)"
   ],
   "componentes": [
    "src/components (981)",
-   "src/pages (182)",
+   "src/pages (183)",
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (315)",
+   "src/hooks (316)",
    "recovery/src-legacy (196)",
    "src/components (78)"
   ],
   "servicos_logica": [
-   "src/lib (271)",
+   "src/lib (272)",
    "src/utils (34)",
    "src/services (16)"
   ],
   "testes": [
    "tests/ (1089)",
-   "co-localizado (__tests__) (794)",
+   "co-localizado (__tests__) (795)",
    "e2e/ (636)"
   ],
   "edge_functions": "supabase/functions",
@@ -49,7 +49,7 @@
  },
  "barrels_index": 50,
  "extensao_componentes": [
-  ".tsx (1282)"
+  ".tsx (1283)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat: tela Infra do Banco (/admin/infra-ops) para a telemetria ops.* sem consumidor (#4160)",
    "docs(edge-deploy-log): recibo do deploy — run 45824995474 (#4170)",
    "feat: liga a tabela stock_notes a uma tela de notas por variacao (#4168)",
    "feat: JWT de agente na sugestao de identidade + botao montado no Kit Builder (#4167)",
-   "docs(edges): registra que os 4 achados graves de auth e os 9 crons ja foram fechados (#4166)",
-   "docs: mede cron das edges e corrige status N01/N15/N21/I01 (#4164)"
+   "docs(edges): registra que os 4 achados graves de auth e os 9 crons ja foram fechados (#4166)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

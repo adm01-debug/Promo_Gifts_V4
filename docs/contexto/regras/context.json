@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "48dbd0bb772d1ee71b585ae6d6e59cd758b194e0",
+  "sha": "c3f747f0d00d55ee650491eac00fac1a812c7aaa",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 13:46 UTC",
-  "files_total": 11231,
-  "code_files": 9212,
-  "code_lines": 1309859
+  "generated_at": "2026-11-26 13:52 UTC",
+  "files_total": 11237,
+  "code_files": 9218,
+  "code_lines": 1310827
  },
  "version": "1.3.2",
- "facts_hash": "86edeb3a1312d93e",
+ "facts_hash": "c477c93f3bd8a2cd",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,9 +1130,9 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3526,
-   ".ts": 3182,
-   ".tsx": 2029,
+   ".sql": 3528,
+   ".ts": 3185,
+   ".tsx": 2030,
    ".mjs": 456,
    ".py": 18,
    ".js": 7
@@ -93205,6 +93205,7 @@
    "supabase/migrations/20261125173000_idx_sds_summary_date_supplier_aplicavel.sql",
    "supabase/migrations/20261125180000_fix_comment_v_tabela_gravacao_publica.sql",
    "supabase/migrations/20261126030000_perf005_drop_unused_indexes_concurrently.sql",
+   "supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -93355,6 +93356,7 @@
    "supabase/rollbacks/20261125173000_rollback.sql",
    "supabase/rollbacks/20261125180000_rollback.sql",
    "supabase/rollbacks/20261126030000_rollback.sql",
+   "supabase/rollbacks/20261126052000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -141745,6 +141747,30 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "fn_dev_ops_infra_telemetry",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_dev_ops_infra_telemetry",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_dev_ops_infra_telemetry",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -145301,6 +145327,11 @@
     "function": "enforce_quote_comment_mutation",
     "msg": "Comment identity, author, quote and thread cannot be changed",
     "src": "supabase/migrations/20261120180000_restore_quote_comments_scoped_threads.sql"
+   },
+   {
+    "function": "fn_dev_ops_infra_telemetry",
+    "msg": "forbidden: requer papel dev",
+    "src": "supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql"
    },
    {
     "function": "fn_dryrun_standardize_supplier",
@@ -153406,6 +153437,13 @@
     "file": "src/routes/admin-routes.tsx"
    },
    {
+    "path": "/admin/infra-ops",
+    "component": "AdminInfraOpsPage",
+    "guard": "",
+    "roles": [],
+    "file": "src/routes/admin-routes.tsx"
+   },
+   {
     "path": "/admin/kit-templates",
     "component": "KitTemplatesAdminPage",
     "guard": "",
@@ -156496,6 +156534,10 @@
     "file": "src/hooks/admin/useMedallionHealth.ts"
    },
    {
+    "name": "useOpsInfraTelemetry",
+    "file": "src/hooks/admin/useOpsInfraTelemetry.ts"
+   },
+   {
     "name": "useRetestCooldownSetting",
     "file": "src/hooks/admin/useRetestCooldownSetting.ts"
    },
@@ -159559,7 +159601,7 @@
   {
    "module": "src/components",
    "files": 1489,
-   "lines": 291722,
+   "lines": 291730,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -159922,8 +159964,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 515,
-   "lines": 95096,
+   "files": 516,
+   "lines": 95127,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -160021,6 +160063,7 @@
     "useIntelligenceBadgeSettings.ts: IntelligenceBadgeSettings, DEFAULT_INTELLIGENCE_BADGE_SETTINGS, useIntelligenceBadgeSettingsValue, useIntelligenceBadgeSettings",
     "useKillSwitchObservability.ts: SwitchState, SwitchHitSummary, KillSwitchObservabilityData, useKillSwitchObservability",
     "useMedallionHealth.ts: MedallionHealth, useMedallionHealth",
+    "useOpsInfraTelemetry.ts: useOpsInfraTelemetry",
     "useRetestCooldownSetting.ts: RETEST_COOLDOWN_PRESETS_MS, RetestCooldownPreset, useRetestCooldownSetting",
     "useRoleMigration.ts: AppRole, BatchStatus, ItemStatus, MigrationItemInput, BatchRow, ItemRow",
     "useSecretsManager.ts: SecretStatus, SecretError, RotationHistoryEntry, SecretMutationResult, useSecretsManager",
@@ -160037,8 +160080,7 @@
     "usePasswordBreachCheck.tsx: usePasswordBreachCheck",
     "usePasswordResetRequests.ts: PasswordResetRequest, usePasswordResetRequests",
     "useProfileRoles.ts: useProfileRoles",
-    "useRBAC.tsx: RoleName, Role, Permission, useRBAC",
-    "useStepUpAuth.ts: StepUpAction, useStepUpAuth"
+    "useRBAC.tsx: RoleName, Role, Permission, useRBAC"
    ],
    "docs": [
     "useFutureStockPreference.ts: useFutureStockPreference Persiste a preferência do usuário para o toggle \"Estoque Futuro\" (ligado/desligado + janela de 7/15/30 dias) em localStorage. SSOT do storage key e dos valores válidos para a janela. Defensivo contra SSR, JSON inválido e janelas fora do conjunto permitido.",
@@ -160131,6 +160173,7 @@
     "src/hooks/admin/useIntelligenceBadgeSettings.ts",
     "src/hooks/admin/useKillSwitchObservability.ts",
     "src/hooks/admin/useMedallionHealth.ts",
+    "src/hooks/admin/useOpsInfraTelemetry.ts",
     "src/hooks/admin/useRetestCooldownSetting.ts",
     "src/hooks/admin/useRoleMigration.ts",
     "src/hooks/admin/useSecretsManager.ts",
@@ -160161,8 +160204,7 @@
     "src/hooks/bi/useClientAffinity.ts",
     "src/hooks/bi/useClientBI.ts",
     "src/hooks/bi/useClientCategoryAffinity.ts",
-    "src/hooks/bi/useClientHealthScore.ts",
-    "src/hooks/bi/useClientOrdersHistory.ts"
+    "src/hooks/bi/useClientHealthScore.ts"
    ]
   },
   {
@@ -160215,8 +160257,8 @@
   },
   {
    "module": "src/lib",
-   "files": 428,
-   "lines": 65880,
+   "files": 430,
+   "lines": 66318,
    "tables": [
     "...",
     "companies",
@@ -160424,8 +160466,8 @@
   },
   {
    "module": "src/pages",
-   "files": 376,
-   "lines": 86707,
+   "files": 377,
+   "lines": 87069,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -160480,6 +160522,7 @@
     "AdminDesignTokensPage.tsx: AdminDesignTokensPage",
     "AdminExternalDbPage.tsx: AdminExternalDbPage",
     "AdminFreteSettingsPage.tsx: AdminFreteSettingsPage",
+    "AdminInfraOpsPage.tsx: AdminInfraOpsPage",
     "AdminLoginAttemptsPage.tsx: AdminLoginAttemptsPage",
     "AdminMigracaoPapeisPage.tsx: AdminMigracaoPapeisPage",
     "AdminProductFormPage.tsx: AdminProductFormPage",
@@ -160493,8 +160536,7 @@
     "AdminTelemetriaPage.tsx: AdminTelemetriaPage",
     "AdminTemasPage.tsx: AdminTemasPage",
     "AdminUsuariosPage.tsx: AdminUsuariosPage",
-    "AdminV4CallbacksPage.tsx: AdminV4CallbacksPage",
-    "AdminVideoVariantsPage.tsx: AdminVideoVariantsPage"
+    "AdminV4CallbacksPage.tsx: AdminV4CallbacksPage"
    ],
    "docs": [
     "Index.tsx: Catálogo de Produtos - Index Page (v3 - refactored)",
@@ -160576,6 +160618,7 @@
     "src/pages/admin/AdminDesignTokensPage.tsx",
     "src/pages/admin/AdminExternalDbPage.tsx",
     "src/pages/admin/AdminFreteSettingsPage.tsx",
+    "src/pages/admin/AdminInfraOpsPage.tsx",
     "src/pages/admin/AdminLoginAttemptsPage.tsx",
     "src/pages/admin/AdminMigracaoPapeisPage.tsx",
     "src/pages/admin/AdminProductFormPage.tsx",
@@ -160624,14 +160667,13 @@
     "src/pages/admin/telemetry/useErrorCounters.ts",
     "src/pages/admin/telemetry/useHighLimitTelemetry.ts",
     "src/pages/admin/telemetry/useOptimizationMetrics.ts",
-    "src/pages/admin/telemetry/useOptimizationQueue.ts",
-    "src/pages/admin/telemetry/usePlatformFailureAlert.ts"
+    "src/pages/admin/telemetry/useOptimizationQueue.ts"
    ]
   },
   {
    "module": "src/routes",
    "files": 16,
-   "lines": 1473,
+   "lines": 1476,
    "tables": [],
    "exports": [
     "AppRoutes.tsx: AppRoutes",
@@ -161426,8 +161468,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3137,
-   "lines": 228694,
+   "files": 3138,
+   "lines": 228811,
    "tables": [
     "...",
     "admin_audit_log",
@@ -161525,8 +161567,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 151,
-   "lines": 5629,
+   "files": 152,
+   "lines": 5638,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -173159,6 +173201,11 @@
     "file": "src/lib/navigation/restricted-routes.ts",
     "name": "ADMIN_ONLY_ROUTE_PREFIXES",
     "values": "'/admin/usuarios', '/admin/cadastros'"
+   },
+   {
+    "file": "src/lib/ops/infra-telemetry.ts",
+    "name": "InfraStatus",
+    "values": "critical | ok | unknown | warn"
    },
    {
     "file": "src/lib/payments/order-payment-simulator.ts",
@@ -185333,6 +185380,10 @@
    {
     "file": "src/lib/navigation/restricted-routes.ts",
     "text": "* Decide se um link/segmento de breadcrumb deve ser **navegável** para o"
+   },
+   {
+    "file": "src/lib/ops/infra-telemetry.ts",
+    "text": "limite); métricas por bytes (replication slot) usam faixa própria."
    },
    {
     "file": "src/lib/pdf/totalsColorScheme.ts",
@@ -211320,6 +211371,36 @@
     "value": "90"
    },
    {
+    "file": "src/lib/ops/infra-telemetry.ts",
+    "name": "GROWTH_WARN_BYTES",
+    "value": "100"
+   },
+   {
+    "file": "src/lib/ops/infra-telemetry.ts",
+    "name": "GROWTH_CRITICAL_BYTES",
+    "value": "500"
+   },
+   {
+    "file": "src/lib/ops/infra-telemetry.ts",
+    "name": "PCT_WARN",
+    "value": "75"
+   },
+   {
+    "file": "src/lib/ops/infra-telemetry.ts",
+    "name": "PCT_CRITICAL",
+    "value": "90"
+   },
+   {
+    "file": "src/lib/ops/infra-telemetry.ts",
+    "name": "RETAINED_WARN_BYTES",
+    "value": "256"
+   },
+   {
+    "file": "src/lib/ops/infra-telemetry.ts",
+    "name": "RETAINED_CRITICAL_BYTES",
+    "value": "1024"
+   },
+   {
     "file": "src/lib/personalization/adapters/schema-detection.ts",
     "name": "MAX_RECENT",
     "value": "20"
@@ -221273,6 +221354,12 @@
     "file": "src/lib/rbac/route-matrix.ts",
     "field": "role",
     "value": "dev",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/rbac/route-matrix.ts",
+    "field": "role",
+    "value": "dev",
     "kind": "compara"
    },
    {
@@ -227944,6 +228031,18 @@
     "body": "if (isDevOnlyPath(pathname)) return opts.isDev; if (isAdminOnlyPath(pathname)) return opts.isAdmin || opts.isDev; return true;"
    },
    {
+    "file": "src/lib/ops/infra-telemetry.ts",
+    "name": "wraparoundStatus",
+    "params": "row: OpsWraparoundRow",
+    "body": "const pct = row.value_pct; if (pct !== null && pct !== undefined && Number.isFinite(pct)) { if (pct >= PCT_CRITICAL) return 'critical'; if (pct >= PCT_WARN) return 'warn'; return 'ok'; } const bytes = row.value_numeric; if (bytes === null || bytes === undefined || !Number.isFinite(bytes)) return 'unknown'; if (row.unit === 'bytes' || row.metric === 'replication_slot_retained_bytes') { if (bytes >= RETAINED_CRITICAL_BYTES) return 'critical'; if (bytes >= RETAINED_WARN_BYTES) return 'warn'; return …"
+   },
+   {
+    "file": "src/lib/ops/infra-telemetry.ts",
+    "name": "round",
+    "params": "value: number, digits: number",
+    "body": "const factor = 10 ** digits; return Math.round(value * factor) / factor;"
+   },
+   {
     "file": "src/lib/pdf/totalsColorScheme.ts",
     "name": "totalsSchemeMarker",
     "params": "scheme: TotalsColorScheme",
@@ -232454,6 +232553,10 @@
     "line": "const VOLUME_WARNING_THRESHOLD = 0.85; // 85%"
    },
    {
+    "file": "src/lib/ops/infra-telemetry.ts",
+    "line": "/** Percentual de consumo de uma métrica: >= 90% crítico, >= 75% atenção. */"
+   },
+   {
     "file": "src/lib/personalization/validators.ts",
     "line": "cost *= 1 + (positions - 1) * 0.25; // +25% por posição adicional"
    },
@@ -232468,6 +232571,10 @@
    {
     "file": "src/pages/SidebarQAPage.tsx",
     "line": "Item <strong>hover</strong>: fundo accent ~70% + texto mais forte (sem brilho)."
+   },
+   {
+    "file": "src/pages/admin/AdminInfraOpsPage.tsx",
+    "line": ")}) — atenção a partir de 75% do limite, crítico a partir de 90%`}"
    },
    {
     "file": "src/pages/admin/AdminProductFormPage.tsx",
@@ -268522,6 +268629,90 @@
    {
     "file": "src/lib/navigation/__tests__/active-match.test.ts",
     "name": "does not affect other groups"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "formatBytes / formatSignedBytes"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "formata unidades binárias e trata ausência de dado"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "mostra sinal explícito na variação"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "formatDurationMs / formatCount / formatPct / formatCapturedAt"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "escala ms até horas"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "inteiro com milhar pt-BR e percentual com duas casas"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "data inválida degrada para travessão"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "growthStatus"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "classifica pelo crescimento absoluto na janela"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "wraparoundStatus"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "usa percentual quando existe"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "cai para faixa de bytes em replication slot sem percentual"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "sem percentual nem bytes devolve desconhecido"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "freshnessStatus"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "detecta cron parado"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "parseOpsInfraTelemetry"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "janela sem dados devolve estrutura vazia, não quebra"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "preserva payload completo e normaliza números textuais"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "agregados da tela"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "conta riscos por estado"
+   },
+   {
+    "file": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+    "name": "maior crescimento da lista"
    },
    {
     "file": "src/lib/payments/__tests__/order-payment-simulator.test.ts",
@@ -361886,6 +362077,11 @@
     "src": "supabase/migrations/20261120180000_restore_quote_comments_scoped_threads.sql"
    },
    {
+    "function": "fn_dev_ops_infra_telemetry",
+    "msg": "forbidden: requer papel dev",
+    "src": "supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql"
+   },
+   {
     "function": "fn_dryrun_standardize_supplier",
     "msg": "Acesso negado: requer perfil admin ou superior",
     "src": "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"
@@ -422198,6 +422394,30 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "fn_dev_ops_infra_telemetry",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_dev_ops_infra_telemetry",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_dev_ops_infra_telemetry",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -474430,7 +474650,7 @@
   },
   "src/components/layout/SidebarReorganized.tsx": {
    "path": "src/components/layout/SidebarReorganized.tsx",
-   "lines": 679,
+   "lines": 687,
    "exports": [
     "const SidebarReorganized"
    ],
@@ -487939,6 +488159,17 @@
    ],
    "hooks": [
     "useMedallionHealth"
+   ]
+  },
+  "src/hooks/admin/useOpsInfraTelemetry.ts": {
+   "path": "src/hooks/admin/useOpsInfraTelemetry.ts",
+   "lines": 31,
+   "exports": [
+    "function useOpsInfraTelemetry"
+   ],
+   "doc": "useOpsInfraTelemetry — telemetria operacional interna do banco (schema `ops`) via RPC dev-gated `fn_dev_ops_infra_telemetry` (SECURITY DEFINER, só papel dev; migration 20261126052000). As três tabelas de `ops` continuam deny-all e sem GRANT a anon/authenticated — nada é lido direto pelo PostgREST. C …",
+   "hooks": [
+    "useOpsInfraTelemetry"
    ]
   },
   "src/hooks/admin/useRetestCooldownSetting.ts": {
@@ -510048,7 +510279,7 @@
   },
   "src/lib/navigation/restricted-routes.ts": {
    "path": "src/lib/navigation/restricted-routes.ts",
-   "lines": 63,
+   "lines": 64,
    "exports": [
     "const DEV_ONLY_ROUTE_PREFIXES",
     "const ADMIN_ONLY_ROUTE_PREFIXES",
@@ -510112,6 +510343,115 @@
     "closes an open group when Radix says open=false",
     "is idempotent: re-emitting the same state returns the same reference",
     "does not affect other groups"
+   ]
+  },
+  "src/lib/ops/infra-telemetry.ts": {
+   "path": "src/lib/ops/infra-telemetry.ts",
+   "lines": 248,
+   "exports": [
+    "interface OpsTableGrowthRow",
+    "interface OpsPgssRow",
+    "interface OpsWraparoundRow",
+    "interface OpsPgssSummary",
+    "interface OpsInfraTelemetry",
+    "type InfraStatus",
+    "const GROWTH_WARN_BYTES",
+    "const GROWTH_CRITICAL_BYTES",
+    "const PCT_WARN",
+    "const PCT_CRITICAL",
+    "const RETAINED_WARN_BYTES",
+    "const RETAINED_CRITICAL_BYTES",
+    "function formatBytes",
+    "function formatSignedBytes",
+    "function formatDurationMs",
+    "function formatCount",
+    "function formatPct",
+    "function formatCapturedAt",
+    "function freshnessStatus",
+    "function growthStatus",
+    "function wraparoundStatus",
+    "function countWraparoundStatus",
+    "function maxGrowthBytes",
+    "function parseOpsInfraTelemetry",
+    "function isEmptyTelemetry"
+   ],
+   "enums": [
+    {
+     "name": "InfraStatus",
+     "values": "critical | ok | unknown | warn"
+    }
+   ],
+   "params": [
+    {
+     "name": "GROWTH_WARN_BYTES",
+     "value": "100"
+    },
+    {
+     "name": "GROWTH_CRITICAL_BYTES",
+     "value": "500"
+    },
+    {
+     "name": "PCT_WARN",
+     "value": "75"
+    },
+    {
+     "name": "PCT_CRITICAL",
+     "value": "90"
+    },
+    {
+     "name": "RETAINED_WARN_BYTES",
+     "value": "256"
+    },
+    {
+     "name": "RETAINED_CRITICAL_BYTES",
+     "value": "1024"
+    }
+   ],
+   "rule_comments": [
+    "limite); métricas por bytes (replication slot) usam faixa própria."
+   ],
+   "calc_fns": [
+    {
+     "name": "wraparoundStatus",
+     "params": "row: OpsWraparoundRow",
+     "body": "const pct = row.value_pct; if (pct !== null && pct !== undefined && Number.isFinite(pct)) { if (pct >= PCT_CRITICAL) return 'critical'; if (pct >= PCT_WARN) return 'warn'; return 'ok'; } const bytes = row.value_numeric; if (bytes === null || bytes === undefined || !Number.isFinite(bytes)) return 'unknown'; if (row.unit === 'bytes' || row.metric === 'replication_slot_retained_bytes') { if (bytes >= RETAINED_CRITICAL_BYTES) return 'critical'; if (bytes >= RETAINED_WARN_BYTES) return 'warn'; return …"
+    },
+    {
+     "name": "round",
+     "params": "value: number, digits: number",
+     "body": "const factor = 10 ** digits; return Math.round(value * factor) / factor;"
+    }
+   ],
+   "percents": [
+    "/** Percentual de consumo de uma métrica: >= 90% crítico, >= 75% atenção. */"
+   ]
+  },
+  "src/lib/ops/__tests__/infra-telemetry.test.ts": {
+   "path": "src/lib/ops/__tests__/infra-telemetry.test.ts",
+   "lines": 179,
+   "is_test": true,
+   "tests": [
+    "formatBytes / formatSignedBytes",
+    "formata unidades binárias e trata ausência de dado",
+    "mostra sinal explícito na variação",
+    "formatDurationMs / formatCount / formatPct / formatCapturedAt",
+    "escala ms até horas",
+    "inteiro com milhar pt-BR e percentual com duas casas",
+    "data inválida degrada para travessão",
+    "growthStatus",
+    "classifica pelo crescimento absoluto na janela",
+    "wraparoundStatus",
+    "usa percentual quando existe",
+    "cai para faixa de bytes em replication slot sem percentual",
+    "sem percentual nem bytes devolve desconhecido",
+    "freshnessStatus",
+    "detecta cron parado",
+    "parseOpsInfraTelemetry",
+    "janela sem dados devolve estrutura vazia, não quebra",
+    "preserva payload completo e normaliza números textuais",
+    "agregados da tela",
+    "conta riscos por estado",
+    "maior crescimento da lista"
    ]
   },
   "src/lib/payments/order-payment-simulator.ts": {
@@ -511475,7 +511815,7 @@
   },
   "src/lib/rbac/route-matrix.ts": {
    "path": "src/lib/rbac/route-matrix.ts",
-   "lines": 484,
+   "lines": 494,
    "exports": [
     "type RouteRole",
     "type RouteGuard",
@@ -511643,6 +511983,11 @@
     {
      "field": "role",
      "value": "admin",
+     "kind": "escreve"
+    },
+    {
+     "field": "role",
+     "value": "dev",
      "kind": "escreve"
     },
     {
@@ -514158,6 +514503,17 @@
     "\n      className="
    ],
    "doc": "Admin: parâmetros globais de frete (`freight_settings`, linha única). Rota: /admin/frete (AdminRoute — o mesmo grupo que a RLS deixa salvar). As caixas de transporte ficam em /admin/cadastros?tab=caixas. O `PageSEO` e o container ficam fora dos estados de carregando/erro: o teste AdminStandardRules …"
+  },
+  "src/pages/admin/AdminInfraOpsPage.tsx": {
+   "path": "src/pages/admin/AdminInfraOpsPage.tsx",
+   "lines": 362,
+   "exports": [
+    "function AdminInfraOpsPage"
+   ],
+   "doc": "/admin/infra-ops — \"Infra do Banco\". Única tela para a telemetria operacional interna que até aqui só existia como relatório/artefato de CI (E30 table size, E33 wraparound, E40 pg_stat statements). Os dados vêm de `ops.*`, que é deny-all e sem GRANT: a leitura passa pela RPC dev-gated `fn_dev_ops_in …",
+   "percents": [
+    ")}) — atenção a partir de 75% do limite, crítico a partir de 90%`}"
+   ]
   },
   "src/pages/admin/AdminLoginAttemptsPage.tsx": {
    "path": "src/pages/admin/AdminLoginAttemptsPage.tsx",
@@ -522209,7 +522565,7 @@
   },
   "src/routes/admin-routes.tsx": {
    "path": "src/routes/admin-routes.tsx",
-   "lines": 153,
+   "lines": 155,
    "exports": [
     "const adminRoutes"
    ],
@@ -522515,6 +522871,12 @@
      "roles": []
     },
     {
+     "path": "/admin/infra-ops",
+     "component": "AdminInfraOpsPage",
+     "guard": "",
+     "roles": []
+    },
+    {
      "path": "/admin/cloudflare-images",
      "component": "AdminCloudflareImagesPage",
      "guard": "",
@@ -522617,7 +522979,7 @@
   },
   "src/routes/lazy-pages.ts": {
    "path": "src/routes/lazy-pages.ts",
-   "lines": 235,
+   "lines": 236,
    "exports": [
     "const Auth",
     "const Unauthorized",
@@ -522676,9 +523038,9 @@
     "const AdminConexoesPage",
     "const AdminConexoesStatusPage",
     "const ObservabilityDashboardPage",
+    "const AdminInfraOpsPage",
     "const AdminRbacRoutesPage",
-    "const SellerDiscountLimitsAdminPage",
-    "const RlsDenialsAdminPage"
+    "const SellerDiscountLimitsAdminPage"
    ],
    "doc": "Centralized lazy-loaded page imports. All page components are loaded via lazyWithRetry for code-splitting and resilient fetch retry on network failures. Organized by area for navigability."
   },
@@ -553865,6 +554227,10 @@
     "-- pede ACCESS EXCLUSIVE na tabela e o workflow usa lock_timeout=1s; em"
    ]
   },
+  "supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql": {
+   "path": "supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql",
+   "lines": 117
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -554489,6 +554855,10 @@
   "supabase/rollbacks/20261126030000_rollback.sql": {
    "path": "supabase/rollbacks/20261126030000_rollback.sql",
    "lines": 58
+  },
+  "supabase/rollbacks/20261126052000_rollback.sql": {
+   "path": "supabase/rollbacks/20261126052000_rollback.sql",
+   "lines": 9
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -580061,10 +580431,33 @@
   }
  },
  "git": {
-  "sha": "48dbd0bb772d1ee71b585ae6d6e59cd758b194e0",
+  "sha": "c3f747f0d00d55ee650491eac00fac1a812c7aaa",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "c3f747f",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "feat: tela Infra do Banco (/admin/infra-ops) para a telemetria ops.* sem consumidor (#4160)",
+    "files": [
+     ".file-size-baseline.json",
+     ".security/rls-no-policy-allowlist.json",
+     "audit/supabase-reference-catalog.temporary.json",
+     "src/components/layout/SidebarReorganized.tsx",
+     "src/hooks/admin/useOpsInfraTelemetry.ts",
+     "src/lib/navigation/restricted-routes.ts",
+     "src/lib/ops/__tests__/infra-telemetry.test.ts",
+     "src/lib/ops/infra-telemetry.ts",
+     "src/lib/rbac/route-matrix.ts",
+     "src/pages/admin/AdminInfraOpsPage.tsx",
+     "src/routes/admin-routes.tsx",
+     "src/routes/lazy-pages.ts",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql",
+     "supabase/rollbacks/20261126052000_rollback.sql"
+    ]
+   },
    {
     "sha": "48dbd0b",
     "date": "2026-11-26",
@@ -580368,21 +580761,12 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "ba98ac5",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "docs: classifica as 21 versoes novas fora do baseline E06 (18 ja refletidas em producao) (#4140)",
-    "files": [
-     "supabase/MIGRATIONS_RECONCILIACAO_20261125.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    11
+    12
    ],
    [
     "docs/estado/07_EDGE_FUNCTIONS.md",
@@ -580405,6 +580789,10 @@
     3
    ],
    [
+    "audit/supabase-reference-catalog.temporary.json",
+    2
+   ],
+   [
     "docs/estado/12_PLANEJADO_E_SUGERIDO.md",
     2
    ],
@@ -580413,51 +580801,47 @@
     2
    ],
    [
-    "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    ".file-size-baseline.json",
     1
    ],
    [
-    "audit/supabase-reference-catalog.temporary.json",
+    ".security/rls-no-policy-allowlist.json",
     1
    ],
    [
-    "src/components/inventory/VariantStockNotesDialog.tsx",
+    "src/components/layout/SidebarReorganized.tsx",
     1
    ],
    [
-    "src/components/inventory/VariantStockRowActions.tsx",
+    "src/hooks/admin/useOpsInfraTelemetry.ts",
     1
    ],
    [
-    "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx",
+    "src/lib/navigation/restricted-routes.ts",
     1
    ],
    [
-    "src/hooks/stock/useStockNotes.ts",
+    "src/lib/ops/__tests__/infra-telemetry.test.ts",
     1
    ],
    [
-    "src/lib/stock/__tests__/stock-notes.test.ts",
+    "src/lib/ops/infra-telemetry.ts",
     1
    ],
    [
-    "src/lib/stock/stock-notes.ts",
+    "src/lib/rbac/route-matrix.ts",
     1
    ],
    [
-    "src/components/kit-builder/KitBuilderHeader.tsx",
+    "src/pages/admin/AdminInfraOpsPage.tsx",
     1
    ],
    [
-    "supabase/functions/kit-identity-suggest/index.ts",
+    "src/routes/admin-routes.tsx",
     1
    ],
    [
-    "docs/FUNCIONALIDADES_E_FERRAMENTAS.md",
-    1
-   ],
-   [
-    "src/components/goals/__tests__/SalesGoalsCard.test.tsx",
+    "src/routes/lazy-pages.ts",
     1
    ]
   ]

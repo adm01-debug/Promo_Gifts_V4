@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1282,
+ "total": 1283,
  "orfaos": 155,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -11302,7 +11302,7 @@
     "SidebarReorganized"
    ],
    "export_default": null,
-   "linhas": 679,
+   "linhas": 687,
    "dominio": "components/layout",
    "hooks_locais": [
     "useAuth",
@@ -15991,7 +15991,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 134,
+   "usado_por": 135,
    "orfao": false
   },
   {
@@ -16680,7 +16680,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 360,
+   "usado_por": 361,
    "orfao": false
   },
   {
@@ -18088,6 +18088,22 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/pages/admin/AdminInfraOpsPage.tsx",
+   "exports": [
+    "AdminInfraOpsPage"
+   ],
+   "export_default": "AdminInfraOpsPage",
+   "linhas": 362,
+   "dominio": "pages/admin",
+   "hooks_locais": [
+    "useOpsInfraTelemetry"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
    "orfao": false
   },
   {

@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 355,
+ "total": 356,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 271,
+  "lib": 272,
   "python": 9,
   "services": 16,
   "stores": 9,
@@ -6031,7 +6031,7 @@
     "isDevOnlyPath"
    ],
    "export_default": null,
-   "linhas": 63,
+   "linhas": 64,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -6106,6 +6106,54 @@
    "usado_por": 2,
    "usado_por_modulos": [
     "components/novelties"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/ops/infra-telemetry.ts",
+   "camada": "lib",
+   "exports": [
+    "GROWTH_CRITICAL_BYTES",
+    "GROWTH_WARN_BYTES",
+    "InfraStatus",
+    "OpsInfraTelemetry",
+    "OpsPgssRow",
+    "OpsPgssSummary",
+    "OpsTableGrowthRow",
+    "OpsWraparoundRow",
+    "PCT_CRITICAL",
+    "PCT_WARN",
+    "RETAINED_CRITICAL_BYTES",
+    "RETAINED_WARN_BYTES",
+    "countWraparoundStatus",
+    "formatBytes",
+    "formatCapturedAt",
+    "formatCount",
+    "formatDurationMs",
+    "formatPct",
+    "formatSignedBytes",
+    "freshnessStatus",
+    "growthStatus",
+    "isEmptyTelemetry",
+    "maxGrowthBytes",
+    "parseOpsInfraTelemetry",
+    "wraparoundStatus"
+   ],
+   "export_default": null,
+   "linhas": 248,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "hooks/admin",
+    "pages/admin"
    ],
    "coberto_por_testes": 1,
    "orfao": false
@@ -7393,7 +7441,7 @@
     "summarizeRoutes"
    ],
    "export_default": null,
-   "linhas": 484,
+   "linhas": 494,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -7965,7 +8013,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 59,
+   "usado_por": 60,
    "usado_por_modulos": [
     "components/admin",
     "components/mockup",
@@ -8747,7 +8795,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 22,
+   "usado_por": 23,
    "usado_por_modulos": [
     "components/admin",
     "components/collections",
