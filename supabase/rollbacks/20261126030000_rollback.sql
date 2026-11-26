@@ -3,6 +3,8 @@
 -- Definicoes copiadas byte a byte de supabase/migrations-snapshot/SCHEMA_LIVE.sql
 -- (snapshot de 2026-11-26). Use CREATE INDEX CONCURRENTLY em producao se preferir
 -- nao bloquear escrita; aqui ficam os statements exatos do catalogo.
+-- Metadados: 1 dos 48 indices tinha COMMENT (idx_spr_images_pending);
+-- restaurado logo apos o CREATE INDEX, copiado do dump vivo de 2026-11-26.
 
 CREATE INDEX "idx_ai_queue_pending" ON "public"."ai_enrichment_queue" USING "btree" ("priority", "created_at") WHERE ("status" = 'pending'::"text");
 CREATE INDEX "idx_ai_queue_product_id" ON "public"."ai_enrichment_queue" USING "btree" ("product_id");
@@ -39,6 +41,7 @@ CREATE INDEX "idx_produto_ramo_atividade_filho" ON "public"."produto_ramo_ativid
 CREATE INDEX "idx_produtos_padronizacao_sub_brand_id" ON "public"."produtos_padronizacao" USING "btree" ("sub_brand_id");
 CREATE INDEX "idx_produtos_site_padronizacao_raw_id" ON "public"."produtos_site_padronizacao" USING "btree" ("raw_id");
 CREATE INDEX "idx_spr_images_pending" ON "public"."supplier_products_raw" USING "btree" ("supplier_id", "imported_at") WHERE ("images_status" <> 'processed'::"public"."supplier_raw_status");
+COMMENT ON INDEX "public"."idx_spr_images_pending" IS 'Fila do worker de imagens. Espelha idx_spr_unprocessed mas para images_status.';
 CREATE INDEX "idx_spr_import_batch_id" ON "public"."supplier_products_raw" USING "btree" ("import_batch_id");
 CREATE INDEX "idx_spr_variant_id" ON "public"."supplier_products_raw" USING "btree" ("variant_id") WHERE ("variant_id" IS NOT NULL);
 CREATE INDEX "idx_sre_supplier_date" ON "public"."supplier_replenishment_events" USING "btree" ("supplier_id", "promised_date" DESC);
