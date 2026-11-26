@@ -19,6 +19,11 @@ const RupturePanelEma = lazyWithRetry(() =>
 const WhatIfPanel = lazyWithRetry(() =>
   import('@/components/inventory/risk/WhatIfPanel').then((m) => ({ default: m.WhatIfPanel })),
 );
+const StockVelocityPanel = lazyWithRetry(() =>
+  import('@/components/inventory/StockVelocityPanel').then((m) => ({
+    default: m.StockVelocityPanel,
+  })),
+);
 
 /**
  * StockDashboardPage — entrada de `/estoque`.
@@ -77,6 +82,11 @@ export default function StockDashboardPage() {
 
         {/* Dashboard existente */}
         <StockDashboard />
+
+        {/* Giro por variante: velocidade de saida (v_stock_velocity_safe) */}
+        <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+          <StockVelocityPanel />
+        </Suspense>
 
         {/* Onda 3: What-if panel (toggle via Ctrl+W) */}
         {showWhatIf && (
