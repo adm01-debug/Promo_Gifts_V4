@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "67db74f06337842bdbf6fff2a2919f595294b005",
+  "commit": "47346c1f84a12ea88321b572a1afe91b3d1a6dcf",
   "branch": "main",
-  "data_commit": "2026-11-26T08:25:11-03:00",
+  "data_commit": "2026-11-26T08:45:36-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "47346c1",
+    "data": "2026-11-26",
+    "assunto": "feat: liga a Meta de Vendas ao dashboard com progresso real (#4161)"
+   },
    {
     "sha": "67db74f",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "ba98ac5",
     "data": "2026-11-25",
     "assunto": "docs: classifica as 21 versoes novas fora do baseline E06 (18 ja refletidas em producao) (#4140)"
-   },
-   {
-    "sha": "9fa5514",
-    "data": "2026-11-25",
-    "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45723739862) (#4137)"
    }
   ],
-  "arquivos_mudados_7d": 556,
+  "arquivos_mudados_7d": 563,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -310,9 +310,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11296,
-  "arquivos_codigo": 5682,
-  "linhas_codigo": 1077351,
+  "arquivos_total": 11297,
+  "arquivos_codigo": 5683,
+  "linhas_codigo": 1077626,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -324,7 +324,7 @@
   "tabelas": 532,
   "migrations": 3138,
   "cron_jobs": 122,
-  "testes": 2722,
+  "testes": 2723,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1511
@@ -1935,8 +1935,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1486,
-   "linhas": 291088
+   "arquivos": 1487,
+   "linhas": 291177
   },
   "src/config": {
    "arquivos": 1,
@@ -1960,7 +1960,7 @@
   },
   "src/hooks": {
    "arquivos": 515,
-   "linhas": 94906
+   "linhas": 95013
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1980,7 +1980,7 @@
   },
   "src/pages": {
    "arquivos": 376,
-   "linhas": 86703
+   "linhas": 86707
   },
   "src/routes": {
    "arquivos": 16,
@@ -2132,7 +2132,7 @@
   },
   "tests/hooks": {
    "arquivos": 170,
-   "linhas": 27741
+   "linhas": 27815
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2176,7 +2176,7 @@
   },
   "tests/regression": {
    "arquivos": 2,
-   "linhas": 793
+   "linhas": 794
   },
   "tests/replenishment": {
    "arquivos": 2,
@@ -3361,7 +3361,6 @@
    "src/components/expert/ExpertChatButton.tsx",
    "src/components/favorites/QuickListPicker.tsx",
    "src/components/filters/FilterSection.tsx",
-   "src/components/goals/SalesGoalsCard.tsx",
    "src/components/intelligence/SegmentAnalysis.tsx",
    "src/components/intelligence/TopClients.tsx",
    "src/components/inventory/HealthScoreInfoDialog.tsx",

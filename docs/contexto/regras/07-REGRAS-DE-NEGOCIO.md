@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `67db74f063` · branch `main` · 2026-11-26 11:26 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `47346c1f84` · branch `main` · 2026-11-26 11:46 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6827,7 +6827,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23736 testes em 2389 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23747 testes em 2390 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7131,7 +7131,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/hooks/quotes/__tests__/useDiscountApproval.test.ts` | 19 | requestApproval · retorna false imediatamente quando user = null (sem DB call) · insere em discount_approval_requests com campos corretos · retorna true quando inserção bem-sucedida … |
 | `src/lib/auth/__tests__/checkLoginGate.test.ts` | 19 | isOperationalGateBlock · allowed=false + reason operacional %s → true · %o → false · gateBlockMessage … |
 | `src/lib/auth/__tests__/oauth-error-explainer.test.ts` | 19 | explainOAuthError · config errors (admin needs to act) · mapeia redirect_uri_mismatch com hint sobre console do provedor · detecta redirect uri mismatch pela descrição quando code é genérico … |
-| … +2089 linhas — lista completa em `context.json` | | |
+| … +2090 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7599,4 +7599,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Card "Prazo de produção" do orçamento: em quantos dias úteis o pedido fica | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | deliveryMode={deliveryMode}            // 'data' \| 'prazo' do orçamento | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1489 linhas — lista completa em `context.json` | |
+| … +1491 linhas — lista completa em `context.json` | |

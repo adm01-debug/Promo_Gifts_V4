@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "67db74f06337842bdbf6fff2a2919f595294b005",
+  "sha": "47346c1f84a12ea88321b572a1afe91b3d1a6dcf",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 11:26 UTC",
-  "files_total": 11226,
-  "code_files": 9207,
-  "code_lines": 1308589
+  "generated_at": "2026-11-26 11:46 UTC",
+  "files_total": 11227,
+  "code_files": 9208,
+  "code_lines": 1308864
  },
  "version": "1.3.2",
- "facts_hash": "f588cb5f33295802",
+ "facts_hash": "75198708e9af8c25",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1132,7 +1132,7 @@
   "languages": {
    ".sql": 3526,
    ".ts": 3180,
-   ".tsx": 2026,
+   ".tsx": 2027,
    ".mjs": 456,
    ".py": 18,
    ".js": 7
@@ -147527,6 +147527,7 @@
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
@@ -147769,6 +147770,7 @@
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "saved_filters",
      "scheduled_reports",
      "search_analytics",
@@ -147896,6 +147898,7 @@
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
@@ -148075,6 +148078,7 @@
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
@@ -148127,6 +148131,7 @@
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "system_kill_switches",
      "voice_command_logs"
@@ -148400,6 +148405,7 @@
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
@@ -148815,6 +148821,7 @@
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
@@ -148937,6 +148944,7 @@
      "quote_history",
      "quote_item_personalizations",
      "quote_items",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
@@ -148968,7 +148976,7 @@
      "respond_discount_approval_transactional",
      "save_custom_kit_atomic"
     ],
-    "deps_count": 255
+    "deps_count": 257
    },
    {
     "path": "/dropbox",
@@ -149100,6 +149108,7 @@
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
@@ -149263,6 +149272,7 @@
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "saved_filters",
      "scheduled_reports",
      "search_analytics",
@@ -149330,6 +149340,7 @@
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
@@ -154820,7 +154831,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1762,
+  "components_count": 1763,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -159541,8 +159552,8 @@
   },
   {
    "module": "src/components",
-   "files": 1486,
-   "lines": 291087,
+   "files": 1487,
+   "lines": 291176,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -159906,7 +159917,7 @@
   {
    "module": "src/hooks",
    "files": 515,
-   "lines": 94906,
+   "lines": 95013,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -159960,6 +159971,7 @@
     "role_migration_batches",
     "role_migration_items",
     "role_permissions",
+    "sales_goals",
     "scheduled_reports",
     "search_analytics",
     "seller_cart_items",
@@ -160406,7 +160418,7 @@
   {
    "module": "src/pages",
    "files": 376,
-   "lines": 86703,
+   "lines": 86707,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -161683,7 +161695,7 @@
   {
    "module": "tests",
    "files": 1106,
-   "lines": 176670,
+   "lines": 176745,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -163686,6 +163698,7 @@
      "src/components/quotes/MarginInsightBadge.tsx",
      "src/components/quotes/QuoteVersionCompare.tsx",
      "src/hooks/intelligence/useCommercialIntelligence.helpers.ts",
+     "src/hooks/intelligence/useSalesGoals.ts",
      "src/hooks/intelligence/useSalesHistoryMacro.ts",
      "src/hooks/quotes/__tests__/useQuoteVersions.test.ts",
      "src/hooks/quotes/useDiscountApproval.ts",
@@ -163828,6 +163841,20 @@
    "runtime_table": {
     "select": [
      "scripts/ai-context/gerar.unit.mjs"
+    ]
+   },
+   "sales_goals": {
+    "select": [
+     "src/hooks/intelligence/useSalesGoals.ts"
+    ],
+    "insert": [
+     "src/hooks/intelligence/useSalesGoals.ts"
+    ],
+    "update": [
+     "src/hooks/intelligence/useSalesGoals.ts"
+    ],
+    "delete": [
+     "src/hooks/intelligence/useSalesGoals.ts"
     ]
    },
    "saved_filters": {
@@ -165472,6 +165499,12 @@
    ],
    "roles": [
     "id"
+   ],
+   "sales_goals": [
+    "end_date",
+    "id",
+    "start_date",
+    "user_id"
    ],
    "saved_filters": [
     "category",
@@ -168834,7 +168867,6 @@
    "remediation",
    "reward_redemptions",
    "rewards",
-   "sales_goals",
    "saved_trends_views",
    "schema_drift_allowlist",
    "schema_drift_log",
@@ -183374,6 +183406,14 @@
    {
     "file": "src/hooks/intelligence/usePromoSalesRanking.ts",
     "text": "- Retorna apenas {product_id, total_qty} — payload mínimo"
+   },
+   {
+    "file": "src/hooks/intelligence/useSalesGoals.ts",
+    "text": "* Status de orçamento que contam como venda ganha (mesma regra de `v_quote_seller_kpis`). */"
+   },
+   {
+    "file": "src/hooks/intelligence/useSalesGoals.ts",
+    "text": "* Cruza os orçamentos do período com a meta. Regra única, testável fora do React. */"
    },
    {
     "file": "src/hooks/intelligence/useSalesHistory.ts",
@@ -245586,6 +245626,26 @@
     "name": "%s item(ns) sem produto avisa"
    },
    {
+    "file": "src/components/goals/__tests__/SalesGoalsCard.test.tsx",
+    "name": "SalesGoalsCard"
+   },
+   {
+    "file": "src/components/goals/__tests__/SalesGoalsCard.test.tsx",
+    "name": "mostra o estado vazio com o botao de criar meta quando nao ha meta ativa"
+   },
+   {
+    "file": "src/components/goals/__tests__/SalesGoalsCard.test.tsx",
+    "name": "mostra esqueleto enquanto carrega, sem piscar o estado vazio"
+   },
+   {
+    "file": "src/components/goals/__tests__/SalesGoalsCard.test.tsx",
+    "name": "mostra progresso real da meta ativa (faturamento, orcamentos e conversoes)"
+   },
+   {
+    "file": "src/components/goals/__tests__/SalesGoalsCard.test.tsx",
+    "name": "destaca a meta como atingida quando a regra de negocio e satisfeita"
+   },
+   {
     "file": "src/components/intelligence/__tests__/MarketIntelligenceChart.test.tsx",
     "name": "MarketIntelligenceChart — sem dados reais"
    },
@@ -304332,6 +304392,30 @@
    {
     "file": "tests/hooks/useSalesGoals.test.tsx",
     "name": "should return sales goals state and functions"
+   },
+   {
+    "file": "tests/hooks/useSalesGoals.test.tsx",
+    "name": "deriveGoalProgress (regra de KPI do vendedor)"
+   },
+   {
+    "file": "tests/hooks/useSalesGoals.test.tsx",
+    "name": "soma só venda ganha no faturamento e ignora rascunho/cancelado na contagem"
+   },
+   {
+    "file": "tests/hooks/useSalesGoals.test.tsx",
+    "name": "zera com lista vazia e trata total/status nulos sem quebrar"
+   },
+   {
+    "file": "tests/hooks/useSalesGoals.test.tsx",
+    "name": "isGoalAchieved"
+   },
+   {
+    "file": "tests/hooks/useSalesGoals.test.tsx",
+    "name": "bate pelo valor quando não há metas secundárias definidas"
+   },
+   {
+    "file": "tests/hooks/useSalesGoals.test.tsx",
+    "name": "exige também as metas secundárias que foram definidas"
    },
    {
     "file": "tests/hooks/useSalesHistoryMacro.product-filter.test.ts",
@@ -471003,6 +471087,18 @@
     }
    ]
   },
+  "src/components/goals/__tests__/SalesGoalsCard.test.tsx": {
+   "path": "src/components/goals/__tests__/SalesGoalsCard.test.tsx",
+   "lines": 89,
+   "is_test": true,
+   "tests": [
+    "SalesGoalsCard",
+    "mostra o estado vazio com o botao de criar meta quando nao ha meta ativa",
+    "mostra esqueleto enquanto carrega, sem piscar o estado vazio",
+    "mostra progresso real da meta ativa (faturamento, orcamentos e conversoes)",
+    "destaca a meta como atingida quando a regra de negocio e satisfeita"
+   ]
+  },
   "src/components/intelligence/CategoryRanking.tsx": {
    "path": "src/components/intelligence/CategoryRanking.tsx",
    "lines": 407,
@@ -491729,12 +491825,59 @@
   },
   "src/hooks/intelligence/useSalesGoals.ts": {
    "path": "src/hooks/intelligence/useSalesGoals.ts",
-   "lines": 250,
+   "lines": 357,
    "exports": [
     "interface SalesGoal",
     "interface CreateGoalInput",
+    "interface GoalMetrics",
+    "function deriveGoalProgress",
+    "function isGoalAchieved",
     "function useSalesGoals"
    ],
+   "tables": [
+    {
+     "table": "sales_goals",
+     "op": "select"
+    },
+    {
+     "table": "sales_goals",
+     "op": "select"
+    },
+    {
+     "table": "quotes",
+     "op": "select"
+    },
+    {
+     "table": "sales_goals",
+     "op": "insert,select"
+    },
+    {
+     "table": "sales_goals",
+     "op": "select"
+    },
+    {
+     "table": "sales_goals",
+     "op": "select,update"
+    },
+    {
+     "table": "sales_goals",
+     "op": "delete"
+    }
+   ],
+   "table_cols": {
+    "sales_goals": [
+     "end_date",
+     "id",
+     "start_date",
+     "user_id"
+    ],
+    "quotes": [
+     "created_at",
+     "seller_id",
+     "status",
+     "total"
+    ]
+   },
    "errors": [
     "Erro ao atualizar progresso",
     "Erro ao criar meta",
@@ -491761,6 +491904,10 @@
      "value": "monthly",
      "kind": "compara"
     }
+   ],
+   "rule_comments": [
+    "* Status de orçamento que contam como venda ganha (mesma regra de `v_quote_seller_kpis`). */",
+    "* Cruza os orçamentos do período com a meta. Regra única, testável fora do React. */"
    ],
    "hooks": [
     "useSalesGoals"
@@ -513040,7 +513187,7 @@
   },
   "src/pages/CustomizableDashboard.tsx": {
    "path": "src/pages/CustomizableDashboard.tsx",
-   "lines": 366,
+   "lines": 370,
    "exports": [
     "function CustomizableDashboard"
    ],
@@ -567330,11 +567477,17 @@
   },
   "tests/hooks/useSalesGoals.test.tsx": {
    "path": "tests/hooks/useSalesGoals.test.tsx",
-   "lines": 35,
+   "lines": 109,
    "is_test": true,
    "tests": [
     "useSalesGoals",
-    "should return sales goals state and functions"
+    "should return sales goals state and functions",
+    "deriveGoalProgress (regra de KPI do vendedor)",
+    "soma só venda ganha no faturamento e ignora rascunho/cancelado na contagem",
+    "zera com lista vazia e trata total/status nulos sem quebrar",
+    "isGoalAchieved",
+    "bate pelo valor quando não há metas secundárias definidas",
+    "exige também as metas secundárias que foram definidas"
    ]
   },
   "tests/hooks/useSalesHistoryMacro.product-filter.test.ts": {
@@ -571575,7 +571728,7 @@
   },
   "tests/regression/qa-cycle-bugfixes.test.ts": {
    "path": "tests/regression/qa-cycle-bugfixes.test.ts",
-   "lines": 187,
+   "lines": 188,
    "is_test": true,
    "rule_comments": [
     "ignore permission errors"
@@ -579518,10 +579671,25 @@
   }
  },
  "git": {
-  "sha": "67db74f06337842bdbf6fff2a2919f595294b005",
+  "sha": "47346c1f84a12ea88321b572a1afe91b3d1a6dcf",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "47346c1",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "feat: liga a Meta de Vendas ao dashboard com progresso real (#4161)",
+    "files": [
+     "docs/FUNCIONALIDADES_E_FERRAMENTAS.md",
+     "docs/estado/12_PLANEJADO_E_SUGERIDO.md",
+     "src/components/goals/__tests__/SalesGoalsCard.test.tsx",
+     "src/hooks/intelligence/useSalesGoals.ts",
+     "src/pages/CustomizableDashboard.tsx",
+     "tests/hooks/useSalesGoals.test.tsx",
+     "tests/regression/qa-cycle-bugfixes.test.ts"
+    ]
+   },
    {
     "sha": "67db74f",
     "date": "2026-11-26",
@@ -579831,18 +579999,6 @@
      "e2e/role-badge-no-tooltip.spec.ts",
      "e2e/stock-regression.spec.ts"
     ]
-   },
-   {
-    "sha": "872034f",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "chore(main): release gifts-store 1.20.2 (#4112)",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
@@ -579852,19 +580008,19 @@
    ],
    [
     ".release-please-manifest.json",
-    4
+    3
    ],
    [
     "CHANGELOG.md",
-    4
+    3
    ],
    [
     "package-lock.json",
-    4
+    3
    ],
    [
     "package.json",
-    4
+    3
    ],
    [
     "supabase/rollbacks/20261126030000_rollback.sql",
@@ -579903,27 +580059,27 @@
     2
    ],
    [
-    ".github/workflows/db-apply-migration.yml",
+    "docs/FUNCIONALIDADES_E_FERRAMENTAS.md",
     1
    ],
    [
-    ".security/policies-baseline.json",
+    "docs/estado/12_PLANEJADO_E_SUGERIDO.md",
     1
    ],
    [
-    "supabase/baseline/20261126030000_baseline_schema.sql",
+    "src/components/goals/__tests__/SalesGoalsCard.test.tsx",
     1
    ],
    [
-    "supabase/baseline/20261126030000_cron_jobs.json",
+    "src/hooks/intelligence/useSalesGoals.ts",
     1
    ],
    [
-    "supabase/baseline/20261126030000_event_triggers.json",
+    "src/pages/CustomizableDashboard.tsx",
     1
    ],
    [
-    "supabase/baseline/20261126030000_ledger_versions.json",
+    "tests/hooks/useSalesGoals.test.tsx",
     1
    ]
   ]

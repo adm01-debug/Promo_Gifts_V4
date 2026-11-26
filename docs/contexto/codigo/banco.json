@@ -39893,7 +39893,7 @@
     "seller_id->profiles"
    ],
    "criada_em": "20250102000000_gifts_production.sql",
-   "usada_no_front": 31,
+   "usada_no_front": 32,
    "usada_em_edges": [
     "crm-callback-reprocess",
     "crm-db-bridge",
@@ -41166,7 +41166,7 @@
     "user_id->auth"
    ],
    "criada_em": "20251220181321_e148d318-752b-4c4a-8bb3-da2163faab3c.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [
     "audit_sales_goals",
@@ -41174,7 +41174,7 @@
     "update_sales_goals_updated_at"
    ],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "saved_filters": {
    "colunas": {

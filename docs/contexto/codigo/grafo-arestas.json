@@ -10896,8 +10896,8 @@
   ],
   "src/hooks/intelligence/useSalesGoals.ts": [
    "src/contexts/AuthContext.tsx",
-   "src/lib/security/sanitize-error.ts",
-   "src/lib/supabase-untyped.ts"
+   "src/integrations/supabase/client.ts",
+   "src/lib/security/sanitize-error.ts"
   ],
   "src/hooks/intelligence/useSalesHistory.ts": [
    "src/integrations/supabase/client.ts",
@@ -12993,6 +12993,7 @@
    "src/components/dashboard/QuickActionsPanel.tsx",
    "src/components/dashboard/RecentKitsWidget.tsx",
    "src/components/dashboard/UpcomingDatesWidget.tsx",
+   "src/components/goals/SalesGoalsCard.tsx",
    "src/components/reports/ScheduledReportsManager.tsx",
    "src/components/seo/PageSEO.tsx",
    "src/components/ui/button.tsx",

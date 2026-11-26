@@ -9632,9 +9632,12 @@
    "hooks_exportados": [
     "useSalesGoals"
    ],
-   "linhas": 250,
+   "linhas": 357,
    "dominio": "hooks/intelligence",
-   "tabelas": [],
+   "tabelas": [
+    "quotes",
+    "sales_goals"
+   ],
    "rpcs": [],
    "edges": [],
    "hooks_internos": [

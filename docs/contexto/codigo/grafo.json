@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 2960,
- "arestas": 11696,
+ "arestas": 11697,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -18,7 +18,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 468
+   "importado_por": 469
   },
   {
    "arquivo": "src/components/ui/card.tsx",
@@ -86,7 +86,7 @@
   },
   {
    "arquivo": "src/hooks/intelligence/index.ts",
-   "importado_por": 76
+   "importado_por": 77
   },
   {
    "arquivo": "src/lib/edge/safeInvokeCall.ts",
@@ -109,12 +109,12 @@
    "importado_por": 64
   },
   {
-   "arquivo": "src/lib/supabase-untyped.ts",
+   "arquivo": "src/types/magazine.ts",
    "importado_por": 62
   },
   {
-   "arquivo": "src/types/magazine.ts",
-   "importado_por": 62
+   "arquivo": "src/lib/supabase-untyped.ts",
+   "importado_por": 61
   },
   {
    "arquivo": "src/components/ui/table.tsx",
@@ -615,10 +615,10 @@
   "src/components/filters/FilterSection.tsx",
   "src/components/filters/index.ts",
   "src/components/freight-plan/index.ts",
-  "src/components/goals/SalesGoalsCard.tsx",
   "src/components/intelligence/SegmentAnalysis.tsx",
   "src/components/intelligence/TopClients.tsx",
-  "src/components/inventory/HealthScoreInfoDialog.tsx"
+  "src/components/inventory/HealthScoreInfoDialog.tsx",
+  "src/components/inventory/StockCategoryTreeSelect.tsx"
  ],
  "modulos_mais_acoplados": [
   {

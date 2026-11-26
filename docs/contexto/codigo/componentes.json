@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "total": 1281,
- "orfaos": 157,
+ "orfaos": 156,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
    "recovery/src-legacy/src/components/quotes/AdminTemplatesManager.tsx",
@@ -9249,8 +9249,8 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 0,
-   "orfao": true
+   "usado_por": 1,
+   "orfao": false
   },
   {
    "arquivo": "src/components/intelligence/CategoryRanking.tsx",
@@ -19010,7 +19010,7 @@
     "CustomizableDashboard"
    ],
    "export_default": "CustomizableDashboard",
-   "linhas": 366,
+   "linhas": 370,
    "dominio": "pages",
    "hooks_locais": [
     "useAuth",
