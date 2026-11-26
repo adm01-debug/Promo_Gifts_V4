@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "65f12c5482e7daff3bce4bc8f4557e1b792c41d0",
+  "sha": "8e78a4d5d3893d13207824e4107161b195bbf51d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 03:58 UTC",
+  "generated_at": "2026-11-26 05:09 UTC",
   "files_total": 11226,
   "code_files": 9207,
   "code_lines": 1308589
@@ -579518,10 +579518,22 @@
   }
  },
  "git": {
-  "sha": "65f12c5482e7daff3bce4bc8f4557e1b792c41d0",
+  "sha": "8e78a4d5d3893d13207824e4107161b195bbf51d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "8e78a4d",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.20.5 (#4159)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "65f12c5",
     "date": "2026-11-26",
@@ -579833,15 +579845,6 @@
      "supabase/rollbacks/20260917150000_rollback.sql",
      "supabase/rollbacks/20260917160000_rollback.sql"
     ]
-   },
-   {
-    "sha": "6aad536",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "docs(db): reconciliacao das 125 migrations fora do ledger com evidencia do dump (#4129)",
-    "files": [
-     "supabase/MIGRATIONS_RECONCILIACAO_20261125.md"
-    ]
    }
   ],
   "hot_files": [
@@ -579851,23 +579854,19 @@
    ],
    [
     ".release-please-manifest.json",
-    3
+    4
    ],
    [
     "CHANGELOG.md",
-    3
+    4
    ],
    [
     "package-lock.json",
-    3
+    4
    ],
    [
     "package.json",
-    3
-   ],
-   [
-    "supabase/MIGRATIONS_RECONCILIACAO_20261125.md",
-    3
+    4
    ],
    [
     "supabase/rollbacks/20261126030000_rollback.sql",
@@ -579899,6 +579898,10 @@
    ],
    [
     "supabase/migrations-snapshot/SNAPSHOT_META.json",
+    2
+   ],
+   [
+    "supabase/MIGRATIONS_RECONCILIACAO_20261125.md",
     2
    ],
    [

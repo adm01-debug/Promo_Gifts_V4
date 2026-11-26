@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `65f12c5482e7daff3bce4bc8f4557e1b792c41d0` (2026-11-26T00:55:05-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8e78a4d5d3893d13207824e4107161b195bbf51d` (2026-11-26T02:08:01-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -599,17 +599,17 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 51030 nós · 86523 arestas · 2887 comunidades · grafo do commit `65f12c54`
-- comunidades maiores: ref_components (612), react (553), ref_node_child_process (519), lucide-react (475), ref_hooks (430), vitest (418), ref_integrations (373), ref_lib (369), @tanstack/react-query (369), sonner (351), ref_types (321), scripts (312)
+- 51032 nós · 86525 arestas · 2911 comunidades · grafo do commit `8e78a4d5`
+- comunidades maiores: ref_components (834), ref_hooks (709), ref_integrations (696), vitest (646), ref_node_child_process (495), react (382), @tanstack/react-query (376), ref_types (365), gotoAndSettle (341), react-router-dom (321), sonner (318), scripts (312)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - supabase/MIGRATIONS_SYNC_LOG.md (104)
 - docs/qa/05-PROGRESSO.md (31)
-- package.json (23)
-- package-lock.json (20)
-- CHANGELOG.md (17)
+- package.json (24)
+- package-lock.json (21)
+- CHANGELOG.md (18)
 - docs/coordenacao/conflitos-semanticos.md (9)
 - supabase/migrations-snapshot/ALL_IN_ONE.sql (9)
 - supabase/migrations-snapshot/SCHEMA_LIVE.sql (9)
@@ -1031,7 +1031,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/PULL_REQUEST_TEMPLATE.md` (112 linhas)
 - `.github/SENTINEL_CHANGELOG.md` — Sentinel Changelog (188 linhas)
 - `AGENTS.md` — AGENTS.md — Promo Gifts V4 (111 linhas)
-- `CHANGELOG.md` — Changelog (2642 linhas)
+- `CHANGELOG.md` — Changelog (2649 linhas)
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
@@ -1195,9 +1195,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/notifications-module-audit.md` — Auditoria — Módulo "Notificações de Estoque" (sino do header) (110 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — inventário e prova (1148 linhas)
 - subpastas de docs/: docs/arquivo (92), docs/agentes (27), docs/redeploy (27), docs/estado (26), docs/plans (24), docs/db (14), docs/qa (14), docs/audits (12), docs/ci (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/pendencias (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/coordenacao (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/edge-functions (2), docs/frete (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
-- CHANGELOG topo: [1.20.4](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.3...gifts-store-v1.20.4) (2026-11-26)
+- CHANGELOG topo: [1.20.5](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.4...gifts-store-v1.20.5) (2026-11-26)
 
 ## Últimos commits
+- 2026-11-26 `8e78a4d` chore(main): release gifts-store 1.20.5 (#4159)
 - 2026-11-26 `65f12c5` fix: restaura COMMENT do idx_spr_images_pending no rollback do PERF005 (#4158)
 - 2026-11-26 `a42709a` infra: serializa snapshot de schema e apply de migration no mesmo grupo (#4136)
 - 2026-11-26 `e9aef61` chore(security): atualiza baseline assinado de RLS policies (#4154)
@@ -1212,7 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `ea1788c` docs(migrations-log): recibo E15 — aplicação de 20260917160000 (#4150)
 - 2026-11-25 `c25a779` docs(migrations-log): recibo E15 — aplicação de 20260917150000 (#4149)
 - 2026-11-25 `d2f3c85` docs(migrations-log): recibo E15 — aplicação de 20260916211500 (#4148)
-- 2026-11-25 `da92fae` chore: allowlist E06 recebe as 21 migrations efetivas por equivalencia (#4146)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

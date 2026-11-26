@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "65f12c5482e7daff3bce4bc8f4557e1b792c41d0",
+  "commit": "8e78a4d5d3893d13207824e4107161b195bbf51d",
   "branch": "main",
-  "data_commit": "2026-11-26T00:55:05-03:00",
+  "data_commit": "2026-11-26T02:08:01-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "8e78a4d",
+    "data": "2026-11-26",
+    "assunto": "chore(main): release gifts-store 1.20.5 (#4159)"
+   },
    {
     "sha": "65f12c5",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "5d589f5",
     "data": "2026-11-25",
     "assunto": "docs: corrige adendo - 3137 era contagem de arquivos, nao do ledger (#4139)"
-   },
-   {
-    "sha": "7221b0b",
-    "data": "2026-11-25",
-    "assunto": "fix: cabecalho de rollback e pg_temp nas migrations resgatadas (#4133)"
    }
   ],
   "arquivos_mudados_7d": 567,
@@ -176,11 +176,11 @@
     "mudancas": 85
    },
    {
-    "pasta": "src/pages/quotes",
-    "mudancas": 85
+    "pasta": "src/components/mockup",
+    "mudancas": 83
    },
    {
-    "pasta": "src/components/mockup",
+    "pasta": "src/pages/quotes",
     "mudancas": 83
    },
    {
@@ -207,15 +207,15 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 23
+    "mudancas": 24
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 17
+    "mudancas": 18
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 232
+    "commits": 231
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 68
+    "commits": 69
    }
   ]
  },
