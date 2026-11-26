@@ -59334,6 +59334,123 @@
         "nullable": false,
         "position": 1,
         "schema": "public",
+        "table": "saved_stock_views",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "user_id",
+        "nullable": false,
+        "position": 2,
+        "schema": "public",
+        "table": "saved_stock_views",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "name",
+        "nullable": false,
+        "position": 3,
+        "schema": "public",
+        "table": "saved_stock_views",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "description",
+        "nullable": true,
+        "position": 4,
+        "schema": "public",
+        "table": "saved_stock_views",
+        "type": "text"
+      },
+      {
+        "comment": "Filtros do painel /estoque serializados: {\"activeLevel\": <nivel EMA|null>}; schema validado em src/lib/stock/saved-views.ts.",
+        "default": "'{}'::jsonb",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "filters",
+        "nullable": false,
+        "position": 5,
+        "schema": "public",
+        "table": "saved_stock_views",
+        "type": "jsonb"
+      },
+      {
+        "comment": null,
+        "default": "false",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "is_pinned",
+        "nullable": false,
+        "position": 6,
+        "schema": "public",
+        "table": "saved_stock_views",
+        "type": "boolean"
+      },
+      {
+        "comment": "Quantas vezes o operador aplicou a view; incrementado pela UI do menu de views salvas.",
+        "default": "0",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "use_count",
+        "nullable": false,
+        "position": 7,
+        "schema": "public",
+        "table": "saved_stock_views",
+        "type": "integer"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "created_at",
+        "nullable": false,
+        "position": 8,
+        "schema": "public",
+        "table": "saved_stock_views",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "updated_at",
+        "nullable": false,
+        "position": 9,
+        "schema": "public",
+        "table": "saved_stock_views",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": "gen_random_uuid()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
         "table": "saved_trends_views",
         "type": "uuid"
       },
@@ -133963,6 +134080,111 @@
       },
       {
         "columns": [
+          "filters"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (jsonb_typeof(filters) = 'object'::text)",
+        "name": "saved_stock_views_filters_object_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "saved_stock_views",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
+          "name"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (char_length(btrim(name)) >= 1 AND char_length(btrim(name)) <= 80)",
+        "name": "saved_stock_views_name_len_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "saved_stock_views",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id)",
+        "name": "saved_stock_views_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "saved_stock_views",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "use_count"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (use_count >= 0)",
+        "name": "saved_stock_views_use_count_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "saved_stock_views",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
+          "user_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+        "name": "saved_stock_views_user_id_fkey",
+        "on_delete": "CASCADE",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "auth",
+        "ref_table": "users",
+        "schema": "public",
+        "table": "saved_stock_views",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "user_id",
+          "name"
+        ],
+        "deferrable": false,
+        "definition": "UNIQUE (user_id, name)",
+        "name": "saved_stock_views_user_name_key",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "saved_stock_views",
+        "type": "UNIQUE",
+        "validated": true
+      },
+      {
+        "columns": [
           "id"
         ],
         "deferrable": false,
@@ -183101,12 +183323,17 @@
             {
               "file": "supabase/migrations/20261031000000_create_stock_notes.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261126130000_create_saved_stock_views.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [
+            "public.saved_stock_views.set_saved_stock_views_updated_at",
             "public.stock_notes.set_stock_notes_updated_at"
           ],
           "views": []
@@ -201816,6 +202043,18 @@
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
+          "table": "saved_stock_views"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "saved_stock_views"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "schema": "public",
           "table": "saved_trends_views"
         },
         {
@@ -219079,6 +219318,51 @@
       },
       {
         "columns": [
+          "id"
+        ],
+        "definition": "CREATE UNIQUE INDEX saved_stock_views_pkey ON public.saved_stock_views USING btree (id)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "saved_stock_views_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "saved_stock_views"
+      },
+      {
+        "columns": [
+          "user_id",
+          "name"
+        ],
+        "definition": "CREATE UNIQUE INDEX saved_stock_views_user_name_key ON public.saved_stock_views USING btree (user_id, name)",
+        "is_primary": false,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "saved_stock_views_user_name_key",
+        "predicate": null,
+        "schema": "public",
+        "table": "saved_stock_views"
+      },
+      {
+        "columns": [
+          "user_id",
+          "is_pinned",
+          "created_at"
+        ],
+        "definition": "CREATE INDEX saved_stock_views_user_order_idx ON public.saved_stock_views USING btree (user_id, is_pinned DESC, created_at DESC)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "saved_stock_views_user_order_idx",
+        "predicate": null,
+        "schema": "public",
+        "table": "saved_stock_views"
+      },
+      {
+        "columns": [
           "user_id"
         ],
         "definition": "CREATE INDEX idx_saved_trends_views_user ON public.saved_trends_views USING btree (user_id)",
@@ -224404,6 +224688,30 @@
         "code": "fk_without_index",
         "detail": "FK sem índice nas colunas ['supplier_branch_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
         "object": "public.variant_supplier_sources.variant_supplier_sources_supplier_branch_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.saved_stock_views.saved_stock_views_delete_own",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.saved_stock_views.saved_stock_views_insert_own",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.saved_stock_views.saved_stock_views_select_own",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.saved_stock_views.saved_stock_views_update_own",
         "severity": "BAIXA"
       },
       {
@@ -241822,6 +242130,12 @@
         "statements": 5,
         "statements_sha": "55fe510ee3639d72",
         "version": "20261126052000"
+      },
+      {
+        "name": "create_saved_stock_views",
+        "statements": 18,
+        "statements_sha": "c51707adb9533025",
+        "version": "20261126130000"
       }
     ],
     "policies": [
@@ -250922,6 +251236,54 @@
         "table": "saved_filters",
         "using": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)",
         "with_check": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)"
+      },
+      {
+        "cmd": "DELETE",
+        "name": "saved_stock_views_delete_own",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "saved_stock_views",
+        "using": "(user_id = auth.uid())",
+        "with_check": null
+      },
+      {
+        "cmd": "INSERT",
+        "name": "saved_stock_views_insert_own",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "saved_stock_views",
+        "using": null,
+        "with_check": "(user_id = auth.uid())"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "saved_stock_views_select_own",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "saved_stock_views",
+        "using": "(user_id = auth.uid())",
+        "with_check": null
+      },
+      {
+        "cmd": "UPDATE",
+        "name": "saved_stock_views_update_own",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "saved_stock_views",
+        "using": "(user_id = auth.uid())",
+        "with_check": "(user_id = auth.uid())"
       },
       {
         "cmd": "ALL",
@@ -260535,6 +260897,21 @@
         "schema": "public"
       },
       {
+        "comment": "Views salvas do painel de estoque: nome, filtros (jsonb), descricao, fixacao e contador de uso, por usuario autenticado.",
+        "from_extension": false,
+        "is_partition": false,
+        "kind": "table",
+        "name": "saved_stock_views",
+        "owner": "postgres",
+        "parent": null,
+        "partition_bound": null,
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": true,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
         "comment": "Visões de tendências salvas por usuário, com nome e filtros JSONB para reabrir uma análise configurada.",
         "from_extension": false,
         "is_partition": false,
@@ -266228,6 +266605,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "saved_filters",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER set_saved_stock_views_updated_at BEFORE UPDATE ON saved_stock_views FOR EACH ROW EXECUTE FUNCTION handle_updated_at()",
+        "events": "UPDATE",
+        "function": "public.handle_updated_at",
+        "level": "ROW",
+        "name": "set_saved_stock_views_updated_at",
+        "schema": "public",
+        "status": "enabled",
+        "table": "saved_stock_views",
         "timing": "BEFORE"
       },
       {

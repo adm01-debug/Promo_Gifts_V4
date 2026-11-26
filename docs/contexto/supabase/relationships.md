@@ -344,6 +344,7 @@
 | public.ramo_atividade_filho | ramo_atividade_id | public.ramo_atividade | id | CASCADE | NO ACTION |
 | public.role_permissions | permission_code | public.permissions | code | CASCADE | NO ACTION |
 | public.sales_goals | user_id | auth.users | id | CASCADE | NO ACTION |
+| public.saved_stock_views | user_id | auth.users | id | CASCADE | NO ACTION |
 | public.search_queries | clicked_product_id | public.products | id | SET NULL | NO ACTION |
 | public.secret_rotation_log | rotated_by | auth.users | id | SET NULL | NO ACTION |
 | public.seller_cart_items | cart_id | public.seller_carts | id | CASCADE | NO ACTION |

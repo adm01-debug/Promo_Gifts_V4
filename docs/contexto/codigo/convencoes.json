@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: baseline de policies com as 4 RLS de saved_stock_views (#4175)",
    "chore(main): release gifts-store 1.21.0 (#4163)",
    "docs(migrations-log): recibo E15 — aplicação de 20261126052000 (#4171)",
    "docs(migrations-log): recibo E15 — aplicação de 20261126130000 (#4172)",
-   "feat: liga views salvas do painel de estoque a uma tela (#4169)",
-   "feat: tela Infra do Banco (/admin/infra-ops) para a telemetria ops.* sem consumidor (#4160)"
+   "feat: liga views salvas do painel de estoque a uma tela (#4169)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

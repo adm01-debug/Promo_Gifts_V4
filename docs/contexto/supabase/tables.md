@@ -324,6 +324,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.roles](tables/public/roles.md) | table | sim | 1 | 4 | não | Registro de roles para a tela admin (RolesPage). Semeado do enum app_role. |
 | [public.sales_goals](tables/public/sales_goals.md) | table | sim | 1 | 15 | não | Sales goals by seller and period. Consumed by useSalesGoals. |
 | [public.saved_filters](tables/public/saved_filters.md) | table | sim | 4 | 11 | não | Filtros salvos pelo usuário para reutilização. filter_config guarda a definição estruturada do filtro; category, description, icon e color são metadados de organização/apresentação. |
+| [public.saved_stock_views](tables/public/saved_stock_views.md) | table | sim | 4 | 9 | não | Views salvas do painel de estoque: nome, filtros (jsonb), descricao, fixacao e contador de uso, por usuario autenticado. |
 | [public.saved_trends_views](tables/public/saved_trends_views.md) | table | sim | 1 | 6 | não | Visões de tendências salvas por usuário, com nome e filtros JSONB para reabrir uma análise configurada. |
 | [public.scheduled_reports](tables/public/scheduled_reports.md) | table | sim | 4 | 12 | não | Relatórios agendados por usuário, com tipo, frequência, destinatário, filtros e próximo horário de execução. |
 | [public.schema_drift_allowlist](tables/public/schema_drift_allowlist.md) | table | sim | 1 | 5 | não | Tabelas onde divergência de schema entre Lovable interno e Oficial é aceitável por design (cache, infra, legacy). |

@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "b23ed21394bd3f6ada463fb041e81d1049228373",
+  "sha": "ca3aaaa7f0a0468b3b9cdf769a01e8e2f6cf6bf0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 14:52 UTC",
+  "generated_at": "2026-11-26 15:19 UTC",
   "files_total": 11243,
   "code_files": 9224,
   "code_lines": 1311834
@@ -580969,10 +580969,19 @@
   }
  },
  "git": {
-  "sha": "b23ed21394bd3f6ada463fb041e81d1049228373",
+  "sha": "ca3aaaa7f0a0468b3b9cdf769a01e8e2f6cf6bf0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "ca3aaaa",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix: baseline de policies com as 4 RLS de saved_stock_views (#4175)",
+    "files": [
+     ".security/policies-baseline.json"
+    ]
+   },
    {
     "sha": "b23ed21",
     "date": "2026-11-26",
@@ -581298,21 +581307,12 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "0ab1b7a",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20260620190001 (#4141)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    14
+    13
    ],
    [
     ".release-please-manifest.json",
@@ -581337,6 +581337,10 @@
    [
     "docs/estado/07_EDGE_FUNCTIONS.md",
     3
+   ],
+   [
+    ".security/policies-baseline.json",
+    2
    ],
    [
     "docs/estado/12_PLANEJADO_E_SUGERIDO.md",
@@ -581384,10 +581388,6 @@
    ],
    [
     ".file-size-baseline.json",
-    1
-   ],
-   [
-    ".security/rls-no-policy-allowlist.json",
     1
    ]
   ]

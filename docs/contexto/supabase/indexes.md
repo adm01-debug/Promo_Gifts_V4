@@ -972,6 +972,9 @@ Uso e tamanho em `stats.md`.
 | public.sales_goals | idx_sales_goals_user_id | btree | user_id | não | sim |  |
 | public.sales_goals | sales_goals_pkey | btree | id | sim | sim |  |
 | public.saved_filters | saved_filters_pkey | btree | id | sim | sim |  |
+| public.saved_stock_views | saved_stock_views_pkey | btree | id | sim | sim |  |
+| public.saved_stock_views | saved_stock_views_user_name_key | btree | user_id, name | sim | sim |  |
+| public.saved_stock_views | saved_stock_views_user_order_idx | btree | user_id, is_pinned, created_at | não | sim |  |
 | public.saved_trends_views | idx_saved_trends_views_user | btree | user_id | não | sim |  |
 | public.saved_trends_views | saved_trends_views_pkey | btree | id | sim | sim |  |
 | public.scheduled_reports | idx_scheduled_reports_next_run | btree | next_run_at | não | sim | `(is_active = true)` |

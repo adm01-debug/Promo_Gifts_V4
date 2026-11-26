@@ -2,6 +2,19 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 15:25 UTC
+
+- **colunas** adicionado (9): `public.saved_stock_views.created_at`, `public.saved_stock_views.description`, `public.saved_stock_views.filters`, `public.saved_stock_views.id`, `public.saved_stock_views.is_pinned`, `public.saved_stock_views.name`, `public.saved_stock_views.updated_at`, `public.saved_stock_views.use_count`, `public.saved_stock_views.user_id`
+- **constraints** adicionado (6): `public.saved_stock_views.saved_stock_views_filters_object_check`, `public.saved_stock_views.saved_stock_views_name_len_check`, `public.saved_stock_views.saved_stock_views_pkey`, `public.saved_stock_views.saved_stock_views_use_count_check`, `public.saved_stock_views.saved_stock_views_user_id_fkey`, `public.saved_stock_views.saved_stock_views_user_name_key`
+- **functions** alterado (1): `public.handle_updated_at()`
+- **grants** adicionado (2): `public.saved_stock_views:authenticated`, `public.saved_stock_views:service_role`
+- **indexes** adicionado (3): `public.saved_stock_views_pkey`, `public.saved_stock_views_user_name_key`, `public.saved_stock_views_user_order_idx`
+- **lints** adicionado (4): `policy_auth_fn_not_wrapped:public.saved_stock_views.saved_stock_views_delete_own`, `policy_auth_fn_not_wrapped:public.saved_stock_views.saved_stock_views_insert_own`, `policy_auth_fn_not_wrapped:public.saved_stock_views.saved_stock_views_select_own`, `policy_auth_fn_not_wrapped:public.saved_stock_views.saved_stock_views_update_own`
+- **migrations** adicionado (1): `20261126130000_create_saved_stock_views`
+- **policies (RLS)** adicionado (4): `public.saved_stock_views.saved_stock_views_delete_own`, `public.saved_stock_views.saved_stock_views_insert_own`, `public.saved_stock_views.saved_stock_views_select_own`, `public.saved_stock_views.saved_stock_views_update_own`
+- **tabelas** adicionado (1): `public.saved_stock_views`
+- **triggers** adicionado (1): `public.saved_stock_views.set_saved_stock_views_updated_at`
+
 ## 2026-11-26 14:19 UTC
 
 - **functions** adicionado (1): `public.fn_dev_ops_infra_telemetry(_days integer, _top integer)`

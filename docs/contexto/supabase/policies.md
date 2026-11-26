@@ -761,6 +761,10 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.saved_filters | saved_filters_insert | INSERT | PERMISSIVE | public |  | `(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)` |
 | public.saved_filters | saved_filters_select | SELECT | PERMISSIVE | public | `(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)` |  |
 | public.saved_filters | saved_filters_update | UPDATE | PERMISSIVE | public | `(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)` | `(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)` |
+| public.saved_stock_views | saved_stock_views_delete_own | DELETE | PERMISSIVE | authenticated | `(user_id = auth.uid())` |  |
+| public.saved_stock_views | saved_stock_views_insert_own | INSERT | PERMISSIVE | authenticated |  | `(user_id = auth.uid())` |
+| public.saved_stock_views | saved_stock_views_select_own | SELECT | PERMISSIVE | authenticated | `(user_id = auth.uid())` |  |
+| public.saved_stock_views | saved_stock_views_update_own | UPDATE | PERMISSIVE | authenticated | `(user_id = auth.uid())` | `(user_id = auth.uid())` |
 | public.saved_trends_views | Users manage own saved trends views | ALL | PERMISSIVE | authenticated | `(user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))` | `(user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
 | public.scheduled_reports | Users can create own scheduled reports | INSERT | PERMISSIVE | authenticated |  | `(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)` |
 | public.scheduled_reports | Users can delete own scheduled reports | DELETE | PERMISSIVE | authenticated | `(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)` |  |

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b23ed21394bd3f6ada463fb041e81d1049228373",
+  "commit": "ca3aaaa7f0a0468b3b9cdf769a01e8e2f6cf6bf0",
   "branch": "main",
-  "data_commit": "2026-11-26T11:34:22-03:00",
+  "data_commit": "2026-11-26T12:07:33-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ca3aaaa",
+    "data": "2026-11-26",
+    "assunto": "fix: baseline de policies com as 4 RLS de saved_stock_views (#4175)"
+   },
    {
     "sha": "b23ed21",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "5c40c7e",
     "data": "2026-11-25",
     "assunto": "fix: reemite PERF005 com DROP INDEX CONCURRENTLY (sem editar o historico) (#4147)"
-   },
-   {
-    "sha": "ea1788c",
-    "data": "2026-11-25",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20260917160000 (#4150)"
    }
   ],
-  "arquivos_mudados_7d": 588,
+  "arquivos_mudados_7d": 582,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 109
+    "mudancas": 108
    },
    {
     "pasta": "src/lib/freight",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 109
+    "mudancas": 108
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
