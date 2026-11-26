@@ -20,6 +20,7 @@ import { RecentKitsWidget } from '@/components/dashboard/RecentKitsWidget';
 import { MyRecentQuotesWidget } from '@/components/dashboard/MyRecentQuotesWidget';
 import { MyDiscountRequestsWidget } from '@/components/dashboard/MyDiscountRequestsWidget';
 import { MyClientsWidget } from '@/components/dashboard/MyClientsWidget';
+import { SalesGoalsCard } from '@/components/goals/SalesGoalsCard';
 import { ScopeBadge } from '@/components/common/ScopeBadge';
 import { ScheduledReportsManager } from '@/components/reports/ScheduledReportsManager';
 import { supabase } from '@/integrations/supabase/client';
@@ -46,6 +47,7 @@ const DEFAULT_WIDGETS: WidgetConfig[] = [
   { id: 'vendas', title: 'Total de Orçamentos', visible: true, order: 6 },
   { id: 'orcamentos', title: 'Rascunhos', visible: true, order: 7 },
   { id: 'scheduled-reports', title: 'Relatórios Agendados', visible: true, order: 8 },
+  { id: 'sales-goal', title: 'Meta de Vendas', visible: true, order: 9 },
 ];
 
 const LAYOUT_KEY = 'dashboard_layout';
@@ -236,6 +238,8 @@ export function CustomizableDashboard() {
         return <MyDiscountRequestsWidget />;
       case 'my-clients':
         return <MyClientsWidget />;
+      case 'sales-goal':
+        return <SalesGoalsCard />;
       case 'scheduled-reports':
         return <ScheduledReportsManager />;
       case 'vendas':

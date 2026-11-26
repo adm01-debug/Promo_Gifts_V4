@@ -490,8 +490,8 @@
 ### 7.2 Metas de Vendas
 | Funcionalidade | Arquivo Principal | Ferramentas/Bibliotecas |
 |----------------|-------------------|-------------------------|
-| Card de Metas | `src/components/goals/SalesGoalsCard.tsx` | React |
-| Hook | `src/hooks/useSalesGoals.ts` | Supabase |
+| Card de Metas | `src/components/goals/SalesGoalsCard.tsx` (widget `sales-goal` do dashboard) | React |
+| Hook | `src/hooks/intelligence/useSalesGoals.ts` | Supabase |
 
 ---
 
