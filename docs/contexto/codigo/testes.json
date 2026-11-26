@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2728,
+ "total": 2729,
  "por_tipo": {
   "contrato": 70,
   "e2e": 678,
   "pytest": 8,
   "qa": 17,
-  "unit": 1955
+  "unit": 1956
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 797
+   "arquivos": 798
   },
   {
    "padrao": "e2e/",
@@ -10083,6 +10083,15 @@
     "src/lib/carts/status-transition-guard.ts"
    ],
    "casos": 11
+  },
+  {
+   "arquivo": "src/lib/crm/__tests__/seller-links.test.ts",
+   "tipo": "unit",
+   "linhas": 199,
+   "testa": [
+    "src/lib/crm/seller-links.ts"
+   ],
+   "casos": 16
   },
   {
    "arquivo": "src/lib/customization/__tests__/format-engraving-title.test.ts",
@@ -24030,6 +24039,7 @@
   "src/lib/cloud-status.ts": 2,
   "src/lib/connection-error-copy.ts": 2,
   "src/lib/crm-db.ts": 3,
+  "src/lib/crm/seller-links.ts": 1,
   "src/lib/customization/format-engraving-title.ts": 2,
   "src/lib/date-utils.ts": 3,
   "src/lib/db-retry.ts": 1,
@@ -24439,6 +24449,7 @@
    "src/pages/admin/AdminAiUsagePage.tsx",
    "src/pages/admin/AdminClientPerformancePage.tsx",
    "src/pages/admin/AdminCloudflareImagesPage.tsx",
+   "src/pages/admin/AdminCrmSellerLinksPage.tsx",
    "src/pages/admin/AdminDesignTokensPage.tsx",
    "src/pages/admin/AdminExternalDbPage.tsx",
    "src/pages/admin/AdminInfraOpsPage.tsx",
@@ -24763,6 +24774,7 @@
    "src/hooks/admin/useAdminKitTemplates.ts",
    "src/hooks/admin/useAdminSessions.ts",
    "src/hooks/admin/useAuditLog.ts",
+   "src/hooks/admin/useCrmSellerLinks.ts",
    "src/hooks/admin/useDevAccessAudit.ts",
    "src/hooks/admin/useKillSwitchObservability.ts",
    "src/hooks/admin/useMedallionHealth.ts",

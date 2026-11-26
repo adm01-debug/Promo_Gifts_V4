@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ca3aaaa7f0a0468b3b9cdf769a01e8e2f6cf6bf0",
+  "commit": "0ffac8e8e0accc8495c1898866564c2e22ab6bb3",
   "branch": "main",
-  "data_commit": "2026-11-26T12:07:33-03:00",
+  "data_commit": "2026-11-26T12:40:36-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "0ffac8e",
+    "data": "2026-11-26",
+    "assunto": "feat: tela de vinculos de vendedor do CRM (/admin/vinculos-vendedor-crm) (#4165)"
+   },
    {
     "sha": "ca3aaaa",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "98f1077",
     "data": "2026-11-25",
     "assunto": "chore: inclui o schema ops no baseline de drift e snapshot (#4151)"
-   },
-   {
-    "sha": "5c40c7e",
-    "data": "2026-11-25",
-    "assunto": "fix: reemite PERF005 com DROP INDEX CONCURRENTLY (sem editar o historico) (#4147)"
    }
   ],
-  "arquivos_mudados_7d": 582,
+  "arquivos_mudados_7d": 588,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -148,20 +148,20 @@
     "mudancas": 155
    },
    {
-    "pasta": "src/components/quotes",
-    "mudancas": 120
-   },
-   {
     "pasta": "tests/edge-functions/live",
     "mudancas": 116
    },
    {
+    "pasta": "src/components/quotes",
+    "mudancas": 115
+   },
+   {
     "pasta": "src/hooks/products",
-    "mudancas": 113
+    "mudancas": 110
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 108
+    "mudancas": 109
    },
    {
     "pasta": "src/lib/freight",
@@ -176,11 +176,11 @@
     "mudancas": 90
    },
    {
-    "pasta": "src/components/mockup",
-    "mudancas": 83
+    "pasta": "src/pages/admin",
+    "mudancas": 84
    },
    {
-    "pasta": "src/pages/admin",
+    "pasta": "src/components/mockup",
     "mudancas": 83
    },
    {
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/hooks/quotes",
-    "mudancas": 79
+    "mudancas": 75
    },
    {
     "pasta": "src/pages/quotes",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 108
+    "mudancas": 109
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -219,11 +219,11 @@
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "supabase/migrations-snapshot/ALL_IN_ONE.sql",
@@ -246,7 +246,7 @@
     "mudancas": 6
    },
    {
-    "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
+    "arquivo": "src/components/layout/SidebarReorganized.tsx",
     "mudancas": 6
    },
    {
@@ -266,19 +266,19 @@
     "mudancas": 5
    },
    {
-    "arquivo": "src/components/layout/SidebarReorganized.tsx",
+    "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
     "mudancas": 5
    },
    {
-    "arquivo": "src/components/quotes/AdminTemplatesManager.tsx",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "src/components/quotes/QuoteTemplatesList.tsx",
+    "arquivo": "src/lib/rbac/route-matrix.ts",
     "mudancas": 5
    },
    {
     "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "src/routes/lazy-pages.ts",
     "mudancas": 5
    },
    {
@@ -301,30 +301,30 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 227
+    "commits": 228
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 73
+    "commits": 72
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 11313,
-  "arquivos_codigo": 5695,
-  "linhas_codigo": 1080376,
-  "rotas": 142,
+  "arquivos_total": 11319,
+  "arquivos_codigo": 5699,
+  "linhas_codigo": 1081231,
+  "rotas": 143,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
-  "itens_menu": 73,
-  "modulos": 171,
-  "componentes": 1284,
-  "hooks": 647,
+  "itens_menu": 74,
+  "modulos": 172,
+  "componentes": 1285,
+  "hooks": 648,
   "edge_functions": 112,
   "tabelas": 533,
-  "migrations": 3140,
+  "migrations": 3141,
   "cron_jobs": 122,
-  "testes": 2728,
+  "testes": 2729,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1511
@@ -1936,7 +1936,7 @@
   },
   "src/components": {
    "arquivos": 1491,
-   "linhas": 292196
+   "linhas": 292204
   },
   "src/config": {
    "arquivos": 1,
@@ -1959,16 +1959,16 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 516,
-   "linhas": 95186
+   "arquivos": 517,
+   "linhas": 95275
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66760
   },
   "src/lib": {
-   "arquivos": 431,
-   "linhas": 66692
+   "arquivos": 433,
+   "linhas": 67092
   },
   "src/logic": {
    "arquivos": 4,
@@ -1979,12 +1979,12 @@
    "linhas": 63
   },
   "src/pages": {
-   "arquivos": 377,
-   "linhas": 87074
+   "arquivos": 378,
+   "linhas": 87427
   },
   "src/routes": {
    "arquivos": 16,
-   "linhas": 1476
+   "linhas": 1481
   },
   "src/services": {
    "arquivos": 40,
@@ -2419,7 +2419,7 @@
   "ts_ignore": 0,
   "eslint_disable": 24,
   "todos": 116,
-  "arquivos_acima_500_linhas": 186
+  "arquivos_acima_500_linhas": 187
  },
  "todos": [
   {

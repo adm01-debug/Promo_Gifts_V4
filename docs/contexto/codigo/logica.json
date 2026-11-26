@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 357,
+ "total": 358,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 273,
+  "lib": 274,
   "python": 9,
   "services": 16,
   "stores": 9,
@@ -2485,6 +2485,44 @@
     "pages/system"
    ],
    "coberto_por_testes": 3,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/crm/seller-links.ts",
+   "camada": "lib",
+   "exports": [
+    "CrmSellerLinkAction",
+    "CrmSellerLinkResult",
+    "CrmSellerLinkRow",
+    "CrmSellerLinkSummary",
+    "LinkInputValidation",
+    "describeCrmLinkError",
+    "filterCrmSellerLinks",
+    "isManualLink",
+    "linkActionMessage",
+    "linkSourceLabel",
+    "parseCrmSellerLinkResult",
+    "parseCrmSellerLinkRows",
+    "parseUnlinkResult",
+    "summarizeCrmSellerLinks",
+    "validateLinkInput"
+   ],
+   "export_default": null,
+   "linhas": 189,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "hooks/admin",
+    "pages/admin"
+   ],
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {
@@ -5733,7 +5771,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 312,
+   "usado_por": 313,
    "usado_por_modulos": [
     "components",
     "components/admin",
@@ -7441,7 +7479,7 @@
     "summarizeRoutes"
    ],
    "export_default": null,
-   "linhas": 494,
+   "linhas": 506,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -8052,7 +8090,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 60,
+   "usado_por": 61,
    "usado_por_modulos": [
     "components/admin",
     "components/mockup",

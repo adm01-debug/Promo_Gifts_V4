@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1284,
+ "total": 1285,
  "orfaos": 155,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -11319,7 +11319,7 @@
     "SidebarReorganized"
    ],
    "export_default": null,
-   "linhas": 687,
+   "linhas": 695,
    "dominio": "components/layout",
    "hooks_locais": [
     "useAuth",
@@ -16008,7 +16008,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 135,
+   "usado_por": 136,
    "orfao": false
   },
   {
@@ -16581,7 +16581,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 37,
+   "usado_por": 38,
    "orfao": false
   },
   {
@@ -16628,7 +16628,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 491,
+   "usado_por": 492,
    "orfao": false
   },
   {
@@ -16663,7 +16663,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 658,
+   "usado_por": 659,
    "orfao": false
   },
   {
@@ -16697,7 +16697,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 361,
+   "usado_por": 362,
    "orfao": false
   },
   {
@@ -16887,7 +16887,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 142,
+   "usado_por": 143,
    "orfao": false
   },
   {
@@ -17046,7 +17046,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 269,
+   "usado_por": 270,
    "orfao": false
   },
   {
@@ -17074,7 +17074,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 153,
+   "usado_por": 154,
    "orfao": false
   },
   {
@@ -17450,7 +17450,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 57,
+   "usado_por": 58,
    "orfao": false
   },
   {
@@ -18058,6 +18058,24 @@
    ],
    "edges": [],
    "usado_por": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/pages/admin/AdminCrmSellerLinksPage.tsx",
+   "exports": [
+    "AdminCrmSellerLinksPage"
+   ],
+   "export_default": "AdminCrmSellerLinksPage",
+   "linhas": 353,
+   "dominio": "pages/admin",
+   "hooks_locais": [
+    "useCrmSellerLinks",
+    "useLinkCrmSeller",
+    "useUnlinkCrmSeller"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
    "orfao": false
   },
   {

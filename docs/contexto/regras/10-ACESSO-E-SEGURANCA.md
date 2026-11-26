@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ca3aaaa7f0` · branch `main` · 2026-11-26 15:19 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0ffac8e8e0` · branch `main` · 2026-11-26 15:42 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -327,7 +327,7 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 852 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 853 arquivo(s)
 
 - `auditoria-supabase/propostas/P01_rls_restrictive_correcao.sql`
 - `auditoria-supabase/propostas/P10_func_new_001_fn_cron_guard_revoke.sql`
@@ -479,7 +479,7 @@
 - `supabase/functions/github-credentials-test/index.ts`
 - `supabase/functions/hash-product-images/index.ts`
 - `supabase/functions/health-check/index.ts`
-- … +702 (lista completa em `context.json`)
+- … +703 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 
@@ -1133,7 +1133,7 @@ Middleware matcher (Next.js): nenhum
 | grant | authenticated, anon | select | `archive.color_analysis_staging`, `archive.import_staging_images`, `archive.scraper_images_staging`, `archive.sm_images_staging`, `archive.xbz_gallery_staging`, `color_analysis_staging`, `import_staging_images`, `scraper_images_staging`, `sm_images_staging`, `xbz_gallery_staging`, `analytics.mv_product_intelligence`, `mv_product_intelligence`, `analytics.mv_product_intelligence`, `mv_product_intelligence`, `analytics.mv_product_intelligence` … +4 |
 | grant | authenticated, anon, service_role | select | `archive.v_import_staging_by_product`, `archive.v_import_staging_progress` |
 | grant | authenticated, service_role | all | `user_roles`, `order_items`, `admin_audit_log` |
-| grant | authenticated, service_role | execute | `fn_get_reposicao_variants_summary`, `get_web_vitals_regression`, `audit_ownership_orphans`, `audit_rls_coverage`, `audit_rls_matrix`, `audit_security_definer_acl`, `can_access_quote`, `audit_security_definer_acl`, `public`, `fn_pipeline_health`, `is_supervisor_or_above`, `is_admin`, `is_admin`, `is_dev`, `is_admin_strict` … +60 |
+| grant | authenticated, service_role | execute | `fn_get_reposicao_variants_summary`, `get_web_vitals_regression`, `audit_ownership_orphans`, `audit_rls_coverage`, `audit_rls_matrix`, `audit_security_definer_acl`, `can_access_quote`, `audit_security_definer_acl`, `public`, `fn_pipeline_health`, `is_supervisor_or_above`, `is_admin`, `is_admin`, `is_dev`, `is_admin_strict` … +63 |
 | grant | authenticated, service_role | select | `vw_system_health_quick`, `vw_system_health_quick`, `mv_supplier_reliability`, `mv_supplier_reliability`, `mv_stock_velocity` |
 | grant | authenticated, service_role | select, insert | `admin_audit_log` |
 | grant | authenticated, service_role | select, insert, update, delete | `user_roles`, `order_items` |
@@ -1159,7 +1159,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | PUBLIC | execute | `fn_magazine_public_token`, `public`, `can_access_quote`, `org_has_any_members`, `org_has_any_members`, `get_edge_function_secret`, `create_organization_with_owner`, `get_quote_token_by_value`, `submit_quote_response`, `get_public_schema_signatures`, `public`, `check_webhook_dedup`, `process_notifications_queue`, `process_notifications_queue`, `process_notifications_queue` … +43 |
 | revoke | PUBLIC | insert, update, delete, truncate, trigger, references | `anon_catalog_grant_audit_log`, `anon_catalog_grant_audit_log` |
 | revoke | PUBLIC | select | `vw_product_availability`, `extensions.pg_stat_statements`, `extensions.pg_stat_statements_info` |
-| revoke | PUBLIC, anon | all | `fn_get_reposicao_variants_summary`, `check_hardening_status`, `record_mcp_access_violation`, `fn_reconcile_stock_gold`, `fn_pipeline_health`, `fn_generate_market_insights_cache`, `request_discount_approval_transactional`, `respond_discount_approval_transactional`, `request_discount_approval_transactional`, `request_discount_approval_transactional`, `create_quote_with_discount_approval_transactional`, `update_quote_with_discount_approval_transactional`, `request_discount_approval_transactional`, `request_discount_approval_transactional`, `magazine_add_items_atomic` … +22 |
+| revoke | PUBLIC, anon | all | `fn_get_reposicao_variants_summary`, `check_hardening_status`, `record_mcp_access_violation`, `fn_reconcile_stock_gold`, `fn_pipeline_health`, `fn_generate_market_insights_cache`, `request_discount_approval_transactional`, `respond_discount_approval_transactional`, `request_discount_approval_transactional`, `request_discount_approval_transactional`, `create_quote_with_discount_approval_transactional`, `update_quote_with_discount_approval_transactional`, `request_discount_approval_transactional`, `request_discount_approval_transactional`, `magazine_add_items_atomic` … +25 |
 | revoke | PUBLIC, anon | execute | `cleanup_rate_limits`, `acquire_ai_quota`, `complete_optimization`, `reset_optimization_queue`, `is_org_member`, `start_step_up_challenge`, `verify_step_up_password`, `fn_handle_canonical_root_soft_delete`, `fn_reset_is_shared_on_canonical_null`, `fn_auto_revoke_secdef_public_execute`, `fn_revoke_view_write_grants_on_create`, `get_supplier_reliability_history`, `get_supplier_reliability_history`, `fn_run_smoke_tests`, `fn_run_smoke_tests` … +125 |
 | revoke | PUBLIC, anon, authenticated | all | `increment_webhook_dedupe_hit`, `purge_expired_step_up_artifacts`, `cleanup_security_logs`, `check_mcp_abuse_threshold`, `vault.decrypted_secrets`, `vault.secrets`, `increment_webhook_stats`, `fn_spot_direct_stock_gold`, `fn_spot_direct_prices_gold`, `fn_ingest_asia_api_batch`, `fn_ingest_asia_hg_batch`, `fn_sync_asia_colors`, `fn_parity_standardize_variant`, `fn_purge_spr_history`, `fn_expire_novelties` … +40 |
 | revoke | PUBLIC, anon, authenticated | execute | `check_seller_cart_limit`, `handle_password_reset_request`, `check_auth_config_status`, `refresh_product_popularity`, `audit_rls_coverage`, `audit_security_definer_acl`, `fn_pipeline_health`, `fn_product_images_health_check`, `fn_run_schema_drift_check`, `fn_trigger_schema_drift_fetch`, `fn_compute_and_record_drift`, `fn_snapshot_medallion_coverage`, `fn_deploy_readiness_check`, `fn_check_coverage_regression`, `refresh_product_popularity` … +195 |

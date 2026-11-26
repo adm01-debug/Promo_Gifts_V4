@@ -3,28 +3,28 @@
  "format_version": 2,
  "onde_ficam": {
   "telas": [
-   "src/pages (115)",
+   "src/pages (116)",
    "src/components (3)",
    "api/health.ts (1)"
   ],
   "componentes": [
    "src/components (982)",
-   "src/pages (183)",
+   "src/pages (184)",
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (316)",
+   "src/hooks (317)",
    "recovery/src-legacy (196)",
    "src/components (78)"
   ],
   "servicos_logica": [
-   "src/lib (273)",
+   "src/lib (274)",
    "src/utils (34)",
    "src/services (16)"
   ],
   "testes": [
    "tests/ (1089)",
-   "co-localizado (__tests__) (797)",
+   "co-localizado (__tests__) (798)",
    "e2e/ (636)"
   ],
   "edge_functions": "supabase/functions",
@@ -43,13 +43,13 @@
  "nomenclatura": {
   "componentes": "PascalCase (96%)",
   "hooks": "use + PascalCase",
-  "servicos": "camelCase (52%)",
+  "servicos": "camelCase (51%)",
   "edge_functions": "kebab-case (99%)",
   "tabelas": "snake_case (86%)"
  },
  "barrels_index": 50,
  "extensao_componentes": [
-  ".tsx (1284)"
+  ".tsx (1285)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat: tela de vinculos de vendedor do CRM (/admin/vinculos-vendedor-crm) (#4165)",
    "fix: baseline de policies com as 4 RLS de saved_stock_views (#4175)",
    "chore(main): release gifts-store 1.21.0 (#4163)",
    "docs(migrations-log): recibo E15 — aplicação de 20261126052000 (#4171)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261126130000 (#4172)",
-   "feat: liga views salvas do painel de estoque a uma tela (#4169)"
+   "docs(migrations-log): recibo E15 — aplicação de 20261126130000 (#4172)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

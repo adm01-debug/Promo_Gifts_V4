@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 647,
+ "total": 648,
  "hooks": [
   {
    "arquivo": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -6747,6 +6747,30 @@
    "usado_por": 1,
    "usado_por_arquivos": [
     "src/hooks/admin/index.ts"
+   ],
+   "coberto_por_testes": 0
+  },
+  {
+   "arquivo": "src/hooks/admin/useCrmSellerLinks.ts",
+   "hooks_exportados": [
+    "useCrmSellerLinks",
+    "useLinkCrmSeller",
+    "useUnlinkCrmSeller"
+   ],
+   "linhas": 89,
+   "dominio": "hooks/admin",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useMutation",
+    "useQuery",
+    "useQueryClient"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/pages/admin/AdminCrmSellerLinksPage.tsx"
    ],
    "coberto_por_testes": 0
   },

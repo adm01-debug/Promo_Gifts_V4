@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2967,
- "arestas": 11733,
+ "nos": 2970,
+ "arestas": 11748,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -10,11 +10,11 @@
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 663
+   "importado_por": 664
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
-   "importado_por": 491
+   "importado_por": 492
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
@@ -22,11 +22,11 @@
   },
   {
    "arquivo": "src/components/ui/card.tsx",
-   "importado_por": 361
+   "importado_por": 362
   },
   {
    "arquivo": "src/lib/logger.ts",
-   "importado_por": 326
+   "importado_por": 327
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
@@ -34,7 +34,7 @@
   },
   {
    "arquivo": "src/components/ui/input.tsx",
-   "importado_por": 269
+   "importado_por": 270
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
@@ -46,7 +46,7 @@
   },
   {
    "arquivo": "src/components/ui/label.tsx",
-   "importado_por": 156
+   "importado_por": 157
   },
   {
    "arquivo": "src/components/ui/select.tsx",
@@ -54,7 +54,7 @@
   },
   {
    "arquivo": "src/components/ui/dialog.tsx",
-   "importado_por": 144
+   "importado_por": 145
   },
   {
    "arquivo": "src/hooks/products/index.ts",
@@ -62,7 +62,7 @@
   },
   {
    "arquivo": "src/components/seo/PageSEO.tsx",
-   "importado_por": 136
+   "importado_por": 137
   },
   {
    "arquivo": "src/lib/kit-builder/index.ts",
@@ -110,7 +110,7 @@
   },
   {
    "arquivo": "src/lib/supabase-untyped.ts",
-   "importado_por": 62
+   "importado_por": 63
   },
   {
    "arquivo": "src/types/magazine.ts",
@@ -118,7 +118,7 @@
   },
   {
    "arquivo": "src/components/ui/table.tsx",
-   "importado_por": 57
+   "importado_por": 58
   },
   {
    "arquivo": "src/utils/image-utils.ts",
@@ -677,14 +677,14 @@
    "importado_por": 8
   },
   {
+   "modulo": "pages/admin",
+   "depende_de": 37,
+   "importado_por": 3
+  },
+  {
    "modulo": "components/layout",
    "depende_de": 33,
    "importado_por": 6
-  },
-  {
-   "modulo": "pages/admin",
-   "depende_de": 36,
-   "importado_por": 3
   },
   {
    "modulo": "hooks/common",

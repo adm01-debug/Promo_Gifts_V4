@@ -2,11 +2,11 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "resumo": {
-  "urls": 142,
+  "urls": 143,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
-  "itens_menu": 73,
-  "lazy": 177
+  "itens_menu": 74,
+  "lazy": 178
  },
  "urls": [
   {
@@ -11101,6 +11101,55 @@
     "supervisor"
    ],
    "arquivos_puxados": 416
+  },
+  {
+   "protegida": true,
+   "wrappers": [],
+   "pai": null,
+   "indice": false,
+   "lazy": true,
+   "tipo": "tela",
+   "caminho": "/admin/vinculos-vendedor-crm",
+   "componente": "AdminCrmSellerLinksPage",
+   "arquivo": "src/pages/admin/AdminCrmSellerLinksPage.tsx",
+   "definida_em": "src/routes/admin-routes.tsx",
+   "redireciona": null,
+   "hooks": [
+    "useCallback",
+    "useContext",
+    "useCrmSellerLinks",
+    "useEffect",
+    "useId",
+    "useLayoutEffect",
+    "useLinkCrmSeller",
+    "useMemo",
+    "useMutation",
+    "useOverlayInteractivity",
+    "useQuery",
+    "useQueryClient",
+    "useState",
+    "useTheme",
+    "useUnlinkCrmSeller"
+   ],
+   "hooks_locais": [
+    "useCrmSellerLinks",
+    "useLinkCrmSeller",
+    "useOverlayInteractivity",
+    "useTheme",
+    "useUnlinkCrmSeller"
+   ],
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "canais_realtime": [],
+   "flags": [],
+   "papeis": [
+    "alertdialog",
+    "dialog",
+    "listbox",
+    "menu"
+   ],
+   "arquivos_puxados": 25
   },
   {
    "protegida": true,
@@ -39334,6 +39383,15 @@
    "resolve_para": "src/pages/admin/PriceFreshnessSettings.tsx"
   },
   {
+   "rotulo": "Vínculos CRM",
+   "destino": "/admin/vinculos-vendedor-crm",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/layout/SidebarReorganized.tsx",
+   "resolve_para": "src/pages/admin/AdminCrmSellerLinksPage.tsx"
+  },
+  {
    "rotulo": "Workflows IA",
    "destino": "/admin/workflows",
    "grupo": null,
@@ -39352,6 +39410,7 @@
   "AdminCloudflareImagesPage": "src/pages/admin/AdminCloudflareImagesPage.tsx",
   "AdminConexoesPage": "src/pages/admin/AdminConexoesPage.tsx",
   "AdminConexoesStatusPage": "src/pages/admin/AdminConexoesStatusPage.tsx",
+  "AdminCrmSellerLinksPage": "src/pages/admin/AdminCrmSellerLinksPage.tsx",
   "AdminDesignTokensPage": "src/pages/admin/AdminDesignTokensPage.tsx",
   "AdminExternalDbPage": "src/pages/admin/AdminExternalDbPage.tsx",
   "AdminFreteSettingsPage": "src/pages/admin/AdminFreteSettingsPage.tsx",

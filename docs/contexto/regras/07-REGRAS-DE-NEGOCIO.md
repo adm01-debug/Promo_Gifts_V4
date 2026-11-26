@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ca3aaaa7f0` · branch `main` · 2026-11-26 15:19 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0ffac8e8e0` · branch `main` · 2026-11-26 15:42 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1421,7 +1421,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `magazine_update_metadata_v2` | magazine_subtitle_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `magazine_update_metadata_v2` | magazine_template_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `magazine_update_metadata_v2` | magazine_branding_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
-| … +103 linhas — lista completa em `context.json` | | |
+| … +117 linhas — lista completa em `context.json` | | |
 
 ## E. Estados, máquinas de estado e transições
 
@@ -1977,6 +1977,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | StockStatus | in-stock \| low-stock \| out-of-stock | `src/hooks/useReplenishments.ts` |
 | AuditAction | DELETE \| INSERT \| UPDATE | `src/hooks/admin/useAuditLog.ts` |
 | AuditEntityType | categories \| color_variations \| companies \| company_contacts \| material_types \| order_items \| orders \| product_images \| product_variants \| product_videos \| products \| quote_items \| quotes \| suppliers | `src/hooks/admin/useAuditLog.ts` |
+| CRM_SELLER_LINKS_QUERY_KEY | 'admin-crm-seller-links' | `src/hooks/admin/useCrmSellerLinks.ts` |
 | DEV_EXPECTED_TABLES | 'admin_audit_log', 'ai_usage_logs', 'ai_usage_quotas', 'bot_detection_log', 'external_connections_sync_log', 'integration_credentials', 'inbound_webhook_endpoints', 'inbound_webhook_events', 'ip_access_control', | `src/hooks/admin/useDevAccessAudit.ts` |
 | RETEST_COOLDOWN_PRESETS_MS | 3000, 10_000, 30_000, 60_000 | `src/hooks/admin/useRetestCooldownSetting.ts` |
 | EventType | approved \| expired \| order_created \| rejected \| sent_to_client | `src/hooks/admin/useV4Callbacks.ts` |
@@ -2049,6 +2050,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | BICategorySlug | agendas \| blocos \| canetas \| eletronicos \| garrafas \| kits \| mochilas \| necessaires \| outros \| vestuario | `src/lib/bi/categoryResolver.ts` |
 | ShippingDeadlineStatus | none \| ok \| overdue \| soon | `src/lib/carts/shipping-deadline.ts` |
 | DeadlineFilter | all \| month \| none \| overdue \| soon \| week | `src/lib/carts/shipping-deadline.ts` |
+| CrmSellerLinkAction | created \| unchanged \| updated | `src/lib/crm/seller-links.ts` |
 | Operation | batch_insert \| delete \| insert \| select \| update \| upsert | `src/lib/db/postgrest.ts` |
 | EndpointCategory | auth \| comparison \| connection \| crm \| dropbox \| magazine \| magic-up \| mcp \| other \| quote \| secrets \| visual-search \| webhook | `src/lib/edge/invokeBottlenecks.ts` |
 | InvokeEventKind | breaker_open \| failed \| ok \| start | `src/lib/edge/invokeTelemetrySink.ts` |
@@ -2165,9 +2167,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | CronAuthMode | secret \| secret_vault | `supabase/functions/_shared/dispatcher-auth.ts` |
 | AuthzCategory | public \| authenticated \| supervisor \| dev \| service \| scoped | `supabase/functions/_shared/edge-authz-manifest.ts` |
 | ResourceGroup | products \| companies \| views | `supabase/functions/_shared/external-db-config.ts` |
-| Operation | select \| insert \| update \| delete \| rpc \| upsert \| batch_insert | `supabase/functions/_shared/external-db-config.ts` |
-| ALLOWED_RPCS | 'fn_get_product_print_areas', 'fn_get_product_print_areas_v2', 'fn_get_product_customization_options', 'fn_link_product_print_areas', 'fn_backfill_product_print_areas', 'fn_get_customization_price', 'fn_get_customization_price_v2', 'fn_find_fornecedor_price_table', 'get_category_descendants', | `supabase/functions/_shared/external-db-config.ts` |
-| … +15 linhas — lista completa em `context.json` | | |
+| … +17 linhas — lista completa em `context.json` | | |
 
 ## F. Validações de entrada
 
@@ -3251,6 +3251,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `fieldId` | required=required | `src/components/ui/LabeledField.tsx` |
 | `resolvedId` | disabled, disabled | `src/components/ui/input.tsx` |
 | `resolvedId` | min, disabled, disabled | `src/components/ui/textarea.tsx` |
+| `crm-link-email` | type=email, disabled=!!correctTarget | `src/pages/admin/AdminCrmSellerLinksPage.tsx` |
 | `exp` | type=datetime-local | `src/pages/admin/AdminSegurancaAcessoPage.tsx` |
 | `best-seller-threshold` | type=number, min=1, step=1, disabled=!draft.bestSeller.enabled, min | `src/pages/admin/IntelligenceBadgeSettingsPage.tsx` |
 | `tpl-price` | type=number, step=0.01 | `src/pages/admin/KitTemplatesAdminPage.tsx` |
@@ -4524,6 +4525,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **generateBIPptx({ clientName, ramoAtividade, health, bi, affinity, trends, seasonality, vs, categorySection, }: Args)** — `src/lib/bi/pptxGenerator.ts`
   ```
   const pptx = new PptxGenJS(); pptx.layout = 'LAYOUT_WIDE'; // 13.33 x 7.5 pptx.title = `Briefing BI — ${clientName}`; pptx.company = 'Promo Gifts'; // ====================== SLIDE 1 — CAPA / HERO ====================== const s1 = pptx.addSlide(); s1.background = { color: C.bg }; // Faixa de cor à esquerda s1.addShape('rect', { x: 0, y: 0, w: 0.5, h: 7.5, fill: { color: C.primary } }); s1.addText('BUSINESS ANALYTIC', { x: 0.8, y: 0.4, w: 8, h: 0.4, fontSize: 11, fontFace: 'Calibri', color: C.acce …
+  ```
+- **validateLinkInput(email: string, sellerIdInput: string)** — `src/lib/crm/seller-links.ts`
+  ```
+  const normalizedEmail = email.trim().toLowerCase(); if (normalizedEmail === '') { return { ok: false, error: 'Informe o e-mail do usuário do sistema.' }; } if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) { return { ok: false, error: 'E-mail inválido.' }; } const sellerId = toSellerId(sellerIdInput.trim()); if (sellerId === null) { return { ok: false, error: 'O id do vendedor no CRM deve ser um inteiro positivo.' }; } return { ok: true, email: normalizedEmail, sellerId };
   ```
 - **shouldRetry(failureCount: number, error: unknown)** — `src/lib/db/postgrest.ts`
   ```
@@ -6732,7 +6737,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1402 linhas — lista completa em `context.json` | |
+| … +1403 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6857,7 +6862,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23855 testes em 2395 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23877 testes em 2396 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7074,6 +7079,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/inventory/__tests__/stock-category-tree-select.test.tsx` | 22 | StockCategoryTreeSelect — loading state · renders skeleton when isLoading=true · StockCategoryTreeSelect — basic render · renders  … |
 | `src/hooks/assistant/__tests__/useClientBrandSignals.test.ts` | 22 | sem cliente · não consulta o CRM e devolve os sinais zerados · cliente sem ramo · deixa ramoPaiId nulo e confiança baixa, sem inventar ramo … |
 | `src/hooks/quotes/__tests__/quoteHelpers.validation.test.ts` | 22 | quoteHelpers validation logic · throws error when percent is > 100 · throws error when amount is > subtotal · throws error when discount is negative … |
+| `src/lib/crm/__tests__/seller-links.test.ts` | 22 | parseCrmSellerLinkRows · aceita o payload da RPC e normaliza campos · descarta linha sem uuid e com seller id inválido · devolve lista vazia para payload que não é array … |
 | `src/lib/edge/__tests__/invokeExport.test.ts` | 22 | invokeEventsToCSV · gera header + linhas com ISO · escapa vírgula, aspas e quebra de linha · lida com campos ausentes (latencyMs/errorKind/attempts) … |
 | `tests/components/PriceFreshnessBadge.colorMatrix.test.tsx` | 22 | PriceFreshnessBadge — matriz cromática + conteúdo pt-BR (status × variant) · variant=inline (PDP / Quick View) · fresh: emerald-700 +  · aging: amber-700 + ainda usa label  … |
 | `tests/components/PriceFreshnessBadge.copyAssertions.test.tsx` | 22 | PriceFreshnessBadge — cópia pt-BR exata por variant · variant=inline (PDP / Quick View) · fresh:  · aging:  … |
@@ -7160,8 +7166,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/types/quote-types.test.ts` | 20 | QuoteHistoryEntry shape · has all required fields · allows nullable fields · metadata defaults to empty object … |
 | `e2e/flows/03b-product-thumb-quickview.spec.ts` | 19 | QuickView na foto — paridade entre módulos · ${mod.label}: clique na foto abre QuickView sem navegar · ${mod.label}: a11y — thumb é ativável via teclado (Enter) · Estoque • QuickView — estados de borda … |
 | `e2e/flows/freight-quest-complete-flow.spec.ts` | 19 | Plano de volumes — Kit Builder @freight · navega para Kit Builder e verifica painel de volumes visível · painel de volumes lista o resumo do plano (volumes e peso) · painel de volumes mostra rodapé de estimativa por caixas padrão … |
-| `src/components/inventory/__tests__/stock-alert-dialogs.test.tsx` | 19 | OutOfStockDialog · renders title  · renders empty state when alerts=[] · renders alert count badge … |
-| … +2095 linhas — lista completa em `context.json` | | |
+| … +2096 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7629,4 +7634,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Card "Prazo de produção" do orçamento: em quantos dias úteis o pedido fica | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | deliveryMode={deliveryMode}            // 'data' \| 'prazo' do orçamento | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1497 linhas — lista completa em `context.json` | |
+| … +1498 linhas — lista completa em `context.json` | |

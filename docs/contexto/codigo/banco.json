@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3140,
+ "migrations": 3141,
  "seeds": [],
  "avisos": [
   "325 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -468,9 +468,12 @@
   "fn_add_packaging_compatibility",
   "fn_add_supplier_mapping",
   "fn_adicionar_mapeamento_fornecedor",
+  "fn_admin_link_crm_seller",
+  "fn_admin_list_crm_seller_links",
   "fn_admin_run_smoke_tests",
   "fn_admin_smoke_tests_dashboard",
   "fn_admin_sync_external_connections",
+  "fn_admin_unlink_crm_seller",
   "fn_aggregate_stock_daily",
   "fn_analyze_dictionaries",
   "fn_anon_access_audit",
