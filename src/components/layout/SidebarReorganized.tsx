@@ -36,6 +36,7 @@ import {
   ChevronsDownUp,
   Cloud,
   BookOpen,
+  Database,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -388,6 +389,13 @@ const navGroups: NavGroup[] = [
         href: '/admin/observabilidade',
         devOnly: true,
         tooltip: 'Acompanhe métricas de uso e identifique oportunidades de melhoria.',
+      },
+      {
+        icon: Database,
+        label: 'Infra do Banco',
+        href: '/admin/infra-ops',
+        devOnly: true,
+        tooltip: 'Veja o banco por dentro: crescimento, consultas caras e risco de parada.',
       },
       {
         icon: Cloud,

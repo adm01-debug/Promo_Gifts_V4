@@ -135,6 +135,7 @@ export const AdminConexoesStatusPage = lazyWithRetry(
 export const ObservabilityDashboardPage = lazyWithRetry(
   () => import('@/pages/admin/ObservabilityDashboard'),
 );
+export const AdminInfraOpsPage = lazyWithRetry(() => import('@/pages/admin/AdminInfraOpsPage'));
 export const AdminRbacRoutesPage = lazyWithRetry(() => import('@/pages/admin/AdminRbacRoutesPage'));
 export const SellerDiscountLimitsAdminPage = lazyWithRetry(
   () => import('@/pages/admin/SellerDiscountLimitsAdminPage'),

@@ -27,6 +27,7 @@ export const DEV_ONLY_ROUTE_PREFIXES = [
   '/admin/rbac-rotas',
   '/admin/qa',
   '/admin/observabilidade',
+  '/admin/infra-ops',
   '/admin/audit-suite',
 ] as const;
 
