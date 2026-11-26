@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d2f3c85c9e67dd95cb59cf012a9031235a8b0c03",
+  "commit": "c25a77988b18a1b41844dd01a68627f7a09ec217",
   "branch": "main",
-  "data_commit": "2026-11-25T22:08:09-03:00",
+  "data_commit": "2026-11-25T22:18:36-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "c25a779",
+    "data": "2026-11-25",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20260917150000 (#4149)"
+   },
    {
     "sha": "d2f3c85",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "446d867",
     "data": "2026-11-25",
     "assunto": "chore: refresh do snapshot de cron jobs (144 jobs) (#4125)"
-   },
-   {
-    "sha": "2bbfb0b",
-    "data": "2026-11-25",
-    "assunto": "fix(ci): recibo final da 20261120040000 destrava o gate E055 (#4127)"
    }
   ],
-  "arquivos_mudados_7d": 573,
+  "arquivos_mudados_7d": 564,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 124
+    "mudancas": 122
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 98
+    "mudancas": 99
    },
    {
     "pasta": "src/pages/magazine",
@@ -184,12 +184,12 @@
     "mudancas": 83
    },
    {
-    "pasta": "src/hooks/quotes",
+    "pasta": "src/pages/admin",
     "mudancas": 81
    },
    {
-    "pasta": "src/pages/admin",
-    "mudancas": 81
+    "pasta": "src/hooks/quotes",
+    "mudancas": 80
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 98
+    "mudancas": 99
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 238
+    "commits": 237
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 62
+    "commits": 63
    }
   ]
  },
