@@ -22,7 +22,7 @@
 -- Colunas: espelham a interface SavedStockView (id, user_id, name, filters, description, is_pinned,
 -- use_count, created_at) mais updated_at para o carimbo automatico do trigger.
 
-CREATE TABLE IF NOT EXISTS public.saved_stock_views (
+CREATE TABLE IF NOT EXISTS public.saved_stock_views ( -- soft-delete-exempt: atalho privado do usuario; remover e definitivo e a unicidade (user_id, name) impediria recriar o mesmo nome
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id     uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   name        text NOT NULL,
