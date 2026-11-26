@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1f99d5bc4a1f1e722741508ef833d862fafb5e58` (2026-11-25T23:03:50-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e61dc37eee29231a8ee566c64a170bb2b7a61678` (2026-11-25T23:17:29-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -599,13 +599,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 51027 nós · 86518 arestas · 2891 comunidades · grafo do commit `1f99d5bc`
-- comunidades maiores: vitest (1049), ref_components (801), ref_integrations (686), ref_node_child_process (517), @tanstack/react-query (457), ref_hooks (452), ref_types (398), react-router-dom (397), ref_utils (372), gotoAndSettle (358), react (349), sonner (347)
+- 51027 nós · 86519 arestas · 2867 comunidades · grafo do commit `e61dc37e`
+- comunidades maiores: ref_integrations (673), vitest (671), ref_components (608), ref_hooks (469), @tanstack/react-query (454), lucide-react (442), react-router-dom (431), ref_node_child_process (422), ref_types (370), react (365), ref_utils (357), sonner (336)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (102)
+- supabase/MIGRATIONS_SYNC_LOG.md (103)
 - docs/qa/05-PROGRESSO.md (31)
 - package.json (22)
 - package-lock.json (19)
@@ -1198,6 +1198,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.20.3](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.2...gifts-store-v1.20.3) (2026-11-26)
 
 ## Últimos commits
+- 2026-11-25 `e61dc37` fix: reemite PERF005 como 20261126030000 com approved-by valido (#4153)
 - 2026-11-25 `1f99d5b` fix: reemite PERF005 como 20261126020000 com approved-by no cabecalho (#4152)
 - 2026-11-25 `98f1077` chore: inclui o schema ops no baseline de drift e snapshot (#4151)
 - 2026-11-25 `5c40c7e` fix: reemite PERF005 com DROP INDEX CONCURRENTLY (sem editar o historico) (#4147)
@@ -1212,7 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `faedf4a` fix: rollback das policies no-op e cabecalho na 20261101210000 (#4142)
 - 2026-11-25 `c8e9bd9` chore(main): release gifts-store 1.20.3 (#4135)
 - 2026-11-25 `ba98ac5` docs: classifica as 21 versoes novas fora do baseline E06 (18 ja refletidas em producao) (#4140)
-- 2026-11-25 `9fa5514` chore(schema-snapshot): snapshot semanal 2026-W48 (run 45723739862) (#4137)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

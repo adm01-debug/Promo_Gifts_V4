@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1f99d5bc4a1f1e722741508ef833d862fafb5e58",
+  "commit": "e61dc37eee29231a8ee566c64a170bb2b7a61678",
   "branch": "main",
-  "data_commit": "2026-11-25T23:03:50-03:00",
+  "data_commit": "2026-11-25T23:17:29-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e61dc37",
+    "data": "2026-11-25",
+    "assunto": "fix: reemite PERF005 como 20261126030000 com approved-by valido (#4153)"
+   },
    {
     "sha": "1f99d5b",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "48fa6b5",
     "data": "2026-11-25",
     "assunto": "chore: rollbacks das migrations de sent_at e anti-fraude de preco (#4131)"
-   },
-   {
-    "sha": "26aa4a8",
-    "data": "2026-11-25",
-    "assunto": "fix: cabecalho de rollback na 20261125213000 (destrava preflight E15) (#4132)"
    }
   ],
-  "arquivos_mudados_7d": 569,
+  "arquivos_mudados_7d": 571,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 102
+    "mudancas": 103
    },
    {
     "pasta": "src/pages/magazine",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 102
+    "mudancas": 103
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
