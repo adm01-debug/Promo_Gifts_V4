@@ -208,6 +208,14 @@ export function resumirSuggestions(rows: ClassificationSuggestion[]): Classifica
   return resumo;
 }
 
+/**
+ * Guard de estreitamento da ação devolvida pela RPC. Ação reconhecida volta
+ * como veio; qualquer outro valor cai no comportamento histórico de `APLICADO`.
+ */
+function isApplyOutcome(valor: string): valor is ApplyOutcome {
+  return valor === 'APLICADO' || valor === 'DRY-RUN' || valor === 'SEM MUDANCA';
+}
+
 export function parseApplyResult(data: unknown): ClassificationApplyRow[] {
   if (!Array.isArray(data)) return [];
   const rows: ClassificationApplyRow[] = [];
@@ -215,7 +223,7 @@ export function parseApplyResult(data: unknown): ClassificationApplyRow[] {
     if (!isRecord(item)) continue;
     const acao = asText(item.acao).toUpperCase();
     rows.push({
-      acao: acao === 'DRY-RUN' || acao === 'SEM MUDANCA' ? (acao as ApplyOutcome) : 'APLICADO',
+      acao: isApplyOutcome(acao) ? acao : 'APLICADO',
       productId: asText(item.product_id),
       sku: asText(item.sku),
       produto: asText(item.produto),
