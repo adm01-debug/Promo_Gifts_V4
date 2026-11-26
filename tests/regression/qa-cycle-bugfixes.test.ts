@@ -84,7 +84,8 @@ describe('BUG-005: untypedFrom migration', () => {
     'geo_blocking_rules',
     'two_factor_auth',
     'access_security_settings',
-    'sales_goals',
+    // sales_goals saiu da lista: a tabela já existe em supabase/types.ts e o
+    // hook useSalesGoals usa o client tipado (BUG-005 resolvido para ela).
     'color_systems',
   ];
 

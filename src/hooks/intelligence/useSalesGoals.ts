@@ -1,5 +1,6 @@
+import { useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { untypedFrom } from '@/lib/supabase-untyped';
+import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
@@ -31,11 +32,78 @@ export interface SalesGoal {
   updated_at: string;
 }
 
+/** Linha crua da tabela: no banco `goal_type` é `text` (o `CHECK` garante os 3 valores). */
+type SalesGoalRow = Omit<SalesGoal, 'goal_type'> & { goal_type: string };
+
+function toGoalType(value: string): SalesGoal['goal_type'] {
+  switch (value) {
+    case 'weekly':
+      return 'weekly';
+    case 'quarterly':
+      return 'quarterly';
+    default:
+      return 'monthly';
+  }
+}
+
+const toSalesGoal = (row: SalesGoalRow): SalesGoal => ({
+  ...row,
+  goal_type: toGoalType(row.goal_type),
+});
+
 export interface CreateGoalInput {
   goal_type: 'monthly' | 'quarterly' | 'weekly';
   target_value: number;
   target_quotes?: number;
   target_conversions?: number;
+}
+
+/** Status de orçamento que contam como venda ganha (mesma regra de `v_quote_seller_kpis`). */
+const WON_QUOTE_STATUSES = new Set(['approved', 'converted']);
+
+/** Status que não representam trabalho comercial (ficam fora da contagem de orçamentos). */
+const UNCOUNTED_QUOTE_STATUSES = new Set(['draft', 'cancelled']);
+
+export interface GoalMetrics {
+  current_value: number;
+  current_quotes: number;
+  current_conversions: number;
+}
+
+/** Cruza os orçamentos do período com a meta. Regra única, testável fora do React. */
+export function deriveGoalProgress(
+  quotes: Array<{ status: string | null; total: number | null }>,
+): GoalMetrics {
+  let value = 0;
+  let counted = 0;
+  let conversions = 0;
+
+  for (const quote of quotes) {
+    const { status } = quote;
+    if (status === null || !UNCOUNTED_QUOTE_STATUSES.has(status)) counted += 1;
+    if (status !== null && WON_QUOTE_STATUSES.has(status)) {
+      conversions += 1;
+      value += Number(quote.total ?? 0);
+    }
+  }
+
+  return {
+    current_value: Math.round(value * 100) / 100,
+    current_quotes: counted,
+    current_conversions: conversions,
+  };
+}
+
+/** Meta atingida exige bater o valor E cada meta secundária que foi definida (> 0). */
+export function isGoalAchieved(
+  goal: Pick<SalesGoal, 'target_conversions' | 'target_quotes' | 'target_value'>,
+  metrics: GoalMetrics,
+): boolean {
+  return (
+    metrics.current_value >= goal.target_value &&
+    (goal.target_quotes === 0 || metrics.current_quotes >= goal.target_quotes) &&
+    (goal.target_conversions === 0 || metrics.current_conversions >= goal.target_conversions)
+  );
 }
 
 export function useSalesGoals() {
@@ -65,13 +133,14 @@ export function useSalesGoals() {
     queryFn: async () => {
       if (!user?.id) return [];
 
-      const { data, error } = await untypedFrom('sales_goals')
+      const { data, error } = await supabase
+        .from('sales_goals')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as SalesGoal[];
+      return (data ?? []).map(toSalesGoal);
     },
     enabled: !!user?.id,
     staleTime: 2 * 60 * 1000,
@@ -87,7 +156,8 @@ export function useSalesGoals() {
 
       const now = new Date().toISOString().split('T')[0];
 
-      const { data, error } = await untypedFrom('sales_goals')
+      const { data, error } = await supabase
+        .from('sales_goals')
         .select('*')
         .eq('user_id', user.id)
         .lte('start_date', now)
@@ -96,13 +166,47 @@ export function useSalesGoals() {
         .maybeSingle();
 
       if (error) throw error;
-      return data as SalesGoal | null;
+      return data ? toSalesGoal(data) : null;
     },
     enabled: !!user?.id,
     staleTime: 2 * 60 * 1000,
     retry: 3,
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 30_000),
   });
+
+  // Orçamentos do vendedor dentro da janela da meta ativa (fonte do progresso real)
+  const { data: periodQuotes, isLoading: isLoadingPeriodQuotes } = useQuery({
+    queryKey: ['sales-goal-quotes', user?.id, activeGoal?.id],
+    queryFn: async () => {
+      if (!user?.id || !activeGoal) return [];
+
+      const { data, error } = await supabase
+        .from('quotes')
+        .select('status,total')
+        .eq('seller_id', user.id)
+        .gte('created_at', `${activeGoal.start_date}T00:00:00`)
+        .lte('created_at', `${activeGoal.end_date}T23:59:59.999`);
+
+      if (error) throw error;
+      return data ?? [];
+    },
+    enabled: !!user?.id && !!activeGoal,
+    staleTime: 60 * 1000,
+    retry: 2,
+  });
+
+  // Progresso é derivado dos orçamentos; as colunas `current_*` ficam como cache do último cálculo.
+  const activeGoalWithProgress = useMemo<SalesGoal | null>(() => {
+    if (!activeGoal) return null;
+
+    const metrics = deriveGoalProgress(periodQuotes ?? []);
+
+    return {
+      ...activeGoal,
+      ...metrics,
+      is_achieved: isGoalAchieved(activeGoal, metrics),
+    };
+  }, [activeGoal, periodQuotes]);
 
   // Create goal mutation
   const createGoalMutation = useMutation({
@@ -111,7 +215,8 @@ export function useSalesGoals() {
 
       const { start, end } = getDateRange(input.goal_type);
 
-      const { data, error } = await untypedFrom('sales_goals')
+      const { data, error } = await supabase
+        .from('sales_goals')
         .insert({
           user_id: user.id,
           goal_type: input.goal_type,
@@ -156,7 +261,8 @@ export function useSalesGoals() {
       if (!user?.id) throw new Error('Not authenticated');
 
       // Get current goal
-      const { data: currentGoal, error: fetchError } = await untypedFrom('sales_goals')
+      const { data: currentGoal, error: fetchError } = await supabase
+        .from('sales_goals')
         .select('*')
         .eq('id', goalId)
         .single();
@@ -175,7 +281,8 @@ export function useSalesGoals() {
 
       const wasNotAchieved = !currentGoal.is_achieved;
 
-      const { data, error } = await untypedFrom('sales_goals')
+      const { data, error } = await supabase
+        .from('sales_goals')
         .update({
           current_value: newValue,
           current_quotes: newQuotes,
@@ -210,7 +317,7 @@ export function useSalesGoals() {
   // Delete goal mutation
   const deleteGoalMutation = useMutation({
     mutationFn: async (goalId: string) => {
-      const { error } = await untypedFrom('sales_goals').delete().eq('id', goalId);
+      const { error } = await supabase.from('sales_goals').delete().eq('id', goalId);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -236,8 +343,8 @@ export function useSalesGoals() {
 
   return {
     goals: goals || [],
-    activeGoal,
-    isLoading: isLoading || isLoadingActive,
+    activeGoal: activeGoalWithProgress,
+    isLoading: isLoading || isLoadingActive || (!!activeGoal && isLoadingPeriodQuotes),
     createGoal: createGoalMutation.mutateAsync,
     updateProgress: updateProgressMutation.mutateAsync,
     deleteGoal: deleteGoalMutation.mutateAsync,
