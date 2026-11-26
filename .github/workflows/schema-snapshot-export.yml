@@ -47,9 +47,13 @@ on:
 permissions:
   contents: read
 
+# 2026-11-26 — mesmo grupo do db-apply-migration (ver comentário lá): o dump
+# segura AccessShareLock por minutos e derruba o ACCESS EXCLUSIVE do apply.
+# cancel-in-progress fixo em false: o grupo também contém o apply, e cancelar um
+# apply no meio do DDL seria pior que esperar.
 concurrency:
-  group: schema-snapshot-${{ github.ref }}-${{ github.event_name }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: db-ddl-serial
+  cancel-in-progress: false
 
 
 defaults:
