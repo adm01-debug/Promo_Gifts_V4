@@ -1,5 +1,6 @@
 -- Rollback: supabase/rollbacks/20261126230000_rollback.sql
 -- approved-by: adm01-debug
+-- transaction: none (so COMMENT; a palavra CONCURRENTLY aparece dentro da string documental, nao ha DDL fora de transacao)
 --
 -- Restaura no COMMENT de public.mv_product_compositions a informacao de que o
 -- refresh do cron 47 e CONCURRENTLY.
