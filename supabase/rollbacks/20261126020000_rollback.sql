@@ -1,4 +1,4 @@
--- Rollback: 20261126012000_perf005_drop_unused_indexes.sql
+-- Rollback: 20261126020000_perf005_drop_unused_indexes_concurrently.sql
 -- Recria os 48 indices removidos por este lote (48 de 64).
 -- Definicoes copiadas byte a byte de supabase/migrations-snapshot/SCHEMA_LIVE.sql
 -- (snapshot de 2026-11-26). Use CREATE INDEX CONCURRENTLY em producao se preferir
