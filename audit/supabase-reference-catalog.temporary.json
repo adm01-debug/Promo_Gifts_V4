@@ -586,6 +586,14 @@
       "occurrences": 1,
       "stage": 106,
       "reason": "RPC criada na migration 20261126191200 (painel /admin/consumo-ia, aba de cota por usuario), ainda pendente de aplicacao em producao. Mesma natureza da 105 (fn_admin_* criada e nao aplicada): remover esta excecao source-scoped e promover ao catalogo somente apos o apply via db-apply-migration.yml e confirmacao em pg_proc."
+    },
+    {
+      "kind": "rpc",
+      "name": "fn_admin_anon_access_audit",
+      "file": "src/hooks/security/useAnonAccessAudit.ts",
+      "occurrences": 1,
+      "stage": 107,
+      "reason": "Wrapper admin criado na migration 20261126192900 (aba Raio-x do acesso anon em /admin/seguranca-acesso), pendente de aplicacao em producao por Regra 8. A funcao de base fn_anon_access_audit tem EXECUTE apenas para service_role no baseline 20261126130000; esta excecao source-scoped deve ser removida e promovida ao catalogo somente apos o apply via db-apply-migration.yml e confirmacao em pg_proc."
     }
   ],
   "dynamic_baseline": [

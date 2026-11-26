@@ -57,6 +57,7 @@ import { ActiveIpsList } from '@/components/admin/security/ActiveIpsList';
 import { AutoDefenseTab } from '@/components/admin/security/AutoDefenseTab';
 import { BlockedAccessLogTab } from '@/components/admin/security/BlockedAccessLogTab';
 import { AnonExposureTab } from '@/components/admin/security/AnonExposureTab';
+import { AnonAccessAuditPanel } from '@/components/admin/security/AnonAccessAuditPanel';
 import { SecurityTabsList } from '@/components/admin/security/SecurityTabsList';
 import { cn } from '@/lib/utils';
 
@@ -357,6 +358,10 @@ export default function AdminSegurancaAcessoPage() {
 
           <TabsContent value="anon-exposure">
             <AnonExposureTab />
+          </TabsContent>
+
+          <TabsContent value="raio-x-anon">
+            <AnonAccessAuditPanel />
           </TabsContent>
 
           <TabsContent value="active-ips">
