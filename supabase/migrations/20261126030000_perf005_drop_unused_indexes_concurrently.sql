@@ -1,14 +1,20 @@
--- Rollback: supabase/rollbacks/20261126020000_rollback.sql
+-- Rollback: supabase/rollbacks/20261126030000_rollback.sql
 --
 -- PERF-005 — drop dos 48 indices com idx_scan=0.
 --
--- Por que esta versao existe (substitui a 20261126012000): aquele arquivo
--- nasceu sem a linha "-- approved-by:" exigida pelo opt-out de E63. O preflight
--- do E15 (run 45737271027) bloqueou com "CONCURRENTLY detectado: ... Adicione
--- -- transaction: none + -- approved-by:" e o gate E75 nao aceita editar
--- migration apenas pendente (pendente_sem_adicao_no_pr). O trabalho foi
--- reemitido aqui com o cabecalho completo; a 20261126012000 foi removida neste
--- mesmo PR — nunca entrou no ledger, nunca executou.
+-- Historico das reemissoes deste mesmo lote (o arquivo nunca aplicado e
+-- substituido, nao editado — o gate E75 recusa editar migration pendente,
+-- `scripts/check-migrations-sync-log-gate.mjs:199-203`):
+--   1. 20261126012000 — barrada no preflight do E15 (run 45737271027):
+--      faltava a linha "-- approved-by:" exigida pelo opt-out de E63.
+--   2. 20261126020000 — barrada no preflight (run 45739911853): a linha existia,
+--      mas o valor "@adm01-debug" nao conta para `parseOptOut`
+--      (`scripts/preflight-migration-apply.mjs:121-133`): o nome tem de comecar
+--      com letra/digito (`^[\p{L}\p{N}]`), e "@" reprova. Reproducao local:
+--      parseOptOut(...) -> {"transactionNone":true,"approvedBy":null}.
+--   3. 20261126030000 — este arquivo: mesmo SQL dos anteriores, com
+--      "-- approved-by: adm01-debug" (mesmo formato do precedente aceito
+--      `20261018170000_e069_drop_redundant_prefix_index.sql`).
 --
 -- Por que reemitir em vez de editar 20261101205400: o gate E75 recusa migration
 -- MODIFICADA sem recibo valido — a 20261101205400 nunca teve linha no
@@ -23,11 +29,12 @@
 -- 20261018170000_e069_drop_redundant_prefix_index.sql.
 --
 -- transaction: none
--- approved-by: @adm01-debug
+-- approved-by: adm01-debug
 --
--- Efeito: cada DROP e atomico por si (CONCURRENTLY nao roda em bloco de
--- transacao). Se um falhar, os anteriores ficam e o re-run continua de onde
--- parou, porque todos usam IF EXISTS.
+-- lock_timeout: nao sobrepoe o default do workflow (1s). Cada DROP e atomico por
+-- si (CONCURRENTLY nao roda em bloco de transacao) e todos usam IF EXISTS, entao
+-- se um alvo perder a corrida do lock o re-run continua de onde parou — preferimos
+-- falhar rapido a enfileirar leitores da loja atras de um AccessExclusiveLock.
 --
 -- Lista identica a de 20261101205400: os 64 indices originais menos os 16 que
 -- passaram a ter idx_scan > 0 (evidencia: docs/contexto/supabase/stats.md,
