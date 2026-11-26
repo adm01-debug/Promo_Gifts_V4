@@ -1570,6 +1570,12 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 |---|---|---|---|
 | `20261107134429` | `fd1fbfceb0a148371b9507618ccf3b67a913b6f3f4b1e4e420caf0c273093286` | `create_crm_seller_identity_links` | **aplicada em 2026-11-14 23:41:43 UTC** pelo `db-apply-migration.yml` (run 43654437109; recibo E15 abaixo). Cria vínculo 1:1 privado `auth_user_id → crm_seller_id`. O sha256 registrado antes da aplicação era `c35bd151…`: o arquivo recebeu depois, em `3792045445` (2026-11-14 23:28 UTC, 13 min antes do Apply), a linha de comentário `-- soft-delete-exempt:` exigida pelo Gate de soft-delete — comentário SQL, sem efeito no DDL executado. O hash acima é o do conteúdo que a run de fato aplicou. |
 
+## Recibos — DDL pendente de aplicação (Regra 8)
+
+| versão | sha256 arquivo | executor | método | data UTC | pós-check | status |
+|---|---|---|---|---|---|---|
+| `20261126052000` | `0a282e1a463d1a5f085157b0d0b0bddf11106a9cd5f773b70457b4a5b4054e41` | Claude sessão feat-tela-infra-ops (PR #4160) | E15 (pendente) | pendente | — | pendente — PR aberta pela Regra 8 (DDL em produção). Após aplicar no canônico, mover esta linha para "Recibos — E15" com o id da run; a RPC `fn_dev_ops_infra_telemetry` serve a tela `/admin/infra-ops` a partir do schema `ops` (deny-all). |
+
 ## Recibos — E15 (workflow de aplicação controlada)
 
 | versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check | status |
