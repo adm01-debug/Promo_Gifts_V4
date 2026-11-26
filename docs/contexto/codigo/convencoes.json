@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(main): release gifts-store 1.20.3 (#4135)",
+   "docs: classifica as 21 versoes novas fora do baseline E06 (18 ja refletidas em producao) (#4140)",
+   "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45723739862) (#4137)",
    "docs: corrige adendo - 3137 era contagem de arquivos, nao do ledger (#4139)",
-   "fix: cabecalho de rollback e pg_temp nas migrations resgatadas (#4133)",
-   "fix(ci): snapshot de cron/event triggers via pooler (E037) (#4124)",
-   "chore(test): liga 9 specs Playwright orfaos de tests/e2e/ ao runner (#4122)",
-   "chore(main): release gifts-store 1.20.2 (#4112)"
+   "fix: cabecalho de rollback e pg_temp nas migrations resgatadas (#4133)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -7,7 +7,7 @@
    "SQL (3522)",
    "Markdown (1511)",
    "JavaScript (463)",
-   "JSON (135)",
+   "JSON (137)",
    "YAML (117)",
    "Shell (27)",
    "HTML (20)"
@@ -44,7 +44,7 @@
  "workspaces": [],
  "package": {
   "nome": "@adm01-debug/gifts-store",
-  "versao": "1.20.2",
+  "versao": "1.20.3",
   "scripts": {
    "audit:credentials": "node scripts/audit-credentials.mjs --baseline .audit-credentials-baseline.json",
    "audit:credentials:all": "node scripts/audit-credentials.mjs",
@@ -3445,7 +3445,7 @@
   {
    "arquivo": "CHANGELOG.md",
    "titulo": "Changelog",
-   "linhas": 2622
+   "linhas": 2630
   },
   {
    "arquivo": "CI_PROVA_P33.md",
@@ -4452,7 +4452,7 @@
    "arquivos_md": 1
   }
  ],
- "changelog_topo": "[1.20.2](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.1...gifts-store-v1.20.2) (2026-11-25)",
+ "changelog_topo": "[1.20.3](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.2...gifts-store-v1.20.3) (2026-11-26)",
  "env": {
   "declaradas_no_env_example": [
    "CONNECTIONS_AUTO_TEST_SECRET",

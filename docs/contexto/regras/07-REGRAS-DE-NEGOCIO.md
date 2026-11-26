@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5d589f552b` · branch `main` · 2026-11-26 00:18 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `c8e9bd93ba` · branch `main` · 2026-11-26 00:37 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -529,163 +529,101 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `quotes` | `negotiation_markup_percent` | default 0 |
 | `quotes` | `real_discount_percent` | default 0 |
 | `quotes` | `shipping_cost` | default 0 |
-| `categories` | `id` | PK; default gen_random_uuid() |
-| `categories` | `name` | obrigatório |
-| `categories` | `slug` | obrigatório; único |
-| `categories` | `parent_id` | FK → categories.id ON DELETE SET NULL |
-| `categories` | `display_order` | default 0 |
-| `categories` | `is_active` | default true |
-| `categories` | `created_at` | default NOW() |
-| `categories` | `updated_at` | default NOW() |
-| `categories` | `deleted_at` | default NULL |
-| `categories` | `level` | default 1 |
-| `categories` | `active` | CALCULADA = is_active |
-| `categories` | `(tabela)` | constraint chk_icon_lucide_format CHECK ( icon IS NULL OR (icon ~ '^[A-Z][a-z][a-zA-Z0-9]*$') ) NOT VALID |
-| `categories` | `(tabela)` | constraint chk_categories_image_url_format CHECK ( image_url IS NULL OR ( image_url ~ '^https://imagedelivery\.net/[A-Za-z0-9_-]+/[A-Za-z0-9_-]+/[A-Za-z0-9_-]+$' ) ) |
-| `categories` | `(tabela)` | constraint chk_categories_name_not_empty CHECK (name !~ E'^[[:space:]]*$') |
-| `categories` | `(tabela)` | constraint chk_categories_slug_not_empty CHECK (slug !~ E'^[[:space:]]*$') |
-| `category_ancestors` | `descendant_id` | obrigatório; FK → categories.id |
-| `category_ancestors` | `ancestor_id` | obrigatório; FK → categories.id |
-| `category_ancestors` | `depth` | default 1 |
-| `category_ancestors` | `(tabela)` | PRIMARY KEY (descendant_id, ancestor_id) |
-| `category_ancestors` | `(tabela)` | constraint category_ancestors_ancestor_id_fkey FOREIGN KEY (ancestor_id) REFERENCES categories(id) ON DELETE CASCADE ON UPDATE CASCADE, ADD CONSTRAINT category_ancestors_descendant_id_fkey FOREIGN KEY (descendant_id) REFERENCES categories(id) ON DELETE CASCADE ON UPDATE CASCADE |
-| `product_category_assignments` | `id` | default "gen_random_uuid"() |
-| `product_category_assignments` | `product_id` | obrigatório; FK → products.id ON DELETE CASCADE |
-| `product_category_assignments` | `category_id` | obrigatório; FK → categories.id ON DELETE CASCADE |
-| `product_category_assignments` | `is_primary` | default false |
-| `product_category_assignments` | `display_order` | default 0 |
-| `product_category_assignments` | `created_at` | default "now"() |
-| `product_category_assignments` | `(tabela)` | constraint product_category_assignments_pkey PRIMARY KEY ("id") |
-| `product_category_assignments` | `(tabela)` | constraint product_category_assignments_product_id_category_id_key UNIQUE ("product_id", "category_id") |
-| `product_category_assignments` | `(tabela)` | constraint product_category_assignments_category_id_fkey FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE CASCADE |
-| `product_category_assignments` | `(tabela)` | constraint product_category_assignments_product_id_fkey FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE |
-| `product_category_assignments` | `(tabela)` | constraint product_category_assignments_pkey PRIMARY KEY ("id") |
-| `product_category_assignments` | `(tabela)` | constraint product_category_assignments_product_id_category_id_key UNIQUE ("product_id", "category_id") |
-| `product_category_assignments` | `(tabela)` | constraint product_category_assignments_category_id_fkey FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE CASCADE |
-| `product_category_assignments` | `(tabela)` | constraint product_category_assignments_product_id_fkey FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE |
-| `products` | `id` | PK; default gen_random_uuid() |
-| `products` | `is_active` | default true |
-| `magazines` | `id` | PK; default gen_random_uuid() |
-| `magazines` | `owner_id` | obrigatório; FK → users.id |
-| `magazines` | `title` | default 'Nova |
-| `magazines` | `subtitle` | default ''; CHECK char_length(subtitle) <= 300 |
-| `magazines` | `template_id` | default 'editorial-vogue' |
-| `magazines` | `branding` | default '{}'::JSONB |
-| `magazines` | `content_settings` | default '{}'::JSONB |
-| `magazines` | `status` | default 'draft' |
-| `magazines` | `view_count` | default 0 |
-| `magazines` | `created_at` | default now() |
-| `magazines` | `updated_at` | default now() |
-| `discount_approval_requests` | `id` | PK; default gen_random_uuid() |
-| `discount_approval_requests` | `quote_id` | obrigatório |
-| `discount_approval_requests` | `status` | obrigatório |
-| `discount_approval_requests` | `requested_discount_percent` | obrigatório |
-| `custom_kits` | `id` | PK; default gen_random_uuid() |
-| `custom_kits` | `user_id` | obrigatório |
-| `custom_kits` | `name` | default 'Kit |
-| `custom_kits` | `status` | default 'draft' |
-| `custom_kits` | `box_data` | default NULL |
-| `custom_kits` | `items_data` | default '[]'::jsonb |
-| `custom_kits` | `personalization_data` | default '{}'::jsonb |
-| `custom_kits` | `kit_quantity` | default 1 |
-| `custom_kits` | `box_price` | default 0 |
-| `custom_kits` | `items_price` | default 0 |
-| `custom_kits` | `personalization_price` | default 0 |
-| `custom_kits` | `total_price` | default 0 |
-| `custom_kits` | `volume_usage_percent` | default 0 |
-| `custom_kits` | `created_at` | default now() |
-| `custom_kits` | `updated_at` | default now() |
-| `custom_kits` | `kit_type` | default 'montado' |
-| `custom_kits` | `color` | default '#3B82F6' |
-| `custom_kits` | `revision` | default 0 |
-| `material_groups` | `id` | default "gen_random_uuid"() |
-| `material_groups` | `organization_id` | obrigatório; FK → organizations.id ON DELETE CASCADE |
-| `material_groups` | `name` | obrigatório |
-| `material_groups` | `slug` | obrigatório |
-| `material_groups` | `sort_order` | default 100 |
-| `material_groups` | `is_active` | default true |
-| `material_groups` | `created_at` | default "now"() |
-| `material_groups` | `updated_at` | default "now"() |
-| `material_groups` | `(tabela)` | constraint material_groups_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES public.organizations(id) ON DELETE CASCADE |
-| `material_types` | `id` | default "gen_random_uuid"() |
-| `material_types` | `organization_id` | obrigatório |
-| `material_types` | `group_id` | obrigatório |
-| `material_types` | `name` | obrigatório |
-| `material_types` | `slug` | obrigatório |
-| `material_types` | `properties` | default '{}'::"jsonb" |
-| `material_types` | `display_order` | default 0 |
-| `material_types` | `is_active` | default true |
-| `material_types` | `created_at` | default "now"() |
-| `material_types` | `updated_at` | default "now"() |
-| `product_materials` | `id` | default "gen_random_uuid"() |
-| `product_materials` | `organization_id` | obrigatório |
-| `product_materials` | `product_id` | obrigatório |
-| `product_materials` | `material_id` | obrigatório |
-| `product_materials` | `sort_order` | default 100 |
-| `product_materials` | `created_at` | default "now"() |
-| `product_materials` | `updated_at` | default "now"() |
-| `product_materials` | `is_active` | default true |
-| `quotes_inbound` | `quote_id` | PK |
-| `quotes_inbound` | `raw_payload` | obrigatório |
-| `quotes_inbound` | `received_at` | default now() |
-| `quotes_inbound` | `updated_at` | default now() |
-| `webhook_inbound_dedupe` | `correlation_key` | PK |
-| `webhook_inbound_dedupe` | `event` | obrigatório |
-| `webhook_inbound_dedupe` | `source` | default 'promogifts' |
-| `webhook_inbound_dedupe` | `first_seen_at` | default now() |
-| `webhook_inbound_dedupe` | `hit_count` | default 1 |
-| `webhook_inbound_log` | `id` | PK; default gen_random_uuid() |
-| `webhook_inbound_log` | `received_at` | default now() |
-| `webhook_inbound_log` | `source` | default 'promogifts' |
-| `webhook_inbound_log` | `outcome` | obrigatório |
-| `webhook_inbound_log` | `http_status` | obrigatório |
-| `crm_callback_events` | `id` | PK; default gen_random_uuid() |
-| `crm_callback_events` | `external_quote_id` | obrigatório |
-| `crm_callback_events` | `event_type` | obrigatório |
-| `crm_callback_events` | `occurred_at` | obrigatório |
-| `crm_callback_events` | `result` | default 'applied' |
-| `crm_callback_events` | `payload` | default '{}' |
-| `crm_callback_events` | `created_at` | default NOW() |
-| `crm_callback_events` | `(tabela)` | constraint chk_crm_callback_events_event_type CHECK (event_type IN ('approved','rejected','order_created','sent_to_client','expired')) |
-| `crm_callback_events` | `(tabela)` | constraint chk_crm_callback_events_result CHECK (result IN ('applied', 'error', 'duplicate_ignored')) |
-| `magazine_items` | `id` | PK; default gen_random_uuid() |
-| `magazine_items` | `magazine_id` | obrigatório; FK → magazines.id ON DELETE CASCADE |
-| `magazine_items` | `product_id` | obrigatório |
-| `magazine_items` | `position` | default 0 |
-| `magazine_items` | `product_snapshot` | obrigatório |
-| `magazine_items` | `overrides` | default '{}'::JSONB |
-| `magazine_items` | `created_at` | default now() |
-| `magazine_items` | `updated_at` | default now() |
-| `magazine_items` | `(tabela)` | CONSTRAINT magazine_items_position_unique UNIQUE (magazine_id, position) DEFERRABLE INITIALLY DEFERRED |
-| `magazine_items` | `(tabela)` | UNIQUE (magazine_id, product_id) |
-| `magazine_reader_state` | `id` | default "gen_random_uuid"() |
-| `magazine_reader_state` | `magazine_token_hash` | obrigatório |
-| `magazine_reader_state` | `viewer_fingerprint` | obrigatório |
-| `magazine_reader_state` | `last_page_index` | default 0 |
-| `magazine_reader_state` | `bookmarks` | default '{}'::integer[] |
-| `magazine_reader_state` | `user_id` | FK → users.id ON DELETE SET NULL |
-| `magazine_reader_state` | `created_at` | default "now"() |
-| `magazine_reader_state` | `updated_at` | default "now"() |
-| `magazine_reader_state` | `(tabela)` | CONSTRAINT "reader_state_bookmarks_len" CHECK (("cardinality"("bookmarks") <= 500)) |
-| `magazine_reader_state` | `(tabela)` | CONSTRAINT "reader_state_page_range" CHECK ((("last_page_index" >= 0) AND ("last_page_index" <= 9999))) |
-| `magazine_reader_state` | `(tabela)` | constraint magazine_reader_state_magazine_token_hash_viewer_fingerprin_key UNIQUE ("magazine_token_hash", "viewer_fingerprint") |
-| `magazine_reader_state` | `(tabela)` | constraint magazine_reader_state_pkey PRIMARY KEY ("id") |
-| `magazine_reader_state` | `(tabela)` | constraint magazine_reader_state_user_id_fkey FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE SET NULL |
-| `magazine_templates` | `id` | default "gen_random_uuid"() |
-| `magazine_templates` | `owner_id` | obrigatório; FK → users.id ON DELETE CASCADE |
-| `magazine_templates` | `organization_id` | FK → organizations.id ON DELETE SET NULL |
-| `magazine_templates` | `name` | obrigatório |
-| `magazine_templates` | `template_id` | obrigatório; FK → magazine_templates_catalog.template_id |
-| `magazine_templates` | `content_settings` | default '{}'::"jsonb" |
-| `magazine_templates` | `branding` | default '{}'::"jsonb" |
-| `magazine_templates` | `shared_in_org` | default false |
-| `magazine_templates` | `created_at` | default "now"() |
-| `magazine_templates` | `updated_at` | default "now"() |
-| `magazine_templates` | `(tabela)` | CONSTRAINT "magazine_templates_name_check" CHECK (("char_length"("name") <= 120)) |
-| `magazine_templates` | `(tabela)` | constraint magazine_templates_pkey PRIMARY KEY ("id") |
-| `magazine_templates` | `(tabela)` | constraint magazine_templates_organization_id_fkey FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE SET NULL |
-| `magazine_templates` | `(tabela)` | constraint magazine_templates_owner_id_fkey FOREIGN KEY ("owner_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE |
-| `magazine_templates` | `(tabela)` | constraint magazine_templates_template_id_fkey FOREIGN KEY ("template_id") REFERENCES "public"."magazine_templates_catalog"("template_id") |
+| `product_variants` | `id` | PK; default gen_random_uuid() |
+| `product_variants` | `product_id` | obrigatório; FK → products.id ON DELETE CASCADE |
+| `product_variants` | `sku` | obrigatório; único |
+| `product_variants` | `name` | obrigatório |
+| `product_variants` | `attributes` | obrigatório |
+| `product_variants` | `price_adjustment` | default 0 |
+| `product_variants` | `stock_quantity` | default 0 |
+| `product_variants` | `images` | default '[]' |
+| `product_variants` | `is_active` | default true |
+| `product_variants` | `created_at` | default NOW() |
+| `product_variants` | `updated_at` | default NOW() |
+| `product_variants` | `(tabela)` | constraint chk_pv_stock_quantity_nonneg CHECK (stock_quantity >= 0), ADD CONSTRAINT chk_pv_next_quantities_nonneg CHECK ( next_quantity_1 >= 0 AND next_quantity_2 >= 0 AND next_quantity_3 >= 0 AND next_quantity_4 >= 0 AND next_quantity_5 >= 0 AND next_quantity_6 >= 0) |
+| `product_variants` | `(tabela)` | constraint chk_pv_capacity_ml_positive CHECK (capacity_ml > 0) |
+| `cf_recon.action_log` | `id` | PK |
+| `cf_recon.action_log` | `acted_at` | default now() |
+| `cf_recon.action_log` | `actor` | default 'claude' |
+| `cf_recon.action_log` | `action` | obrigatório |
+| `cf_recon.action_log` | `reversible` | default true |
+| `cf_recon.cf_ghost_check_queue` | `image_id` | PK |
+| `cf_recon.cf_ghost_check_queue` | `status` | default 'pending'; CHECK status IN ('pending','checked_alive','checked_dead','error') |
+| `cf_recon.cf_ghost_check_queue` | `attempts` | default 0 |
+| `cf_recon.cf_ghost_check_queue` | `enqueued_at` | default now() |
+| `cf_recon.cf_ghost_check_queue` | `(tabela)` | checked_at timestamptz |
+| `cf_recon.cf_ghost_check_queue` | `(tabela)` | constraint cf_ghost_check_queue_status_check CHECK (status = ANY (ARRAY[ 'pending'::text, 'checked_alive'::text, 'checked_dead'::text, 'error'::text, 'false_positive'::text ])) |
+| `cf_recon.cf_image` | `image_id` | PK |
+| `cf_recon.cf_image` | `first_seen_at` | default now() |
+| `cf_recon.cf_image` | `last_seen_at` | default now() |
+| `cf_recon.crawl_run` | `id` | PK; default gen_random_uuid() |
+| `cf_recon.crawl_run` | `started_at` | default now() |
+| `cf_recon.crawl_run` | `pages_scanned` | default 0 |
+| `cf_recon.crawl_run` | `images_seen` | default 0 |
+| `cf_recon.crawl_run` | `status` | default 'running'; CHECK status in ('running','completed','failed','partial') |
+| `cf_recon.metric_snapshot` | `id` | PK |
+| `cf_recon.metric_snapshot` | `taken_at` | default now() |
+| `cf_recon.metric_snapshot` | `metrics` | obrigatório |
+| `cf_recon.remediation` | `id` | PK |
+| `cf_recon.remediation` | `created_at` | default now() |
+| `cf_recon.remediation` | `kind` | obrigatório |
+| `cf_recon.remediation` | `status` | default 'open'; CHECK status in ('open','in_progress','done','wontfix') |
+| `classification_audit.category_suggestions` | `id` | default "nextval"('"classification_audit"."category_suggestions_id_seq"'::"regclass") |
+| `classification_audit.category_suggestions` | `product_id` | obrigatório |
+| `classification_audit.category_suggestions` | `category_id` | obrigatório |
+| `classification_audit.category_suggestions` | `score` | obrigatório |
+| `classification_audit.category_suggestions` | `matches` | obrigatório |
+| `classification_audit.category_suggestions` | `already_assigned` | obrigatório |
+| `classification_audit.category_suggestions` | `is_primary_now` | obrigatório |
+| `classification_audit.category_suggestions` | `category_level` | obrigatório |
+| `classification_audit.category_suggestions` | `computed_at` | default "now"() |
+| `classification_audit.category_suggestions` | `(tabela)` | constraint category_suggestions_pkey PRIMARY KEY ("id") |
+| `classification_audit.category_suggestions` | `(tabela)` | constraint category_suggestions_product_id_category_id_key UNIQUE ("product_id", "category_id") |
+| `prod_audit.category_keywords` | `category_id` | obrigatório |
+| `prod_audit.category_keywords` | `is_client_segment` | default false |
+| `prod_audit.category_keywords` | `is_material_segment` | default false |
+| `prod_audit.category_keywords` | `is_eco_segment` | default false |
+| `prod_audit.category_keywords` | `is_kit_segment` | default false |
+| `prod_audit.category_keywords` | `refreshed_at` | default "now"() |
+| `prod_audit.category_keywords` | `(tabela)` | constraint category_keywords_pkey PRIMARY KEY ("category_id") |
+| `prod_audit.category_suggestions` | `id` | default "nextval"('"prod_audit"."category_suggestions_id_seq"'::"regclass") |
+| `prod_audit.category_suggestions` | `product_id` | obrigatório |
+| `prod_audit.category_suggestions` | `rule_name` | obrigatório |
+| `prod_audit.category_suggestions` | `created_at` | default "now"() |
+| `prod_audit.category_suggestions` | `reviewed` | default false |
+| `prod_audit.category_suggestions` | `(tabela)` | constraint category_suggestions_pkey PRIMARY KEY ("id") |
+| `prod_audit.category_suggestions` | `(tabela)` | constraint category_suggestions_product_id_suggested_category_id_rule__key UNIQUE ("product_id", "suggested_category_id", "rule_name") |
+| `prod_audit.classification_rules` | `id` | default "nextval"('"prod_audit"."classification_rules_id_seq"'::"regclass") |
+| `prod_audit.classification_rules` | `active` | default true |
+| `prod_audit.classification_rules` | `created_at` | default "now"() |
+| `prod_audit.classification_rules` | `(tabela)` | CONSTRAINT "classification_rules_confidence_check" CHECK (("confidence" = ANY (ARRAY['high'::"text", 'medium'::"text"]))) |
+| `prod_audit.classification_rules` | `(tabela)` | constraint classification_rules_pkey PRIMARY KEY ("id") |
+| `prod_audit.classification_rules` | `(tabela)` | constraint classification_rules_rule_name_key UNIQUE ("rule_name") |
+| `prod_audit.product_features` | `product_id` | obrigatório |
+| `prod_audit.product_features` | `has_eco_keyword` | default false |
+| `prod_audit.product_features` | `has_kit_keyword` | default false |
+| `prod_audit.product_features` | `has_thermal_flag` | default false |
+| `prod_audit.product_features` | `has_textil_flag` | default false |
+| `prod_audit.product_features` | `refreshed_at` | default "now"() |
+| `prod_audit.product_features` | `(tabela)` | constraint product_features_pkey PRIMARY KEY ("product_id") |
+| `prod_audit.test_results` | `id` | default "nextval"('"prod_audit"."test_results_id_seq"'::"regclass") |
+| `prod_audit.test_results` | `batch` | obrigatório |
+| `prod_audit.test_results` | `test_name` | obrigatório |
+| `prod_audit.test_results` | `category` | obrigatório |
+| `prod_audit.test_results` | `severity` | obrigatório |
+| `prod_audit.test_results` | `result` | obrigatório |
+| `prod_audit.test_results` | `details` | default '{}'::"jsonb" |
+| `prod_audit.test_results` | `executed_at` | default "now"() |
+| `prod_audit.test_results` | `(tabela)` | CONSTRAINT "test_results_result_check" CHECK (("result" = ANY (ARRAY['pass'::"text", 'fail'::"text", 'warning'::"text", 'skip'::"text"]))) |
+| `prod_audit.test_results` | `(tabela)` | CONSTRAINT "test_results_severity_check" CHECK (("severity" = ANY (ARRAY['critical'::"text", 'high'::"text", 'medium'::"text", 'low'::"text", 'info'::"text"]))) |
+| `prod_audit.test_results` | `(tabela)` | constraint test_results_pkey PRIMARY KEY ("id") |
+| `_qa_pct_results` | `id` | default "nextval"('"public"."_qa_pct_results_id_seq"'::"regclass") |
+| `_qa_pct_results` | `created_at` | default "now"() |
+| `_qa_pct_results` | `(tabela)` | constraint _qa_pct_results_pkey PRIMARY KEY ("id") |
+| `access_blocked_log` | `id` | PK; default gen_random_uuid() |
+| `access_blocked_log` | `ip_address` | obrigatório |
+| `access_blocked_log` | `block_reason` | obrigatório |
+| `access_blocked_log` | `created_at` | default now() |
 | `access_security_settings` | `id` | PK; default gen_random_uuid() |
 | `access_security_settings` | `ip_whitelist_enabled` | default false |
 | `access_security_settings` | `city_whitelist_enabled` | default false |
@@ -700,48 +638,6 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `admin_audit_log` | `resource_type` | obrigatório |
 | `admin_audit_log` | `details` | default '{}'::jsonb |
 | `admin_audit_log` | `created_at` | default now() |
-| `admin_audit_log_y2025m12` | `id` | default gen_random_uuid() |
-| `admin_audit_log_y2025m12` | `user_id` | obrigatório |
-| `admin_audit_log_y2025m12` | `action` | obrigatório |
-| `admin_audit_log_y2025m12` | `resource_type` | obrigatório |
-| `admin_audit_log_y2025m12` | `created_at` | default now() |
-| `admin_audit_log_y2025m12` | `(tabela)` | constraint admin_audit_log_y2025m12_pkey PRIMARY KEY (id, created_at) |
-| `admin_audit_log_y2026m01` | `id` | default gen_random_uuid() |
-| `admin_audit_log_y2026m01` | `user_id` | obrigatório |
-| `admin_audit_log_y2026m01` | `action` | obrigatório |
-| `admin_audit_log_y2026m01` | `resource_type` | obrigatório |
-| `admin_audit_log_y2026m01` | `created_at` | default now() |
-| `admin_audit_log_y2026m01` | `(tabela)` | constraint admin_audit_log_y2026m01_pkey PRIMARY KEY (id, created_at) |
-| `admin_audit_log_y2026m02` | `id` | default gen_random_uuid() |
-| `admin_audit_log_y2026m02` | `user_id` | obrigatório |
-| `admin_audit_log_y2026m02` | `action` | obrigatório |
-| `admin_audit_log_y2026m02` | `resource_type` | obrigatório |
-| `admin_audit_log_y2026m02` | `created_at` | default now() |
-| `admin_audit_log_y2026m02` | `(tabela)` | constraint admin_audit_log_y2026m02_pkey PRIMARY KEY (id, created_at) |
-| `admin_audit_log_y2026m03` | `id` | default gen_random_uuid() |
-| `admin_audit_log_y2026m03` | `user_id` | obrigatório |
-| `admin_audit_log_y2026m03` | `action` | obrigatório |
-| `admin_audit_log_y2026m03` | `resource_type` | obrigatório |
-| `admin_audit_log_y2026m03` | `created_at` | default now() |
-| `admin_audit_log_y2026m03` | `(tabela)` | constraint admin_audit_log_y2026m03_pkey PRIMARY KEY (id, created_at) |
-| `admin_audit_log_y2026m04` | `id` | default gen_random_uuid() |
-| `admin_audit_log_y2026m04` | `user_id` | obrigatório |
-| `admin_audit_log_y2026m04` | `action` | obrigatório |
-| `admin_audit_log_y2026m04` | `resource_type` | obrigatório |
-| `admin_audit_log_y2026m04` | `created_at` | default now() |
-| `admin_audit_log_y2026m04` | `(tabela)` | constraint admin_audit_log_y2026m04_pkey PRIMARY KEY (id, created_at) |
-| `admin_audit_log_y2026m05` | `id` | default gen_random_uuid() |
-| `admin_audit_log_y2026m05` | `user_id` | obrigatório |
-| `admin_audit_log_y2026m05` | `action` | obrigatório |
-| `admin_audit_log_y2026m05` | `resource_type` | obrigatório |
-| `admin_audit_log_y2026m05` | `created_at` | default now() |
-| `admin_audit_log_y2026m05` | `(tabela)` | constraint admin_audit_log_y2026m05_pkey PRIMARY KEY (id, created_at) |
-| `admin_audit_log_y2026m06` | `id` | default gen_random_uuid() |
-| `admin_audit_log_y2026m06` | `user_id` | obrigatório |
-| `admin_audit_log_y2026m06` | `action` | obrigatório |
-| `admin_audit_log_y2026m06` | `resource_type` | obrigatório |
-| `admin_audit_log_y2026m06` | `created_at` | default now() |
-| `admin_audit_log_y2026m06` | `(tabela)` | constraint admin_audit_log_y2026m06_pkey PRIMARY KEY (id, created_at) |
 | `admin_settings` | `id` | PK; default gen_random_uuid() |
 | `admin_settings` | `key` | obrigatório; único |
 | `admin_settings` | `value` | default '{}'::jsonb |
@@ -752,6 +648,98 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `admin_settings` | `(tabela)` | constraint chk_admin_settings_key_not_empty CHECK (trim(key) <> '') |
 | `admin_settings` | `(tabela)` | constraint fk_admin_settings_updated_by FOREIGN KEY (updated_by) REFERENCES auth.users(id) ON DELETE SET NULL |
 | `admin_settings` | `(tabela)` | constraint chk_admin_settings_key_not_empty CHECK (trim(key) <> '') |
+| `ai_enrichment_queue` | `id` | default gen_random_uuid() |
+| `ai_enrichment_queue` | `product_id` | obrigatório |
+| `ai_enrichment_queue` | `enrichment_type` | obrigatório |
+| `ai_enrichment_queue` | `status` | default 'pending'::text |
+| `ai_enrichment_queue` | `priority` | default 5 |
+| `ai_enrichment_queue` | `attempts` | default 0 |
+| `ai_enrichment_queue` | `max_attempts` | default 3 |
+| `ai_enrichment_queue` | `created_at` | default now() |
+| `ai_enrichment_queue` | `updated_at` | default now() |
+| `ai_enrichment_queue` | `organization_id` | default '5db5aee1-064b-4ef4-9193-345dcd8274ea'::uuid |
+| `ai_function_routing` | `id` | default "gen_random_uuid"() |
+| `ai_function_routing` | `function_name` | obrigatório |
+| `ai_function_routing` | `primary_model_id` | obrigatório; FK → ai_models.id ON DELETE RESTRICT |
+| `ai_function_routing` | `fallback_model_ids` | default '{}'::"uuid"[] |
+| `ai_function_routing` | `required_capabilities` | default '{}'::"jsonb" |
+| `ai_function_routing` | `request_overrides` | default '{}'::"jsonb" |
+| `ai_function_routing` | `is_active` | default true |
+| `ai_function_routing` | `created_at` | default "now"() |
+| `ai_function_routing` | `updated_at` | default "now"() |
+| `ai_function_routing` | `updated_by` | FK → users.id |
+| `ai_function_routing` | `(tabela)` | constraint ai_function_routing_function_name_key UNIQUE ("function_name") |
+| `ai_function_routing` | `(tabela)` | constraint ai_function_routing_pkey PRIMARY KEY ("id") |
+| `ai_function_routing` | `(tabela)` | constraint ai_function_routing_primary_model_id_fkey FOREIGN KEY ("primary_model_id") REFERENCES "public"."ai_models"("id") ON DELETE RESTRICT |
+| `ai_function_routing` | `(tabela)` | constraint ai_function_routing_updated_by_fkey FOREIGN KEY ("updated_by") REFERENCES "auth"."users"("id") |
+| `dashboard_insights_cache` | `id` | PK; default gen_random_uuid() |
+| `dashboard_insights_cache` | `user_id` | obrigatório |
+| `dashboard_insights_cache` | `function_name` | obrigatório |
+| `dashboard_insights_cache` | `cache_key` | obrigatório |
+| `dashboard_insights_cache` | `payload` | obrigatório |
+| `dashboard_insights_cache` | `created_at` | default now() |
+| `dashboard_insights_cache` | `expires_at` | default (now() |
+| `ai_models` | `id` | default "gen_random_uuid"() |
+| `ai_models` | `provider_id` | obrigatório; FK → ai_providers.id ON DELETE CASCADE |
+| `ai_models` | `model_id` | obrigatório |
+| `ai_models` | `display_name` | obrigatório |
+| `ai_models` | `capabilities` | default '{}'::"jsonb" |
+| `ai_models` | `cost_input_per_1m` | default 0 |
+| `ai_models` | `cost_output_per_1m` | default 0 |
+| `ai_models` | `cost_per_image` | default 0 |
+| `ai_models` | `is_active` | default true |
+| `ai_models` | `metadata` | default '{}'::"jsonb" |
+| `ai_models` | `created_at` | default "now"() |
+| `ai_models` | `updated_at` | default "now"() |
+| `ai_models` | `(tabela)` | CONSTRAINT "ai_models_cost_input_per_1m_check" CHECK (("cost_input_per_1m" >= (0)::numeric)) |
+| `ai_models` | `(tabela)` | CONSTRAINT "ai_models_cost_output_per_1m_check" CHECK (("cost_output_per_1m" >= (0)::numeric)) |
+| `ai_models` | `(tabela)` | CONSTRAINT "ai_models_cost_per_image_check" CHECK (("cost_per_image" >= (0)::numeric)) |
+| `ai_models` | `(tabela)` | CONSTRAINT "ai_models_max_input_tokens_check" CHECK ((("max_input_tokens" IS NULL) OR ("max_input_tokens" > 0))) |
+| `ai_models` | `(tabela)` | CONSTRAINT "ai_models_max_output_tokens_check" CHECK ((("max_output_tokens" IS NULL) OR ("max_output_tokens" > 0))) |
+| `ai_models` | `(tabela)` | constraint ai_models_pkey PRIMARY KEY ("id") |
+| `ai_models` | `(tabela)` | constraint ai_models_provider_id_model_id_key UNIQUE ("provider_id", "model_id") |
+| `ai_models` | `(tabela)` | constraint ai_models_provider_id_fkey FOREIGN KEY ("provider_id") REFERENCES "public"."ai_providers"("id") ON DELETE CASCADE |
+| `ai_providers` | `id` | default "gen_random_uuid"() |
+| `ai_providers` | `slug` | obrigatório |
+| `ai_providers` | `display_name` | obrigatório |
+| `ai_providers` | `api_base_url` | obrigatório |
+| `ai_providers` | `api_format` | obrigatório |
+| `ai_providers` | `auth_header` | default 'Authorization'::"text" |
+| `ai_providers` | `auth_format` | default 'Bearer |
+| `ai_providers` | `secret_name` | obrigatório |
+| `ai_providers` | `is_active` | default true |
+| `ai_providers` | `priority` | default 100 |
+| `ai_providers` | `timeout_ms` | default 30000 |
+| `ai_providers` | `max_retries` | default 2 |
+| `ai_providers` | `metadata` | default '{}'::"jsonb" |
+| `ai_providers` | `created_at` | default "now"() |
+| `ai_providers` | `updated_at` | default "now"() |
+| `ai_providers` | `created_by` | FK → users.id |
+| `ai_providers` | `updated_by` | FK → users.id |
+| `ai_providers` | `(tabela)` | CONSTRAINT "ai_providers_api_format_check" CHECK (("api_format" = ANY (ARRAY['openai_compatible'::"text", 'anthropic_native'::"text", 'google_native'::"text", 'custom'::"text"]))) |
+| `ai_providers` | `(tabela)` | CONSTRAINT "ai_providers_max_retries_check" CHECK ((("max_retries" >= 0) AND ("max_retries" <= 5))) |
+| `ai_providers` | `(tabela)` | CONSTRAINT "ai_providers_timeout_ms_check" CHECK ((("timeout_ms" >= 1000) AND ("timeout_ms" <= 120000))) |
+| `ai_providers` | `(tabela)` | constraint ai_providers_pkey PRIMARY KEY ("id") |
+| `ai_providers` | `(tabela)` | constraint ai_providers_slug_key UNIQUE ("slug") |
+| `ai_providers` | `(tabela)` | constraint ai_providers_created_by_fkey FOREIGN KEY ("created_by") REFERENCES "auth"."users"("id") |
+| `ai_providers` | `(tabela)` | constraint ai_providers_updated_by_fkey FOREIGN KEY ("updated_by") REFERENCES "auth"."users"("id") |
+| `ai_routing_decisions` | `id` | default "gen_random_uuid"() |
+| `ai_routing_decisions` | `function_name` | obrigatório |
+| `ai_routing_decisions` | `user_id` | FK → users.id |
+| `ai_routing_decisions` | `attempted_models` | obrigatório |
+| `ai_routing_decisions` | `attempted_providers` | obrigatório |
+| `ai_routing_decisions` | `attempted_outcomes` | default '[]'::"jsonb" |
+| `ai_routing_decisions` | `final_model_id` | FK → ai_models.id |
+| `ai_routing_decisions` | `final_provider_id` | FK → ai_providers.id |
+| `ai_routing_decisions` | `total_attempts` | obrigatório |
+| `ai_routing_decisions` | `total_duration_ms` | obrigatório |
+| `ai_routing_decisions` | `outcome` | obrigatório |
+| `ai_routing_decisions` | `created_at` | default "now"() |
+| `ai_routing_decisions` | `(tabela)` | CONSTRAINT "ai_routing_decisions_outcome_check" CHECK (("outcome" = ANY (ARRAY['success'::"text", 'all_failed'::"text", 'fallback_used'::"text", 'quota_blocked'::"text", 'no_routing'::"text"]))) |
+| `ai_routing_decisions` | `(tabela)` | constraint ai_routing_decisions_pkey PRIMARY KEY ("id") |
+| `ai_routing_decisions` | `(tabela)` | constraint ai_routing_decisions_final_model_id_fkey FOREIGN KEY ("final_model_id") REFERENCES "public"."ai_models"("id") |
+| `ai_routing_decisions` | `(tabela)` | constraint ai_routing_decisions_final_provider_id_fkey FOREIGN KEY ("final_provider_id") REFERENCES "public"."ai_providers"("id") |
+| `ai_routing_decisions` | `(tabela)` | constraint ai_routing_decisions_user_id_fkey FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") |
 | `ai_usage_events` | `id` | PK; default gen_random_uuid() |
 | `ai_usage_events` | `user_id` | obrigatório |
 | `ai_usage_events` | `function_name` | obrigatório |
@@ -773,11 +761,15 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `ai_usage_quotas` | `is_unlimited` | default false |
 | `ai_usage_quotas` | `created_at` | default now() |
 | `ai_usage_quotas` | `updated_at` | default now() |
-| `app_vitals` | `id` | default gen_random_uuid() |
-| `app_vitals` | `metric_name` | obrigatório |
-| `app_vitals` | `metric_value` | obrigatório |
-| `app_vitals` | `created_at` | default now() |
-| `app_vitals` | `(tabela)` | constraint app_vitals_pkey PRIMARY KEY (id) |
+| `analytics_events` | `id` | PK; default uuid_generate_v4() |
+| `analytics_events` | `created_at` | default NOW() |
+| `analytics_events` | `updated_at` | default NOW() |
+| `anon_catalog_grant_audit_log` | `id` | PK |
+| `anon_catalog_grant_audit_log` | `violation_count` | obrigatório |
+| `anon_catalog_grant_audit_log` | `(tabela)` | checked_at timestamptz NOT NULL DEFAULT now() |
+| `anon_insert_rate` | `bucket_key` | PK |
+| `anon_insert_rate` | `n` | default 0 |
+| `anon_insert_rate` | `window_start` | obrigatório |
 | `art_file_attachments` | `id` | PK; default gen_random_uuid() |
 | `art_file_attachments` | `user_id` | obrigatório |
 | `art_file_attachments` | `file_url` | obrigatório |
@@ -785,31 +777,39 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `art_file_attachments` | `original_name` | obrigatório |
 | `art_file_attachments` | `created_at` | default now() |
 | `art_file_attachments` | `updated_at` | default now() |
-| `audit_logs` | `id` | PK; default gen_random_uuid() |
-| `audit_logs` | `event_type` | obrigatório |
-| `audit_logs` | `endpoint` | obrigatório |
-| `audit_logs` | `identifier` | obrigatório |
-| `audit_logs` | `metadata` | default '{}'::jsonb |
-| `audit_logs` | `created_at` | default now() |
-| `auth_login_attempts` | `id` | default gen_random_uuid() |
-| `auth_login_attempts` | `email` | obrigatório |
-| `auth_login_attempts` | `success` | default false |
-| `auth_login_attempts` | `created_at` | default now() |
-| `auth_login_attempts` | `(tabela)` | constraint auth_login_attempts_pkey PRIMARY KEY (id) |
-| `bot_detection_log` | `id` | PK; default gen_random_uuid() |
-| `bot_detection_log` | `ip_address` | obrigatório |
-| `bot_detection_log` | `endpoint` | obrigatório |
-| `bot_detection_log` | `detection_reason` | obrigatório |
-| `bot_detection_log` | `request_count` | default 1 |
-| `bot_detection_log` | `blocked` | default false |
-| `bot_detection_log` | `metadata` | default '{}'::jsonb |
-| `bot_detection_log` | `created_at` | default now() |
-| `cart_templates` | `id` | PK; default gen_random_uuid() |
-| `cart_templates` | `user_id` | obrigatório; FK → users.id ON DELETE CASCADE |
-| `cart_templates` | `name` | obrigatório |
-| `cart_templates` | `items` | default '[]'::jsonb |
-| `cart_templates` | `created_at` | default now() |
-| … +3755 linhas — lista completa em `context.json` | | |
+| `asia_image_import_queue` | `id` | default "gen_random_uuid"() |
+| `asia_image_import_queue` | `codigo_pai` | obrigatório |
+| `asia_image_import_queue` | `url_original` | obrigatório |
+| `asia_image_import_queue` | `cf_image_id_canonical` | obrigatório |
+| `asia_image_import_queue` | `image_type` | obrigatório |
+| `asia_image_import_queue` | `display_order` | default 1 |
+| `asia_image_import_queue` | `product_id` | FK → products.id |
+| `asia_image_import_queue` | `status` | default 'pending'::"text" |
+| `asia_image_import_queue` | `attempts` | default 0 |
+| `asia_image_import_queue` | `created_at` | default "now"() |
+| `asia_image_import_queue` | `updated_at` | default "now"() |
+| `asia_image_import_queue` | `variant_id` | FK → product_variants.id |
+| `asia_image_import_queue` | `(tabela)` | CONSTRAINT "asia_image_import_queue_image_type_check" CHECK (("image_type" = ANY (ARRAY['main'::"text", 'gallery'::"text"]))) |
+| `asia_image_import_queue` | `(tabela)` | CONSTRAINT "asia_image_import_queue_status_check" CHECK (("status" = ANY (ARRAY['pending'::"text", 'uploading'::"text", 'done'::"text", 'error'::"text", 'skipped'::"text"]))) |
+| `asia_image_import_queue` | `(tabela)` | constraint asia_image_import_queue_pkey PRIMARY KEY ("id") |
+| `asia_image_import_queue` | `(tabela)` | constraint asia_image_import_queue_url_original_key UNIQUE ("url_original") |
+| `asia_image_import_queue` | `(tabela)` | constraint asia_image_import_queue_product_id_fkey FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") |
+| `asia_image_import_queue` | `(tabela)` | constraint asia_image_import_queue_variant_id_fkey FOREIGN KEY ("variant_id") REFERENCES "public"."product_variants"("id") |
+| `asia_upload_mapping` | `id` | default "nextval"('"public"."asia_upload_mapping_id_seq"'::"regclass") |
+| `asia_upload_mapping` | `request_id` | obrigatório |
+| `asia_upload_mapping` | `cf_custom_id` | obrigatório |
+| `asia_upload_mapping` | `source_url` | obrigatório |
+| `asia_upload_mapping` | `status` | default 'pending'::"text" |
+| `asia_upload_mapping` | `created_at` | default "now"() |
+| `asia_upload_mapping` | `(tabela)` | constraint asia_upload_mapping_pkey PRIMARY KEY ("id") |
+| `attribute_definitions` | `id` | default "gen_random_uuid"() |
+| `attribute_definitions` | `organization_id` | obrigatório; FK → organizations.id |
+| `attribute_definitions` | `group_id` | FK → attribute_groups.id |
+| `attribute_definitions` | `name` | obrigatório |
+| `attribute_definitions` | `slug` | obrigatório |
+| `attribute_definitions` | `display_name` | obrigatório |
+| `attribute_definitions` | `data_type` | default 'text'::character |
+| … +3856 linhas — lista completa em `context.json` | | |
 
 ## D. Automações no banco (triggers e funções — regras que rodam sozinhas)
 
@@ -1121,31 +1121,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 
 | Função | Mensagem | Origem |
 |---|---|---|
-| `fn_enrich_commercial_xbz` | XBZ nao encontrado | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `fn_extract_dimensions_from_text` | component % not found | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `get_vault_secret` | get_vault_secret: acesso negado (role: %) | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `send_digest_notification` | send_digest_notification: p_user_id não pode ser NULL | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `tg_reader_state_validate` | reader_state: máximo de 500 bookmarks por dispositivo | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `tg_reader_state_validate` | reader_state: last_page_index fora do intervalo permitido (0-9999) | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `broadcast_changes` | function can only be triggered for each row, not for each statement | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `broadcast_changes` | Unexpected operation type: % | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `broadcast_changes` | Failed to process the row: % | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `check_equality_op` | invalid value for is filter: must be null, true, false, or unknown | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `check_equality_op` | unsupported equality operator: % | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `subscription_check_filters` | invalid column for filter % | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `subscription_check_filters` | failed to lookup type for column % | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `subscription_check_filters` | too many values for `in` filter. Maximum 100 | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `subscription_check_filters` | invalid value for is filter: must be null, true, false, or unknown | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `subscription_check_filters` | is % filter requires a boolean column, got % | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `subscription_check_filters` | operator % requires a text-compatible column type, got % | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `subscription_check_filters` | operator % requires a text-compatible column type, got % | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `subscription_check_filters` | invalid regular expression for % filter: % | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `subscription_check_filters` | invalid column for select % | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `enforce_bucket_name_length` | bucket name "%" is too long (% characters). Max is 100. | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `protect_delete` | Direct deletion from storage tables is not allowed. Use the Storage API instead. | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `http_request` | url argument is missing | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `http_request` | method argument is missing | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
-| `http_request` | method argument % is invalid | `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` |
 | `fn_magazine_public_token` | fn_magazine_public_token: falha ao gerar token único após % tentativas | `qa/migrations-draft/_archived/2026-07-15_magazine_public_token_trigger.sql` |
 | `calculate_personalization_price` | Tecnica nao disponivel para este produto | `supabase/migrations/20250103070000_complete_catalog_structure.sql` |
 | `charge_credits_for_job` | Saldo insuficiente. Necessário: R$ %, Disponível: R$ % | `supabase/migrations/20250103090000_mockup_ai_complete.sql` |
@@ -1421,7 +1396,32 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `magazine_guard_and_version_v2` | magazine_import_marker_immutable | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `magazine_guard_and_version_v2` | magazine_deleted_read_only | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `magazine_guard_and_version_v2` | magazine_published_read_only | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
-| … +127 linhas — lista completa em `context.json` | | |
+| `magazine_guard_and_version_v2` | magazine_published_read_only | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_guard_and_version_v2` | magazine_transition_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_guard_and_version_v2` | magazine_transition_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_guard_and_version_v2` | magazine_archived_read_only | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_guard_and_version_v2` | magazine_archived_read_only | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_guard_and_version_v2` | magazine_publish_requirements_not_met | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_guard_and_version_v2` | magazine_page_order_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_guard_and_version_v2` | magazine_edit_version_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_items_guard_v2` | magazine_not_found | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_items_guard_v2` | magazine_not_editable | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_items_guard_v2` | magazine_item_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_items_guard_v2` | magazine_item_limit_exceeded | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_lock_v2` | magazine_auth_required | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_lock_v2` | magazine_not_found | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_lock_v2` | magazine_forbidden | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_lock_v2` | magazine_edit_conflict | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_create_v2` | magazine_auth_required | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_create_v2` | magazine_create_payload_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_create_v2` | magazine_organization_forbidden | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_update_metadata_v2` | magazine_not_editable | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_update_metadata_v2` | magazine_patch_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_update_metadata_v2` | magazine_title_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_update_metadata_v2` | magazine_subtitle_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_update_metadata_v2` | magazine_template_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_update_metadata_v2` | magazine_branding_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| … +102 linhas — lista completa em `context.json` | | |
 
 ## E. Estados, máquinas de estado e transições
 
@@ -1432,39 +1432,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `optimization_queue` | `status` | `blocked`, `done`, `failed`, `pending`, `running`, `skipped` | `pending` |
 | `optimization_queue` | `guardrail_status` | **livre (sem enum/CHECK)** |  |
 | `quotes` | `status` | **livre (sem enum/CHECK)** | `draft` |
-| `magazines` | `status` | **livre (sem enum/CHECK)** | `draft` |
-| `discount_approval_requests` | `status` | **livre (sem enum/CHECK)** |  |
-| `custom_kits` | `status` | **livre (sem enum/CHECK)** | `draft` |
-| `quotes_inbound` | `status` | **livre (sem enum/CHECK)** |  |
-| `webhook_inbound_log` | `http_status` | **livre (sem enum/CHECK)** |  |
-| `admin_audit_log_y2025m12` | `status` | **livre (sem enum/CHECK)** |  |
-| `admin_audit_log_y2026m01` | `status` | **livre (sem enum/CHECK)** |  |
-| `admin_audit_log_y2026m02` | `status` | **livre (sem enum/CHECK)** |  |
-| `admin_audit_log_y2026m03` | `status` | **livre (sem enum/CHECK)** |  |
-| `admin_audit_log_y2026m04` | `status` | **livre (sem enum/CHECK)** |  |
-| `admin_audit_log_y2026m05` | `status` | **livre (sem enum/CHECK)** |  |
-| `admin_audit_log_y2026m06` | `status` | **livre (sem enum/CHECK)** |  |
-| `ai_usage_logs` | `status` | **livre (sem enum/CHECK)** | `success` |
-| `conversation_audit_logs` | `status` | **livre (sem enum/CHECK)** | `active` |
-| `conversation_delivery_status` | `status` | **livre (sem enum/CHECK)** | `sent` |
-| `e2e_cleanup_audit` | `status` | `auth_failed`, `error`, `forbidden`, `invalid`, `not_found`, `ok`, `partial_error`, `rate_limited`, `started`, `success`, `unauthorized` |  |
-| `external_connections` | `status` | `active`, `degraded`, `disabled`, `error`, `unconfigured` | `unconfigured` |
-| `external_connections_sync_log` | `status` | **livre (sem enum/CHECK)** | `ok` |
-| `magic_up_campaigns` | `status` | **livre (sem enum/CHECK)** | `draft` |
-| `magic_up_public_shares` | `status` | **livre (sem enum/CHECK)** | `active` |
-| `optimization_queue_runs` | `status` | **livre (sem enum/CHECK)** |  |
-| `optimization_queue_runs` | `guardrail_status` | **livre (sem enum/CHECK)** |  |
-| `orders` | `status` | **livre (sem enum/CHECK)** | `pending` |
-| `orders` | `fulfillment_status` | **livre (sem enum/CHECK)** | `unfulfilled` |
-| `product_sync_logs` | `status` | **livre (sem enum/CHECK)** | `pending` |
-| `role_migration_batches` | `status` | `pending`, `running`, `completed`, `failed`, `cancelled` | `pending` |
-| `role_migration_items` | `status` | `pending`, `success`, `failed`, `skipped` | `pending` |
-| `seller_carts` | `status` | `em_separacao`, `pronto_orcamento` | `em_separacao` |
-| `simulator_wizard_drafts` | `wizard_step` | **livre (sem enum/CHECK)** | `product` |
-| `user_onboarding` | `current_step` | **livre (sem enum/CHECK)** | `0` |
-| `webhook_delivery_metrics` | `http_status` | **livre (sem enum/CHECK)** |  |
-| `webhook_delivery_metrics_y2026m05` | `http_status` | **livre (sem enum/CHECK)** |  |
-| `webhook_delivery_metrics_y2026m06` | `http_status` | **livre (sem enum/CHECK)** |  |
 | `cf_recon.action_log` | `old_status` | **livre (sem enum/CHECK)** |  |
 | `cf_recon.action_log` | `new_status` | **livre (sem enum/CHECK)** |  |
 | `cf_recon.cf_ghost_check_queue` | `status` | `checked_alive`, `checked_dead`, `error`, `false_positive`, `pending` | `pending` |
@@ -1472,11 +1439,17 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `cf_recon.remediation` | `status` | `done`, `in_progress`, `open`, `wontfix` | `open` |
 | `access_blocked_log` | `state` | **livre (sem enum/CHECK)** |  |
 | `ai_enrichment_queue` | `status` | **livre (sem enum/CHECK)** | `pending` |
+| `ai_usage_logs` | `status` | **livre (sem enum/CHECK)** | `success` |
 | `asia_image_import_queue` | `status` | `done`, `error`, `pending`, `skipped`, `uploading` | `pending` |
 | `asia_upload_mapping` | `status` | **livre (sem enum/CHECK)** | `pending` |
 | `city_whitelist` | `state` | **livre (sem enum/CHECK)** |  |
 | `content_articles` | `status` | `archived`, `draft`, `published` | `draft` |
+| `conversation_audit_logs` | `status` | **livre (sem enum/CHECK)** | `active` |
+| `conversation_delivery_status` | `status` | **livre (sem enum/CHECK)** | `sent` |
+| `e2e_cleanup_audit` | `status` | `auth_failed`, `error`, `forbidden`, `invalid`, `not_found`, `ok`, `partial_error`, `rate_limited`, `started`, `success`, `unauthorized` |  |
 | `enriched_contacts` | `enrichment_status` | `complete`, `enriching`, `failed`, `partial`, `pending` | `pending` |
+| `external_connections` | `status` | `active`, `degraded`, `disabled`, `error`, `unconfigured` | `unconfigured` |
+| `external_connections_sync_log` | `status` | **livre (sem enum/CHECK)** | `ok` |
 | `image_backfill_queue` | `status` | `done`, `failed`, `pending`, `processing`, `skipped` | `pending` |
 | `import_pipeline_steps` | `fase` | **livre (sem enum/CHECK)** |  |
 | `import_pipeline_steps` | `etapa` | **livre (sem enum/CHECK)** |  |
@@ -1484,18 +1457,29 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `ingestion_run_log` | `status` | `aborted_rate_limit`, `failed`, `ok`, `ok_com_erros`, `running` | `running` |
 | `kit_component_ficha_staging` | `match_status` | `ambiguous`, `no_component`, `pending`, `promoted`, `skipped` | `pending` |
 | `kit_component_padronizacao` | `padronizacao_status` | `approved`, `pending`, `promoted`, `rejected` | `pending` |
+| `magic_up_campaigns` | `status` | **livre (sem enum/CHECK)** | `draft` |
+| `magic_up_public_shares` | `status` | **livre (sem enum/CHECK)** | `active` |
 | `mockup_generation_jobs` | `status` | **livre (sem enum/CHECK)** | `pending` |
 | `notifications` | `delivery_status` | **livre (sem enum/CHECK)** |  |
+| `optimization_queue_runs` | `status` | **livre (sem enum/CHECK)** |  |
+| `optimization_queue_runs` | `guardrail_status` | **livre (sem enum/CHECK)** |  |
+| `orders` | `status` | **livre (sem enum/CHECK)** | `pending` |
+| `orders` | `fulfillment_status` | **livre (sem enum/CHECK)** | `unfulfilled` |
 | `password_reset_requests` | `status` | `approved`, `pending`, `rejected` | `pending` |
 | `pipeline_known_issues` | `status` | `fixed`, `in_progress`, `open`, `wont_fix` | `open` |
 | `pipeline_run_log` | `status` | **livre (sem enum/CHECK)** | `running` |
 | `product_deactivation_requests` | `status` | `approved`, `cancelled`, `executed`, `pending`, `rejected` | `pending` |
 | `product_fiscal` | `tax_reference_state` | **livre (sem enum/CHECK)** |  |
 | `product_supply` | `sync_status` | **livre (sem enum/CHECK)** |  |
+| `product_sync_logs` | `status` | **livre (sem enum/CHECK)** | `pending` |
 | `product_videos` | `cloudflare_status` | **livre (sem enum/CHECK)** | `pending` |
 | `produtos_padronizacao` | `status` | `pending`, `standardized`, `rejected`, `promoted` | `pending` |
 | `produtos_padronizacao_variantes` | `status` | `pending`, `standardized`, `rejected`, `promoted` | `pending` |
 | `produtos_site_padronizacao` | `status` | `pending`, `standardized`, `rejected`, `promoted` | `pending` |
+| `role_migration_batches` | `status` | `pending`, `running`, `completed`, `failed`, `cancelled` | `pending` |
+| `role_migration_items` | `status` | `pending`, `success`, `failed`, `skipped` | `pending` |
+| `seller_carts` | `status` | `em_separacao`, `pronto_orcamento` | `em_separacao` |
+| `simulator_wizard_drafts` | `wizard_step` | **livre (sem enum/CHECK)** | `product` |
 | `sm_category_pages` | `status` | `done`, `failed`, `partial`, `pending`, `processing` | `pending` |
 | `sm_site_url_map` | `search_status` | **livre (sem enum/CHECK)** |  |
 | `sm_worker_partitions` | `status` | **livre (sem enum/CHECK)** | `pending` |
@@ -1509,11 +1493,27 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `webhook_dispatcher_log` | `delivery_status` | `delivered`, `failed`, `pending`, `timeout` | `pending` |
 | `video_import_queue` | `status` | **livre (sem enum/CHECK)** | `pending` |
 | `video_sim_results` | `queue_status` | **livre (sem enum/CHECK)** |  |
+| `webhook_delivery_metrics` | `http_status` | **livre (sem enum/CHECK)** |  |
 | `webhook_outbox` | `status` | `dead_letter`, `failed`, `pending`, `processing`, `sent` | `pending` |
 | `xbz_upload_mapping` | `status` | **livre (sem enum/CHECK)** | `pending` |
 | `supplier_stricker.sync_log` | `status` | **livre (sem enum/CHECK)** | `running` |
+| `custom_kits` | `status` | **livre (sem enum/CHECK)** | `draft` |
+| `discount_approval_requests` | `status` | **livre (sem enum/CHECK)** |  |
+| `magazines` | `status` | **livre (sem enum/CHECK)** | `draft` |
 | `product_images` | `cf_sync_status` | **livre (sem enum/CHECK)** | `pending` |
 | `supplier_customization_raw` | `status` | `pending`, `processing`, `processed`, `failed`, `skipped`, `quarantined` | `pending` |
+| `user_onboarding` | `current_step` | **livre (sem enum/CHECK)** | `0` |
+| `quotes_inbound` | `status` | **livre (sem enum/CHECK)** |  |
+| `webhook_inbound_log` | `http_status` | **livre (sem enum/CHECK)** |  |
+| `admin_audit_log_y2025m12` | `status` | **livre (sem enum/CHECK)** |  |
+| `admin_audit_log_y2026m01` | `status` | **livre (sem enum/CHECK)** |  |
+| `admin_audit_log_y2026m02` | `status` | **livre (sem enum/CHECK)** |  |
+| `admin_audit_log_y2026m03` | `status` | **livre (sem enum/CHECK)** |  |
+| `admin_audit_log_y2026m04` | `status` | **livre (sem enum/CHECK)** |  |
+| `admin_audit_log_y2026m05` | `status` | **livre (sem enum/CHECK)** |  |
+| `admin_audit_log_y2026m06` | `status` | **livre (sem enum/CHECK)** |  |
+| `webhook_delivery_metrics_y2026m05` | `http_status` | **livre (sem enum/CHECK)** |  |
+| `webhook_delivery_metrics_y2026m06` | `http_status` | **livre (sem enum/CHECK)** |  |
 | `reward_redemptions` | `status` | **livre (sem enum/CHECK)** | `pending` |
 | `sync_jobs` | `status` | **livre (sem enum/CHECK)** | `pending` |
 | `bitrix_deals` | `stage` | **livre (sem enum/CHECK)** |  |
@@ -1867,15 +1867,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 
 | Nome | Valores | Onde |
 |---|---|---|
-| aal_level | `aal1`, `aal2`, `aal3` | banco |
-| code_challenge_method | `s256`, `plain` | banco |
-| factor_status | `unverified`, `verified` | banco |
-| factor_type | `totp`, `webauthn`, `phone`, `recovery_code` | banco |
-| oauth_authorization_status | `pending`, `approved`, `denied`, `expired` | banco |
-| oauth_client_type | `public`, `confidential` | banco |
-| oauth_registration_type | `dynamic`, `manual` | banco |
-| oauth_response_type | `code` | banco |
-| one_time_token_type | `confirmation_token`, `reauthentication_token`, `recovery_token`, `email_change_token_new`, `email_change_token_current`, `phone_change_token` | banco |
 | app_role | `dev`, `supervisor`, `admin`, `manager`, `agente`, `coordenador`, `vendedor` | banco |
 | categoria_cor_enum | `pantone`, `basica`, `institucional`, `especial`, `bordado`, `hot_stamping`, `serigrafia`, `sublimacao` | banco |
 | conversation_event_type | `text`, `image`, `audio`, `video`, `file`, `system` | banco |
@@ -1891,9 +1882,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | step_up_action | `promote_dev`, `demote_dev`, `mcp_full_issue`, `mcp_full_escalate`, `secret_rotation`, `secret_revoke`, `mcp_key_revoke`, `mcp_key_rotate` | banco |
 | supplier_raw_status | `pending`, `processing`, `processed`, `failed`, `skipped`, `quarantined` | banco |
 | tipo_cor_enum | `solid`, `metalica`, `fluorescente`, `pastel`, `neon`, `especial` | banco |
-| action | `INSERT`, `UPDATE`, `DELETE`, `TRUNCATE`, `ERROR` | banco |
-| equality_op | `eq`, `neq`, `lt`, `lte`, `gt`, `gte`, `in`, `like`, `ilike`, `is`, `match`, `imatch`, `isdistinct` | banco |
-| buckettype | `STANDARD`, `ANALYTICS`, `VECTOR` | banco |
 | AiApiFormat | openai_compatible \| anthropic_native \| google_native \| custom | `recovery/src-legacy/src/hooks/useAiRouter.ts` |
 | AuditAction | INSERT \| UPDATE \| DELETE | `recovery/src-legacy/src/hooks/useAuditLog.ts` |
 | AuditEntityType | products \| product_variants \| product_images \| product_videos \| quotes \| quote_items \| orders \| order_items \| suppliers \| categories \| material_types \| color_variations \| companies \| company_contacts | `recovery/src-legacy/src/hooks/useAuditLog.ts` |
@@ -2167,7 +2155,19 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | PriceFreshnessStatus | aging \| fresh \| stale \| unknown | `src/utils/price-freshness.ts` |
 | AppRole | dev \| supervisor \| admin \| agente \| vendedor | `supabase/functions/_shared/authorize.ts` |
 | TriggeredBy | manual \| cron \| webhook | `supabase/functions/_shared/connection-test-runner.ts` |
-| … +26 linhas — lista completa em `context.json` | | |
+| ErrorKind | timeout \| network \| dns \| http \| auth \| config \| unknown | `supabase/functions/_shared/connection-test-runner.ts` |
+| ConnectionType | supabase \| bitrix24 \| n8n \| mcp \| webhook_outbound | `supabase/functions/_shared/connection-timeouts.ts` |
+| EdgeRole | vendedor \| agente \| supervisor \| admin \| dev | `supabase/functions/_shared/createEdge.ts` |
+| CredentialSource | db \| env \| none | `supabase/functions/_shared/credentials.ts` |
+| AppRole | dev \| supervisor \| admin \| agente \| vendedor | `supabase/functions/_shared/dispatcher-auth.ts` |
+| DispatcherAuthMode | secret \| user_jwt | `supabase/functions/_shared/dispatcher-auth.ts` |
+| CronAuthMode | secret \| secret_vault | `supabase/functions/_shared/dispatcher-auth.ts` |
+| AuthzCategory | public \| authenticated \| supervisor \| dev \| service \| scoped | `supabase/functions/_shared/edge-authz-manifest.ts` |
+| ResourceGroup | products \| companies \| views | `supabase/functions/_shared/external-db-config.ts` |
+| Operation | select \| insert \| update \| delete \| rpc \| upsert \| batch_insert | `supabase/functions/_shared/external-db-config.ts` |
+| ALLOWED_RPCS | 'fn_get_product_print_areas', 'fn_get_product_print_areas_v2', 'fn_get_product_customization_options', 'fn_link_product_print_areas', 'fn_backfill_product_print_areas', 'fn_get_customization_price', 'fn_get_customization_price_v2', 'fn_find_fornecedor_price_table', 'get_category_descendants', | `supabase/functions/_shared/external-db-config.ts` |
+| COMPANY_TABLES | 'bitrix_clients', 'client_contacts', 'client_notes', 'organizations', 'user_organizations', 'business_sectors', | `supabase/functions/_shared/external-db-config.ts` |
+| … +14 linhas — lista completa em `context.json` | | |
 
 ## F. Validações de entrada
 
@@ -3266,14 +3266,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 
 | Tabela | Coluna | Expressão |
 |---|---|---|
-| `categories` | `active` | `is_active` |
-| `webhook_deliveries` | `idempotency_key` | `webhook_id::text \|\| ':' \|\| payload_hash` |
 | `markup_configurations` | `priority` | `CASE WHEN ("variant_id" IS NOT NULL) THEN 1 WHEN ("product_id" IS NOT NULL) THEN 2 WHEN ("category_id" IS NOT NULL) THEN 3 WHEN ("supplier_id" IS NOT NULL) THEN 4 WHEN ("organization_id" IS NOT NULL) THEN 5 ELSE 6 END` |
 | `shipping_boxes` | `inner_height_cm` | `outer_height_cm - (wall_thickness_mm * 2) / 10.0` |
 | `shipping_boxes` | `inner_width_cm` | `outer_width_cm - (wall_thickness_mm * 2) / 10.0` |
 | `shipping_boxes` | `inner_length_cm` | `outer_length_cm - (wall_thickness_mm * 2) / 10.0` |
 | `sm_category_pages` | `site_url` | `CASE WHEN category_id IS NOT NULL THEN 'https://www.somarcas.com.br/' \|\| category_id::text \|\| '/categorias/' \|\| slug ELSE NULL END` |
 | `supplier_products_raw` | `images_processed` | `images_status = 'processed'::supplier_raw_status` |
+| `webhook_deliveries` | `idempotency_key` | `webhook_id::text \|\| ':' \|\| payload_hash` |
+| `categories` | `active` | `is_active` |
 | `supplier_replenishment_events` | `delay_days` | `CASE WHEN actual_date IS NULL THEN NULL ELSE actual_date - promised_date END` |
 | `supplier_replenishment_events` | `fulfillment_ratio` | `CASE WHEN actual_quantity IS NULL OR promised_quantity = 0 THEN NULL ELSE LEAST(1.0, actual_quantity::numeric / promised_quantity::numeric) END` |
 | `tabela_preco_gravacao_oficial` | `codigo` | `codigo_tabela` |
@@ -3283,11 +3283,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 
 | View | SELECT |
 |---|---|
-| `internal.mv_product_leaf_category` | `SELECT DISTINCT ON ("pca"."product_id") "pca"."product_id", "c"."id" AS "leaf_category_id", "c"."name" AS "leaf_category_name", "c"."level" AS "leaf_category_level", "c"."parent_id" AS "leaf_category_parent_id", "c"."slug" AS "leaf_category_slug", CASE WHEN ("p"."main_category_id" IS NULL) THEN "c". …` |
-| `v_products_public` | `SELECT p.id, p.name, p.description, p.sku, p.category_id, p.supplier_id, NULL::numeric AS cost_price, p.sale_price, p.stock_quantity, p.is_active AS active, p.created_at, p.updated_at, NULL::numeric AS suggested_price, CASE WHEN p.length_cm IS NOT NULL OR p.width_cm IS NOT NULL OR p.height_cm IS NOT …` |
-| `analytics.categories_tree_visual` | `WITH RECURSIVE "tree" AS ( SELECT "categories"."id", "categories"."bitrix_id", "categories"."name", "categories"."level", "categories"."parent_id", "categories"."name" AS "tree_structure", ARRAY[COALESCE("categories"."display_order", 0)] AS "sort_path" FROM "public"."categories" WHERE ("categories". …` |
-| `analytics.mv_material_group_stats` | `SELECT "mg"."id" AS "group_id", "mg"."organization_id", "mg"."name" AS "group_name", "mg"."slug" AS "group_slug", "count"(DISTINCT "mt"."id") AS "total_materials", "count"(DISTINCT CASE WHEN "mt"."is_active" THEN "mt"."id" ELSE NULL::"uuid" END) AS "active_materials", "count"(DISTINCT "pm"."product_ …` |
-| `v_full_scope_grants` | `SELECT sual.id AS audit_id, sual.created_at AS granted_at, sual.user_id AS granted_to_user_id, p.full_name AS granted_to_name, u.email AS granted_to_email, sual.action AS step_up_action, (sual.metadata->>'operation') AS operation, (sual.metadata->>'key_id')::uuid AS key_id, (sual.metadata->>'key_pre …` |
 | `analytics.mv_media_health` | `SELECT "s"."code" AS "source_supplier", "count"(DISTINCT "p"."id") AS "total_produtos", "count"(DISTINCT CASE WHEN ("pi_main"."id" IS NOT NULL) THEN "p"."id" ELSE NULL::"uuid" END) AS "com_img_principal", "count"(DISTINCT CASE WHEN ("pi_any"."id" IS NOT NULL) THEN "p"."id" ELSE NULL::"uuid" END) AS …` |
 | `analytics.mv_product_cards` | `SELECT "p"."id", "p"."name", "p"."slug", "p"."sku", "p"."short_description", "p"."sale_price", "p"."is_active", "p"."is_new", "p"."is_featured", "p"."is_stockout", "p"."category_id", "p"."main_category_id", "p"."colors", "p"."product_type", "p"."supplier_id", "p"."primary_image_url", "pi"."url_cdn" …` |
 | `analytics.mv_product_compositions` | `SELECT "p"."id" AS "product_id", "p"."organization_id", "p"."name" AS "product_name", "count"(DISTINCT "pm"."material_id") AS "total_materials", "sum"("pm"."percentage") AS "total_percentage", "array_agg"("json_build_object"('material_id', "mt"."id", 'material_name', "mt"."name", 'group_name', "mg". …` |
@@ -3497,9 +3492,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `supplier_stricker.v_images_by_product` | `SELECT "p"."prod_reference", "p"."name", "p"."main_image", "p"."optional_image_1", "p"."optional_image_2", "o"."sku", "o"."color_name", "o"."image_1", "o"."image_2", "o"."image_3", "o"."image_4", "o"."image_5", "o"."image_6", "o"."image_7" FROM ("supplier_stricker"."products" "p" LEFT JOIN "supplier …` |
 | `supplier_stricker.v_products_complete` | `SELECT "p"."id", "p"."prod_reference", "p"."name", "p"."description", "p"."brand", "p"."type_name", "p"."subtype_name", "p"."is_stockout", "p"."main_image", "count"("o"."id") AS "total_variants", "count"(DISTINCT "o"."color_code") AS "total_colors", "min"("o"."price_1") AS "min_price", "max"("o"."pr …` |
 | `supplier_stricker.v_stock_by_product` | `SELECT "p"."prod_reference", "p"."name", "count"(DISTINCT "o"."sku") AS "total_skus", "sum"("s"."stock_quantity") AS "total_stock", "min"("s"."stock_quantity") AS "min_stock_sku", "max"("s"."stock_quantity") AS "max_stock_sku", "bool_or"(("s"."stock_quantity" > 0)) AS "has_stock", "min"("s"."next_da …` |
+| `v_full_scope_grants` | `SELECT sual.id AS audit_id, sual.created_at AS granted_at, sual.user_id AS granted_to_user_id, p.full_name AS granted_to_name, u.email AS granted_to_email, sual.action AS step_up_action, (sual.metadata->>'operation') AS operation, (sual.metadata->>'key_id')::uuid AS key_id, (sual.metadata->>'key_pre …` |
 | `v_color_hierarchy` | `SELECT cg.id AS group_id, cg.name AS group_name, cg.slug AS group_slug, cg.hex_code AS group_hex, cg.sort_order AS group_sort, cv.id AS variation_id, cv.name AS variation_name, cv.slug AS variation_slug, cv.hex_code AS variation_hex, cv.sort_order AS variation_sort FROM color_groups cg LEFT JOIN col …` |
 | `v_product_novelties` | `SELECT n.id AS novelty_id, n.product_id, p.name AS product_name, p.sku AS product_sku, p.description AS product_description, p.price AS base_price, p.images[1] AS product_image, n.supplier_id, n.supplier_code, n.supplier_product_code, p.supplier_name, p.category_id, p.category_name, n.detected_at, n …` |
 | `slow_queries_view` | `SELECT pg_stat_statements.userid::regrole::text AS "user", pg_stat_statements.dbid, pg_stat_statements.queryid, left(pg_stat_statements.query, 200) AS query_snippet, pg_stat_statements.calls, round((pg_stat_statements.total_exec_time / pg_stat_statements.calls)::numeric, 2) AS avg_ms, round(pg_stat_ …` |
+| `v_products_public` | `SELECT p.id, p.name, p.description, p.sku, p.category_id, p.supplier_id, NULL::numeric AS cost_price, p.sale_price, p.stock_quantity, p.is_active AS active, p.created_at, p.updated_at, NULL::numeric AS suggested_price, CASE WHEN p.length_cm IS NOT NULL OR p.width_cm IS NOT NULL OR p.height_cm IS NOT …` |
 | `somarcas_catalogo_publico` | `SELECT id, raw_data ->> 'codigo' AS codigo, raw_data ->> 'titulo' AS titulo, raw_data ->> 'descricao' AS descricao, raw_data ->> 'url_foto' AS url_foto, raw_data -> 'matriz_de_fotos_adicionais' AS fotos_adicionais, raw_data -> 'matriz_de_categorias' AS categorias, raw_data -> 'produtos_similares' AS …` |
 | `v_products_min_price` | `SELECT vp.product_id, p.name, p.sku, min(vp.sale_price_1) AS min_price, max(vp.sale_price_1) AS max_price, count(DISTINCT vp.variant_id) AS variants_count FROM public.v_variant_sale_prices_public vp JOIN public.v_products_public p ON p.id = vp.product_id GROUP BY vp.product_id, p.name, p.sku` |
 | `analytics.mv_stock_velocity` | `WITH latest_per_vss AS ( SELECT DISTINCT ON (sd.variant_supplier_source_id) sd.variant_supplier_source_id, sd.supplier_id, sd.supplier_branch_id, sd.variant_id, sd.product_id, sd.stock_close AS current_stock, sd.cost_price_close AS current_price, sd.summary_date AS last_update_date FROM stock_daily_ …` |

@@ -2,11 +2,26 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5d589f552bdab58ebaf844aad008dc4893bbb974",
+  "commit": "c8e9bd93ba6027fa1ebce1d9684d62102027cc29",
   "branch": "main",
-  "data_commit": "2026-11-25T21:13:10-03:00",
+  "data_commit": "2026-11-25T21:20:37-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "c8e9bd9",
+    "data": "2026-11-25",
+    "assunto": "chore(main): release gifts-store 1.20.3 (#4135)"
+   },
+   {
+    "sha": "ba98ac5",
+    "data": "2026-11-25",
+    "assunto": "docs: classifica as 21 versoes novas fora do baseline E06 (18 ja refletidas em producao) (#4140)"
+   },
+   {
+    "sha": "9fa5514",
+    "data": "2026-11-25",
+    "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45723739862) (#4137)"
+   },
    {
     "sha": "5d589f5",
     "data": "2026-11-25",
@@ -116,24 +131,9 @@
     "sha": "3ea746a",
     "data": "2026-11-25",
     "assunto": "fix(migration): allowlist do dispatcher com pg_temp no search_path (E066) (#4111)"
-   },
-   {
-    "sha": "b0ceb1e",
-    "data": "2026-11-25",
-    "assunto": "chore(main): release gifts-store 1.20.1 (#4091)"
-   },
-   {
-    "sha": "51afdbd",
-    "data": "2026-11-25",
-    "assunto": "docs(ledger): dispensa medida de 3 migrations de cron e de allowlist (#4110)"
-   },
-   {
-    "sha": "31d96d8",
-    "data": "2026-11-25",
-    "assunto": "docs(ledger): reconhece as 22 migrations sem aplicação com evidência do canônico (#4108)"
    }
   ],
-  "arquivos_mudados_7d": 569,
+  "arquivos_mudados_7d": 571,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,15 +207,15 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 22
+    "mudancas": 23
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 15
+    "mudancas": 16
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -231,15 +231,15 @@
    },
    {
     "arquivo": "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "supabase/migrations-snapshot/SNAPSHOT_META.json",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -301,16 +301,16 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 244
+    "commits": 242
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 56
+    "commits": 58
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 11287,
+  "arquivos_total": 11290,
   "arquivos_codigo": 5682,
   "linhas_codigo": 1077287,
   "rotas": 141,

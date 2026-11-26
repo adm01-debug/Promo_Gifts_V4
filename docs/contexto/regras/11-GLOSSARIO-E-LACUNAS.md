@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5d589f552b` · branch `main` · 2026-11-26 00:18 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `c8e9bd93ba` · branch `main` · 2026-11-26 00:37 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -50,7 +50,7 @@
 | `audit_log_gravacao` | Audit log de mudanças em tabela_preco_gravacao_oficial e _faixa. RLS ativada em 2026-05-09 (Etapa 1 plano unificação). Triggers SECDEF bypassam RLS p/ INSERT. | 10 colunas | migration |
 | `audit_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
 | `audit_trail` | _(sem COMMENT ON TABLE — significado não documentado)_ | 3 colunas | migration |
-| `auth.users` | Auth: Stores user login data within a secure schema. | 3 colunas | migration |
+| `auth.users` | _(sem COMMENT ON TABLE — significado não documentado)_ | 3 colunas | migration |
 | `auth_login_attempts` | Versao mais recente de login_attempts (com metadata). Atualmente vazia. login_attempts e a tabela populada (203 registros). Consolidacao pendente. | 7 colunas | migration |
 | `auto_tag_rules` | Regras configuráveis de atribuição automática de tags a produtos. Cada regra define condição, campo/operador/valor, prioridade, tag de destino e estado ativo. | 13 colunas | migration |
 | `b2b_collection_products` | Vínculos entre coleções B2B e produtos, com ordenação própria. | 5 colunas | migration |
@@ -276,7 +276,7 @@
 | `product_ai_history` | Histórico de todas as gerações AI por produto. Inclui: ai_title, ai_description, ai_summary, schema_json, tokens, tempo, provedor. | 18 colunas | migration |
 | `product_attributes` | Atributos estruturados por produto Gold — material, capacidade, BPA free, etc.  | 16 colunas | migration |
 | `product_badge_definitions` | Registro canonico de governanca das badges de PRODUTOS (nome, cores, icones, onde/como usar, regra de negocio, prioridade, config). Aditivo: nao altera o calculo/render existente. fix_version=pbd_v1_20260627. ANTI-REGRESSAO: nao remover RLS; manter SET search_path nas fns fn_pbd_*; badge_key e imutavel; badges is_system nao sao deletaveis. | 28 colunas | migration |
-| `product_category_assignments` | Relação canônica N:N entre produtos e categorias. Cada linha atribui um produto a uma categoria; is_primary marca a categoria principal e display_order controla a ordenação. É a fonte canônica para vínculos múltiplos, distinta dos campos legados em products. | 6 colunas | migration |
+| `product_category_assignments` | Relação canônica N:N entre produtos e categorias. Cada linha atribui um produto a uma categoria; is_primary marca a categoria principal e display_order controla a ordenação. É a fonte canônica para vínculos múltiplos, distinta dos campos legados em products. | 0 colunas | migration |
 | `product_commemorative_dates` | Vincula produtos às datas comemorativas. Pode ser herdado da categoria ou manual. | 12 colunas | migration |
 | `product_comparisons` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
 | `product_component_location_techniques` | Personalization techniques available for each product-component location. | 9 colunas | migration |
@@ -307,7 +307,7 @@
 | `product_print_positions` | Configuração de posições de impressão por produto, ordenada por position_index, com códigos/nomes de local, técnicas e referências visuais em JSON/texto. | 18 colunas | migration |
 | `product_properties` | Relacionamento entre produtos e suas propriedades | 9 colunas | migration |
 | `product_qa_image_alerts` | Tabela de qualidade: rastreia produtos ativos que foram ativados ou encontrados sem imagem. Regra de negócio violada: "nenhum produto ativo pode existir sem ao menos uma imagem".  ━━━ CICLO DE VIDA DE UM ALERTA ━━━ ABERTO    → is_resolved=false, resolved_at=NULL RESOLVIDO → is_resolved=true,  resolved_at=timestamp, resolution_notes=motivo  ━━━ FONTES DE CRIAÇÃO (2 caminhos) ━━━ 1. Trigger em tempo real  — products: BEFORE UPDATE    Função: fn_qa_alert_on_activate_without_image()    Gatilho: qualquer UPDATE que mude is_active de false/NULL → true    Efeito: além do alerta, seta products.sync_status = 'activated_no_image' (18 chars, MAX varchar(20))     2. Varredura periódica — pg_cron 'qa-imageless-products' (a cada 30 minutos)    Função: fn_qa_scan_imageless_products()    Detecta produtos que escaparam do trigger (ex.: criados diretamente em pipeline mode)    Também auto-resolve alertas de produtos que já sanaram a situação  ━━━ AUTO-RESOLUÇÃO (fn_qa_scan_imageless_products) ━━━ Um alerta aberto é marcado is_resolved=true automaticamente quando:   • O produto recebeu uma imagem  (row ativa em product_images, primary_image_url, ou images JSONB)   • O produto foi desativado      (is_active=false)   • O produto foi deletado        (is_deleted=true) Para forçar uma varredura manual: SELECT * FROM fn_qa_scan_imageless_products();  ━━━ RELACIONAMENTOS ━━━ • products (FK product_id, ON DELETE CASCADE) — produto monitorado • supplier_id, sku_promo, product_name        — denormalizados no momento do alerta   (para leitura rápida sem JOIN, mesmo se o produto for deletado depois)  ━━━ QUEM ALIMENTA / CONSOME ━━━ Escreve:  trigger fn_qa_alert_on_activate_without_image() \| fn_qa_scan_imageless_products() Lê:       dashboards de qualidade \| rotinas de re-ativação pós-imagem \| n8n workflows de alerta NÃO deve ser editado manualmente — gerenciado exclusivamente pelas funções acima.  ━━━ ÍNDICES ━━━ • idx_pqia_product_id   — busca por produto • idx_pqia_is_resolved  — WHERE is_resolved=false (alertas abertos) • idx_pqia_detected_at  — ordenação por data de detecção  | 11 colunas | migration |
-| … +522 linhas — lista completa em `context.json` | | | |
+| … +510 linhas — lista completa em `context.json` | | | |
 
 ## Dados de referência (seed — planos, categorias, perfis fixos)
 
@@ -368,6 +368,7 @@
 | status | valor `Concluído` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/kit-builder/PersonalizationConfig.tsx` |
 | status | valor `Inválido` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/kit-builder/PersonalizationConfig.tsx` |
 | status | valor `dimension` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/pricing/calculator/QuantityComparisonTable.tsx`<br>`escreve:src/components/pricing/calculator/QuantityComparisonTable.tsx` |
+| status | valor `verified` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/security/MfaChallengeDialog.tsx`<br>`compara:src/services/authService.ts`<br>`escreve:src/components/security/MfaEnrollmentDialog.tsx` |
 | status | valor `incomplete` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/hooks/freight/useKitFreightPlan.ts`<br>`compara:src/lib/freight/fromKit.ts`<br>`compara:src/lib/freight/planFreight.ts`<br>`compara:src/lib/freight/readiness.ts` |
 | status | valor `violations` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/kit-builder/useKitBuilderQuote.ts`<br>`escreve:src/hooks/kit-builder/useKitFitsValidation.ts`<br>`escreve:src/hooks/kit-builder/useKitMinQuantityValidation.ts` |
 | status | valor `changed` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/kit-builder/useKitBuilderQuote.ts`<br>`escreve:src/hooks/kit-builder/useKitPriceValidation.ts` |
@@ -411,6 +412,7 @@
 | status | valor `suspended` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/hooks/voice/feedbackSounds.ts` |
 | status | valor `installed` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/sw-register.ts` |
 | status | valor `selected` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/__visual/DatePickerFieldHarness.tsx` |
+| status | valor `verified` para `cf_sync_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/admin/products/image-gallery/useProductImageGallery.ts`<br>`compara:src/pages/admin/AdminCloudflareImagesPage.tsx`<br>`filtra:supabase/functions/generate-blurhashes/index.ts`<br>`filtra:supabase/functions/hash-product-images/index.ts` |
 | status | valor `uploaded` para `cf_sync_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/AdminCloudflareImagesPage.tsx` |
 | status | valor `orphaned` para `cf_sync_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/AdminCloudflareImagesPage.tsx` |
 | status | valor `ausente` para `estado` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/quotes/QuoteDraftRecovery.tsx`<br>`escreve:src/hooks/quotes/quoteDraftApply.ts` |
@@ -476,13 +478,15 @@
 | coluna | coluna `ai_summary` usada no código não existe no schema de `products` |  |
 | coluna | coluna `ai_title` usada no código não existe no schema de `products` |  |
 | coluna | coluna `ai_version` usada no código não existe no schema de `products` |  |
+| coluna | coluna `brand` usada no código não existe no schema de `products` |  |
 | coluna | coluna `category_id` usada no código não existe no schema de `products` |  |
 | coluna | coluna `category_name` usada no código não existe no schema de `products` |  |
 | coluna | coluna `deleted_at` usada no código não existe no schema de `products` |  |
+| coluna | coluna `description` usada no código não existe no schema de `products` |  |
 | coluna | coluna `images` usada no código não existe no schema de `products` |  |
-| coluna | coluna `is_deleted` usada no código não existe no schema de `products` |  |
 | coluna | coluna `lead_time_days` usada no código não existe no schema de `products` |  |
 | coluna | coluna `locked_fields` usada no código não existe no schema de `products` |  |
+| coluna | coluna `name` usada no código não existe no schema de `products` |  |
 | coluna | coluna `nome` usada no código não existe no schema de `products` |  |
 | coluna | coluna `primary_image_url` usada no código não existe no schema de `products` |  |
 | coluna | coluna `sale_price` usada no código não existe no schema de `products` |  |
@@ -573,6 +577,8 @@
 | coluna | coluna `product_id` usada no código não existe no schema de `product_images` |  |
 | coluna | coluna `url_cdn` usada no código não existe no schema de `product_images` |  |
 | coluna | coluna `width_px` usada no código não existe no schema de `product_images` |  |
+| coluna | coluna `category_id` usada no código não existe no schema de `product_category_assignments` |  |
+| coluna | coluna `product_id` usada no código não existe no schema de `product_category_assignments` |  |
 | coluna | coluna `is_active` usada no código não existe no schema de `users` |  |
 | coluna | coluna `is_vendedor` usada no código não existe no schema de `users` |  |
 | tabela | tabela `...` usada no código não existe nas migrations/types do repo | `src/lib/supabase-untyped.ts`<br>`supabase/migrations/20260621235500_faxina_restore_18_frontend_referenced_tables_APLICADO.sql` |
@@ -641,21 +647,54 @@
 | rls | `product_target_audiences`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/products/productMarketingData.ts` |
 | rls | `role_migration_batches`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useRoleMigration.ts` |
 | rls | `role_migration_items`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useRoleMigration.ts` |
-| rls | `security_settings`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useGeoBlocking.ts` |
-| rls | `seller_cart_items`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useSellerCarts.ts`<br>`src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
-| rls | `seller_carts`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useSellerCarts.ts`<br>`src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
-| rls | `supplier_products_raw`: RLS ligado sem nenhuma política → só service_role acessa |  |
-| rls | `supplier_settings`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSupplierDefaultLeadTime.ts`<br>`src/services/productionLeadTimeService.ts` |
-| rls | `suppliers`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/services/freightReadinessService.ts` |
-| … +257 linhas — lista completa em `context.json` | | |
+| … +160 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 
 - `optimization_queue.guardrail_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `quotes.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `magazines.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `discount_approval_requests.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `cf_recon.action_log.old_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `cf_recon.action_log.new_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `access_blocked_log.state` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `ai_enrichment_queue.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `ai_usage_logs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `asia_upload_mapping.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `city_whitelist.state` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `conversation_audit_logs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `conversation_delivery_status.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `external_connections_sync_log.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `import_pipeline_steps.fase` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `import_pipeline_steps.etapa` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `import_pipeline_steps.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `magic_up_campaigns.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `magic_up_public_shares.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `mockup_generation_jobs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `notifications.delivery_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `optimization_queue_runs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `optimization_queue_runs.guardrail_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `orders.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `orders.fulfillment_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `pipeline_run_log.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `product_fiscal.tax_reference_state` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `product_supply.sync_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `product_sync_logs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `product_videos.cloudflare_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `simulator_wizard_drafts.wizard_step` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `sm_site_url_map.search_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `sm_worker_partitions.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `video_validation_log.validation_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `webhook_dispatcher_log.quote_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `webhook_dispatcher_log.http_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `video_import_queue.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `video_sim_results.queue_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `webhook_delivery_metrics.http_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `xbz_upload_mapping.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `supplier_stricker.sync_log.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `custom_kits.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `discount_approval_requests.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `magazines.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `product_images.cf_sync_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
+- `user_onboarding.current_step` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `quotes_inbound.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `webhook_inbound_log.http_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `admin_audit_log_y2025m12.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
@@ -665,47 +704,8 @@
 - `admin_audit_log_y2026m04.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `admin_audit_log_y2026m05.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `admin_audit_log_y2026m06.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `ai_usage_logs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `conversation_audit_logs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `conversation_delivery_status.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `external_connections_sync_log.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `magic_up_campaigns.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `magic_up_public_shares.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `optimization_queue_runs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `optimization_queue_runs.guardrail_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `orders.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `orders.fulfillment_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `product_sync_logs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `simulator_wizard_drafts.wizard_step` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `user_onboarding.current_step` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `webhook_delivery_metrics.http_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `webhook_delivery_metrics_y2026m05.http_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `webhook_delivery_metrics_y2026m06.http_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `cf_recon.action_log.old_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `cf_recon.action_log.new_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `access_blocked_log.state` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `ai_enrichment_queue.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `asia_upload_mapping.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `city_whitelist.state` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `import_pipeline_steps.fase` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `import_pipeline_steps.etapa` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `import_pipeline_steps.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `mockup_generation_jobs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `notifications.delivery_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `pipeline_run_log.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `product_fiscal.tax_reference_state` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `product_supply.sync_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `product_videos.cloudflare_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `sm_site_url_map.search_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `sm_worker_partitions.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `video_validation_log.validation_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `webhook_dispatcher_log.quote_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `webhook_dispatcher_log.http_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `video_import_queue.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `video_sim_results.queue_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `xbz_upload_mapping.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `supplier_stricker.sync_log.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `product_images.cf_sync_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `reward_redemptions.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `sync_jobs.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `bitrix_deals.stage` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
@@ -715,7 +715,7 @@
 - `quote_approval_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `kit_share_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `_deprecated_silver_images_queue_20260606.img_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- 65/496 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01`, `admin_audit_log_y2026m02`, `admin_audit_log_y2026m03`, `admin_audit_log_y2026m04`, `admin_audit_log_y2026m05`, `admin_audit_log_y2026m06`, `app_vitals`, `audit_logs` …
+- 66/496 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `user_allowed_ips`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01`, `admin_audit_log_y2026m02`, `admin_audit_log_y2026m03`, `admin_audit_log_y2026m04`, `admin_audit_log_y2026m05`, `admin_audit_log_y2026m06`, `app_vitals` …
 - Há tabelas usadas no código sem migration no repo — o schema real pode ter sido alterado pelo painel.
 
 ## Regras manuais presentes

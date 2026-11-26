@@ -1,16 +1,16 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5d589f552b` · branch `main` · 2026-11-26 00:18 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `c8e9bd93ba` · branch `main` · 2026-11-26 00:37 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
 
 `admin`, `agent`, `agente`, `anon`, `assistant`, `cancelled`, `completed`, `coordenador`, `denied`, `dev`, `failed`, `granted`, `manager`, `member`, `owner`, `pending`, `perm`, `public`, `r`, `role`, `running`, `skipped`, `string`, `success`, `supervisor`, `system`, `user`, `vendedor`
 
-- Tabelas de perfil/permissão: `organization_members`, `permissions`, `product_group_members`, `role_migration_batches`, `role_migration_items`, `role_permissions`, `user_roles`, `product_similarity_group_members`, `roles`
-- Colunas de perfil: `ai_usage_quotas.role` (public.app_role USING role::public.app_role USING role::public.app_role NOT NULL UNIQUE), `conversation_event_history.role` ("text" NOT NULL), `expert_messages.role` (text NOT NULL DEFAULT 'user'), `profiles.role` (text CHECK (role IN ('admin','manager','sales','seller'))), `role_permissions.role` (app_role NOT NULL), `user_roles.role` (text NOT NULL), `client_contacts.role` (TEXT)
+- Tabelas de perfil/permissão: `organization_members`, `permissions`, `product_group_members`, `product_similarity_group_members`, `role_migration_batches`, `role_migration_items`, `role_permissions`, `roles`, `user_roles`
+- Colunas de perfil: `ai_usage_quotas.role` (public.app_role USING role::public.app_role USING role::public.app_role NOT NULL UNIQUE), `profiles.role` (text CHECK (role IN ('admin','manager','sales','seller'))), `conversation_event_history.role` ("text" NOT NULL), `expert_messages.role` (text NOT NULL DEFAULT 'user'), `role_permissions.role` (app_role NOT NULL), `user_roles.role` (text NOT NULL), `client_contacts.role` (TEXT)
 - Claims do JWT usados em políticas/funções: `aal`, `role`, `user_metadata`
-- Funções usadas dentro de políticas RLS (a regra real está no corpo delas — veja `06`): `can_access_quote`, `can_approve_discount`, `can_view_all_sales`, `current_user_role`, `fn_product_active_for_rls`, `foldername`, `get_user_org_ids`, `has_org_role`, `has_role`, `is_admin`, `is_admin_or_above`, `is_admin_strict`, `is_coord_or_above`, `is_dev`, `is_kit_collaborator`, `is_kit_owner`, `is_manager_or_admin`, `is_org_owner_or_admin`, `is_supervisor_or_above`, `jwt`, `org_has_any_members`, `role`, `uid`, `user_is_org_member`
+- Funções usadas dentro de políticas RLS (a regra real está no corpo delas — veja `06`): `can_access_quote`, `can_approve_discount`, `can_view_all_sales`, `current_user_role`, `fn_product_active_for_rls`, `get_user_org_ids`, `has_org_role`, `has_role`, `is_admin`, `is_admin_or_above`, `is_admin_strict`, `is_coord_or_above`, `is_dev`, `is_kit_collaborator`, `is_kit_owner`, `is_manager_or_admin`, `is_org_owner_or_admin`, `is_supervisor_or_above`, `org_has_any_members`, `uid`, `user_is_org_member`
 
 ## Configuração de auth (supabase/config.toml)
 
@@ -327,10 +327,11 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 849 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 850 arquivo(s)
 
 - `auditoria-supabase/propostas/P01_rls_restrictive_correcao.sql`
 - `auditoria-supabase/propostas/P10_func_new_001_fn_cron_guard_revoke.sql`
+- `docs/db/LEDGER_DATA_2026-11-26.sql`
 - `docs/db/proposals/20260922210000_create_quote_lineage.sql`
 - `docs/db/proposals/20260922211000_update_quote_lineage_lock.sql`
 - `docs/promo-champions/migration-helpers.sql`
@@ -478,8 +479,7 @@
 - `supabase/functions/github-credentials-test/index.ts`
 - `supabase/functions/hash-product-images/index.ts`
 - `supabase/functions/health-check/index.ts`
-- `supabase/functions/load-test/index.ts`
-- … +699 (lista completa em `context.json`)
+- … +700 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 
@@ -657,8 +657,6 @@
 - `fn_ema_kpi_by_level`
 - `fn_enqueue_ai_enrichment`
 - `fn_enqueue_products_for_ai_description`
-- `fn_enrich_asia_components_batch`
-- `fn_enrich_kits_daily`
 - `fn_enrich_pen_categories`
 - `fn_enrich_properties_batch`
 - `fn_ensure_seller_discount_limit`
@@ -666,13 +664,7 @@
 - `fn_expire_novelties_with_stats`
 - `fn_expire_overdue_quotes`
 - `fn_expire_pending_promises`
-- `fn_extract_dimensions_from_text`
-- `fn_extract_item_dims_xbz_from_bronze`
-- `fn_extract_kit_dims_from_somarcas_bronze`
-- `fn_extract_kit_dims_from_spot_bronze`
-- `fn_extract_kit_dims_from_xbz_bronze`
 - `fn_extract_notebook_feature_codes`
-- `fn_extract_pkg_dims_from_bronze`
 - `fn_favorite_items_assign_position`
 - `fn_favorite_items_no_archived_list`
 - `fn_favorite_items_soft_delete`
@@ -681,18 +673,8 @@
 - `fn_generate_market_insights_cache`
 - `fn_generate_trends_insights`
 - `fn_get_all_leaf_categories`
-- `fn_get_asia_api_key`
-- `fn_get_asia_product_dims_for_kit`
-- `fn_get_asia_secret_key`
-- `fn_get_cf_account_id`
-- `fn_get_cf_api_token`
-- `fn_get_cf_credentials`
-- `fn_get_color_swatches_batch`
 - `fn_get_conversion_funnel`
 - `fn_get_customization_price`
-- `fn_get_discontinued_products`
-- `fn_get_discontinued_stats`
-- `fn_get_image_upload_queue`
 - `fn_get_low_stock_alerts`
 - `fn_get_navigation_patterns`
 - `fn_get_novelty_alerts`
@@ -706,9 +688,7 @@
 - `fn_get_reposicao_variants_summary`
 - `fn_get_repressed_demand`
 - `fn_get_similar_products`
-- `fn_get_sm_session_cookie`
 - `fn_get_spot_access_key`
-- `fn_get_spot_feb2026_ids`
 - `fn_get_stock_notification_counts`
 - `fn_get_stockout_alerts`
 - `fn_global_search`
@@ -719,8 +699,6 @@
 - `fn_health_check_gravacao`
 - `fn_ingest_asia_api_batch`
 - `fn_ingest_asia_hg_batch`
-- `fn_ingest_asia_hg_batch_debug`
-- `fn_ingest_asia_hg_debug_sample`
 - `fn_ingest_bronze_batch`
 - `fn_ingest_colors_batch`
 - `fn_ingest_customization_options_batch`
@@ -730,15 +708,7 @@
 - `fn_is_bulk_import_mode`
 - `fn_is_graphic_material`
 - `fn_kcvs_guard_not_sellable`
-- `fn_kit_auto_approve_high_confidence`
-- `fn_kit_auto_promote_approved`
 - `fn_kit_from_ficha`
-- `fn_kit_material_quick_propagate`
-- `fn_kit_sync_personalization_notes`
-- `fn_link_asia_colors_from_bronze`
-- `fn_link_cf_image`
-- `fn_link_sm_colors_from_title`
-- `fn_list_deactivation_requests`
 - `fn_log_search_analytics`
 - `fn_magazine_public_token`
 - `fn_match_canonical_color`
@@ -752,7 +722,6 @@
 - `fn_parse_cover_material_code`
 - `fn_parse_cover_type_code`
 - `fn_parse_ficha_tecnica_text`
-- `fn_parse_kit_page_dimensions`
 - `fn_parse_paper_color_code`
 - `fn_parse_paper_format`
 - `fn_parse_paper_ruling`
@@ -771,24 +740,18 @@
 - `fn_populate_all_products_seo`
 - `fn_populate_novelties_from_supplier`
 - `fn_prevent_canonical_chain`
-- `fn_process_all_kit_component_enrichments`
 - `fn_process_asia_stock_pending`
 - `fn_process_raw_v2`
 - `fn_process_webhook_outbox_batch`
 - `fn_product_active_for_rls`
 - `fn_product_images_health_check`
 - `fn_products_quality_dashboard`
-- `fn_promote_customization_to_gold`
 - `fn_promote_kit_component_padronizacao`
 - `fn_promote_kit_ficha_staging`
 - `fn_promote_notebook_specs`
 - `fn_promote_padronizacao`
-- `fn_purge_expired_restock_dates`
 - `fn_purge_old_stock_snapshots`
 - `fn_purge_spr_history`
-- `fn_qa_alert_on_activate_without_image`
-- `fn_qa_check_image_coverage`
-- `fn_qa_scan_imageless_products`
 - `fn_qip_propagate_to_quote_items`
 - `fn_quote_children_enforce_parent_immutability`
 - `fn_quotes_enforce_immutability`
@@ -801,29 +764,19 @@
 - `fn_reconcile_category_products_count`
 - `fn_reconcile_stock_gold`
 - `fn_refresh_kit_component_variant_skus`
-- `fn_refresh_supplier_sync_timestamps`
-- `fn_reject_product_deactivation`
 - `fn_remove_similarity_pairs_on_delete`
 - `fn_repair_canonical_chains`
-- `fn_reposicao_backfill_today`
-- `fn_request_product_deactivation`
 - `fn_reset_is_shared_on_canonical_null`
 - `fn_resolve_supplier`
 - `fn_resolve_supplier_arrivals`
-- `fn_resync_all_category_counts`
 - `fn_resync_product_image_urls`
 - `fn_resync_product_media`
 - `fn_resync_product_physical_all`
-- `fn_revoke_truncate_public`
 - `fn_revoke_view_write_grants_on_create`
 - `fn_rpc_exists`
 - `fn_run_and_persist_smoke_tests`
 - `fn_run_pipeline_health_check`
 - `fn_run_schema_drift_check`
-- `fn_rupture_anomalia_report`
-- `fn_rupture_by_level`
-- `fn_rupture_health_check`
-- `fn_rupture_quick_stats`
 - `fn_sanitize_product_image_urls`
 - `fn_save_ai_enrichment_results`
 - `fn_set_updated_at`
@@ -833,54 +786,32 @@
 - `fn_sm_category_collect`
 - `fn_sm_category_enqueue`
 - `fn_sm_category_seed`
-- `fn_sm_enqueue_videos`
-- `fn_sm_link_video`
 - `fn_sm_pipeline_health`
 - `fn_sm_populate_colors`
-- `fn_sm_populate_videos_from_site`
-- `fn_sm_promote_videos_from_site`
-- `fn_sm_session_check`
 - `fn_sm_site_collect`
-- `fn_sm_site_enqueue`
 - `fn_sm_site_tick`
-- `fn_sm_stock_guard`
 - `fn_sm_to_silver`
 - `fn_sm_url_discover_collect`
-- `fn_sm_url_discover_via_search`
-- `fn_sm_url_map_build`
 - `fn_sm_url_map_from_site_urls`
-- `fn_sm_variant_coherence_guard`
 - `fn_smoke_tests_categorization`
 - `fn_snapshot_medallion_coverage`
 - `fn_spot_color_integrity_check`
 - `fn_spot_customization_prices_to_gold`
-- `fn_spot_detect_new_images`
 - `fn_spot_direct_prices_gold`
 - `fn_spot_direct_stock_gold`
-- `fn_spot_enqueue_new_videos`
-- `fn_spot_enqueue_vimeo_eu`
-- `fn_spot_enrich_image_colors`
-- `fn_spot_eu_diff_get_refs`
 - `fn_spot_fix_materials`
 - `fn_spot_gold_enrich`
-- `fn_spot_health_check`
-- `fn_spot_link_video`
 - `fn_spot_print_positions`
 - `fn_spot_process_batch`
 - `fn_spot_process_ref`
 - `fn_spot_reconcile_variant_to_legacy`
-- `fn_spot_relink_family_images`
 - `fn_spot_silver_enrich`
-- `fn_spot_stock_fast_sync`
 - `fn_spot_variant_repl_enrich`
-- `fn_spot_vimeo_daily_sync`
 - `fn_spr_requeue_failed`
 - `fn_sre_set_updated_at`
 - `fn_standardize_kit_component`
 - `fn_standardize_supplier`
 - `fn_super_filtro`
-- `fn_super_filtro_opcoes`
-- `fn_super_filtro_price_range`
 - `fn_super_filtro_product_ids`
 - `fn_sync_ai_usage_logs_total_tokens`
 - `fn_sync_all_is_new`
@@ -888,10 +819,6 @@
 - `fn_sync_backfill_queue_on_pi_fill`
 - `fn_sync_category_image_url_on_slug_change`
 - `fn_sync_derived_product_flags`
-- `fn_sync_dispatcher_log_from_net`
-- `fn_sync_dynamic_collections`
-- `fn_sync_is_new_expires_at`
-- `fn_sync_is_stockout_all`
 - `fn_sync_local_drift_to_schema_drift_log`
 - `fn_sync_main_category_from_pca`
 - `fn_sync_novelty_to_product`
@@ -901,65 +828,41 @@
 - `fn_sync_product_fiscal_on_change`
 - `fn_sync_product_images_on_product_deactivate`
 - `fn_sync_product_images_to_products`
-- `fn_sync_product_materials_to_jsonb`
 - `fn_sync_product_novelties`
 - `fn_sync_product_physical_from_products`
 - `fn_sync_product_seo_on_change`
 - `fn_sync_product_stock_cache`
 - `fn_sync_product_supply_on_change`
 - `fn_sync_product_variants_next_entry`
-- `fn_sync_product_view_count`
-- `fn_sync_products_videos_cache`
 - `fn_sync_profile_role_from_user_roles`
 - `fn_sync_search_analytics_seller_id`
-- `fn_sync_set_image_url`
 - `fn_sync_sku_promo`
 - `fn_sync_stock_bronze_to_gold`
-- `fn_sync_stock_bronze_to_gold_spot`
 - `fn_sync_workspace_notifications_search_vector`
-- `fn_tag_product_complete`
 - `fn_toggle_group_similarity_pairs`
 - `fn_trg_compat_sync_optional`
-- `fn_trg_sync_category_assignment`
 - `fn_trg_sync_physical_on_product_update`
-- `fn_trigger_fill_supplier_subtype`
 - `fn_trigger_product_automation`
-- `fn_trigger_rebuild_swatches_on_image`
-- `fn_trigger_rebuild_swatches_on_variant`
 - `fn_trigger_schema_drift_fetch`
 - `fn_update_all_seo_scores`
-- `fn_update_image_dimensions`
 - `fn_update_supplier_last_sync`
 - `fn_upsert_asia_wp_batch`
 - `fn_upsert_stock_to_bronze`
-- `fn_upsert_stocks_bulk_spot`
-- `fn_vacuum_high_dead_tuples`
 - `fn_validate_member_supplier`
 - `fn_verify_anon_catalog_grants`
-- `fn_video_link`
 - `fn_video_link_to_products`
 - `fn_video_queue_old_uid`
 - `fn_video_queue_recover_stuck`
-- `fn_video_retry_errors`
 - `fn_video_set_dimensions`
 - `fn_video_sim_export`
 - `fn_video_sim_upsert`
 - `fn_xbz_dispatch_image_batch`
-- `fn_xbz_enqueue_videos`
 - `fn_xbz_enrich_stock_batch`
 - `fn_xbz_ficha_run_batch`
 - `fn_xbz_harvest_image_batch`
-- `fn_xbz_link_images_to_colors`
-- `fn_xbz_link_video`
-- `fn_xbz_populate_images_from_site`
-- `fn_xbz_populate_videos_from_site`
 - `fn_xbz_recover_stale`
 - `fn_xbz_resolver_cor_secundaria`
 - `fn_xbz_run_image_cycle`
-- `fn_xbz_site_enqueue`
-- `fn_xbz_stock_fast_sync`
-- `fn_xbz_stock_fast_sync_v2`
-- `fn_xbz_stock_fast_sync_v3`
 - `force_logout_all_users`
 - `generate_order_number`
 - `generate_quote_number`
@@ -975,7 +878,6 @@
 - `get_color_filters`
 - `get_connection_failure_window_minutes`
 - `get_connections_auto_test_interval`
-- `get_edge_anon_key`
 - `get_edge_function_secret`
 - `get_edge_functions_base_url`
 - `get_edge_invoke_summary`
@@ -1001,13 +903,11 @@
 - `get_unread_count`
 - `get_user_org_ids`
 - `get_user_role`
-- `get_vault_secret`
 - `guard_mcp_api_keys_writes`
 - `handle_new_user`
 - `handle_password_reset_request`
 - `has_org_role`
 - `has_role`
-- `http_request`
 - `increment_kit_template_usage`
 - `increment_row_version`
 - `increment_webhook_dedupe_hit`
@@ -1038,9 +938,6 @@
 - `magazine_add_items_atomic`
 - `magazine_add_items_v2`
 - `magazine_archive_v2`
-- `magazine_auto_archive_stale_drafts`
-- `magazine_cleanup_all`
-- `magazine_cleanup_orphan_state`
 - `magazine_cleanup_view_events`
 - `magazine_create_v2`
 - `magazine_duplicate_atomic`
@@ -1094,7 +991,6 @@
 - `purge_expired_security_data`
 - `purge_favorite_trash_old`
 - `purge_old_audit_logs`
-- `purge_old_crm_callback_events`
 - `reconcile_cf_image_status`
 - `record_dev_route_telemetry`
 - `record_mcp_access_violation`
@@ -1116,11 +1012,9 @@
 - `restore_seller_cart`
 - `retry_failed_webhook_deliveries`
 - `revoke_all_user_tokens`
-- `rpc_enrich_kit_component`
 - `search_products_semantic`
 - `search_records_rerank`
 - `seed_discount_test_users`
-- `send_digest_notification`
 - `set_connection_failure_window_minutes`
 - `set_connections_auto_test_interval`
 - `sincronizar_estoque_spot`
@@ -1133,9 +1027,7 @@
 - `sync_user_org_to_org_members`
 - `tg_ip_access_control_set_updated_at`
 - `tg_order_items_set_updated_at`
-- `tg_reader_state_validate`
 - `trg_auto_revoke_mcp_on_role_loss`
-- `trg_fn_update_tag_usage_count`
 - `trg_sync_external_connections`
 - `trg_user_roles_sync_profile_role`
 - `trim_connection_test_history`
@@ -1263,7 +1155,7 @@ Middleware matcher (Next.js): nenhum
 | grant | service_role | select, insert, update, delete, references, trigger, truncate | `v_products_public` |
 | grant | service_role, authenticated | execute | `record_mcp_access_violation`, `fn_sm_pipeline_health`, `fn_expire_novelties`, `fn_check_schema_signature_drift` |
 | grant | service_role, postgres | execute | `increment_webhook_stats` |
-| revoke | PUBLIC | all | `get_edge_invoke_summary`, `classification_audit.apply_high_confidence_suggestions`, `_can_act_on_behalf_of_others`, `_get_user_primary_role`, `acquire_ai_quota`, `admin_active_sessions`, `admin_execute_role_migration_batch`, `admin_revoke_user_sessions`, `apply_transform`, `assert_quote_discount_integrity`, `audit_mcp_api_keys_changes`, `audit_mcp_key_insert`, `audit_mcp_key_revoke`, `audit_ownership_orphans`, `audit_rls_coverage` … +2674 |
+| revoke | PUBLIC | all | `classification_audit.apply_high_confidence_suggestions`, `_can_act_on_behalf_of_others`, `_get_user_primary_role`, `acquire_ai_quota`, `admin_active_sessions`, `admin_execute_role_migration_batch`, `admin_revoke_user_sessions`, `apply_transform`, `assert_quote_discount_integrity`, `audit_mcp_api_keys_changes`, `audit_mcp_key_insert`, `audit_mcp_key_revoke`, `audit_ownership_orphans`, `audit_rls_coverage`, `audit_rls_matrix` … +3976 |
 | revoke | PUBLIC | execute | `fn_magazine_public_token`, `public`, `can_access_quote`, `org_has_any_members`, `org_has_any_members`, `get_edge_function_secret`, `create_organization_with_owner`, `get_quote_token_by_value`, `submit_quote_response`, `get_public_schema_signatures`, `public`, `check_webhook_dedup`, `process_notifications_queue`, `process_notifications_queue`, `process_notifications_queue` … +43 |
 | revoke | PUBLIC | insert, update, delete, truncate, trigger, references | `anon_catalog_grant_audit_log`, `anon_catalog_grant_audit_log` |
 | revoke | PUBLIC | select | `vw_product_availability`, `extensions.pg_stat_statements`, `extensions.pg_stat_statements_info` |
@@ -1374,36 +1266,13 @@ Middleware matcher (Next.js): nenhum
 
 ## Multi-tenancy
 
-- Chave de tenant: **`organization_id`** presente em 29 tabela(s): `quotes`, `magazines`, `material_groups`, `material_types`, `product_materials`, `magazine_templates`, `order_items`, `orders`, `organization_members`, `ai_enrichment_queue`, `attribute_definitions`, `attribute_equivalences`, `attribute_groups`, `auto_tag_rules`, `b2b_collections`, `category_relationships`, `color_equivalences`, `commemorative_dates`, `markup_configurations`, `material_variations`, `ncm_codes`, `product_ai_history`, `product_deactivation_requests`, `product_videos`, `variation_types`, `variation_values`, `user_organizations`, `_deprecated_silver_products_20260606`, `product_specifications`
+- Chave de tenant: **`organization_id`** presente em 29 tabela(s): `quotes`, `ai_enrichment_queue`, `attribute_definitions`, `attribute_equivalences`, `attribute_groups`, `auto_tag_rules`, `b2b_collections`, `category_relationships`, `color_equivalences`, `commemorative_dates`, `magazine_templates`, `markup_configurations`, `material_variations`, `ncm_codes`, `order_items`, `orders`, `organization_members`, `product_ai_history`, `product_deactivation_requests`, `product_videos`, `variation_types`, `variation_values`, `magazines`, `material_groups`, `material_types`, `product_materials`, `user_organizations`, `_deprecated_silver_products_20260606`, `product_specifications`
 - Cobertura: 6% das tabelas. Abaixo de 60% — isolamento provavelmente por usuário (auth.uid()) ou misto; não flagado por tabela.
 
 ## Soft delete (registros 'apagados' continuam na tabela — filtre!)
 
 | Tabela | Coluna |
 |---|---|
-| `categories` | `is_active` |
-| `categories` | `deleted_at` |
-| `categories` | `active` |
-| `products` | `is_active` |
-| `products` | `is_deleted` |
-| `magazines` | `archived_at` |
-| `magazines` | `deleted_at` |
-| `material_groups` | `is_active` |
-| `material_types` | `is_active` |
-| `product_materials` | `is_active` |
-| `category_icons` | `is_active` |
-| `collection_items_trash` | `deleted_at` |
-| `favorite_items_trash` | `deleted_at` |
-| `geo_allowed_countries` | `is_active` |
-| `inbound_webhook_endpoints` | `is_active` |
-| `kit_templates` | `is_active` |
-| `mockup_prompt_configs` | `is_active` |
-| `outbound_webhooks` | `active` |
-| `product_component_locations` | `is_active` |
-| `product_components` | `is_active` |
-| `product_groups` | `is_active` |
-| `profiles` | `is_active` |
-| `scheduled_reports` | `is_active` |
 | `product_variants` | `is_active` |
 | `prod_audit.classification_rules` | `active` |
 | `ai_function_routing` | `is_active` |
@@ -1413,6 +1282,7 @@ Middleware matcher (Next.js): nenhum
 | `attribute_equivalences` | `is_active` |
 | `attribute_groups` | `is_active` |
 | `auto_tag_rules` | `is_active` |
+| `profiles` | `is_active` |
 | `binding_colors` | `is_active` |
 | `binding_types` | `is_active` |
 | `category_accessory_categories` | `is_active` |
@@ -1423,6 +1293,7 @@ Middleware matcher (Next.js): nenhum
 | `category_variation_types` | `is_active` |
 | `city_whitelist` | `is_active` |
 | `classify_functions_registry` | `is_active` |
+| `collection_items_trash` | `deleted_at` |
 | `color_equivalences` | `is_active` |
 | `color_groups` | `is_active` |
 | `color_nuances` | `is_active` |
@@ -1433,17 +1304,23 @@ Middleware matcher (Next.js): nenhum
 | `cover_materials` | `is_active` |
 | `cover_types` | `is_active` |
 | `eco_material_config` | `is_active` |
+| `favorite_items_trash` | `deleted_at` |
 | `feminine_color_config` | `is_active` |
+| `geo_allowed_countries` | `is_active` |
 | `image_types` | `is_active` |
+| `inbound_webhook_endpoints` | `is_active` |
 | `included_packaging_print_areas` | `active` |
 | `included_packaging_techniques` | `active` |
 | `ip_whitelist` | `is_active` |
 | `kit_component_types` | `is_active` |
+| `kit_templates` | `is_active` |
 | `markup_configurations` | `is_active` |
 | `material_variations` | `is_active` |
 | `mockup_approval_links` | `is_active` |
+| `mockup_prompt_configs` | `is_active` |
 | `ncm_codes` | `is_active` |
 | `notebook_features` | `is_active` |
+| `outbound_webhooks` | `active` |
 | `packaging_types` | `active` |
 | `packagings` | `active` |
 | `paper_colors` | `is_active` |
@@ -1455,10 +1332,13 @@ Middleware matcher (Next.js): nenhum
 | `product_attributes` | `is_active` |
 | `product_commemorative_dates` | `is_active` |
 | `product_component_location_techniques` | `is_active` |
+| `product_component_locations` | `is_active` |
+| `product_components` | `is_active` |
 | `product_faqs` | `is_active` |
 | `product_group_components` | `is_active` |
 | `product_group_location_techniques` | `is_active` |
 | `product_group_locations` | `is_active` |
+| `product_groups` | `is_active` |
 | `product_included_packagings` | `active` |
 | `product_novelties` | `is_active` |
 | `product_packaging_compatibility` | `active` |
@@ -1474,6 +1354,7 @@ Middleware matcher (Next.js): nenhum
 | `push_subscriptions` | `is_active` |
 | `ramo_atividade` | `ativo` |
 | `ramo_atividade_filho` | `ativo` |
+| `scheduled_reports` | `is_active` |
 | `seo_redirects` | `is_active` |
 | `shipping_boxes` | `is_active` |
 | `shipping_boxes` | `deleted_at` |
@@ -1485,10 +1366,21 @@ Middleware matcher (Next.js): nenhum
 | `supplier_stricker.optionals` | `is_active` |
 | `supplier_stricker.product_types` | `is_active` |
 | `supplier_stricker.products` | `is_active` |
+| `categories` | `is_active` |
+| `categories` | `deleted_at` |
+| `categories` | `active` |
+| `magazines` | `archived_at` |
+| `magazines` | `deleted_at` |
+| `material_groups` | `is_active` |
+| `material_types` | `is_active` |
+| `product_materials` | `is_active` |
+| `products` | `is_active` |
+| `products` | `is_deleted` |
 | `suppliers` | `is_active` |
 | `suppliers` | `deleted_at` |
 | `user_allowed_ips` | `is_active` |
 | `user_ip_allowlist` | `is_active` |
+| `category_icons` | `is_active` |
 | `user_sessions` | `is_active` |
 | `achievements` | `is_active` |
 | `rewards` | `is_active` |
@@ -1511,130 +1403,26 @@ Middleware matcher (Next.js): nenhum
 |---|---|
 | `optimization_queue` | `created_at`, `created_by`, `updated_at` |
 | `quotes` | `created_by` |
-| `categories` | `created_at`, `updated_at` |
-| `product_category_assignments` | `created_at` |
-| `magazines` | `created_at`, `updated_at` |
-| `custom_kits` | `created_at`, `updated_at` |
-| `material_groups` | `created_at`, `created_by`, `updated_at`, `updated_by` |
-| `material_types` | `created_at`, `updated_at` |
-| `product_materials` | `created_at`, `created_by`, `updated_at`, `updated_by` |
-| `quotes_inbound` | `updated_at` |
-| `crm_callback_events` | `created_at` |
-| `magazine_items` | `created_at`, `updated_at` |
-| `magazine_reader_state` | `created_at`, `updated_at` |
-| `magazine_templates` | `created_at`, `updated_at` |
-| `access_security_settings` | `updated_at`, `updated_by` |
-| `admin_audit_log` | `created_at` |
-| `admin_audit_log_y2025m12` | `created_at` |
-| `admin_audit_log_y2026m01` | `created_at` |
-| `admin_audit_log_y2026m02` | `created_at` |
-| `admin_audit_log_y2026m03` | `created_at` |
-| `admin_audit_log_y2026m04` | `created_at` |
-| `admin_audit_log_y2026m05` | `created_at` |
-| `admin_audit_log_y2026m06` | `created_at` |
-| `admin_settings` | `created_at`, `updated_at`, `updated_by` |
-| `ai_usage_events` | `created_at` |
-| `ai_usage_logs` | `created_at`, `updated_at` |
-| `ai_usage_quotas` | `created_at`, `updated_at` |
-| `app_vitals` | `created_at` |
-| `art_file_attachments` | `created_at`, `updated_at` |
-| `audit_logs` | `created_at` |
-| `auth_login_attempts` | `created_at` |
-| `bot_detection_log` | `created_at` |
-| `cart_templates` | `created_at`, `updated_at` |
-| `category_icons` | `created_at`, `updated_at` |
-| `collection_item_reactions` | `created_at` |
-| `collection_items` | `created_at` |
-| `collections` | `created_at`, `updated_at` |
-| `comparison_reactions` | `created_at` |
-| `component_media` | `created_at`, `updated_at` |
-| `connection_test_history` | `created_at` |
-| `conversation_delivery_status` | `updated_at` |
-| `conversation_event_history` | `created_at` |
-| `e2e_cleanup_audit` | `created_at` |
-| `e2e_cleanup_rate_limit` | `updated_at` |
-| `expert_conversations` | `created_at`, `updated_at` |
-| `expert_messages` | `created_at` |
-| `external_connections` | `created_at`, `created_by`, `updated_at` |
-| `external_connections_sync_log` | `created_at` |
-| `favorite_items` | `updated_at` |
-| `favorite_lists` | `created_at`, `updated_at` |
-| `file_scan_logs` | `created_at` |
-| `follow_up_reminders` | `created_at` |
-| `generated_mockups` | `created_at` |
-| `geo_allowed_countries` | `created_at`, `created_by` |
-| `hardening_health_snapshots` | `created_at` |
-| `integration_credentials` | `created_at`, `updated_at`, `updated_by` |
-| `ip_access_control` | `created_at`, `created_by`, `updated_at` |
-| `kit_collaborators` | `created_at`, `updated_at` |
-| `kit_comments` | `created_at`, `updated_at` |
-| `kit_templates` | `created_at`, `created_by`, `updated_at` |
-| `kit_variants` | `created_at`, `updated_at` |
-| `login_attempts` | `created_at` |
-| `magic_up_brand_kits` | `created_at`, `updated_at` |
-| `magic_up_campaigns` | `created_at`, `updated_at` |
-| `magic_up_comments` | `created_at` |
-| `magic_up_generations` | `created_at` |
-| `magic_up_public_shares` | `created_at`, `updated_at` |
-| `magic_up_reactions` | `created_at` |
-| `mcp_access_violations` | `created_at` |
-| `mcp_api_keys` | `created_at`, `created_by`, `updated_at` |
-| `mcp_key_auto_revocations` | `created_at`, `created_by` |
-| `mockup_drafts` | `created_at`, `updated_at` |
-| `mockup_prompt_configs` | `created_at`, `updated_at` |
-| `mockup_templates` | `created_at`, `updated_at` |
-| `optimization_queue_runs` | `created_at` |
-| `order_item_personalizations` | `created_at`, `updated_at` |
-| `order_items` | `created_at` |
-| `orders` | `created_at`, `updated_at` |
-| `ownership_repair_logs` | `created_at` |
-| `permissions` | `created_at`, `updated_at` |
-| `product_component_locations` | `created_at`, `updated_at` |
-| `product_components` | `created_at`, `updated_at` |
-| `product_group_members` | `created_at`, `updated_at` |
-| `product_groups` | `created_at`, `updated_at` |
-| `product_price_freshness_overrides` | `created_at`, `updated_at`, `updated_by` |
-| `product_sync_logs` | `created_at` |
-| `product_views` | `created_at` |
-| `profiles` | `created_at`, `updated_at` |
-| `query_telemetry` | `created_at` |
-| `quote_templates` | `created_at`, `updated_at` |
-| `request_rate_limits` | `created_at`, `updated_at` |
-| `rls_denial_log` | `created_at` |
-| `role_migration_batches` | `created_at` |
-| `role_migration_items` | `created_at` |
-| `role_permissions` | `created_at` |
-| `saved_filters` | `created_at`, `updated_at` |
-| `saved_trends_views` | `created_at`, `updated_at` |
-| `scheduled_reports` | `created_at`, `updated_at` |
-| `search_analytics` | `created_at` |
-| `seller_cart_items` | `created_at`, `updated_at` |
-| `seller_carts` | `created_at`, `updated_at` |
-| `simulator_wizard_drafts` | `created_at`, `updated_at` |
-| `step_up_audit_log` | `created_at` |
-| `step_up_challenges` | `created_at` |
-| `step_up_tokens` | `created_at` |
-| `system_settings` | `updated_at`, `updated_by` |
-| `user_comparisons` | `created_at`, `updated_at` |
-| `user_onboarding` | `created_at`, `updated_at` |
-| `user_preferences` | `created_at`, `updated_at` |
-| `user_search_history` | `created_at`, `updated_at` |
-| `video_variant_links` | `created_at` |
-| `voice_command_logs` | `created_at` |
-| `workspace_notifications` | `created_at` |
 | `product_variants` | `created_at`, `updated_at` |
 | `cf_recon.remediation` | `created_at` |
 | `prod_audit.category_suggestions` | `created_at` |
 | `prod_audit.classification_rules` | `created_at` |
 | `_qa_pct_results` | `created_at` |
 | `access_blocked_log` | `created_at` |
+| `access_security_settings` | `updated_at`, `updated_by` |
+| `admin_audit_log` | `created_at` |
+| `admin_settings` | `created_at`, `updated_at`, `updated_by` |
 | `ai_enrichment_queue` | `created_at`, `updated_at` |
 | `ai_function_routing` | `created_at`, `updated_at`, `updated_by` |
 | `dashboard_insights_cache` | `created_at` |
 | `ai_models` | `created_at`, `updated_at` |
 | `ai_providers` | `created_at`, `created_by`, `updated_at`, `updated_by` |
 | `ai_routing_decisions` | `created_at` |
+| `ai_usage_events` | `created_at` |
+| `ai_usage_logs` | `created_at`, `updated_at` |
+| `ai_usage_quotas` | `created_at`, `updated_at` |
 | `analytics_events` | `created_at`, `updated_at` |
+| `art_file_attachments` | `created_at`, `updated_at` |
 | `asia_image_import_queue` | `created_at`, `updated_at` |
 | `asia_upload_mapping` | `created_at` |
 | `attribute_definitions` | `created_at`, `updated_at` |
@@ -1643,9 +1431,12 @@ Middleware matcher (Next.js): nenhum
 | `audit_log` | `created_at` |
 | `auto_tag_rules` | `created_at`, `updated_at` |
 | `b2b_collections` | `created_at`, `created_by`, `updated_at` |
+| `profiles` | `created_at`, `updated_at` |
 | `binding_colors` | `created_at`, `updated_at` |
 | `binding_types` | `created_at`, `updated_at` |
+| `bot_detection_log` | `created_at` |
 | `business_calendar` | `created_at`, `created_by` |
+| `cart_templates` | `created_at`, `updated_at` |
 | `catalog_analytics` | `created_at` |
 | `category_accessory_categories` | `created_at`, `updated_at` |
 | `category_attributes` | `created_at`, `updated_at` |
@@ -1657,7 +1448,10 @@ Middleware matcher (Next.js): nenhum
 | `category_variation_types` | `created_at`, `updated_at` |
 | `city_whitelist` | `created_at`, `updated_at` |
 | `classify_functions_registry` | `created_at`, `updated_at` |
+| `collection_item_reactions` | `created_at` |
+| `collection_items` | `created_at` |
 | `collection_products` | `created_at` |
+| `collections` | `created_at`, `updated_at` |
 | `color_equivalences` | `created_at`, `updated_at` |
 | `color_groups` | `created_at`, `updated_at` |
 | `color_nuances` | `created_at`, `updated_at` |
@@ -1668,26 +1462,49 @@ Middleware matcher (Next.js): nenhum
 | `commemorative_dates` | `created_at`, `created_by`, `updated_at`, `updated_by` |
 | `companies` | `created_at`, `updated_at` |
 | `company_email_patterns` | `created_at`, `updated_at` |
+| `comparison_reactions` | `created_at` |
+| `component_media` | `created_at`, `updated_at` |
+| `connection_test_history` | `created_at` |
 | `content_articles` | `created_at`, `updated_at` |
+| `conversation_delivery_status` | `updated_at` |
+| `conversation_event_history` | `created_at` |
 | `cover_finishes` | `created_at`, `updated_at` |
 | `cover_materials` | `created_at`, `updated_at` |
 | `cover_types` | `created_at`, `updated_at` |
+| `crm_callback_events` | `created_at` |
 | `device_login_notifications` | `created_at` |
 | `discount_approval_audit` | `created_at` |
+| `e2e_cleanup_audit` | `created_at` |
+| `e2e_cleanup_rate_limit` | `updated_at` |
 | `eco_material_config` | `created_at` |
 | `edge_rate_limits` | `created_at`, `updated_at` |
 | `enriched_contacts` | `created_at`, `created_by`, `updated_at` |
 | `enrichment_log` | `created_at` |
+| `expert_conversations` | `created_at`, `updated_at` |
+| `expert_messages` | `created_at` |
+| `external_connections` | `created_at`, `created_by`, `updated_at` |
+| `external_connections_sync_log` | `created_at` |
+| `favorite_items` | `updated_at` |
+| `favorite_lists` | `created_at`, `updated_at` |
 | `feminine_color_config` | `created_at` |
+| `file_scan_logs` | `created_at` |
+| `follow_up_reminders` | `created_at` |
 | `freight_settings` | `updated_at`, `updated_by` |
 | `frontend_telemetry` | `created_at` |
+| `generated_mockups` | `created_at` |
+| `geo_allowed_countries` | `created_at`, `created_by` |
+| `hardening_health_snapshots` | `created_at` |
 | `image_backfill_queue` | `created_at` |
 | `image_types` | `created_at`, `updated_at` |
 | `import_pipeline_steps` | `created_at`, `updated_at` |
 | `included_packaging_print_areas` | `created_at`, `updated_at` |
 | `included_packaging_techniques` | `created_at`, `updated_at` |
 | `ingestion_run_log` | `created_at` |
+| `integration_credentials` | `created_at`, `updated_at`, `updated_by` |
+| `ip_access_control` | `created_at`, `created_by`, `updated_at` |
 | `ip_whitelist` | `created_at`, `updated_at` |
+| `kit_collaborators` | `created_at`, `updated_at` |
+| `kit_comments` | `created_at`, `updated_at` |
 | `kit_component_enrichment_raw` | `created_at`, `updated_at` |
 | `kit_component_ficha_staging` | `created_at` |
 | `kit_component_padronizacao` | `created_at`, `updated_at` |
@@ -1695,24 +1512,47 @@ Middleware matcher (Next.js): nenhum
 | `kit_component_variant_skus` | `created_at`, `updated_at` |
 | `kit_quote_requests` | `created_at` |
 | `kit_save_requests` | `created_at` |
+| `kit_templates` | `created_at`, `created_by`, `updated_at` |
 | `kit_typical_dims` | `created_at` |
+| `kit_variants` | `created_at`, `updated_at` |
+| `login_attempts` | `created_at` |
 | `magazine_duplicate_requests` | `created_at` |
+| `magazine_items` | `created_at`, `updated_at` |
 | `magazine_public_reactions` | `created_at` |
+| `magazine_reader_state` | `created_at`, `updated_at` |
+| `magazine_templates` | `created_at`, `updated_at` |
+| `magic_up_brand_kits` | `created_at`, `updated_at` |
+| `magic_up_campaigns` | `created_at`, `updated_at` |
+| `magic_up_comments` | `created_at` |
+| `magic_up_generations` | `created_at` |
+| `magic_up_public_shares` | `created_at`, `updated_at` |
+| `magic_up_reactions` | `created_at` |
 | `markup_configurations` | `created_at`, `created_by`, `updated_at` |
 | `material_equivalences` | `created_at`, `updated_at` |
 | `material_variations` | `created_at`, `updated_at` |
+| `mcp_access_violations` | `created_at` |
+| `mcp_api_keys` | `created_at`, `created_by`, `updated_at` |
+| `mcp_key_auto_revocations` | `created_at`, `created_by` |
 | `mcp_kv` | `updated_at` |
 | `mcp_sessions` | `atualizado_em`, `updated_at` |
 | `mockup_approval_links` | `created_at`, `updated_at` |
 | `mockup_credit_transactions` | `created_at` |
 | `mockup_credits` | `created_at`, `updated_at` |
+| `mockup_drafts` | `created_at`, `updated_at` |
 | `mockup_generation_jobs` | `created_at`, `updated_at` |
+| `mockup_prompt_configs` | `created_at`, `updated_at` |
+| `mockup_templates` | `created_at`, `updated_at` |
 | `navigation_analytics` | `created_at` |
 | `ncm_codes` | `created_at`, `updated_at` |
 | `notebook_features` | `created_at`, `updated_at` |
 | `notification_preferences` | `created_at`, `updated_at` |
 | `notification_templates` | `created_at` |
 | `notifications` | `created_at`, `updated_at` |
+| `optimization_queue_runs` | `created_at` |
+| `order_item_personalizations` | `created_at`, `updated_at` |
+| `order_items` | `created_at` |
+| `orders` | `created_at`, `updated_at` |
+| `ownership_repair_logs` | `created_at` |
 | `packaging_compatibility_config` | `created_at` |
 | `packaging_types` | `created_at`, `updated_at` |
 | `packagings` | `created_at`, `updated_at` |
@@ -1720,6 +1560,7 @@ Middleware matcher (Next.js): nenhum
 | `paper_formats` | `created_at`, `updated_at` |
 | `paper_rulings` | `created_at`, `updated_at` |
 | `paper_weights` | `created_at`, `updated_at` |
+| `permissions` | `created_at`, `updated_at` |
 | `personalization_simulations` | `created_at`, `updated_at` |
 | `personalization_technique_mappings` | `created_at`, `updated_at` |
 | `personalization_techniques` | `created_at`, `updated_at` |
@@ -1732,6 +1573,8 @@ Middleware matcher (Next.js): nenhum
 | `product_badge_definitions` | `created_at`, `created_by`, `updated_at`, `updated_by` |
 | `product_commemorative_dates` | `created_at`, `updated_at` |
 | `product_component_location_techniques` | `created_at`, `updated_at` |
+| `product_component_locations` | `created_at`, `updated_at` |
+| `product_components` | `created_at`, `updated_at` |
 | `product_customization_prices` | `created_at`, `updated_at` |
 | `product_deactivation_requests` | `created_at`, `updated_at` |
 | `product_faqs` | `created_at`, `created_by`, `updated_at` |
@@ -1739,6 +1582,8 @@ Middleware matcher (Next.js): nenhum
 | `product_group_components` | `created_at`, `updated_at` |
 | `product_group_location_techniques` | `created_at`, `updated_at` |
 | `product_group_locations` | `created_at`, `updated_at` |
+| `product_group_members` | `created_at`, `updated_at` |
+| `product_groups` | `created_at`, `updated_at` |
 | `product_included_packagings` | `created_at`, `updated_at` |
 | `product_notebook_features` | `created_at`, `updated_at` |
 | `product_notebook_specs` | `created_at`, `updated_at` |
@@ -1746,6 +1591,7 @@ Middleware matcher (Next.js): nenhum
 | `product_packaging_compatibility` | `created_at`, `updated_at` |
 | `product_packagings` | `created_at`, `updated_at` |
 | `product_physical` | `created_at`, `updated_at` |
+| `product_price_freshness_overrides` | `created_at`, `updated_at`, `updated_by` |
 | `product_print_positions` | `created_at`, `updated_at` |
 | `product_properties` | `created_at`, `updated_at` |
 | `product_qa_image_alerts` | `created_at` |
@@ -1754,24 +1600,40 @@ Middleware matcher (Next.js): nenhum
 | `product_similarity_group_members` | `created_at` |
 | `product_similarity_groups` | `created_at`, `updated_at` |
 | `product_supply` | `created_at`, `updated_at` |
+| `product_sync_logs` | `created_at` |
 | `product_tags` | `created_at` |
 | `product_target_audiences` | `created_at`, `updated_at` |
 | `product_videos` | `created_at`, `updated_at` |
+| `product_views` | `created_at` |
 | `produto_ramo_atividade` | `created_at` |
 | `produtos_padronizacao` | `created_at`, `updated_at` |
 | `produtos_padronizacao_variantes` | `created_at`, `updated_at` |
 | `produtos_site_padronizacao` | `created_at`, `updated_at` |
 | `property_definitions` | `created_at`, `updated_at` |
 | `push_subscriptions` | `created_at` |
+| `query_telemetry` | `created_at` |
+| `quote_templates` | `created_at`, `updated_at` |
 | `quote_versions` | `created_at`, `created_by` |
 | `ramo_atividade` | `created_at`, `updated_at` |
 | `ramo_atividade_filho` | `created_at`, `updated_at` |
+| `request_rate_limits` | `created_at`, `updated_at` |
+| `rls_denial_log` | `created_at` |
+| `role_migration_batches` | `created_at` |
+| `role_migration_items` | `created_at` |
+| `role_permissions` | `created_at` |
 | `roles` | `created_at` |
 | `sales_goals` | `created_at`, `updated_at` |
+| `saved_filters` | `created_at`, `updated_at` |
+| `saved_trends_views` | `created_at`, `updated_at` |
+| `scheduled_reports` | `created_at`, `updated_at` |
+| `search_analytics` | `created_at` |
 | `search_queries` | `created_at` |
 | `security_settings` | `updated_at`, `updated_by` |
+| `seller_cart_items` | `created_at`, `updated_at` |
+| `seller_carts` | `created_at`, `updated_at` |
 | `seo_redirects` | `created_at`, `created_by` |
 | `shipping_boxes` | `created_at`, `updated_at` |
+| `simulator_wizard_drafts` | `created_at`, `updated_at` |
 | `sm_category_pages` | `created_at`, `updated_at` |
 | `sm_site_url_map` | `created_at`, `updated_at` |
 | `sm_worker_partitions` | `created_at` |
@@ -1782,9 +1644,12 @@ Middleware matcher (Next.js): nenhum
 | `variation_values` | `created_at`, `updated_at` |
 | `video_import_queue` | `created_at`, `updated_at` |
 | `video_types` | `created_at`, `updated_at` |
+| `video_variant_links` | `created_at` |
 | `visual_search_feedback` | `created_at` |
+| `voice_command_logs` | `created_at` |
 | `webhook_outbox` | `created_at`, `updated_at` |
 | `webhook_request_nonces` | `created_at` |
+| `workspace_notifications` | `created_at` |
 | `xbz_upload_mapping` | `created_at` |
 | `supplier_stricker.canceled_products` | `created_at` |
 | `supplier_stricker.category_mappings` | `created_at`, `updated_at` |
@@ -1802,20 +1667,69 @@ Middleware matcher (Next.js): nenhum
 | `supplier_stricker.stg_products` | `created_at`, `updated_at` |
 | `supplier_stricker.stg_stock` | `created_at`, `updated_at` |
 | `supplier_stricker.stocks` | `created_at`, `updated_at` |
+| `categories` | `created_at`, `updated_at` |
+| `custom_kits` | `created_at`, `updated_at` |
+| `magazines` | `created_at`, `updated_at` |
+| `material_groups` | `created_at`, `created_by`, `updated_at`, `updated_by` |
+| `material_types` | `created_at`, `updated_at` |
+| `product_materials` | `created_at`, `created_by`, `updated_at`, `updated_by` |
+| `step_up_audit_log` | `created_at` |
+| `step_up_challenges` | `created_at` |
+| `step_up_tokens` | `created_at` |
 | `supplier_customization_raw` | `created_at`, `updated_at` |
 | `supplier_replenishment_events` | `created_at`, `updated_at` |
 | `supplier_subtype_category_map` | `created_at`, `updated_at` |
 | `suppliers` | `created_at`, `updated_at` |
 | `system_kill_switches` | `created_at`, `updated_at` |
+| `system_settings` | `updated_at`, `updated_by` |
+| `user_search_history` | `created_at`, `updated_at` |
 | `user_2fa_settings` | `created_at` |
 | `user_allowed_ips` | `created_at`, `created_by` |
-| … +55 linhas — lista completa em `context.json` | |
+| `user_comparisons` | `created_at`, `updated_at` |
+| `user_favorites` | `created_at` |
+| `user_filter_presets` | `created_at` |
+| `user_ip_allowlist` | `created_at`, `created_by` |
+| `user_known_devices` | `created_at` |
+| `user_notification_preferences` | `created_at`, `updated_at` |
+| `user_onboarding` | `created_at`, `updated_at` |
+| `user_organizations` | `created_at` |
+| `user_preferences` | `created_at`, `updated_at` |
+| `quotes_inbound` | `updated_at` |
+| `admin_audit_log_y2025m12` | `created_at` |
+| `admin_audit_log_y2026m01` | `created_at` |
+| `admin_audit_log_y2026m02` | `created_at` |
+| `admin_audit_log_y2026m03` | `created_at` |
+| `admin_audit_log_y2026m04` | `created_at` |
+| `admin_audit_log_y2026m05` | `created_at` |
+| … +54 linhas — lista completa em `context.json` | |
 
 ## Dados pessoais / sensíveis (LGPD — cuidado em logs, exports, prompts de IA)
 
 | Tabela | Coluna |
 |---|---|
+| `access_blocked_log` | `email` |
+| `access_blocked_log` | `ip_address` |
 | `admin_audit_log` | `ip_address` |
+| `audit_log` | `ip_address` |
+| `profiles` | `email` |
+| `bot_detection_log` | `ip_address` |
+| `device_login_notifications` | `ip_address` |
+| `e2e_cleanup_audit` | `email` |
+| `edge_function_invocations` | `ip_address` |
+| `ip_access_control` | `ip_address` |
+| `ip_whitelist` | `ip_address` |
+| `login_attempts` | `email` |
+| `login_attempts` | `ip_address` |
+| `mcp_access_violations` | `ip_address` |
+| `password_reset_requests` | `email` |
+| `rls_denial_log` | `ip_address` |
+| `step_up_audit_log` | `ip_address` |
+| `step_up_challenges` | `ip_address` |
+| `suppliers` | `email` |
+| `suppliers` | `phone` |
+| `suppliers` | `address` |
+| `user_allowed_ips` | `ip_address` |
+| `user_ip_allowlist` | `ip_address` |
 | `admin_audit_log_y2025m12` | `ip_address` |
 | `admin_audit_log_y2026m01` | `ip_address` |
 | `admin_audit_log_y2026m02` | `ip_address` |
@@ -1825,28 +1739,6 @@ Middleware matcher (Next.js): nenhum
 | `admin_audit_log_y2026m06` | `ip_address` |
 | `auth_login_attempts` | `email` |
 | `auth_login_attempts` | `ip_address` |
-| `bot_detection_log` | `ip_address` |
-| `e2e_cleanup_audit` | `email` |
-| `ip_access_control` | `ip_address` |
-| `login_attempts` | `email` |
-| `login_attempts` | `ip_address` |
-| `mcp_access_violations` | `ip_address` |
-| `profiles` | `email` |
-| `rls_denial_log` | `ip_address` |
-| `step_up_audit_log` | `ip_address` |
-| `step_up_challenges` | `ip_address` |
-| `access_blocked_log` | `email` |
-| `access_blocked_log` | `ip_address` |
-| `audit_log` | `ip_address` |
-| `device_login_notifications` | `ip_address` |
-| `edge_function_invocations` | `ip_address` |
-| `ip_whitelist` | `ip_address` |
-| `password_reset_requests` | `email` |
-| `suppliers` | `email` |
-| `suppliers` | `phone` |
-| `suppliers` | `address` |
-| `user_allowed_ips` | `ip_address` |
-| `user_ip_allowlist` | `ip_address` |
 | `user_sessions` | `ip_address` |
 | `client_contacts` | `email` |
 | `client_contacts` | `phone` |
@@ -1866,17 +1758,33 @@ Middleware matcher (Next.js): nenhum
 | `quotes` | `total` | `numeric` |
 | `quotes` | `shipping_type` | `text` |
 | `quotes` | `shipping_cost` | `numeric` |
-| `custom_kits` | `total_price` | `numeric` |
-| `quotes_inbound` | `total` | `numeric(14,2)` |
+| `product_variants` | `price_adjustment` | `DECIMAL(10,2)` |
+| `ai_models` | `cost_input_per_1m` | `numeric(10,4)` |
+| `ai_models` | `cost_output_per_1m` | `numeric(10,4)` |
+| `ai_models` | `cost_per_image` | `numeric(10,4)` |
+| `ai_routing_decisions` | `total_attempts` | `integer` |
+| `ai_routing_decisions` | `total_duration_ms` | `integer` |
 | `ai_usage_logs` | `total_tokens` | `integer` |
+| `audit_log_gravacao` | `valor_antes` | `"jsonb"` |
+| `audit_log_gravacao` | `valor_depois` | `"jsonb"` |
+| `category_commemorative_dates` | `custom_message` | `"text"` |
 | `collection_items` | `price_at_save` | `numeric(12` |
 | `collection_items_trash` | `price_at_save` | `numeric(12` |
 | `conversation_audit_logs` | `total_tokens_estimated` | `integer` |
+| `db_connection_snapshots` | `total_conns` | `int` |
 | `e2e_cleanup_audit` | `total_deleted` | `INT` |
+| `enrichment_log` | `cost_usd` | `numeric(10,4)` |
 | `favorite_items` | `price_at_save` | `NUMERIC(12,2)` |
 | `favorite_items_trash` | `price_at_save` | `NUMERIC(12,2)` |
+| `ingestion_run_log` | `feed` | `text` |
 | `kit_templates` | `total_price` | `numeric` |
 | `kit_variants` | `total_price` | `numeric(12` |
+| `mockup_credit_transactions` | `amount` | `DECIMAL(10,4)` |
+| `mockup_credit_transactions` | `balance_before` | `DECIMAL(10,2)` |
+| `mockup_credit_transactions` | `balance_after` | `DECIMAL(10,2)` |
+| `mockup_credits` | `balance` | `DECIMAL(10,2)` |
+| `mockup_generation_jobs` | `custom_prompt` | `TEXT` |
+| `mockup_generation_jobs` | `total_mockups` | `INTEGER` |
 | `order_item_personalizations` | `price_adjustment` | `numeric(10,2)` |
 | `order_items` | `discount_amount` | `numeric` |
 | `orders` | `subtotal` | `numeric` |
@@ -1886,6 +1794,13 @@ Middleware matcher (Next.js): nenhum
 | `ownership_audit_reports` | `total_tables_scanned` | `integer` |
 | `ownership_audit_reports` | `total_issues_found` | `integer` |
 | `price_history` | `price` | `numeric(12,2)` |
+| `product_ai_history` | `total_tokens` | `integer` |
+| `product_commemorative_dates` | `custom_message` | `"text"` |
+| `product_customization_prices` | `price` | `numeric[]` |
+| `product_fiscal` | `tax_reference_state` | `varchar(5)` |
+| `produtos_padronizacao` | `cost_price` | `numeric` |
+| `produtos_padronizacao_variantes` | `cost_price` | `numeric` |
+| `produtos_padronizacao_variantes` | `cost_price_1` | `numeric` |
 | `quote_item_personalizations` | `total_cost` | `numeric` |
 | `quote_items` | `subtotal` | `numeric` |
 | `quote_items` | `discount_percentage` | `numeric` |
@@ -1897,31 +1812,6 @@ Middleware matcher (Next.js): nenhum
 | `quote_templates` | `discount_amount` | `numeric` |
 | `role_migration_batches` | `total_items` | `integer` |
 | `seller_carts` | `shipping_deadline` | `DATE` |
-| `product_variants` | `price_adjustment` | `DECIMAL(10,2)` |
-| `ai_models` | `cost_input_per_1m` | `numeric(10,4)` |
-| `ai_models` | `cost_output_per_1m` | `numeric(10,4)` |
-| `ai_models` | `cost_per_image` | `numeric(10,4)` |
-| `ai_routing_decisions` | `total_attempts` | `integer` |
-| `ai_routing_decisions` | `total_duration_ms` | `integer` |
-| `audit_log_gravacao` | `valor_antes` | `"jsonb"` |
-| `audit_log_gravacao` | `valor_depois` | `"jsonb"` |
-| `category_commemorative_dates` | `custom_message` | `"text"` |
-| `db_connection_snapshots` | `total_conns` | `int` |
-| `enrichment_log` | `cost_usd` | `numeric(10,4)` |
-| `ingestion_run_log` | `feed` | `text` |
-| `mockup_credit_transactions` | `amount` | `DECIMAL(10,4)` |
-| `mockup_credit_transactions` | `balance_before` | `DECIMAL(10,2)` |
-| `mockup_credit_transactions` | `balance_after` | `DECIMAL(10,2)` |
-| `mockup_credits` | `balance` | `DECIMAL(10,2)` |
-| `mockup_generation_jobs` | `custom_prompt` | `TEXT` |
-| `mockup_generation_jobs` | `total_mockups` | `INTEGER` |
-| `product_ai_history` | `total_tokens` | `integer` |
-| `product_commemorative_dates` | `custom_message` | `"text"` |
-| `product_customization_prices` | `price` | `numeric[]` |
-| `product_fiscal` | `tax_reference_state` | `varchar(5)` |
-| `produtos_padronizacao` | `cost_price` | `numeric` |
-| `produtos_padronizacao_variantes` | `cost_price` | `numeric` |
-| `produtos_padronizacao_variantes` | `cost_price_1` | `numeric` |
 | `sm_worker_partitions` | `total_skus` | `integer` |
 | `sm_worker_partitions` | `total_images` | `integer` |
 | `sm_worker_partitions` | `total_uploaded` | `integer` |
@@ -1954,8 +1844,10 @@ Middleware matcher (Next.js): nenhum
 | `supplier_stricker.stg_optionals` | `price_3` | `numeric(10,4)` |
 | `supplier_stricker.stg_optionals` | `price_4` | `numeric(10,4)` |
 | `supplier_stricker.stg_optionals` | `price_5` | `numeric(10,4)` |
+| `custom_kits` | `total_price` | `numeric` |
 | `supplier_customization_raw` | `customization_type` | `text` |
 | `tabela_preco_gravacao_oficial` | `desconto_quarta_cor_mais` | `numeric(5` |
+| `quotes_inbound` | `total` | `numeric(14,2)` |
 | `user_points` | `total_points` | `INTEGER` |
 | `sync_jobs` | `total` | `INTEGER` |
 | `personalization_sizes` | `price_modifier` | `NUMERIC(5,2)` |
