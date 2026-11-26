@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "47346c1f84a12ea88321b572a1afe91b3d1a6dcf",
+  "commit": "480871c05e21e5a6a667ddc9b845a576b172e9b8",
   "branch": "main",
-  "data_commit": "2026-11-26T08:45:36-03:00",
+  "data_commit": "2026-11-26T09:10:36-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "480871c",
+    "data": "2026-11-26",
+    "assunto": "docs(edges): registra que os 4 achados graves de auth e os 9 crons ja foram fechados (#4166)"
+   },
+   {
+    "sha": "2e0c748",
+    "data": "2026-11-26",
+    "assunto": "docs: mede cron das edges e corrige status N01/N15/N21/I01 (#4164)"
+   },
    {
     "sha": "47346c1",
     "data": "2026-11-26",
@@ -121,19 +131,9 @@
     "sha": "faedf4a",
     "data": "2026-11-25",
     "assunto": "fix: rollback das policies no-op e cabecalho na 20261101210000 (#4142)"
-   },
-   {
-    "sha": "c8e9bd9",
-    "data": "2026-11-25",
-    "assunto": "chore(main): release gifts-store 1.20.3 (#4135)"
-   },
-   {
-    "sha": "ba98ac5",
-    "data": "2026-11-25",
-    "assunto": "docs: classifica as 21 versoes novas fora do baseline E06 (18 ja refletidas em producao) (#4140)"
    }
   ],
-  "arquivos_mudados_7d": 563,
+  "arquivos_mudados_7d": 564,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -294,7 +294,7 @@
     "mudancas": 4
    },
    {
-    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
+    "arquivo": "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
     "mudancas": 4
    }
   ],

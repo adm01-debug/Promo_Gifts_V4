@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(edges): registra que os 4 achados graves de auth e os 9 crons ja foram fechados (#4166)",
+   "docs: mede cron das edges e corrige status N01/N15/N21/I01 (#4164)",
    "feat: liga a Meta de Vendas ao dashboard com progresso real (#4161)",
    "fix: registra recibo final da migration 20261125074200 (gate E055) (#4162)",
-   "chore(main): release gifts-store 1.20.5 (#4159)",
-   "fix: restaura COMMENT do idx_spr_images_pending no rollback do PERF005 (#4158)",
-   "infra: serializa snapshot de schema e apply de migration no mesmo grupo (#4136)"
+   "chore(main): release gifts-store 1.20.5 (#4159)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

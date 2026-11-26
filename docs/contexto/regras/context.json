@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "47346c1f84a12ea88321b572a1afe91b3d1a6dcf",
+  "sha": "480871c05e21e5a6a667ddc9b845a576b172e9b8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 11:46 UTC",
+  "generated_at": "2026-11-26 12:22 UTC",
   "files_total": 11227,
   "code_files": 9208,
   "code_lines": 1308864
@@ -579671,10 +579671,29 @@
   }
  },
  "git": {
-  "sha": "47346c1f84a12ea88321b572a1afe91b3d1a6dcf",
+  "sha": "480871c05e21e5a6a667ddc9b845a576b172e9b8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "480871c",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "docs(edges): registra que os 4 achados graves de auth e os 9 crons ja foram fechados (#4166)",
+    "files": [
+     "docs/estado/07_EDGE_FUNCTIONS.md"
+    ]
+   },
+   {
+    "sha": "2e0c748",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "docs: mede cron das edges e corrige status N01/N15/N21/I01 (#4164)",
+    "files": [
+     "docs/estado/07_EDGE_FUNCTIONS.md",
+     "docs/estado/12_PLANEJADO_E_SUGERIDO.md"
+    ]
+   },
    {
     "sha": "47346c1",
     "date": "2026-11-26",
@@ -579972,33 +579991,6 @@
      "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
      "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql"
     ]
-   },
-   {
-    "sha": "0792fac",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(ci): snapshot de cron/event triggers via pooler (E037) (#4124)",
-    "files": [
-     ".github/workflows/schema-snapshot-export.yml"
-    ]
-   },
-   {
-    "sha": "0c2d7c6",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "chore(test): liga 9 specs Playwright orfaos de tests/e2e/ ao runner (#4122)",
-    "files": [
-     "docs/estado/10_TESTES.md",
-     "e2e/carts-excellence.spec.ts",
-     "e2e/catalog-flow.spec.ts",
-     "e2e/catalog-flows.spec.ts",
-     "e2e/optimized-image.spec.ts",
-     "e2e/product-gallery-tooltip.spec.ts",
-     "e2e/product-out-of-stock-carousel.spec.ts",
-     "e2e/replenishment-flows.spec.ts",
-     "e2e/role-badge-no-tooltip.spec.ts",
-     "e2e/stock-regression.spec.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -580023,11 +580015,15 @@
     3
    ],
    [
-    "supabase/rollbacks/20261126030000_rollback.sql",
+    "docs/estado/07_EDGE_FUNCTIONS.md",
     2
    ],
    [
-    ".github/workflows/schema-snapshot-export.yml",
+    "docs/estado/12_PLANEJADO_E_SUGERIDO.md",
+    2
+   ],
+   [
+    "supabase/rollbacks/20261126030000_rollback.sql",
     2
    ],
    [
@@ -580060,10 +580056,6 @@
    ],
    [
     "docs/FUNCIONALIDADES_E_FERRAMENTAS.md",
-    1
-   ],
-   [
-    "docs/estado/12_PLANEJADO_E_SUGERIDO.md",
     1
    ],
    [
