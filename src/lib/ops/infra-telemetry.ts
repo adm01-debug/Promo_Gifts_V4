@@ -190,28 +190,39 @@ export function maxGrowthBytes(rows: OpsTableGrowthRow[]): number {
  * a tela precisa disto para mostrar estado vazio em vez de quebrar.
  */
 export function parseOpsInfraTelemetry(raw: unknown): OpsInfraTelemetry {
-  const payload = (raw ?? {}) as Partial<OpsInfraTelemetry> & {
-    captured_at?: Partial<OpsInfraTelemetry['captured_at']>;
-    pgss_summary?: Partial<OpsPgssSummary>;
-  };
-  const captured = (payload.captured_at ?? {}) as Partial<OpsInfraTelemetry['captured_at']>;
-  const summary = (payload.pgss_summary ?? {}) as Partial<OpsPgssSummary>;
+  const payload = isRecord(raw) ? raw : {};
+  const captured = isRecord(payload.captured_at) ? payload.captured_at : {};
+  const summary = isRecord(payload.pgss_summary) ? payload.pgss_summary : {};
   return {
     window_days: toNumber(payload.window_days) ?? 30,
     captured_at: {
-      table_size: captured.table_size ?? null,
-      pgss: captured.pgss ?? null,
-      wraparound: captured.wraparound ?? null,
+      table_size: toTimestamp(captured.table_size),
+      pgss: toTimestamp(captured.pgss),
+      wraparound: toTimestamp(captured.wraparound),
     },
-    table_growth: Array.isArray(payload.table_growth) ? payload.table_growth : [],
+    table_growth: toRows<OpsTableGrowthRow>(payload.table_growth, 'table_name'),
     pgss_summary: {
       labels: toNumber(summary.labels) ?? 0,
       calls: toNumber(summary.calls) ?? 0,
       total_exec_time: toNumber(summary.total_exec_time) ?? 0,
     },
-    pgss_top: Array.isArray(payload.pgss_top) ? payload.pgss_top : [],
-    wraparound: Array.isArray(payload.wraparound) ? payload.wraparound : [],
+    pgss_top: toRows<OpsPgssRow>(payload.pgss_top, 'label'),
+    wraparound: toRows<OpsWraparoundRow>(payload.wraparound, 'metric'),
   };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+/** Filtra linhas do payload pela chave identificadora de cada série. */
+function toRows<T>(value: unknown, key: string): T[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((row): row is T => isRecord(row) && typeof row[key] === 'string');
+}
+
+function toTimestamp(value: unknown): string | null {
+  return typeof value === 'string' && value.trim() !== '' ? value : null;
 }
 
 /** true quando nenhuma das três séries tem dado na janela. */
