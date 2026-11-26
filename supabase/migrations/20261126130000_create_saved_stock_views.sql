@@ -16,6 +16,9 @@
 -- Esta migration cria a tabela com o contrato que o TypeScript ja declara (interface
 -- SavedStockView) e a UI passa a montar o menu de views na rota /estoque.
 --
+-- Idempotente: IF NOT EXISTS em tabela/indice, CREATE OR REPLACE no trigger e DROP POLICY IF EXISTS
+-- antes de cada CREATE POLICY, para retry seguro do db-apply-migration.yml.
+--
 -- Colunas: espelham a interface SavedStockView (id, user_id, name, filters, description, is_pinned,
 -- use_count, created_at) mais updated_at para o carimbo automatico do trigger.
 
@@ -47,22 +50,26 @@ CREATE OR REPLACE TRIGGER set_saved_stock_views_updated_at
 -- RLS: cada usuario so enxerga e escreve as proprias views.
 ALTER TABLE public.saved_stock_views ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "saved_stock_views_select_own" ON public.saved_stock_views;
 CREATE POLICY "saved_stock_views_select_own"
   ON public.saved_stock_views FOR SELECT
   TO authenticated
   USING (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "saved_stock_views_insert_own" ON public.saved_stock_views;
 CREATE POLICY "saved_stock_views_insert_own"
   ON public.saved_stock_views FOR INSERT
   TO authenticated
   WITH CHECK (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "saved_stock_views_update_own" ON public.saved_stock_views;
 CREATE POLICY "saved_stock_views_update_own"
   ON public.saved_stock_views FOR UPDATE
   TO authenticated
   USING (user_id = auth.uid())
   WITH CHECK (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "saved_stock_views_delete_own" ON public.saved_stock_views;
 CREATE POLICY "saved_stock_views_delete_own"
   ON public.saved_stock_views FOR DELETE
   TO authenticated
