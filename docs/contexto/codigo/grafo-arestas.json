@@ -3974,6 +3974,14 @@
    "src/integrations/supabase/client.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/admin/security/AnonAccessAuditPanel.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/hooks/security/useAnonAccessAudit.ts",
+   "src/lib/security/anonAccessAudit.ts"
+  ],
   "src/components/admin/security/AnonExposureTab.tsx": [
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
@@ -11922,6 +11930,10 @@
    "src/integrations/supabase/client.ts",
    "src/lib/logger.ts"
   ],
+  "src/hooks/security/useAnonAccessAudit.ts": [
+   "src/lib/security/anonAccessAudit.ts",
+   "src/lib/supabase-untyped.ts"
+  ],
   "src/hooks/security/useAnonExposureAudit.ts": [
    "src/integrations/supabase/client.ts",
    "src/lib/security/anonExposure.ts"
@@ -13459,6 +13471,7 @@
   "src/pages/admin/AdminSegurancaAcessoPage.tsx": [
    "src/components/admin/security/ActiveIpsList.tsx",
    "src/components/admin/security/AnomalyCards.tsx",
+   "src/components/admin/security/AnonAccessAuditPanel.tsx",
    "src/components/admin/security/AnonExposureTab.tsx",
    "src/components/admin/security/AutoDefenseTab.tsx",
    "src/components/admin/security/BlockedAccessLogTab.tsx",

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "99896cb6c774dbf0aab49b4cfe55665ab050c743",
+  "commit": "d15c74f976cd0d191d5cc682beeb263260628354",
   "branch": "main",
-  "data_commit": "2026-11-26T17:56:33-03:00",
+  "data_commit": "2026-11-26T18:31:03-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "d15c74f",
+    "data": "2026-11-26",
+    "assunto": "feat: aba Raio-x do acesso anon em seguranca e acesso (#4186)"
+   },
    {
     "sha": "99896cb",
     "data": "2026-11-26",
@@ -126,18 +131,13 @@
     "sha": "47346c1",
     "data": "2026-11-26",
     "assunto": "feat: liga a Meta de Vendas ao dashboard com progresso real (#4161)"
-   },
-   {
-    "sha": "67db74f",
-    "data": "2026-11-26",
-    "assunto": "fix: registra recibo final da migration 20261125074200 (gate E055) (#4162)"
    }
   ],
-  "arquivos_mudados_7d": 615,
+  "arquivos_mudados_7d": 620,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 400
+    "mudancas": 403
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 111
+    "mudancas": 112
    },
    {
     "pasta": "src/components/quotes",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 90
+    "mudancas": 91
    },
    {
     "pasta": "src/components/mockup",
@@ -188,18 +188,18 @@
     "mudancas": 80
    },
    {
-    "pasta": "src/hooks/quotes",
-    "mudancas": 75
+    "pasta": "src/components/ui",
+    "mudancas": 73
    },
    {
-    "pasta": "src/pages/quotes",
-    "mudancas": 75
+    "pasta": "src/hooks/quotes",
+    "mudancas": 72
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 111
+    "mudancas": 112
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -310,21 +310,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11353,
-  "arquivos_codigo": 5728,
-  "linhas_codigo": 1087552,
+  "arquivos_total": 11360,
+  "arquivos_codigo": 5733,
+  "linhas_codigo": 1088274,
   "rotas": 143,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 74,
   "modulos": 174,
-  "componentes": 1293,
-  "hooks": 653,
+  "componentes": 1294,
+  "hooks": 654,
   "edge_functions": 112,
   "tabelas": 533,
-  "migrations": 3142,
+  "migrations": 3143,
   "cron_jobs": 122,
-  "testes": 2739,
+  "testes": 2741,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1512
@@ -1935,8 +1935,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1503,
-   "linhas": 294973
+   "arquivos": 1505,
+   "linhas": 295314
   },
   "src/config": {
    "arquivos": 1,
@@ -1959,16 +1959,16 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 522,
-   "linhas": 95580
+   "arquivos": 523,
+   "linhas": 95614
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66760
   },
   "src/lib": {
-   "arquivos": 443,
-   "linhas": 69808
+   "arquivos": 445,
+   "linhas": 70150
   },
   "src/logic": {
    "arquivos": 4,
@@ -1980,7 +1980,7 @@
   },
   "src/pages": {
    "arquivos": 380,
-   "linhas": 87917
+   "linhas": 87922
   },
   "src/routes": {
    "arquivos": 16,

@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1293,
+ "total": 1294,
  "orfaos": 155,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -5239,6 +5239,22 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/admin/security/AnonAccessAuditPanel.tsx",
+   "exports": [
+    "AnonAccessAuditPanel"
+   ],
+   "export_default": null,
+   "linhas": 208,
+   "dominio": "components/admin",
+   "hooks_locais": [
+    "useAnonAccessAudit"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/admin/security/AnonExposureTab.tsx",
    "exports": [
     "AnonExposureTab"
@@ -5623,7 +5639,7 @@
     "SecurityTabsList"
    ],
    "export_default": null,
-   "linhas": 49,
+   "linhas": 62,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -16748,7 +16764,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 497,
+   "usado_por": 498,
    "orfao": false
   },
   {
@@ -16783,7 +16799,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 666,
+   "usado_por": 667,
    "orfao": false
   },
   {
@@ -16817,7 +16833,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 366,
+   "usado_por": 367,
    "orfao": false
   },
   {
@@ -17474,7 +17490,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 195,
+   "usado_por": 196,
    "orfao": false
   },
   {
@@ -18361,7 +18377,7 @@
     "AdminSegurancaAcessoPage"
    ],
    "export_default": "AdminSegurancaAcessoPage",
-   "linhas": 727,
+   "linhas": 732,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useToast"

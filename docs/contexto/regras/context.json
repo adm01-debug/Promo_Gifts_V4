@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "99896cb6c774dbf0aab49b4cfe55665ab050c743",
+  "sha": "d15c74f976cd0d191d5cc682beeb263260628354",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 21:18 UTC",
-  "files_total": 11283,
-  "code_files": 9261,
-  "code_lines": 1319353
+  "generated_at": "2026-11-26 21:33 UTC",
+  "files_total": 11290,
+  "code_files": 9268,
+  "code_lines": 1320131
  },
  "version": "1.3.2",
- "facts_hash": "9593c5b485d69820",
+ "facts_hash": "d813ca55bc0a5fdb",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,9 +1130,9 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3534,
-   ".ts": 3206,
-   ".tsx": 2046,
+   ".sql": 3536,
+   ".ts": 3209,
+   ".tsx": 2048,
    ".mjs": 456,
    ".py": 18,
    ".js": 7
@@ -93266,6 +93266,7 @@
    "supabase/migrations/20261126060000_crm_seller_identity_admin_rpc.sql",
    "supabase/migrations/20261126130000_create_saved_stock_views.sql",
    "supabase/migrations/20261126191200_admin_ai_quota_summary_rpc.sql",
+   "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -93420,6 +93421,7 @@
    "supabase/rollbacks/20261126060000_rollback.sql",
    "supabase/rollbacks/20261126130000_rollback.sql",
    "supabase/rollbacks/20261126191200_rollback.sql",
+   "supabase/rollbacks/20261126192900_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -142019,6 +142021,38 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "fn_admin_anon_access_audit",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_admin_anon_access_audit",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_anon_access_audit",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_anon_access_audit",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -145660,6 +145694,16 @@
     "function": "fn_admin_ai_quota_summary",
     "msg": "Acesso restrito a administradores.",
     "src": "supabase/migrations/20261126191200_admin_ai_quota_summary_rpc.sql"
+   },
+   {
+    "function": "fn_admin_anon_access_audit",
+    "msg": "Autenticacao obrigatoria.",
+    "src": "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_anon_access_audit",
+    "msg": "Acesso restrito a administradores.",
+    "src": "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql"
    },
    {
     "function": "fn_dryrun_standardize_supplier",
@@ -155209,7 +155253,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1779,
+  "components_count": 1781,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -158264,6 +158308,10 @@
     "file": "src/hooks/quotes/useSellerDiscountLimits.ts"
    },
    {
+    "name": "useAnonAccessAudit",
+    "file": "src/hooks/security/useAnonAccessAudit.ts"
+   },
+   {
     "name": "useAnonExposureAudit",
     "file": "src/hooks/security/useAnonExposureAudit.ts"
    },
@@ -159978,8 +160026,8 @@
   },
   {
    "module": "src/components",
-   "files": 1503,
-   "lines": 294972,
+   "files": 1505,
+   "lines": 295313,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -160342,8 +160390,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 522,
-   "lines": 95580,
+   "files": 523,
+   "lines": 95614,
    "tables": [
     "access_blocked_log",
     "admin_audit_log",
@@ -160638,8 +160686,8 @@
   },
   {
    "module": "src/lib",
-   "files": 444,
-   "lines": 69818,
+   "files": 446,
+   "lines": 70160,
    "tables": [
     "...",
     "companies",
@@ -160848,7 +160896,7 @@
   {
    "module": "src/pages",
    "files": 380,
-   "lines": 87917,
+   "lines": 87922,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -161849,8 +161897,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3141,
-   "lines": 229223,
+   "files": 3142,
+   "lines": 229275,
    "tables": [
     "...",
     "admin_audit_log",
@@ -161948,8 +161996,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 155,
-   "lines": 5660,
+   "files": 156,
+   "lines": 5664,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -229012,6 +229060,12 @@
     "body": "const itens = Array.isArray(template.items) ? template.items : []; if (itens.some((item) => !itemTemplateEhCalculavel(item))) return null; const itemsTotal = itens.reduce((sum, item) => { const personalizationCost = item.personalizations?.reduce( (pSum, p) => pSum + (numeroUsavel(p.unitCost) ? p.unitCost : 0) * item.quantity + (numeroUsavel(p.setupCost) ? p.setupCost : 0), 0, ) ?? 0; return sum + item.quantity * item.unitPrice + personalizationCost; }, 0); const percentual = numeroUsavel(templat …"
    },
    {
+    "file": "src/lib/security/anonAccessAudit.ts",
+    "name": "severidadeRank",
+    "params": "severidade: string",
+    "body": "return PESO[severidade.toUpperCase()] ?? 0;"
+   },
+   {
     "file": "src/lib/security/file-validation.ts",
     "name": "validateFile",
     "params": "file: File, options: ValidationOptions = {},",
@@ -244608,6 +244662,38 @@
    {
     "file": "src/components/admin/ramos-atividade/__tests__/RamosAtividadeManager.test.tsx",
     "name": "mostra o erro com retry quando a consulta falha"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonAccessAuditPanel.test.tsx",
+    "name": "AnonAccessAuditPanel"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonAccessAuditPanel.test.tsx",
+    "name": "mostra o skeleton enquanto carrega"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonAccessAuditPanel.test.tsx",
+    "name": "traduz o 42501 em mensagem de permissao e oferece tentar de novo"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonAccessAuditPanel.test.tsx",
+    "name": "anuncia ambiente saudavel quando nao ha achados"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonAccessAuditPanel.test.tsx",
+    "name": "resume os achados em KPIs"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonAccessAuditPanel.test.tsx",
+    "name": "agrupa os objetos por categoria com o rotulo em portugues"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonAccessAuditPanel.test.tsx",
+    "name": "desabilita o refresh enquanto a chamada esta em voo"
+   },
+   {
+    "file": "src/components/admin/security/__tests__/AnonAccessAuditPanel.test.tsx",
+    "name": "dispara a varredura ao clicar em rodar de novo"
    },
    {
     "file": "src/components/admin/security/__tests__/AnonExposureTab.test.tsx",
@@ -271120,6 +271206,98 @@
    {
     "file": "src/lib/security/sanitize-error.test.ts",
     "name": "não vaza detalhe técnico de falha upstream em texto cru"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "parseAnonAccessRows"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "devolve lista vazia quando a resposta nao e array"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "ignora itens invalidos e objetos sem nome"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "normaliza severidade e categoria"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "so aceita true estrito para os grants"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "rotulos de categoria e severidade"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "traduz as quatro categorias do diagnostico"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "humaniza categoria desconhecida"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "ordena e rotula severidade"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "ordenarAnonAccess"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "coloca critico, alto e informativo nessa ordem, desempatando por objeto"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "nao muta a lista original"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "agruparPorCategoria"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "agrupa por categoria, mantem a pior severidade e ordena os grupos"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "nao duplica objeto repetido na mesma categoria"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "resumirAnonAccess"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "conta criticos, altos, informativos e categorias"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "resume lista vazia como ambiente saudavel"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "describeAnonAccessError"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "explica falta de permissao sem vazar a mensagem do banco"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "aponta a migration quando a funcao ainda nao existe"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "mostra a mensagem recebida quando for desconhecida"
+   },
+   {
+    "file": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+    "name": "cai no texto generico sem erro e sem mensagem"
    },
    {
     "file": "src/lib/security/__tests__/anonExposure.test.ts",
@@ -364086,6 +364264,16 @@
     "src": "supabase/migrations/20261126191200_admin_ai_quota_summary_rpc.sql"
    },
    {
+    "function": "fn_admin_anon_access_audit",
+    "msg": "Autenticacao obrigatoria.",
+    "src": "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql"
+   },
+   {
+    "function": "fn_admin_anon_access_audit",
+    "msg": "Acesso restrito a administradores.",
+    "src": "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql"
+   },
+   {
     "function": "fn_dryrun_standardize_supplier",
     "msg": "Acesso negado: requer perfil admin ou superior",
     "src": "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"
@@ -375942,6 +376130,7 @@
    "supabase/migrations/20261126060000_crm_seller_identity_admin_rpc.sql",
    "supabase/migrations/20261126130000_create_saved_stock_views.sql",
    "supabase/migrations/20261126191200_admin_ai_quota_summary_rpc.sql",
+   "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260917061500_rollback.sql",
@@ -424624,6 +424813,38 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "fn_admin_anon_access_audit",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_admin_anon_access_audit",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_anon_access_audit",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_admin_anon_access_audit",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -467630,6 +467851,13 @@
     "1000"
    ]
   },
+  "src/components/admin/security/AnonAccessAuditPanel.tsx": {
+   "path": "src/components/admin/security/AnonAccessAuditPanel.tsx",
+   "lines": 208,
+   "exports": [
+    "function AnonAccessAuditPanel"
+   ]
+  },
   "src/components/admin/security/AnonExposureTab.tsx": {
    "path": "src/components/admin/security/AnonExposureTab.tsx",
    "lines": 356,
@@ -467844,7 +468072,7 @@
   },
   "src/components/admin/security/SecurityTabsList.tsx": {
    "path": "src/components/admin/security/SecurityTabsList.tsx",
-   "lines": 49,
+   "lines": 62,
    "exports": [
     "function SecurityTabsList"
    ],
@@ -467891,6 +468119,21 @@
    ],
    "pagination": [
     "2000"
+   ]
+  },
+  "src/components/admin/security/__tests__/AnonAccessAuditPanel.test.tsx": {
+   "path": "src/components/admin/security/__tests__/AnonAccessAuditPanel.test.tsx",
+   "lines": 120,
+   "is_test": true,
+   "tests": [
+    "AnonAccessAuditPanel",
+    "mostra o skeleton enquanto carrega",
+    "traduz o 42501 em mensagem de permissao e oferece tentar de novo",
+    "anuncia ambiente saudavel quando nao ha achados",
+    "resume os achados em KPIs",
+    "agrupa os objetos por categoria com o rotulo em portugues",
+    "desabilita o refresh enquanto a chamada esta em voo",
+    "dispara a varredura ao clicar em rodar de novo"
    ]
   },
   "src/components/admin/security/__tests__/AnonExposureTab.test.tsx": {
@@ -502183,6 +502426,18 @@
     "retorna false e toast.error quando Supabase falha"
    ]
   },
+  "src/hooks/security/useAnonAccessAudit.ts": {
+   "path": "src/hooks/security/useAnonAccessAudit.ts",
+   "lines": 34,
+   "exports": [
+    "const ANON_ACCESS_AUDIT_QUERY_KEY",
+    "interface UseAnonAccessAuditResult",
+    "function useAnonAccessAudit"
+   ],
+   "hooks": [
+    "useAnonAccessAudit"
+   ]
+  },
   "src/hooks/security/useAnonExposureAudit.ts": {
    "path": "src/hooks/security/useAnonExposureAudit.ts",
    "lines": 98,
@@ -515040,6 +515295,31 @@
    ],
    "doc": "SSOT auditável da matriz de acesso por rota. Esta tabela é a fonte única para a página /admin/rbac-rotas. Atualize SEMPRE que adicionar/remover uma rota técnica ou trocar guard. Convenções: - guard: componente real usado no roteador (App.tsx). - role: papel mínimo necessário, na nomenclatura do app. …"
   },
+  "src/lib/security/anonAccessAudit.ts": {
+   "path": "src/lib/security/anonAccessAudit.ts",
+   "lines": 162,
+   "exports": [
+    "interface AnonAccessRow",
+    "interface AnonAccessGroup",
+    "interface AnonAccessSummary",
+    "const CATEGORIA_LABEL",
+    "function parseAnonAccessRows",
+    "function categoriaLabel",
+    "function severidadeRank",
+    "function severidadeLabel",
+    "function ordenarAnonAccess",
+    "function agruparPorCategoria",
+    "function resumirAnonAccess",
+    "function describeAnonAccessError"
+   ],
+   "calc_fns": [
+    {
+     "name": "severidadeRank",
+     "params": "severidade: string",
+     "body": "return PESO[severidade.toUpperCase()] ?? 0;"
+    }
+   ]
+  },
   "src/lib/security/anonExposure.ts": {
    "path": "src/lib/security/anonExposure.ts",
    "lines": 201,
@@ -515367,6 +515647,36 @@
      "refines": [],
      "chain": []
     }
+   ]
+  },
+  "src/lib/security/__tests__/anonAccessAudit.test.ts": {
+   "path": "src/lib/security/__tests__/anonAccessAudit.test.ts",
+   "lines": 180,
+   "is_test": true,
+   "tests": [
+    "parseAnonAccessRows",
+    "devolve lista vazia quando a resposta nao e array",
+    "ignora itens invalidos e objetos sem nome",
+    "normaliza severidade e categoria",
+    "so aceita true estrito para os grants",
+    "rotulos de categoria e severidade",
+    "traduz as quatro categorias do diagnostico",
+    "humaniza categoria desconhecida",
+    "ordena e rotula severidade",
+    "ordenarAnonAccess",
+    "coloca critico, alto e informativo nessa ordem, desempatando por objeto",
+    "nao muta a lista original",
+    "agruparPorCategoria",
+    "agrupa por categoria, mantem a pior severidade e ordena os grupos",
+    "nao duplica objeto repetido na mesma categoria",
+    "resumirAnonAccess",
+    "conta criticos, altos, informativos e categorias",
+    "resume lista vazia como ambiente saudavel",
+    "describeAnonAccessError",
+    "explica falta de permissao sem vazar a mensagem do banco",
+    "aponta a migration quando a funcao ainda nao existe",
+    "mostra a mensagem recebida quando for desconhecida",
+    "cai no texto generico sem erro e sem mensagem"
    ]
   },
   "src/lib/security/__tests__/anonExposure.test.ts": {
@@ -517882,7 +518192,7 @@
   },
   "src/pages/admin/AdminSegurancaAcessoPage.tsx": {
    "path": "src/pages/admin/AdminSegurancaAcessoPage.tsx",
-   "lines": 727,
+   "lines": 732,
    "exports": [
     "function AdminSegurancaAcessoPage"
    ],
@@ -557575,6 +557885,11 @@
    ],
    "uses_service_role": true
   },
+  "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql": {
+   "path": "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql",
+   "lines": 52,
+   "uses_service_role": true
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -558216,6 +558531,10 @@
    "path": "supabase/rollbacks/20261126191200_rollback.sql",
    "lines": 9,
    "uses_service_role": true
+  },
+  "supabase/rollbacks/20261126192900_rollback.sql": {
+   "path": "supabase/rollbacks/20261126192900_rollback.sql",
+   "lines": 4
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -583788,10 +584107,29 @@
   }
  },
  "git": {
-  "sha": "99896cb6c774dbf0aab49b4cfe55665ab050c743",
+  "sha": "d15c74f976cd0d191d5cc682beeb263260628354",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "d15c74f",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "feat: aba Raio-x do acesso anon em seguranca e acesso (#4186)",
+    "files": [
+     "audit/supabase-reference-catalog.temporary.json",
+     "src/components/admin/security/AnonAccessAuditPanel.tsx",
+     "src/components/admin/security/SecurityTabsList.tsx",
+     "src/components/admin/security/__tests__/AnonAccessAuditPanel.test.tsx",
+     "src/hooks/security/useAnonAccessAudit.ts",
+     "src/lib/security/__tests__/anonAccessAudit.test.ts",
+     "src/lib/security/anonAccessAudit.ts",
+     "src/pages/admin/AdminSegurancaAcessoPage.tsx",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261126192900_admin_anon_access_audit_rpc.sql",
+     "supabase/rollbacks/20261126192900_rollback.sql"
+    ]
+   },
    {
     "sha": "99896cb",
     "date": "2026-11-26",
@@ -584169,34 +584507,16 @@
     "files": [
      ".security/policies-baseline.json"
     ]
-   },
-   {
-    "sha": "a85fea6",
-    "date": "2026-11-26",
-    "author": "github-actions[bot]",
-    "subject": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45746283733) (#4157)",
-    "files": [
-     "docs/db/BACKUP_CHECKSUMS_2026-11-26.txt",
-     "docs/db/BACKUP_SCHEMA_ONLY_2026-11-26.sql",
-     "docs/db/LEDGER_DATA_2026-11-26.sql",
-     "supabase/baseline/20261126030000_baseline_schema.sql",
-     "supabase/baseline/20261126030000_cron_jobs.json",
-     "supabase/baseline/20261126030000_event_triggers.json",
-     "supabase/baseline/20261126030000_ledger_versions.json",
-     "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-     "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-     "supabase/migrations-snapshot/SNAPSHOT_META.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    8
+    9
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
-    7
+    8
    ],
    [
     ".release-please-manifest.json",
@@ -584215,43 +584535,19 @@
     5
    ],
    [
+    "src/components/admin/security/SecurityTabsList.tsx",
+    3
+   ],
+   [
+    "src/pages/admin/AdminSegurancaAcessoPage.tsx",
+    3
+   ],
+   [
     "docs/estado/07_EDGE_FUNCTIONS.md",
     3
    ],
    [
-    "src/components/admin/security/SecurityTabsList.tsx",
-    2
-   ],
-   [
-    "src/pages/admin/AdminSegurancaAcessoPage.tsx",
-    2
-   ],
-   [
     "supabase/migrations/20261126060000_crm_seller_identity_admin_rpc.sql",
-    2
-   ],
-   [
-    "docs/db/BACKUP_CHECKSUMS_2026-11-26.txt",
-    2
-   ],
-   [
-    "docs/db/BACKUP_SCHEMA_ONLY_2026-11-26.sql",
-    2
-   ],
-   [
-    "docs/db/LEDGER_DATA_2026-11-26.sql",
-    2
-   ],
-   [
-    "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-    2
-   ],
-   [
-    "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-    2
-   ],
-   [
-    "supabase/migrations-snapshot/SNAPSHOT_META.json",
     2
    ],
    [
@@ -584269,6 +584565,30 @@
    [
     "src/components/layout/SidebarReorganized.tsx",
     2
+   ],
+   [
+    "src/lib/rbac/route-matrix.ts",
+    2
+   ],
+   [
+    "src/routes/admin-routes.tsx",
+    2
+   ],
+   [
+    "src/routes/lazy-pages.ts",
+    2
+   ],
+   [
+    ".security/policies-baseline.json",
+    2
+   ],
+   [
+    "docs/estado/12_PLANEJADO_E_SUGERIDO.md",
+    2
+   ],
+   [
+    "src/components/admin/security/AnonAccessAuditPanel.tsx",
+    1
    ]
   ]
  }

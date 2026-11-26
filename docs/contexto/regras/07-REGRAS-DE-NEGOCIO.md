@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `99896cb6c7` · branch `main` · 2026-11-26 21:18 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `d15c74f976` · branch `main` · 2026-11-26 21:33 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1421,7 +1421,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `magazine_update_metadata_v2` | magazine_subtitle_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `magazine_update_metadata_v2` | magazine_template_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `magazine_update_metadata_v2` | magazine_branding_invalid | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
-| … +119 linhas — lista completa em `context.json` | | |
+| … +121 linhas — lista completa em `context.json` | | |
 
 ## E. Estados, máquinas de estado e transições
 
@@ -4909,6 +4909,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const itens = Array.isArray(template.items) ? template.items : []; if (itens.some((item) => !itemTemplateEhCalculavel(item))) return null; const itemsTotal = itens.reduce((sum, item) => { const personalizationCost = item.personalizations?.reduce( (pSum, p) => pSum + (numeroUsavel(p.unitCost) ? p.unitCost : 0) * item.quantity + (numeroUsavel(p.setupCost) ? p.setupCost : 0), 0, ) ?? 0; return sum + item.quantity * item.unitPrice + personalizationCost; }, 0); const percentual = numeroUsavel(templat …
   ```
+- **severidadeRank(severidade: string)** — `src/lib/security/anonAccessAudit.ts`
+  ```
+  return PESO[severidade.toUpperCase()] ?? 0;
+  ```
 - **validateFile(file: File, options: ValidationOptions = {},)** — `src/lib/security/file-validation.ts`
   ```
   const { maxSizeMb = 5, allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.pdf'], allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'], } = options; // 1. Validação de Tamanho const maxBytes = maxSizeMb * 1024 * 1024; if (file.size > maxBytes) { return { valid: false, error: `Arquivo excede o limite de ${maxSizeMb}MB.` }; } // 2. Validação de Extensão const extension = `.${file.name.split('.').pop()?.toLowerCase()}`; if (!allowedExtensions.includes(extension)) { r …
@@ -6890,7 +6894,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (24077 testes em 2406 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (24108 testes em 2408 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7094,6 +7098,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/utils/price-calculator.test.ts` | 24 | calculateBoxPrice · returns 0 for null box · multiplies box price by quantity · defaults quantity to 1 … |
 | `src/lib/inventory/__tests__/rupture-risk.test.ts` | 23 | rupture-risk constants · exposes the canonical horizon options · defaults the horizon to 3 days · computeRuptureRisk — precondition guards on current … |
 | `src/lib/navigation/__tests__/active-match.test.ts` | 23 | isNavItemActive · highlights on the exact /carrinhos route · highlights on child routes /carrinhos/:id · highlights on deep child routes /carrinhos/:id/editar … |
+| `src/lib/security/__tests__/anonAccessAudit.test.ts` | 23 | parseAnonAccessRows · devolve lista vazia quando a resposta nao e array · ignora itens invalidos e objetos sem nome · normaliza severidade e categoria … |
 | `src/lib/security/__tests__/lastInternalRoute.deeplink.test.ts` | 23 | isSafeReturnPath · rejeita rota gated/auth: %s · aceita rota interna segura: %s · rejeita valores não-path (absoluto externo, vazio, null) … |
 | `src/services/__tests__/shippingBoxService.test.ts` | 23 | shippingBoxService — listagens · listActive: só vivas e ativas, por sort_order e code · listAll: vivas, sem filtrar is_active · listDeleted: só excluídas, da mais recente para a mais antiga … |
 | `supabase/functions/external-db-bridge/callerSelectIsHeavy.test.ts` | 23 | extractBaseColumn: nome simples · extractBaseColumn: alias PostgREST  · extractBaseColumn: operadores JSON  · extractBaseColumn: alias + JSON op combinados … |
@@ -7193,8 +7198,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/lib/rbac-permissions.test.ts` | 20 | RBAC Permission Matrix · admin · has access to everything · manager … |
 | `tests/pages/QuoteBuilder.test.ts` | 20 | QuoteBuilder — Item Calculations · calculates single item total · calculates quote subtotal · handles empty items list … |
 | `tests/scripts/append-migration-receipt.test.mjs` | 20 | formatReceiptRow · formata todos os campos como células markdown · usa em-dash para campos ausentes · appendReceiptRow … |
-| `tests/scripts/check-anon-write-grants.test.mjs` | 20 | loadAllowlist · devolve grants=[] quando o arquivo não existe · lê grants de um arquivo válido · tolera arquivo sem campo grants (array vazio) … |
-| … +2106 linhas — lista completa em `context.json` | | |
+| … +2108 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

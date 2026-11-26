@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `99896cb6c7` · branch `main` · 2026-11-26 21:18 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `d15c74f976` · branch `main` · 2026-11-26 21:33 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -327,7 +327,7 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 856 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 857 arquivo(s)
 
 - `auditoria-supabase/propostas/P01_rls_restrictive_correcao.sql`
 - `auditoria-supabase/propostas/P10_func_new_001_fn_cron_guard_revoke.sql`
@@ -479,7 +479,7 @@
 - `supabase/functions/generate-mockup/index.ts`
 - `supabase/functions/github-credentials-test/index.ts`
 - `supabase/functions/hash-product-images/index.ts`
-- … +706 (lista completa em `context.json`)
+- … +707 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 
@@ -1119,7 +1119,7 @@ Middleware matcher (Next.js): nenhum
 | grant | anon, service_role | execute | `fn_dequeue_ai_enrichment`, `fn_save_ai_enrichment_results`, `fn_enqueue_ai_enrichment`, `fn_enqueue_ai_enrichment`, `fn_dequeue_ai_enrichment`, `fn_dequeue_ai_enrichment`, `fn_save_ai_enrichment_results`, `fn_dequeue_ai_enrichment` |
 | grant | anon, service_role | select | `vw_ai_enrichment_status` |
 | grant | authenticated | all | `user_preferences` |
-| grant | authenticated | execute | `seed_discount_test_users`, `cleanup_discount_test_data`, `get_bundle_suggestions`, `get_client_top_products`, `get_industry_top_products`, `get_industry_benchmark_stats`, `get_web_vitals_summary`, `check_hardening_status`, `get_top_favorited_products`, `get_favorites_weekly_count`, `set_connections_auto_test_interval`, `get_connections_auto_test_interval`, `set_connection_failure_window_minutes`, `get_connection_failure_window_minutes`, `get_auto_test_job_status` … +137 |
+| grant | authenticated | execute | `seed_discount_test_users`, `cleanup_discount_test_data`, `get_bundle_suggestions`, `get_client_top_products`, `get_industry_top_products`, `get_industry_benchmark_stats`, `get_web_vitals_summary`, `check_hardening_status`, `get_top_favorited_products`, `get_favorites_weekly_count`, `set_connections_auto_test_interval`, `get_connections_auto_test_interval`, `set_connection_failure_window_minutes`, `get_connection_failure_window_minutes`, `get_auto_test_job_status` … +138 |
 | grant | authenticated | insert | `kill_switch_hits`, `system_error_logs`, `navigation_analytics`, `navigation_analytics`, `navigation_analytics`, `frontend_telemetry` |
 | grant | authenticated | insert, update, delete | `collection_products`, `shipping_boxes` |
 | grant | authenticated | select | `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `crm_callback_events`, `user_token_revocations`, `collection_products`, `system_kill_switches`, `v_kill_switch_hits_summary`, `v_kill_switch_hits_summary`, `smoke_tests_runs`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `system_error_logs` … +64 |
@@ -1146,7 +1146,7 @@ Middleware matcher (Next.js): nenhum
 | grant | postgres, service_role, authenticated | execute | `fn_categories_health_check` |
 | grant | service_role | all | `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `crm_callback_events`, `magazine_reader_state`, `magazines`, `magazine_items`, `magazine_templates`, `user_roles`, `order_items`, `admin_audit_log`, `admin_audit_log`, `visual_search_feedback`, `system_error_logs`, `public` … +55 |
 | grant | service_role | all privileges | `cf_recon.cf_image`, `cf_recon.cf_ghost_check_queue`, `cf_recon.action_log`, `cf_recon.crawl_run`, `cf_recon.metric_snapshot`, `cf_recon.remediation` |
-| grant | service_role | execute | `increment_webhook_dedupe_hit`, `claim_webhook_delivery`, `release_webhook_delivery_lock`, `cleanup_stale_webhook_locks`, `get_edge_invoke_summary`, `purge_expired_step_up_artifacts`, `record_public_token_failure`, `public`, `get_edge_function_secret`, `get_edge_function_secret`, `check_edge_rate_limit`, `cleanup_expired_edge_rate_limits`, `record_schema_drift_result`, `fn_trigger_schema_drift_fetch`, `fn_compute_and_record_drift` … +184 |
+| grant | service_role | execute | `increment_webhook_dedupe_hit`, `claim_webhook_delivery`, `release_webhook_delivery_lock`, `cleanup_stale_webhook_locks`, `get_edge_invoke_summary`, `purge_expired_step_up_artifacts`, `record_public_token_failure`, `public`, `get_edge_function_secret`, `get_edge_function_secret`, `check_edge_rate_limit`, `cleanup_expired_edge_rate_limits`, `record_schema_drift_result`, `fn_trigger_schema_drift_fetch`, `fn_compute_and_record_drift` … +185 |
 | grant | service_role | select | `slow_queries_view`, `v_ai_function_routing_effective`, `v_ai_function_routing_effective`, `archive`, `v_product_images_quality_gap`, `v_product_images_quality_gap`, `mv_product_images_audit`, `v_product_images_quality_gap`, `vw_image_type_dropblockers`, `mv_product_images_audit`, `v_cf_drift_dashboard`, `v_cf_drift_dashboard`, `v_cf_drift_dashboard`, `v_ai_function_routing_effective`, `mv_stock_rupture_alert` |
 | grant | service_role | select, insert | `crm_seller_identity_links` |
 | grant | service_role | select, insert, delete | `webhook_request_nonces` |
@@ -1155,7 +1155,7 @@ Middleware matcher (Next.js): nenhum
 | grant | service_role | select, insert, update, delete, references, trigger, truncate | `v_products_public` |
 | grant | service_role, authenticated | execute | `record_mcp_access_violation`, `fn_sm_pipeline_health`, `fn_expire_novelties`, `fn_check_schema_signature_drift` |
 | grant | service_role, postgres | execute | `increment_webhook_stats` |
-| revoke | PUBLIC | all | `classification_audit.apply_high_confidence_suggestions`, `_can_act_on_behalf_of_others`, `_get_user_primary_role`, `acquire_ai_quota`, `admin_active_sessions`, `admin_execute_role_migration_batch`, `admin_revoke_user_sessions`, `apply_transform`, `assert_quote_discount_integrity`, `audit_mcp_api_keys_changes`, `audit_mcp_key_insert`, `audit_mcp_key_revoke`, `audit_ownership_orphans`, `audit_rls_coverage`, `audit_rls_matrix` … +3995 |
+| revoke | PUBLIC | all | `classification_audit.apply_high_confidence_suggestions`, `_can_act_on_behalf_of_others`, `_get_user_primary_role`, `acquire_ai_quota`, `admin_active_sessions`, `admin_execute_role_migration_batch`, `admin_revoke_user_sessions`, `apply_transform`, `assert_quote_discount_integrity`, `audit_mcp_api_keys_changes`, `audit_mcp_key_insert`, `audit_mcp_key_revoke`, `audit_ownership_orphans`, `audit_rls_coverage`, `audit_rls_matrix` … +3996 |
 | revoke | PUBLIC | execute | `fn_magazine_public_token`, `public`, `can_access_quote`, `org_has_any_members`, `org_has_any_members`, `get_edge_function_secret`, `create_organization_with_owner`, `get_quote_token_by_value`, `submit_quote_response`, `get_public_schema_signatures`, `public`, `check_webhook_dedup`, `process_notifications_queue`, `process_notifications_queue`, `process_notifications_queue` … +43 |
 | revoke | PUBLIC | insert, update, delete, truncate, trigger, references | `anon_catalog_grant_audit_log`, `anon_catalog_grant_audit_log` |
 | revoke | PUBLIC | select | `vw_product_availability`, `extensions.pg_stat_statements`, `extensions.pg_stat_statements_info` |
@@ -1165,7 +1165,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | PUBLIC, anon, authenticated | execute | `check_seller_cart_limit`, `handle_password_reset_request`, `check_auth_config_status`, `refresh_product_popularity`, `audit_rls_coverage`, `audit_security_definer_acl`, `fn_pipeline_health`, `fn_product_images_health_check`, `fn_run_schema_drift_check`, `fn_trigger_schema_drift_fetch`, `fn_compute_and_record_drift`, `fn_snapshot_medallion_coverage`, `fn_deploy_readiness_check`, `fn_check_coverage_regression`, `refresh_product_popularity` … +195 |
 | revoke | PUBLIC, anon, authenticated, service_role | all | `magazine_add_items_atomic`, `magazine_remove_items_atomic`, `magazine_reorder_items_atomic`, `magazine_duplicate_atomic`, `magazine_update_metadata_atomic`, `magazine_publish_atomic`, `magazine_validate_page_order_v2`, `magazine_page_order_remove_items_v2`, `magazine_guard_and_version_v2`, `magazine_items_guard_v2`, `magazine_lock_v2` |
 | revoke | PUBLIC,anon | all | `magazine_create_v2`, `magazine_update_metadata_v2`, `magazine_add_items_v2`, `magazine_remove_items_v2`, `magazine_reorder_items_v2`, `magazine_update_item_v2`, `magazine_publish_v2`, `magazine_unpublish_v2`, `magazine_archive_v2`, `magazine_reactivate_v2`, `magazine_soft_delete_v2`, `magazine_restore_v2`, `magazine_duplicate_v2`, `magazine_import_local_v2` |
-| revoke | anon | all | `get_edge_invoke_summary`, `get_webhook_delivery_summary`, `get_app_health_summary`, `lookup_request_id`, `collection_products`, `user_2fa_settings`, `bitrix_clients`, `personalization_simulations`, `roles`, `ip_whitelist`, `city_whitelist`, `access_blocked_log`, `user_allowed_ips`, `companies`, `sales_goals` … +70 |
+| revoke | anon | all | `get_edge_invoke_summary`, `get_webhook_delivery_summary`, `get_app_health_summary`, `lookup_request_id`, `collection_products`, `user_2fa_settings`, `bitrix_clients`, `personalization_simulations`, `roles`, `ip_whitelist`, `city_whitelist`, `access_blocked_log`, `user_allowed_ips`, `companies`, `sales_goals` … +71 |
 | revoke | anon | all privileges | `image_backfill_queue`, `product_deactivation_requests`, `supplier_replenishment_events`, `product_deactivation_requests`, `supplier_replenishment_events`, `db_connection_snapshots`, `profiles`, `user_roles`, `ip_access_control`, `outbound_webhooks`, `mockup_approval_links` |
 | revoke | anon | delete, insert, update, trigger, references | `anon_catalog_grant_audit_log` |
 | revoke | anon | delete, trigger, truncate | `supplier_products_raw` |

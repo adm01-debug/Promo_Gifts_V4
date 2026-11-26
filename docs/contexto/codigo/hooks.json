@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 653,
+ "total": 654,
  "hooks": [
   {
    "arquivo": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -12834,6 +12834,26 @@
     "src/hooks/quotes/index.ts"
    ],
    "coberto_por_testes": 4
+  },
+  {
+   "arquivo": "src/hooks/security/useAnonAccessAudit.ts",
+   "hooks_exportados": [
+    "useAnonAccessAudit"
+   ],
+   "linhas": 34,
+   "dominio": "hooks/security",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useQuery"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/components/admin/security/AnonAccessAuditPanel.tsx"
+   ],
+   "coberto_por_testes": 0
   },
   {
    "arquivo": "src/hooks/security/useAnonExposureAudit.ts",

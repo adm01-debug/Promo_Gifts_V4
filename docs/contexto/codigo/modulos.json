@@ -258,13 +258,13 @@
   },
   {
    "modulo": "components/admin",
-   "arquivos": 333,
-   "testes": 31,
-   "linhas": 75223,
+   "arquivos": 334,
+   "testes": 32,
+   "linhas": 75444,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 260,
+   "componentes": 261,
    "hooks_locais": [
     "useA11y",
     "useAIRecommendations",
@@ -284,6 +284,7 @@
     "useAiUsageStats",
     "useAllFreshnessOverrides",
     "useAllowedIPs",
+    "useAnonAccessAudit",
     "useAnonExposureAudit",
     "useAppBootstrap",
     "useAppHealth",
@@ -22489,19 +22490,21 @@
   },
   {
    "modulo": "hooks/security",
-   "arquivos": 2,
+   "arquivos": 3,
    "testes": 0,
-   "linhas": 158,
+   "linhas": 192,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
    "componentes": 0,
    "hooks_locais": [
+    "useAnonAccessAudit",
     "useAnonExposureAudit",
     "useBlockedAccessLog",
     "useRunAnonExposureAudit"
    ],
    "hooks_definidos": [
+    "useAnonAccessAudit",
     "useAnonExposureAudit",
     "useRunAnonExposureAudit",
     "useBlockedAccessLog"
@@ -22544,6 +22547,7 @@
    ],
    "depende_de_modulos": [
     "integrations/supabase",
+    "lib",
     "lib/security"
    ],
    "pacotes_externos": [
@@ -24397,6 +24401,7 @@
     "hooks/mockup",
     "hooks/products",
     "hooks/quotes",
+    "hooks/security",
     "hooks/simulation",
     "hooks/simulator",
     "hooks/stock",
@@ -27162,9 +27167,9 @@
   },
   {
    "modulo": "lib/security",
-   "arquivos": 12,
-   "testes": 14,
-   "linhas": 1594,
+   "arquivos": 13,
+   "testes": 15,
+   "linhas": 1756,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -28569,7 +28574,7 @@
    "modulo": "pages/admin",
    "arquivos": 63,
    "testes": 5,
-   "linhas": 16708,
+   "linhas": 16713,
    "itens_menu": [
     "Acesso & Bots",
     "Auditoria RBAC",
@@ -28661,6 +28666,7 @@
     "useAiUsageStats",
     "useAllFreshnessOverrides",
     "useAllowedIPs",
+    "useAnonAccessAudit",
     "useAnonExposureAudit",
     "useAppBootstrap",
     "useAppHealth",
@@ -36046,6 +36052,7 @@
     "useAiUsageStats",
     "useAllFreshnessOverrides",
     "useAllowedIPs",
+    "useAnonAccessAudit",
     "useAnonExposureAudit",
     "useAppBootstrap",
     "useAppHealth",

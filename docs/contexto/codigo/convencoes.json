@@ -8,23 +8,23 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (989)",
+   "src/components (990)",
    "src/pages (185)",
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (322)",
+   "src/hooks (323)",
    "recovery/src-legacy (196)",
    "src/components (78)"
   ],
   "servicos_logica": [
-   "src/lib (279)",
+   "src/lib (280)",
    "src/utils (34)",
    "src/services (16)"
   ],
   "testes": [
    "tests/ (1089)",
-   "co-localizado (__tests__) (808)",
+   "co-localizado (__tests__) (810)",
    "e2e/ (636)"
   ],
   "edge_functions": "supabase/functions",
@@ -49,7 +49,7 @@
  },
  "barrels_index": 50,
  "extensao_componentes": [
-  ".tsx (1293)"
+  ".tsx (1294)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat: aba Raio-x do acesso anon em seguranca e acesso (#4186)",
    "feat: tela de cota de IA por usuario no painel de consumo (#4185)",
    "docs: varredura backend->UI medida (0 RPC de negocio sem consumidor) (#4184)",
    "chore(main): release gifts-store 1.24.0 (#4183)",
-   "feat: tela de exposicao anon no painel de seguranca (#4182)",
-   "chore(main): release gifts-store 1.23.0 (#4181)"
+   "feat: tela de exposicao anon no painel de seguranca (#4182)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
