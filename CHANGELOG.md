@@ -5,6 +5,13 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.24.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.23.0...gifts-store-v1.24.0) (2026-11-26)
+
+
+### Features
+
+* tela de exposicao anon no painel de seguranca ([#4182](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4182)) ([156532c](https://github.com/adm01-debug/Promo_Gifts_V4/commit/156532ccbd218db4fae94cb9efcc844bd07d997b))
+
 ## [1.23.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.22.0...gifts-store-v1.23.0) (2026-11-26)
 
 
