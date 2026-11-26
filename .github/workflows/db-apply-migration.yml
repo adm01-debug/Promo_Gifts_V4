@@ -45,8 +45,13 @@ on:
         type: boolean
         default: false
 
+# 2026-11-26 — grupo compartilhado com schema-snapshot-export. Causa medida: o
+# export de schema mantém UMA transação longa (idle in transaction por minutos)
+# segurando AccessShareLock nas tabelas; com o lock_timeout de 1s deste workflow,
+# o `DROP TRIGGER ... ON public.quotes` falhou (run 45725175945). Serializar os
+# dois elimina a colisão por construção.
 concurrency:
-  group: db-apply-migration
+  group: db-ddl-serial
   cancel-in-progress: false
 
 env:
