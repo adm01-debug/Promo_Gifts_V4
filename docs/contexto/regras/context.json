@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "0d772c1196e15b6ebd731e3e0fb595e45e3b64d0",
+  "sha": "b23ed21394bd3f6ada463fb041e81d1049228373",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 14:45 UTC",
+  "generated_at": "2026-11-26 14:52 UTC",
   "files_total": 11243,
   "code_files": 9224,
   "code_lines": 1311834
@@ -580969,10 +580969,31 @@
   }
  },
  "git": {
-  "sha": "0d772c1196e15b6ebd731e3e0fb595e45e3b64d0",
+  "sha": "b23ed21394bd3f6ada463fb041e81d1049228373",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "b23ed21",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.21.0 (#4163)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "6d73c11",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261126052000 (#4171)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "0d772c1",
     "date": "2026-11-26",
@@ -581286,31 +581307,28 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "2e8d1ac",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: PERF005 derruba so os 48 indices com scans=0 e ganha rollback (#4144)",
-    "files": [
-     "supabase/migrations/20261101205400_perf005_drop_unused_indexes.sql",
-     "supabase/rollbacks/20261101205400_rollback.sql"
-    ]
-   },
-   {
-    "sha": "939d6fd",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20260629142224 (#4138)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     14
+   ],
+   [
+    ".release-please-manifest.json",
+    3
+   ],
+   [
+    "CHANGELOG.md",
+    3
+   ],
+   [
+    "package-lock.json",
+    3
+   ],
+   [
+    "package.json",
+    3
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
@@ -581322,22 +581340,6 @@
    ],
    [
     "docs/estado/12_PLANEJADO_E_SUGERIDO.md",
-    2
-   ],
-   [
-    ".release-please-manifest.json",
-    2
-   ],
-   [
-    "CHANGELOG.md",
-    2
-   ],
-   [
-    "package-lock.json",
-    2
-   ],
-   [
-    "package.json",
     2
    ],
    [

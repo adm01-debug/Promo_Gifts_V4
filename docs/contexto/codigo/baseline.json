@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0d772c1196e15b6ebd731e3e0fb595e45e3b64d0",
+  "commit": "b23ed21394bd3f6ada463fb041e81d1049228373",
   "branch": "main",
-  "data_commit": "2026-11-26T11:33:34-03:00",
+  "data_commit": "2026-11-26T11:34:22-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "b23ed21",
+    "data": "2026-11-26",
+    "assunto": "chore(main): release gifts-store 1.21.0 (#4163)"
+   },
+   {
+    "sha": "6d73c11",
+    "data": "2026-11-26",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261126052000 (#4171)"
+   },
    {
     "sha": "0d772c1",
     "data": "2026-11-26",
@@ -121,16 +131,6 @@
     "sha": "ea1788c",
     "data": "2026-11-25",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20260917160000 (#4150)"
-   },
-   {
-    "sha": "c25a779",
-    "data": "2026-11-25",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20260917150000 (#4149)"
-   },
-   {
-    "sha": "d2f3c85",
-    "data": "2026-11-25",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20260916211500 (#4148)"
    }
   ],
   "arquivos_mudados_7d": 588,
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 108
+    "mudancas": 109
    },
    {
     "pasta": "src/lib/freight",
@@ -193,13 +193,13 @@
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 77
+    "mudancas": 75
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 108
+    "mudancas": 109
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -207,15 +207,15 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 24
+    "mudancas": 25
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 21
+    "mudancas": 22
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 18
+    "mudancas": 19
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -258,10 +258,6 @@
     "mudancas": 6
    },
    {
-    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
-    "mudancas": 6
-   },
-   {
     "arquivo": "tests/scripts/drift-baseline.test.mjs",
     "mudancas": 6
    },
@@ -279,6 +275,10 @@
    },
    {
     "arquivo": "src/components/quotes/QuoteTemplatesList.tsx",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
     "mudancas": 5
    },
    {
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 229
+    "commits": 227
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 71
+    "commits": 73
    }
   ]
  },

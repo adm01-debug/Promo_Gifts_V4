@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(main): release gifts-store 1.21.0 (#4163)",
+   "docs(migrations-log): recibo E15 — aplicação de 20261126052000 (#4171)",
    "docs(migrations-log): recibo E15 — aplicação de 20261126130000 (#4172)",
    "feat: liga views salvas do painel de estoque a uma tela (#4169)",
-   "feat: tela Infra do Banco (/admin/infra-ops) para a telemetria ops.* sem consumidor (#4160)",
-   "docs(edge-deploy-log): recibo do deploy — run 45824995474 (#4170)",
-   "feat: liga a tabela stock_notes a uma tela de notas por variacao (#4168)"
+   "feat: tela Infra do Banco (/admin/infra-ops) para a telemetria ops.* sem consumidor (#4160)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
