@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "be120cf361cbd0a46aacf36ed410418f399edaf5",
+  "commit": "a85fea6981951a61057050ebe2b2a478043c08f0",
   "branch": "main",
-  "data_commit": "2026-11-26T00:13:49-03:00",
+  "data_commit": "2026-11-26T00:21:14-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "a85fea6",
+    "data": "2026-11-26",
+    "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45746283733) (#4157)"
+   },
    {
     "sha": "be120cf",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "872034f",
     "data": "2026-11-25",
     "assunto": "chore(main): release gifts-store 1.20.2 (#4112)"
-   },
-   {
-    "sha": "121a114",
-    "data": "2026-11-25",
-    "assunto": "chore: rollback das migrations ops (E30/E33/E40) (#4120)"
    }
   ],
-  "arquivos_mudados_7d": 562,
+  "arquivos_mudados_7d": 566,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -222,19 +222,19 @@
     "mudancas": 9
    },
    {
-    "arquivo": "src/lib/freight/index.ts",
-    "mudancas": 8
-   },
-   {
     "arquivo": "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "supabase/migrations-snapshot/SNAPSHOT_META.json",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "src/lib/freight/index.ts",
     "mudancas": 8
    },
    {
@@ -301,16 +301,16 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 234
+    "commits": 233
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 66
+    "commits": 67
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 11294,
+  "arquivos_total": 11296,
   "arquivos_codigo": 5682,
   "linhas_codigo": 1077351,
   "rotas": 141,

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `be120cf361cbd0a46aacf36ed410418f399edaf5` (2026-11-26T00:13:49-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a85fea6981951a61057050ebe2b2a478043c08f0` (2026-11-26T00:21:14-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (5206), SQL (3526), Markdown (1511), JavaScript (463), JSON (137), YAML (117), Shell (27), HTML (20)
+- linguagens: TypeScript (5206), SQL (3526), Markdown (1511), JavaScript (463), JSON (139), YAML (117), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 11294 |
+| arquivos_total | 11296 |
 | arquivos_codigo | 5682 |
 | linhas_codigo | 1077351 |
 | rotas | 141 |
@@ -599,7 +599,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 51030 nós · 86523 arestas · 2887 comunidades · grafo do commit `be120cf3`
+- 51030 nós · 86523 arestas · 2887 comunidades · grafo do commit `a85fea69`
 - comunidades maiores: ref_components (612), react (553), ref_node_child_process (519), lucide-react (475), ref_hooks (430), vitest (418), ref_integrations (373), ref_lib (369), @tanstack/react-query (369), sonner (351), ref_types (321), scripts (312)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -611,10 +611,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - package-lock.json (20)
 - CHANGELOG.md (17)
 - docs/coordenacao/conflitos-semanticos.md (9)
+- supabase/migrations-snapshot/ALL_IN_ONE.sql (9)
+- supabase/migrations-snapshot/SCHEMA_LIVE.sql (9)
+- supabase/migrations-snapshot/SNAPSHOT_META.json (9)
 - src/lib/freight/index.ts (8)
-- supabase/migrations-snapshot/ALL_IN_ONE.sql (8)
-- supabase/migrations-snapshot/SCHEMA_LIVE.sql (8)
-- supabase/migrations-snapshot/SNAPSHOT_META.json (8)
 - src/pages/quotes/QuoteBuilderPage.tsx (7)
 - audit/supabase-reference-catalog.temporary.json (6)
 - scripts/drift-baseline.mjs (6)
@@ -1198,6 +1198,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.20.4](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.3...gifts-store-v1.20.4) (2026-11-26)
 
 ## Últimos commits
+- 2026-11-26 `a85fea6` chore(schema-snapshot): snapshot semanal 2026-W48 (run 45746283733) (#4157)
 - 2026-11-26 `be120cf` chore(main): release gifts-store 1.20.4 (#4143)
 - 2026-11-25 `f240a63` fix: replay do shadow aceita DROP INDEX CONCURRENTLY (#4156)
 - 2026-11-25 `7cde484` docs(migrations-log): recibo E15 — aplicação de 20261126030000 (#4155)
@@ -1212,7 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `aacb9e5` docs(migrations-log): recibo E15 — aplicação de 20261101210000 (#4145)
 - 2026-11-25 `0ab1b7a` docs(migrations-log): recibo E15 — aplicação de 20260620190001 (#4141)
 - 2026-11-25 `2e8d1ac` fix: PERF005 derruba so os 48 indices com scans=0 e ganha rollback (#4144)
-- 2026-11-25 `939d6fd` docs(migrations-log): recibo E15 — aplicação de 20260629142224 (#4138)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
