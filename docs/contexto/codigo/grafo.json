@@ -1,12 +1,12 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2986,
- "arestas": 11827,
+ "nos": 2989,
+ "arestas": 11839,
  "hubs": [
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 670
+   "importado_por": 671
   },
   {
    "arquivo": "src/lib/utils.ts",
@@ -14,7 +14,7 @@
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
-   "importado_por": 496
+   "importado_por": 497
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
@@ -22,7 +22,7 @@
   },
   {
    "arquivo": "src/components/ui/card.tsx",
-   "importado_por": 365
+   "importado_por": 366
   },
   {
    "arquivo": "src/lib/logger.ts",
@@ -34,7 +34,7 @@
   },
   {
    "arquivo": "src/components/ui/input.tsx",
-   "importado_por": 276
+   "importado_por": 277
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
@@ -42,7 +42,7 @@
   },
   {
    "arquivo": "src/components/ui/skeleton.tsx",
-   "importado_por": 194
+   "importado_por": 195
   },
   {
    "arquivo": "src/components/ui/label.tsx",
@@ -105,12 +105,12 @@
    "importado_por": 68
   },
   {
-   "arquivo": "src/types/stock.ts",
+   "arquivo": "src/lib/supabase-untyped.ts",
    "importado_por": 64
   },
   {
-   "arquivo": "src/lib/supabase-untyped.ts",
-   "importado_por": 63
+   "arquivo": "src/types/stock.ts",
+   "importado_por": 64
   },
   {
    "arquivo": "src/types/magazine.ts",
@@ -118,7 +118,7 @@
   },
   {
    "arquivo": "src/components/ui/table.tsx",
-   "importado_por": 60
+   "importado_por": 61
   },
   {
    "arquivo": "src/utils/image-utils.ts",
@@ -678,7 +678,7 @@
   },
   {
    "modulo": "pages/admin",
-   "depende_de": 37,
+   "depende_de": 39,
    "importado_por": 3
   },
   {
@@ -689,7 +689,7 @@
   {
    "modulo": "hooks/common",
    "depende_de": 11,
-   "importado_por": 25
+   "importado_por": 26
   },
   {
    "modulo": "hooks/ui",

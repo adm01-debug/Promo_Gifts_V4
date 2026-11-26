@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2737,
+ "total": 2739,
  "por_tipo": {
   "contrato": 70,
   "e2e": 678,
   "pytest": 8,
   "qa": 17,
-  "unit": 1964
+  "unit": 1966
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 806
+   "arquivos": 808
   },
   {
    "padrao": "e2e/",
@@ -9897,6 +9897,15 @@
    "casos": 7
   },
   {
+   "arquivo": "src/lib/ai/__tests__/quota-summary.test.ts",
+   "tipo": "unit",
+   "linhas": 192,
+   "testa": [
+    "src/lib/ai/quota-summary.ts"
+   ],
+   "casos": 17
+  },
+  {
    "arquivo": "src/lib/analytics/__tests__/cartAnalytics.source.contract.test.ts",
    "tipo": "contrato",
    "linhas": 159,
@@ -11361,6 +11370,16 @@
     "src/pages/admin/RolePermissionsPage.tsx"
    ],
    "casos": 7
+  },
+  {
+   "arquivo": "src/pages/admin/ai-usage/__tests__/AiQuotaPerUserPanel.test.tsx",
+   "tipo": "unit",
+   "linhas": 183,
+   "testa": [
+    "src/lib/ai/quota-summary.ts",
+    "src/pages/admin/ai-usage/AiQuotaPerUserPanel.tsx"
+   ],
+   "casos": 9
   },
   {
    "arquivo": "src/pages/auth/__tests__/auth-copy.smoke.test.ts",
@@ -24095,6 +24114,7 @@
   "src/integrations/supabase/types.ts": 10,
   "src/lib/access/access-policy.ts": 1,
   "src/lib/access/dev-route-telemetry.ts": 1,
+  "src/lib/ai/quota-summary.ts": 2,
   "src/lib/analytics/cartAnalytics.ts": 1,
   "src/lib/analytics/intelligenceAnalytics.ts": 4,
   "src/lib/analytics/mfaNavigationAnalytics.ts": 1,
@@ -24314,6 +24334,7 @@
   "src/pages/admin/AdminVideoVariantsPage.tsx": 1,
   "src/pages/admin/DiscountRequestDetailPage.tsx": 1,
   "src/pages/admin/RolePermissionsPage.tsx": 2,
+  "src/pages/admin/ai-usage/AiQuotaPerUserPanel.tsx": 1,
   "src/pages/admin/telemetry/usePlatformFailureMetrics.ts": 1,
   "src/pages/auth/Auth.tsx": 3,
   "src/pages/auth/AuthBranding.tsx": 2,
@@ -24860,6 +24881,7 @@
    "src/contexts/DevChallengeContext.tsx",
    "src/hooks/admin/useAdminKitTemplates.ts",
    "src/hooks/admin/useAdminSessions.ts",
+   "src/hooks/admin/useAiQuotaSummary.ts",
    "src/hooks/admin/useAuditLog.ts",
    "src/hooks/admin/useCrmSellerLinks.ts",
    "src/hooks/admin/useDevAccessAudit.ts",

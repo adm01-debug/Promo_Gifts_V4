@@ -3,8 +3,8 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (5247)",
-   "SQL (3532)",
+   "TypeScript (5252)",
+   "SQL (3534)",
    "Markdown (1512)",
    "JavaScript (463)",
    "JSON (141)",
@@ -5446,7 +5446,7 @@
    },
    {
     "papel": "dev",
-    "ocorrencias": 46
+    "ocorrencias": 48
    },
    {
     "papel": "button",
@@ -5465,11 +5465,11 @@
     "ocorrencias": 31
    },
    {
-    "papel": "listitem",
-    "ocorrencias": 27
+    "papel": "vendedor",
+    "ocorrencias": 28
    },
    {
-    "papel": "vendedor",
+    "papel": "listitem",
     "ocorrencias": 27
    },
    {
@@ -5622,6 +5622,10 @@
    },
    {
     "papel": "agent",
+    "ocorrencias": 2
+   },
+   {
+    "papel": "desconhecido",
     "ocorrencias": 2
    },
    {

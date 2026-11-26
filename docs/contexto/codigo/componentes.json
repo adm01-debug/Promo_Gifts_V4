@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1292,
+ "total": 1293,
  "orfaos": 155,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -16748,7 +16748,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 496,
+   "usado_por": 497,
    "orfao": false
   },
   {
@@ -16783,7 +16783,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 665,
+   "usado_por": 666,
    "orfao": false
   },
   {
@@ -16817,7 +16817,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 365,
+   "usado_por": 366,
    "orfao": false
   },
   {
@@ -17166,7 +17166,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 276,
+   "usado_por": 277,
    "orfao": false
   },
   {
@@ -17474,7 +17474,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 194,
+   "usado_por": 195,
    "orfao": false
   },
   {
@@ -17570,7 +17570,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 60,
+   "usado_por": 61,
    "orfao": false
   },
   {
@@ -18089,7 +18089,7 @@
     "AdminAiUsagePage"
    ],
    "export_default": "AdminAiUsagePage",
-   "linhas": 111,
+   "linhas": 113,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useAiUsageLogs",
@@ -18548,6 +18548,23 @@
    "hooks_locais": [
     "useAiQuotas",
     "useUpdateQuota"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/pages/admin/ai-usage/AiQuotaPerUserPanel.tsx",
+   "exports": [
+    "AiQuotaPerUserPanel"
+   ],
+   "export_default": null,
+   "linhas": 285,
+   "dominio": "pages/admin",
+   "hooks_locais": [
+    "useAiQuotaSummary",
+    "useDebounce"
    ],
    "tabelas": [],
    "edges": [],

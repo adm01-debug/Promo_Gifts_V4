@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 362,
+ "total": 363,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 278,
+  "lib": 279,
   "python": 9,
   "services": 16,
   "stores": 9,
@@ -1160,6 +1160,39 @@
     "components/access"
    ],
    "coberto_por_testes": 0,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/ai/quota-summary.ts",
+   "camada": "lib",
+   "exports": [
+    "AiQuotaRow",
+    "AiQuotaSummary",
+    "describeQuotaError",
+    "describeRemaining",
+    "isQuotaExhausted",
+    "isQuotaUnlimited",
+    "parseAiQuotaRows",
+    "roleLabel",
+    "summarizeAiQuota",
+    "usagePercent"
+   ],
+   "export_default": null,
+   "linhas": 154,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "hooks/admin",
+    "pages/admin"
+   ],
+   "coberto_por_testes": 2,
    "orfao": false
   },
   {
@@ -8279,7 +8312,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 61,
+   "usado_por": 62,
    "usado_por_modulos": [
     "components/admin",
     "components/mockup",

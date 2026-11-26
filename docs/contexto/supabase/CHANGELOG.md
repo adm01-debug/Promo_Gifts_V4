@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 21:21 UTC
+
+- **functions** alterado (2): `public.fn_ai_quota_summary()`, `public.is_admin_or_above(_user_id uuid)`
+
 ## 2026-11-26 19:18 UTC
 
 - **functions** alterado (2): `public.fn_anon_catalog_grant_audit_run()`, `public.fn_verify_anon_catalog_grants()`

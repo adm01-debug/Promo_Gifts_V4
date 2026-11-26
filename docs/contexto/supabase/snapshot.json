@@ -149727,8 +149727,13 @@
       {
         "args": "",
         "callers": {
-          "code": [],
-          "code_total_files": 0,
+          "code": [
+            {
+              "file": "supabase/migrations/20261126191200_admin_ai_quota_summary_rpc.sql",
+              "hits": 2
+            }
+          ],
+          "code_total_files": 1,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -184702,7 +184707,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 103,
+          "code_total_files": 104,
           "cron": [],
           "db": [
             "public.enforce_user_id_owner",

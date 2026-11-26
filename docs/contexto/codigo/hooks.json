@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 652,
+ "total": 653,
  "hooks": [
   {
    "arquivo": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -6702,6 +6702,26 @@
    "usado_por": 1,
    "usado_por_arquivos": [
     "src/pages/admin/AdminSessionsPage.tsx"
+   ],
+   "coberto_por_testes": 0
+  },
+  {
+   "arquivo": "src/hooks/admin/useAiQuotaSummary.ts",
+   "hooks_exportados": [
+    "useAiQuotaSummary"
+   ],
+   "linhas": 32,
+   "dominio": "hooks/admin",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useQuery"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/pages/admin/ai-usage/AiQuotaPerUserPanel.tsx"
    ],
    "coberto_por_testes": 0
   },

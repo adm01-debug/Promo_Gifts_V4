@@ -10323,6 +10323,10 @@
    "src/lib/edge/safeInvokeCall.ts",
    "src/lib/logger.ts"
   ],
+  "src/hooks/admin/useAiQuotaSummary.ts": [
+   "src/lib/ai/quota-summary.ts",
+   "src/lib/supabase-untyped.ts"
+  ],
   "src/hooks/admin/useAllowedIPs.ts": [
    "src/contexts/AuthContext.tsx",
    "src/lib/logger.ts",
@@ -13244,6 +13248,7 @@
    "src/hooks/intelligence/index.ts",
    "src/pages/admin/ai-usage/AiCharts.tsx",
    "src/pages/admin/ai-usage/AiQuotaManager.tsx",
+   "src/pages/admin/ai-usage/AiQuotaPerUserPanel.tsx",
    "src/pages/admin/ai-usage/AiSummaryCard.tsx",
    "src/pages/admin/ai-usage/AiTables.tsx",
    "src/pages/admin/ai-usage/MarketIntelInsightsUsagePanel.tsx"
@@ -13805,6 +13810,17 @@
    "src/components/ui/skeleton.tsx",
    "src/components/ui/switch.tsx",
    "src/hooks/intelligence/index.ts"
+  ],
+  "src/pages/admin/ai-usage/AiQuotaPerUserPanel.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/components/ui/table.tsx",
+   "src/hooks/admin/useAiQuotaSummary.ts",
+   "src/hooks/common/index.ts",
+   "src/lib/ai/quota-summary.ts"
   ],
   "src/pages/admin/ai-usage/AiSummaryCard.tsx": [
    "src/components/ui/card.tsx",

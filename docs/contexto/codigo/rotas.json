@@ -5325,6 +5325,7 @@
     "useAiProviderMutations",
     "useAiProviders",
     "useAiQuotaStatus",
+    "useAiQuotaSummary",
     "useAiQuotas",
     "useAiRouting",
     "useAiRoutingMutations",
@@ -5619,6 +5620,7 @@
     "useAiProviderMutations",
     "useAiProviders",
     "useAiQuotaStatus",
+    "useAiQuotaSummary",
     "useAiQuotas",
     "useAiRouting",
     "useAiRoutingMutations",
@@ -5959,6 +5961,7 @@
     "assistant",
     "button",
     "combobox",
+    "desconhecido",
     "dialog",
     "group",
     "listbox",
@@ -5971,7 +5974,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 421
+   "arquivos_puxados": 426
   },
   {
    "protegida": true,
