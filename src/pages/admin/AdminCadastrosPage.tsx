@@ -2,7 +2,16 @@ import { Suspense } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Boxes, Package, Palette, FolderOpen, FolderTree, Truck, Tags } from 'lucide-react';
+import {
+  Boxes,
+  Building2,
+  Package,
+  Palette,
+  FolderOpen,
+  FolderTree,
+  Truck,
+  Tags,
+} from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
 
@@ -32,6 +41,12 @@ const CategoriesManager = lazyWithRetry(() =>
   import('@/components/admin/categories-manager').then((m) => ({ default: m.CategoriesManager })),
 );
 
+const RamosAtividadeManager = lazyWithRetry(() =>
+  import('@/components/admin/ramos-atividade').then((m) => ({
+    default: m.RamosAtividadeManager,
+  })),
+);
+
 function TabFallback() {
   return (
     <div className="space-y-4 p-4">
@@ -46,6 +61,7 @@ const VALID_TABS = [
   'suppliers',
   'caixas',
   'categorias',
+  'ramos',
   'personalizacao',
   'badges',
 ] as const;
@@ -105,6 +121,10 @@ export default function AdminCadastrosPage() {
               <FolderTree className="h-4 w-4" />
               Categorias
             </TabsTrigger>
+            <TabsTrigger value="ramos" className="gap-2">
+              <Building2 className="h-4 w-4" />
+              Ramos de atividade
+            </TabsTrigger>
             <TabsTrigger value="personalizacao" className="gap-2">
               <Palette className="h-4 w-4" />
               Personalização
@@ -149,6 +169,12 @@ export default function AdminCadastrosPage() {
           <TabsContent value="categorias">
             <Suspense fallback={<TabFallback />}>
               <CategoriesManager />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="ramos">
+            <Suspense fallback={<TabFallback />}>
+              <RamosAtividadeManager />
             </Suspense>
           </TabsContent>
 

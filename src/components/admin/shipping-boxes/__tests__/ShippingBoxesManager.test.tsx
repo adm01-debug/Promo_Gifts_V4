@@ -450,6 +450,7 @@ describe('aba Caixas de transporte em /admin/cadastros', () => {
       'Fornecedores',
       'Caixas de transporte',
       'Categorias',
+      'Ramos de atividade',
       'Personalização',
       'Badges',
     ]);

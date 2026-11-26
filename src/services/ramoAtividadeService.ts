@@ -23,6 +23,9 @@ type SelectParams = {
   id?: string;
   filters?: Record<string, unknown>;
   orderBy?: { column: string; ascending: boolean };
+  // `columns` + `head` permitem contagens baratas (id + count sem trazer linhas).
+  columns?: string;
+  head?: boolean;
 };
 
 class RamoAtividadeService {
@@ -30,7 +33,10 @@ class RamoAtividadeService {
     table: string,
     params: SelectParams = {},
   ): Promise<{ records: T[]; count: number }> {
-    let query = supabase.from(table as never).select('*', { count: 'exact' });
+    let query = supabase.from(table as never).select(params.columns ?? '*', {
+      count: 'exact',
+      head: params.head === true,
+    });
 
     if (params.id) {
       query = query.eq('id', params.id);
@@ -264,6 +270,41 @@ class RamoAtividadeService {
       ...toAdd.map((segId) => this.addRamoAoProduto(produtoId, segId)),
       ...toRemove.map((assoc) => this.deleteRow('produto_ramo_atividade', assoc.id)),
     ]);
+  }
+
+  // ============================================================
+  // CONTAGENS DE VINCULO (aviso de exclusao da tela de cadastros)
+  // ============================================================
+
+  /**
+   * Produtos vinculados a cada segmento informado. A FK
+   * `produto_ramo_atividade.ramo_atividade_filho_id` e ON DELETE CASCADE:
+   * excluir o segmento apaga estes vinculos, por isso a tela avisa antes.
+   */
+  async countProdutosDosSegmentos(segmentoIds: string[]): Promise<Map<string, number>> {
+    const contagens = new Map<string, number>();
+    if (segmentoIds.length === 0) return contagens;
+
+    const resultados = await Promise.all(
+      segmentoIds.map(async (id) => {
+        const { count } = await this.select<{ id: string }>('produto_ramo_atividade', {
+          columns: 'id',
+          head: true,
+          filters: { ramo_atividade_filho_id: id },
+        });
+        return { id, count };
+      }),
+    );
+
+    for (const { id, count } of resultados) {
+      contagens.set(id, count);
+    }
+    return contagens;
+  }
+
+  async countProdutosDoSegmento(segmentoId: string): Promise<number> {
+    const contagens = await this.countProdutosDosSegmentos([segmentoId]);
+    return contagens.get(segmentoId) ?? 0;
   }
 }
 
