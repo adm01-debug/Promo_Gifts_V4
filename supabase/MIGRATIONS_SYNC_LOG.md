@@ -1570,7 +1570,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 |---|---|---|---|
 | `20261107134429` | `fd1fbfceb0a148371b9507618ccf3b67a913b6f3f4b1e4e420caf0c273093286` | `create_crm_seller_identity_links` | **aplicada em 2026-11-14 23:41:43 UTC** pelo `db-apply-migration.yml` (run 43654437109; recibo E15 abaixo). Cria vínculo 1:1 privado `auth_user_id → crm_seller_id`. O sha256 registrado antes da aplicação era `c35bd151…`: o arquivo recebeu depois, em `3792045445` (2026-11-14 23:28 UTC, 13 min antes do Apply), a linha de comentário `-- soft-delete-exempt:` exigida pelo Gate de soft-delete — comentário SQL, sem efeito no DDL executado. O hash acima é o do conteúdo que a run de fato aplicou. |
 
-### Recibos — DDL pendente de aplicação (Regra 8)
+## Recibos — DDL pendente de aplicação (Regra 8)
 
 | versão | sha256 arquivo | executor | método | data UTC | pós-check | status |
 |---|---|---|---|---|---|---|
