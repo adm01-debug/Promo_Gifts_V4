@@ -5,6 +5,18 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.20.4](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.3...gifts-store-v1.20.4) (2026-11-26)
+
+
+### Bug Fixes
+
+* PERF005 derruba so os 48 indices com scans=0 e ganha rollback ([#4144](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4144)) ([2e8d1ac](https://github.com/adm01-debug/Promo_Gifts_V4/commit/2e8d1ac4e1c9a552c809796344bacfa686a622ec))
+* reemite PERF005 com DROP INDEX CONCURRENTLY (sem editar o historico) ([#4147](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4147)) ([5c40c7e](https://github.com/adm01-debug/Promo_Gifts_V4/commit/5c40c7e28b63170d5377ed71e10db5c1f1e22f48))
+* reemite PERF005 como 20261126020000 com approved-by no cabecalho ([#4152](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4152)) ([1f99d5b](https://github.com/adm01-debug/Promo_Gifts_V4/commit/1f99d5bc4a1f1e722741508ef833d862fafb5e58))
+* reemite PERF005 como 20261126030000 com approved-by valido ([#4153](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4153)) ([e61dc37](https://github.com/adm01-debug/Promo_Gifts_V4/commit/e61dc37eee29231a8ee566c64a170bb2b7a61678))
+* replay do shadow aceita DROP INDEX CONCURRENTLY ([#4156](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4156)) ([f240a63](https://github.com/adm01-debug/Promo_Gifts_V4/commit/f240a633649576739700d0eac611eb711fec67bb))
+* rollback das policies no-op e cabecalho na 20261101210000 ([#4142](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4142)) ([faedf4a](https://github.com/adm01-debug/Promo_Gifts_V4/commit/faedf4a32c4b3589f3feda5f32aef78db782d60a))
+
 ## [1.20.3](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.2...gifts-store-v1.20.3) (2026-11-26)
 
 
