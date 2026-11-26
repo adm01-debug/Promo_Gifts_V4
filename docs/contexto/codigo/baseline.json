@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a895096aa45eaeb41a5fb9438e141cadc395a0a4",
+  "commit": "29120bc4b425a752cf04a75bc25d4a76cbe3f599",
   "branch": "main",
-  "data_commit": "2026-11-26T14:27:50-03:00",
+  "data_commit": "2026-11-26T15:09:31-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "29120bc",
+    "data": "2026-11-26",
+    "assunto": "chore(main): release gifts-store 1.23.0 (#4181)"
+   },
    {
     "sha": "a895096",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "e9aef61",
     "data": "2026-11-26",
     "assunto": "chore(security): atualiza baseline assinado de RLS policies (#4154)"
-   },
-   {
-    "sha": "a85fea6",
-    "data": "2026-11-26",
-    "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45746283733) (#4157)"
    }
   ],
-  "arquivos_mudados_7d": 610,
+  "arquivos_mudados_7d": 608,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,15 +207,15 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 26
+    "mudancas": 27
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 23
+    "mudancas": 24
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 226
+    "commits": 225
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 74
+    "commits": 75
    }
   ]
  },

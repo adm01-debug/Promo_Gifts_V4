@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(main): release gifts-store 1.23.0 (#4181)",
    "feat: tela de ramos de atividade e segmentos (#4180)",
    "chore(main): release gifts-store 1.22.0 (#4176)",
    "fix: cabecalho de rollback e transacao unica na migration das RPCs de CRM (#4178)",
-   "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45859951403) (#4173)",
-   "feat: tela de acessos bloqueados lendo access_blocked_log (#4179)"
+   "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45859951403) (#4173)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

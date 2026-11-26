@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "a895096aa45eaeb41a5fb9438e141cadc395a0a4",
+  "sha": "29120bc4b425a752cf04a75bc25d4a76cbe3f599",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 17:31 UTC",
+  "generated_at": "2026-11-26 18:11 UTC",
   "files_total": 11270,
   "code_files": 9249,
   "code_lines": 1317276
@@ -583030,10 +583030,22 @@
   }
  },
  "git": {
-  "sha": "a895096aa45eaeb41a5fb9438e141cadc395a0a4",
+  "sha": "29120bc4b425a752cf04a75bc25d4a76cbe3f599",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "29120bc",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.23.0 (#4181)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "a895096",
     "date": "2026-11-26",
@@ -583404,43 +583416,32 @@
      "supabase/migrations/20261126030000_perf005_drop_unused_indexes_concurrently.sql",
      "supabase/rollbacks/20261126030000_rollback.sql"
     ]
-   },
-   {
-    "sha": "1f99d5b",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: reemite PERF005 como 20261126020000 com approved-by no cabecalho (#4152)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261126020000_perf005_drop_unused_indexes_concurrently.sql",
-     "supabase/rollbacks/20261126020000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    10
+    9
+   ],
+   [
+    ".release-please-manifest.json",
+    5
+   ],
+   [
+    "CHANGELOG.md",
+    5
+   ],
+   [
+    "package-lock.json",
+    5
+   ],
+   [
+    "package.json",
+    5
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
     5
-   ],
-   [
-    ".release-please-manifest.json",
-    4
-   ],
-   [
-    "CHANGELOG.md",
-    4
-   ],
-   [
-    "package-lock.json",
-    4
-   ],
-   [
-    "package.json",
-    4
    ],
    [
     "docs/estado/07_EDGE_FUNCTIONS.md",
