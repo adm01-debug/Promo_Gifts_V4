@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "26d2b495935f5c46a0deb65715ca75d0a5aa528f",
+  "sha": "5649d255763ec2ebe19f266113289c12e8285282",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-26 22:01 UTC",
+  "generated_at": "2026-11-26 22:29 UTC",
   "files_total": 11290,
   "code_files": 9268,
   "code_lines": 1320131
@@ -584107,10 +584107,19 @@
   }
  },
  "git": {
-  "sha": "26d2b495935f5c46a0deb65715ca75d0a5aa528f",
+  "sha": "5649d255763ec2ebe19f266113289c12e8285282",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "5649d25",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261126192900 (#4191)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "26d2b49",
     "date": "2026-11-26",
@@ -584497,22 +584506,12 @@
     "files": [
      "supabase/rollbacks/20261126030000_rollback.sql"
     ]
-   },
-   {
-    "sha": "a42709a",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "infra: serializa snapshot de schema e apply de migration no mesmo grupo (#4136)",
-    "files": [
-     ".github/workflows/db-apply-migration.yml",
-     ".github/workflows/schema-snapshot-export.yml"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    10
+    11
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",

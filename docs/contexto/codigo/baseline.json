@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "26d2b495935f5c46a0deb65715ca75d0a5aa528f",
+  "commit": "5649d255763ec2ebe19f266113289c12e8285282",
   "branch": "main",
-  "data_commit": "2026-11-26T18:52:36-03:00",
+  "data_commit": "2026-11-26T19:18:37-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "5649d25",
+    "data": "2026-11-26",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261126192900 (#4191)"
+   },
    {
     "sha": "26d2b49",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "480871c",
     "data": "2026-11-26",
     "assunto": "docs(edges): registra que os 4 achados graves de auth e os 9 crons ja foram fechados (#4166)"
-   },
-   {
-    "sha": "2e0c748",
-    "data": "2026-11-26",
-    "assunto": "docs: mede cron das edges e corrige status N01/N15/N21/I01 (#4164)"
    }
   ],
-  "arquivos_mudados_7d": 618,
+  "arquivos_mudados_7d": 616,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 113
+    "mudancas": 114
    },
    {
     "pasta": "src/components/quotes",
@@ -181,7 +181,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 82
+    "mudancas": 81
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 113
+    "mudancas": 114
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 28
+    "mudancas": 27
    },
    {
     "arquivo": "package-lock.json",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 223
+    "commits": 222
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 77
+    "commits": 78
    }
   ]
  },
