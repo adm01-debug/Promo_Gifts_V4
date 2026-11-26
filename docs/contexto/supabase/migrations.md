@@ -3037,4 +3037,5 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261125180000 | [fix_comment_v_tabela_gravacao_publica](migrations/20261125180000_fix_comment_v_tabela_gravacao_publica.sql) | 2 |
 | 20261126030000 | [perf005_drop_unused_indexes_concurrently](migrations/20261126030000_perf005_drop_unused_indexes_concurrently.sql) | 48 |
 | 20261126052000 | [ops_infra_telemetry_dev_rpc](migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql) | 5 |
+| 20261126060000 | [crm_seller_identity_admin_rpc](migrations/20261126060000_crm_seller_identity_admin_rpc.sql) | 0 |
 | 20261126130000 | [create_saved_stock_views](migrations/20261126130000_create_saved_stock_views.sql) | 18 |

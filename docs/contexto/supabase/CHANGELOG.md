@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 16:21 UTC
+
+- **functions** adicionado (3): `public.fn_admin_link_crm_seller(_crm_seller_id bigint, _auth_user_id uuid, _email text)`, `public.fn_admin_list_crm_seller_links(_search text, _limit integer)`, `public.fn_admin_unlink_crm_seller(_auth_user_id uuid)`
+- **functions** alterado (2): `public.is_admin_or_above(_user_id uuid)`, `public.log_audit(_action text, _resource_type text, _resource_id text, _details jsonb)`
+- **migrations** adicionado (1): `20261126060000_crm_seller_identity_admin_rpc`
+
 ## 2026-11-26 15:25 UTC
 
 - **colunas** adicionado (9): `public.saved_stock_views.created_at`, `public.saved_stock_views.description`, `public.saved_stock_views.filters`, `public.saved_stock_views.id`, `public.saved_stock_views.is_pinned`, `public.saved_stock_views.name`, `public.saved_stock_views.updated_at`, `public.saved_stock_views.use_count`, `public.saved_stock_views.user_id`

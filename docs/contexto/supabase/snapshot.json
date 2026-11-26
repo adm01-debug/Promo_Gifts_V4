@@ -149465,6 +149465,66 @@
         "volatility": "volatile"
       },
       {
+        "args": "_crm_seller_id bigint, _auth_user_id uuid, _email text",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Cria ou corrige o vinculo auth.users -> vendedor do CRM externo com link_source=manual (aceita e-mail ou auth_user_id), audita em admin_audit_log e rejeita id invalido, usuario inexistente ou vendedor ja vinculado (23505).",
+        "config": [
+          "search_path=public, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "76c9aa23bb9a267a",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "fn_admin_link_crm_seller",
+        "owner": "postgres",
+        "returns": "TABLE(action text, previous_crm_seller_id bigint, auth_user_id uuid, email text)",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "_search text, _limit integer",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Lista os vinculos auth.users -> vendedor do CRM externo para a tela /admin/vinculos-vendedor-crm. Guard is_admin_or_above, le a tabela deny-all crm_seller_identity_links e enriquece com profiles.",
+        "config": [
+          "search_path=public, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "05994c9b9fa7eded",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "fn_admin_list_crm_seller_links",
+        "owner": "postgres",
+        "returns": "TABLE(auth_user_id uuid, crm_seller_id bigint, link_source text, created_at timestamp with time zone, full_name text, email text)",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "stable"
+      },
+      {
         "args": "",
         "callers": {
           "code": [
@@ -149584,6 +149644,36 @@
         "name": "fn_admin_sync_external_connections",
         "owner": "postgres",
         "returns": "jsonb",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "_auth_user_id uuid",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Desfaz o vinculo auth.users -> vendedor do CRM externo (o bridge volta a resolver por e-mail no proximo acesso), audita em admin_audit_log e e idempotente.",
+        "config": [
+          "search_path=public, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "46a281e88019ced0",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "fn_admin_unlink_crm_seller",
+        "owner": "postgres",
+        "returns": "bigint",
         "schema": "public",
         "security_definer": true,
         "strict": false,
@@ -184600,12 +184690,15 @@
               "hits": 1
             }
           ],
-          "code_total_files": 102,
+          "code_total_files": 103,
           "cron": [],
           "db": [
             "public.enforce_user_id_owner",
+            "public.fn_admin_link_crm_seller",
+            "public.fn_admin_list_crm_seller_links",
             "public.fn_admin_run_smoke_tests",
             "public.fn_admin_smoke_tests_dashboard",
+            "public.fn_admin_unlink_crm_seller",
             "public.fn_anon_catalog_grant_audit_run",
             "public.fn_apply_print_profiles",
             "public.fn_approve_product_deactivation",
@@ -186099,11 +186192,18 @@
             {
               "file": "supabase/migrations/20260620190500_faxina_tier3b_archive_dead_functions_bulk.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261126060000_crm_seller_identity_admin_rpc.sql",
+              "hits": 3
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
-          "db": [],
+          "db": [
+            "public.fn_admin_link_crm_seller",
+            "public.fn_admin_unlink_crm_seller"
+          ],
           "triggers": [],
           "views": []
         },
@@ -242130,6 +242230,11 @@
         "statements": 5,
         "statements_sha": "55fe510ee3639d72",
         "version": "20261126052000"
+      },
+      {
+        "name": "crm_seller_identity_admin_rpc",
+        "statements": null,
+        "version": "20261126060000"
       },
       {
         "name": "create_saved_stock_views",
