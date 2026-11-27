@@ -49,7 +49,7 @@ listar 190 objetos.
 
 | Arquivo | Problema |
 | --- | --- |
-| `supabase/migrations/20261123130000_view_tabela_preco_faixa_public.sql` (+ rollback) | cria `v_tabela_preco_gravacao_oficial_faixa_public`, que **não existe** em nenhuma migration nem no dump de produção (`grep -c` = 0 em `supabase/migrations-snapshot/SCHEMA_LIVE.sql`); e a revogação contradiz `fn_verify_anon_catalog_grants()` |
+| `20261123130000_view_tabela_preco_faixa_public.sql` (+ rollback), na branch `pr/4009` | cria `v_tabela_preco_gravacao_oficial_faixa_public`, que **não existe** em nenhuma migration nem no dump de produção (`grep -c` = 0 em `supabase/migrations-snapshot/SCHEMA_LIVE.sql`); e a revogação contradiz `fn_verify_anon_catalog_grants()` |
 | `src/lib/db/postgrest.ts`, `src/lib/external-db/rest-native.ts`, `src/lib/supabase-direct.ts` | redirecionam `customization_price_tiers` para essa view inexistente — aplicado, quebraria a leitura (404) |
 
 Rejeição correta. A view de faixa que existe é `v_compras_precos_faixa` (está no contrato).
@@ -102,3 +102,53 @@ que voltou em `20261126230000`. As branches listadas podem ser arquivadas.
 - O preflight `scripts/preflight-migration-apply.mjs:154` acusa `CONCURRENTLY` dentro de
   **string literal** de `COMMENT` (falso positivo). Workaround usado: `-- transaction: none`
   no cabeçalho.
+---
+
+## Segunda passada — comparação byte a byte com normalização (2026-11-27)
+
+A primeira passada comparou linha adicionada × linha da `main`. Isso gera ruído
+(comentário, posição, whitespace) e pode tanto esconder trabalho real quanto
+produzir falso positivo. A segunda passada removeu o ruído:
+
+- **Escopo**: 80 branches + 12 refs de PR (`pr/4003`…`pr/4088`, `c4039`, `work`).
+- **Método**: `git merge-base origin/main <ref>` → `git diff --name-status` →
+  para cada arquivo **relevante** (`src/`, `supabase/migrations/`,
+  `supabase/rollbacks/`, `scripts/`, `.github/workflows/`, `.security/`,
+  `tests/`), comparar `git show <ref>:<path>` com `git show origin/main:<path>`
+  após remover comentários (`--`, `/* */`, `//`) e colapsar whitespace.
+- **Ignorados por construção**: `docs/`, `*.md`, `MIGRATIONS_SYNC_LOG.md`,
+  `migrations-snapshot/`, `package-lock.json`, `public/`.
+- **Resultado**: 43 arquivos relevantes comparados → **20 candidatos**
+  (12 existem só na branch, 8 divergem). Todos com veredito abaixo.
+
+### Arquivo existe só na branch — 12
+
+| Arquivo | Branch | Veredito |
+| --- | --- | --- |
+| `20261123100000_mask_cost_compras_catalogo.sql` (+ rollback) | `pr/4004` | superado por `20261124140000_close_anon_cost_surface.sql` |
+| `20261123110000_mask_cost_compras_precos_faixa.sql` (+ rollback) | `pr/4005` | idem |
+| `20261123120000_revoke_variante_anon_grants.sql` (+ rollback) | `pr/4006` | idem |
+| `20261123130000_view_tabela_preco_faixa_public.sql` (+ rollback) | `pr/4009` | **rejeitado com razão**: `security_invoker = false` + `grant select … to anon` numa view de `public`, sem consumidor anon — o próprio cabeçalho diz "essas telas sao admin-only". Leak cross-tenant e contra o endurecimento de custo anon |
+| `20261125114837_revoke_anon_internal_grants_public.sql` (+ rollback) | `pr/4071` | reemitido como `20261125120000`, com `search_path` mais restrito (`'public', 'pg_temp'`) |
+| `20261125150000_fix_comment_v_tabela_gravacao_publica.sql` (+ rollback) | `claude/fix-comment-view-gravacao-261125-1116` | reemitido como `20261125180000` (mesmo `COMMENT ON VIEW`) |
+
+### Conteúdo diverge — 8
+
+| Arquivo | Veredito |
+| --- | --- |
+| `.security/policies-baseline.json` | só `generated_at` difere; `sha256` idêntico → mesmo conteúdo |
+| `src/pages/admin/AdminCadastrosPage.tsx` | `main` é superset: tem a aba `ramos` **e** a aba `classificacao`; a branch só tem `ramos` |
+| `20261101205400_perf005_drop_unused_indexes.sql` | branch usa `DROP INDEX CONCURRENTLY`; a `main` já tem isso em `20261126030000_perf005_drop_unused_indexes_concurrently.sql` (49 DROPs) |
+| `.github/workflows/schema-snapshot-export.yml` | branch usa `db.<ref>.supabase.co` (IPv6-only, inalcançável no runner — E037); `main` usa secrets Supavisor IPv4. A `main` é a correção |
+| `src/lib/db/postgrest.ts` | só a linha do alias `customization_price_tiers` → view inexistente |
+| `src/lib/external-db/rest-native.ts` | idem (+ entrada no `REST_NATIVE_SAFE_TABLES`) |
+| `src/lib/supabase-direct.ts` | idem |
+| `.security/anon-tables-baseline.json` | branch lista 42 tabelas; `main` tem 29 (mais restritiva e verde ao vivo) |
+
+### Conclusão
+
+Dos 43 arquivos relevantes comparados, **um único** continha trabalho
+inaproveitado: o `COMMENT ON VIEW public.mv_product_compositions` com a palavra
+`CONCURRENTLY`, resgatado na migration `20261126230000` e aplicado em produção.
+Todo o resto era reemissão, superset na `main`, referência a objeto inexistente
+ou exposição anon sem consumidor.
