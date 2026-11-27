@@ -1,4 +1,4 @@
-# Graph Report - Promo_Gifts_V4  (2026-11-26)
+# Graph Report - Promo_Gifts_V4  (2026-11-27)
 
 ## Corpus Check
 - 7442 files · ~6,871,715 words
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e39d2360`
+- Built from commit: `a94a6505`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

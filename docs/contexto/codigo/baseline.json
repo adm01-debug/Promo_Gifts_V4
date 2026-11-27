@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e39d2360a15463f45c5740cfd36494e33d3cb46d",
+  "commit": "a94a65055bcc098073bf920440d4d9ab1549c476",
   "branch": "main",
-  "data_commit": "2026-11-26T20:39:08-03:00",
+  "data_commit": "2026-11-26T20:53:46-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "a94a650",
+    "data": "2026-11-26",
+    "assunto": "chore: opt-out de transacao na migration 20261126230000 (#4196)"
+   },
    {
     "sha": "e39d236",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "c3f747f",
     "data": "2026-11-26",
     "assunto": "feat: tela Infra do Banco (/admin/infra-ops) para a telemetria ops.* sem consumidor (#4160)"
-   },
-   {
-    "sha": "48dbd0b",
-    "data": "2026-11-26",
-    "assunto": "docs(edge-deploy-log): recibo do deploy — run 45824995474 (#4170)"
    }
   ],
   "arquivos_mudados_7d": 626,
