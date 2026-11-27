@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.check_login_rate_limit(_email text, _ip text D
  RETURNS jsonb
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
+ SET search_path TO 'pg_catalog', 'public', 'extensions'
 AS $function$
 DECLARE
   _max_failures int := 5;

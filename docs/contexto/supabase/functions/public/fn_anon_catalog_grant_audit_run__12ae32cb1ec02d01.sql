@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_anon_catalog_grant_audit_run()
  RETURNS integer
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'pg_catalog', 'public', 'pg_temp'
+ SET search_path TO 'pg_catalog', 'public'
 AS $function$
 DECLARE
   v jsonb;

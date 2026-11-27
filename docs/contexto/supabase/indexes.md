@@ -112,6 +112,7 @@ Uso e tamanho em `stats.md`.
 | public.asia_image_import_queue | idx_aiq_variant_id | btree | variant_id | não | sim | `(variant_id IS NOT NULL)` |
 | public.asia_image_import_queue | idx_asia_img_queue_product | btree | product_id | não | sim |  |
 | public.asia_image_import_queue | idx_asia_img_queue_status | btree | status | não | sim |  |
+| public.asia_image_import_queue | idx_fk_asia_image_import_queue_variant_id | btree | variant_id | não | sim |  |
 | public.asia_upload_mapping | asia_upload_mapping_pkey | btree | id | sim | sim |  |
 | public.asia_upload_mapping | idx_asia_upload_mapping_request_id | btree | request_id | não | sim |  |
 | public.asia_upload_mapping | idx_asia_upload_mapping_status | btree | status | não | sim |  |
@@ -161,6 +162,7 @@ Uso e tamanho em `stats.md`.
 | public.categories | idx_categories_path_tpo | btree | path | não | sim |  |
 | public.categories | idx_categories_updated_by | btree | updated_by | não | sim |  |
 | public.categories | idx_fk_categories_created_by | btree | created_by | não | sim |  |
+| public.categories | idx_fk_categories_parent_id | btree | parent_id | não | sim |  |
 | public.categories | uq_categories_slug | btree | slug | sim | sim |  |
 | public.category_accessory_categories | category_accessory_categories_pkey | btree | id | sim | sim |  |
 | public.category_accessory_categories | idx_cat_acc_category | btree | category_id | não | sim |  |
@@ -344,6 +346,7 @@ Uso e tamanho em `stats.md`.
 | public.freight_settings | freight_settings_pkey | btree | id | sim | sim |  |
 | public.freight_settings | idx_freight_settings_updated_by | btree | updated_by | não | sim |  |
 | public.frontend_telemetry | frontend_telemetry_pkey | btree | id | sim | sim |  |
+| public.frontend_telemetry | idx_fk_frontend_telemetry_user_id | btree | user_id | não | sim |  |
 | public.generated_mockups | generated_mockups_pkey | btree | id | sim | sim |  |
 | public.generated_mockups | idx_generated_mockups_approved_by_user_id | btree | approved_by_user_id | não | sim |  |
 | public.generated_mockups | idx_generated_mockups_job_id | btree | job_id | não | sim |  |
@@ -365,6 +368,7 @@ Uso e tamanho em `stats.md`.
 | public.inbound_webhook_endpoints | idx_inbound_webhook_endpoints_created_by | btree | created_by | não | sim |  |
 | public.inbound_webhook_endpoints | inbound_webhook_endpoints_pkey | btree | id | sim | sim |  |
 | public.inbound_webhook_endpoints | inbound_webhook_endpoints_slug_key | btree | slug | sim | sim |  |
+| public.inbound_webhook_events | idx_fk_inbound_webhook_events_endpoint_id | btree | endpoint_id | não | sim |  |
 | public.inbound_webhook_events | idx_webhook_idempotency | btree | endpoint_id, idempotency_key | sim | sim | `(idempotency_key IS NOT NULL)` |
 | public.inbound_webhook_events | inbound_webhook_events_pkey | btree | id | sim | sim |  |
 | public.included_packaging_print_areas | idx_ippa_packaging | btree | packaging_id | não | sim |  |
@@ -394,12 +398,18 @@ Uso e tamanho em `stats.md`.
 | public.kit_comments | idx_kit_comments_kit_id | btree | kit_id | não | sim |  |
 | public.kit_comments | idx_kit_comments_parent_id | btree | parent_id | não | sim |  |
 | public.kit_comments | kit_comments_pkey | btree | id | sim | sim |  |
+| public.kit_component_enrichment_raw | idx_fk_kit_component_enrichment_raw_kit_component_id | btree | kit_component_id | não | sim |  |
+| public.kit_component_enrichment_raw | idx_fk_kit_component_enrichment_raw_kit_product_id | btree | kit_product_id | não | sim |  |
+| public.kit_component_enrichment_raw | idx_fk_kit_component_enrichment_raw_promoted_component_id | btree | promoted_component_id | não | sim |  |
+| public.kit_component_enrichment_raw | idx_fk_kit_component_enrichment_raw_promoted_padronizacao_id | btree | promoted_padronizacao_id | não | sim |  |
 | public.kit_component_enrichment_raw | idx_kit_component_enrichment_raw_imported_by | btree | imported_by | não | sim |  |
 | public.kit_component_enrichment_raw | kit_component_enrichment_raw_pkey | btree | id | sim | sim |  |
 | public.kit_component_enrichment_raw | uq_kcer_hash | btree | raw_hash | sim | sim | `(raw_hash IS NOT NULL)` |
 | public.kit_component_ficha_staging | ix_kcfs_product | btree | product_sku | não | sim |  |
 | public.kit_component_ficha_staging | ix_kcfs_status | btree | match_status | não | sim |  |
 | public.kit_component_ficha_staging | kit_component_ficha_staging_pkey | btree | id | sim | sim |  |
+| public.kit_component_padronizacao | idx_fk_kit_component_padronizacao_kit_product_id | btree | kit_product_id | não | sim |  |
+| public.kit_component_padronizacao | idx_fk_kit_component_padronizacao_raw_id | btree | raw_id | não | sim |  |
 | public.kit_component_padronizacao | idx_kcp_material_type_id | btree | material_type_id | não | sim |  |
 | public.kit_component_padronizacao | idx_kcpad_approved | btree | padronizacao_status | não | sim | `((padronizacao_status)::text = 'approved'::text)` |
 | public.kit_component_padronizacao | idx_kcpad_component | btree | kit_component_id | não | sim |  |
@@ -452,6 +462,7 @@ Uso e tamanho em `stats.md`.
 | public.magazine_items | magazine_items_pkey | btree | id | sim | sim |  |
 | public.magazine_items | magazine_items_position_unique | btree | magazine_id, position | sim | sim |  |
 | public.magazine_items | magazine_items_unique_product | btree | magazine_id, product_id | sim | sim |  |
+| public.magazine_public_reactions | idx_fk_magazine_public_reactions_item_id | btree | item_id | não | sim |  |
 | public.magazine_public_reactions | idx_mag_reactions_item | btree | item_id | não | sim | `(item_id IS NOT NULL)` |
 | public.magazine_public_reactions | idx_mag_reactions_mag | btree | magazine_id, kind, created_at | não | sim |  |
 | public.magazine_public_reactions | magazine_public_reactions_pkey | btree | id | sim | sim |  |
@@ -497,6 +508,7 @@ Uso e tamanho em `stats.md`.
 | public.magazine_templates | magazine_templates_pkey | btree | id | sim | sim |  |
 | public.magazine_templates_catalog | magazine_templates_catalog_pkey | btree | template_id | sim | sim |  |
 | public.magazine_view_rollup_watermark | magazine_view_rollup_watermark_pkey | btree | id | sim | sim |  |
+| public.magazines | idx_fk_magazines_owner_id | btree | owner_id | não | sim |  |
 | public.magazines | idx_magazines_not_deleted | btree | owner_id, updated_at | não | sim | `(deleted_at IS NULL)` |
 | public.magazines | idx_magazines_organization_id | btree | organization_id | não | sim |  |
 | public.magazines | idx_magazines_published | btree | status, published_at | não | sim | `(status = 'published'::magazine_status)` |
@@ -511,6 +523,8 @@ Uso e tamanho em `stats.md`.
 | public.magic_up_generations | magic_up_generations_pkey | btree | id | sim | sim |  |
 | public.magic_up_public_shares | magic_up_public_shares_pkey | btree | id | sim | sim |  |
 | public.magic_up_reactions | magic_up_reactions_pkey | btree | id | sim | sim |  |
+| public.markup_configurations | idx_fk_markup_configurations_category_id | btree | category_id | não | sim |  |
+| public.markup_configurations | idx_fk_markup_configurations_variant_id | btree | variant_id | não | sim |  |
 | public.markup_configurations | idx_markup_category | btree | category_id | não | sim | `(category_id IS NOT NULL)` |
 | public.markup_configurations | idx_markup_configurations_created_by | btree | created_by | não | sim |  |
 | public.markup_configurations | idx_markup_configurations_organization_id | btree | organization_id | não | sim |  |
@@ -645,9 +659,11 @@ Uso e tamanho em `stats.md`.
 | public.pipeline_known_issues | pipeline_known_issues_pkey | btree | id | sim | sim |  |
 | public.pipeline_run_log | ix_pipeline_run_log_started | btree | started_at | não | sim |  |
 | public.pipeline_run_log | pipeline_run_log_pkey | btree | id | sim | sim |  |
+| public.price_history | idx_fk_price_history_variant_id | btree | variant_id | não | sim |  |
 | public.price_history | idx_price_history_changed_by | btree | changed_by | não | sim |  |
 | public.price_history | idx_price_history_variant_id | btree | variant_id | não | sim | `(variant_id IS NOT NULL)` |
 | public.price_history | price_history_pkey | btree | id | sim | sim |  |
+| public.print_area_techniques | idx_fk_print_area_techniques_tabela_preco_id | btree | tabela_preco_id | não | sim |  |
 | public.print_area_techniques | idx_pat_product_active | btree | product_id, is_active | não | sim |  |
 | public.print_area_techniques | idx_pat_product_location_active | btree | product_id, location_code, is_active | não | sim | `(is_active = true)` |
 | public.print_area_techniques | print_area_techniques_pkey | btree | id | sim | sim |  |
@@ -670,6 +686,7 @@ Uso e tamanho em `stats.md`.
 | public.product_category_assignments | product_category_assignments_pkey | btree | id | sim | sim |  |
 | public.product_category_assignments | product_category_assignments_product_id_category_id_key | btree | product_id, category_id | sim | sim |  |
 | public.product_category_assignments | product_category_primary_idx | btree | product_id | sim | sim | `(is_primary = true)` |
+| public.product_commemorative_dates | idx_fk_product_commemorative_dates_category_id | btree | category_id | não | sim |  |
 | public.product_commemorative_dates | idx_product_commemorative_dates_commemorative_date_id | btree | commemorative_date_id | não | sim |  |
 | public.product_commemorative_dates | product_commemorative_dates_pkey | btree | id | sim | sim |  |
 | public.product_commemorative_dates | uq_product_commemorative_date | btree | product_id, commemorative_date_id | sim | sim |  |
@@ -697,6 +714,7 @@ Uso e tamanho em `stats.md`.
 | public.product_faqs | idx_product_faqs_category_id | btree | category_id | não | sim |  |
 | public.product_faqs | idx_product_faqs_product_id | btree | product_id | não | sim |  |
 | public.product_faqs | product_faqs_pkey | btree | id | sim | sim |  |
+| public.product_fiscal | idx_fk_product_fiscal_ncm_id | btree | ncm_id | não | sim |  |
 | public.product_fiscal | idx_product_fiscal_ean | btree | ean | sim | sim | `(ean IS NOT NULL)` |
 | public.product_fiscal | product_fiscal_pkey | btree | id | sim | sim |  |
 | public.product_fiscal | product_fiscal_product_id_key | btree | product_id | sim | sim |  |
@@ -711,6 +729,9 @@ Uso e tamanho em `stats.md`.
 | public.product_group_members | idx_product_group_members_product_id | btree | product_id | não | sim |  |
 | public.product_group_members | product_group_members_pkey | btree | id | sim | sim |  |
 | public.product_groups | product_groups_pkey | btree | id | sim | sim |  |
+| public.product_images | idx_fk_product_images_canonical_image_id | btree | canonical_image_id | não | sim |  |
+| public.product_images | idx_fk_product_images_color_id | btree | color_id | não | sim |  |
+| public.product_images | idx_fk_product_images_variant_id | btree | variant_id | não | sim |  |
 | public.product_images | idx_pi_canonical | btree | canonical_image_id | não | sim | `(canonical_image_id IS NOT NULL)` |
 | public.product_images | idx_pi_cf_sync_status | btree | cf_sync_status | não | sim | `(cf_sync_status <> 'verified'::text)` |
 | public.product_images | idx_pi_content_hash | btree | content_hash | não | sim | `(content_hash IS NOT NULL)` |
@@ -738,6 +759,10 @@ Uso e tamanho em `stats.md`.
 | public.product_included_packagings | idx_pip_ingest_source | btree | ingest_source | não | sim |  |
 | public.product_included_packagings | idx_pip_supplier_id | btree | supplier_id | não | sim |  |
 | public.product_included_packagings | product_included_packagings_pkey | btree | id | sim | sim |  |
+| public.product_kit_components | idx_fk_product_kit_components_color_id | btree | color_id | não | sim |  |
+| public.product_kit_components | idx_fk_product_kit_components_component_product_id | btree | component_product_id | não | sim |  |
+| public.product_kit_components | idx_fk_product_kit_components_padronizacao_id | btree | padronizacao_id | não | sim |  |
+| public.product_kit_components | idx_fk_product_kit_components_secondary_material_type_id | btree | secondary_material_type_id | não | sim |  |
 | public.product_kit_components | idx_kit_components_kit | btree | kit_product_id | não | sim |  |
 | public.product_kit_components | idx_pkc_component_type | btree | component_type_code | não | sim |  |
 | public.product_kit_components | idx_pkc_enrichment_status | btree | enrichment_status | não | sim |  |
@@ -765,6 +790,8 @@ Uso e tamanho em `stats.md`.
 | public.product_notebook_specs | idx_product_notebook_specs_paper_weight_id | btree | paper_weight_id | não | sim |  |
 | public.product_notebook_specs | product_notebook_specs_pkey | btree | id | sim | sim |  |
 | public.product_notebook_specs | product_notebook_specs_product_id_key | btree | product_id | sim | sim |  |
+| public.product_novelties | idx_fk_product_novelties_product_id | btree | product_id | não | sim |  |
+| public.product_novelties | idx_fk_product_novelties_supplier_id | btree | supplier_id | não | sim |  |
 | public.product_novelties | idx_pn_expires | btree | expires_at | não | sim | `((is_active = true) AND (expires_at IS NOT NULL))` |
 | public.product_novelties | idx_pn_highlighted | btree | is_highlighted, detected_at | não | sim | `((is_active = true) AND (is_highlighted = true))` |
 | public.product_novelties | idx_pn_source | btree | source, is_active | não | sim |  |
@@ -792,6 +819,7 @@ Uso e tamanho em `stats.md`.
 | public.product_print_positions | idx_ppp_product | btree | product_id | não | sim |  |
 | public.product_print_positions | product_print_positions_pkey | btree | id | sim | sim |  |
 | public.product_print_positions | product_print_positions_product_id_position_index_key | btree | product_id, position_index | sim | sim |  |
+| public.product_properties | idx_fk_product_properties_property_definition_id | btree | property_definition_id | não | sim |  |
 | public.product_properties | idx_product_properties_source | btree | source | não | sim |  |
 | public.product_properties | product_properties_pkey | btree | id | sim | sim |  |
 | public.product_properties | product_properties_product_definition_unique | btree | product_id, property_definition_id | sim | sim |  |
@@ -850,6 +878,9 @@ Uso e tamanho em `stats.md`.
 | public.product_views | idx_product_views_pid_created | btree | product_id, created_at | não | sim |  |
 | public.product_views | idx_product_views_product_id | btree | product_id | não | sim |  |
 | public.product_views | product_views_pkey | btree | id | sim | sim |  |
+| public.products | idx_fk_products_ncm_id | btree | ncm_id | não | sim |  |
+| public.products | idx_fk_products_padronizacao_id | btree | padronizacao_id | não | sim |  |
+| public.products | idx_fk_products_sub_brand_id | btree | sub_brand_id | não | sim |  |
 | public.products | idx_products_active | btree | is_active | não | sim | `(is_active = true)` |
 | public.products | idx_products_active_created_at_desc | btree | created_at, id | não | sim | `((is_active = true) AND (is_deleted IS NOT TRUE))` |
 | public.products | idx_products_active_not_deleted | btree | id | não | sim | `((is_active = true) AND (is_deleted IS NOT TRUE))` |
@@ -883,9 +914,12 @@ Uso e tamanho em `stats.md`.
 | public.products | products_pkey | btree | id | sim | sim |  |
 | public.products | products_sku_key | btree | sku | sim | sim |  |
 | public.products | uq_products_supplier_ref | btree | supplier_id, supplier_reference | sim | sim | `(supplier_reference IS NOT NULL)` |
+| public.produto_ramo_atividade | idx_fk_produto_ramo_atividade_ramo_atividade_filho_id | btree | ramo_atividade_filho_id | não | sim |  |
 | public.produto_ramo_atividade | idx_produto_ramo_atividade_produto | btree | produto_id | não | sim |  |
 | public.produto_ramo_atividade | produto_ramo_atividade_pkey | btree | id | sim | sim |  |
 | public.produto_ramo_atividade | produto_ramo_atividade_produto_id_ramo_atividade_filho_id_key | btree | produto_id, ramo_atividade_filho_id | sim | sim |  |
+| public.produtos_padronizacao | idx_fk_produtos_padronizacao_product_id | btree | product_id | não | sim |  |
+| public.produtos_padronizacao | idx_fk_produtos_padronizacao_sub_brand_id | btree | sub_brand_id | não | sim |  |
 | public.produtos_padronizacao | idx_pad_product | btree | product_id | não | sim | `(product_id IS NOT NULL)` |
 | public.produtos_padronizacao | idx_pad_promovidos | btree | supplier_id | não | sim | `(product_id IS NOT NULL)` |
 | public.produtos_padronizacao | idx_pad_raw | btree | raw_id | não | sim |  |
@@ -894,6 +928,9 @@ Uso e tamanho em `stats.md`.
 | public.produtos_padronizacao | idx_pad_to_standardize | btree | supplier_id | não | sim | `(status = 'pending'::produtos_padronizacao_status)` |
 | public.produtos_padronizacao | produtos_padronizacao_pkey | btree | id | sim | sim |  |
 | public.produtos_padronizacao | uq_pad_supplier_reference | btree | supplier_id, supplier_reference | sim | sim |  |
+| public.produtos_padronizacao_variantes | idx_fk_produtos_padronizacao_variantes_color_id_2 | btree | color_id_2 | não | sim |  |
+| public.produtos_padronizacao_variantes | idx_fk_produtos_padronizacao_variantes_pad_id | btree | pad_id | não | sim |  |
+| public.produtos_padronizacao_variantes | idx_fk_produtos_padronizacao_variantes_raw_id | btree | raw_id | não | sim |  |
 | public.produtos_padronizacao_variantes | idx_padvar_color_id_2 | btree | color_id_2 | não | sim | `(color_id_2 IS NOT NULL)` |
 | public.produtos_padronizacao_variantes | idx_padvar_parent | btree | supplier_id, parent_reference | não | sim |  |
 | public.produtos_padronizacao_variantes | idx_padvar_raw_id | btree | raw_id | não | sim | `(raw_id IS NOT NULL)` |
@@ -901,6 +938,7 @@ Uso e tamanho em `stats.md`.
 | public.produtos_padronizacao_variantes | idx_produtos_padronizacao_variantes_variant_id | btree | variant_id | não | sim |  |
 | public.produtos_padronizacao_variantes | produtos_padronizacao_variantes_pkey | btree | id | sim | sim |  |
 | public.produtos_padronizacao_variantes | uq_padvar_supplier_variant | btree | supplier_id, variant_reference | sim | sim |  |
+| public.produtos_site_padronizacao | idx_fk_produtos_site_padronizacao_raw_id | btree | raw_id | não | sim |  |
 | public.produtos_site_padronizacao | ix_site_pad_product | btree | product_id | não | sim |  |
 | public.produtos_site_padronizacao | ix_site_pad_status | btree | status | não | sim |  |
 | public.produtos_site_padronizacao | produtos_site_padronizacao_pkey | btree | id | sim | sim |  |
@@ -918,12 +956,14 @@ Uso e tamanho em `stats.md`.
 | public.quote_approval_tokens | idx_quote_approval_tokens_seller_id | btree | seller_id | não | sim |  |
 | public.quote_approval_tokens | quote_approval_tokens_pkey | btree | id | sim | sim |  |
 | public.quote_approval_tokens | quote_approval_tokens_token_key | btree | token | sim | sim |  |
+| public.quote_comments | idx_fk_quote_comments_parent_id_quote_id | btree | parent_id, quote_id | não | sim |  |
 | public.quote_comments | quote_comments_id_quote_id_key | btree | id, quote_id | sim | sim |  |
 | public.quote_comments | quote_comments_parent_quote_idx | btree | parent_id, quote_id | não | sim | `(parent_id IS NOT NULL)` |
 | public.quote_comments | quote_comments_pkey | btree | id | sim | sim |  |
 | public.quote_comments | quote_comments_quote_created_id_idx | btree | quote_id, created_at, id | não | sim |  |
 | public.quote_comments | quote_comments_user_id_idx | btree | user_id | não | sim |  |
 | public.quote_drafts | quote_drafts_pkey | btree | id | sim | sim |  |
+| public.quote_history | idx_fk_quote_history_quote_id | btree | quote_id | não | sim |  |
 | public.quote_history | idx_quote_history_quote_id_ts | btree | quote_id, created_at | não | sim | `(quote_id IS NOT NULL)` |
 | public.quote_history | idx_quote_history_user_id | btree | user_id | não | sim |  |
 | public.quote_history | quote_history_pkey | btree | id | sim | sim |  |
@@ -1033,6 +1073,8 @@ Uso e tamanho em `stats.md`.
 | public.step_up_challenges | step_up_challenges_pkey | btree | id | sim | sim |  |
 | public.step_up_tokens | step_up_tokens_pkey | btree | id | sim | sim |  |
 | public.stock_daily_summary | idx_daily_product_date | btree | product_id, summary_date | não | sim |  |
+| public.stock_daily_summary | idx_fk_stock_daily_summary_supplier_branch_id | btree | supplier_branch_id | não | sim |  |
+| public.stock_daily_summary | idx_fk_stock_daily_summary_supplier_id | btree | supplier_id | não | sim |  |
 | public.stock_daily_summary | idx_sds_cenario_a | btree | summary_date, stock_open, stock_close | não | sim | `(restock_detected = true)` |
 | public.stock_daily_summary | idx_sds_restock_zero_to_pos_date | btree | summary_date, product_id | não | sim | `((restock_detected = true) AND (COALESCE(stock_open, 0) = 0) AND (COALESCE(stock_close, 0) > 0))` |
 | public.stock_daily_summary | idx_sds_summary_date_supplier | btree | summary_date, supplier_id, stock_close, units_depleted, units_restocked | não | sim |  |
@@ -1064,6 +1106,7 @@ Uso e tamanho em `stats.md`.
 | public.supplier_category_mappings | idx_supplier_category_mappings_category_id | btree | category_id | não | sim |  |
 | public.supplier_category_mappings | supplier_category_mappings_pkey | btree | id | sim | sim |  |
 | public.supplier_category_mappings | supplier_category_mappings_supplier_category_id_category_id_key | btree | supplier_category_id, category_id | sim | sim |  |
+| public.supplier_colors | idx_fk_supplier_colors_color_variation_id | btree | color_variation_id | não | sim |  |
 | public.supplier_colors | idx_supplier_colors_api_color_id_unique | btree | organization_id, supplier_id, api_color_id | sim | sim | `(api_color_id IS NOT NULL)` |
 | public.supplier_colors | idx_supplier_colors_color_variation_id | btree | color_variation_id | não | sim | `(color_variation_id IS NOT NULL)` |
 | public.supplier_colors | idx_supplier_colors_name_upper_active | btree |  | não | sim | `(is_active = true)` |
@@ -1081,6 +1124,7 @@ Uso e tamanho em `stats.md`.
 | public.supplier_field_priority | idx_supplier_field_priority_supplier_id | btree | supplier_id | não | sim |  |
 | public.supplier_field_priority | supplier_field_priority_pkey | btree | id | sim | sim |  |
 | public.supplier_field_priority | uq_field_priority | btree | target_table, target_field, supplier_id | sim | sim |  |
+| public.supplier_import_batches | idx_fk_supplier_import_batches_supplier_id | btree | supplier_id | não | sim |  |
 | public.supplier_import_batches | supplier_import_batches_pkey | btree | id | sim | sim |  |
 | public.supplier_materials | idx_supplier_materials_supplier | btree | supplier_id | não | sim |  |
 | public.supplier_materials | supplier_materials_pkey | btree | id | sim | sim |  |
@@ -1088,6 +1132,9 @@ Uso e tamanho em `stats.md`.
 | public.supplier_packagings | idx_supplier_packagings_packaging_id | btree | packaging_id | não | sim |  |
 | public.supplier_packagings | supplier_packagings_pkey | btree | id | sim | sim |  |
 | public.supplier_packagings | supplier_packagings_unique | btree | supplier_id, packaging_id | sim | sim |  |
+| public.supplier_products_raw | idx_fk_supplier_products_raw_import_batch_id | btree | import_batch_id | não | sim |  |
+| public.supplier_products_raw | idx_fk_supplier_products_raw_product_id | btree | product_id | não | sim |  |
+| public.supplier_products_raw | idx_fk_supplier_products_raw_variant_id | btree | variant_id | não | sim |  |
 | public.supplier_products_raw | idx_spr_images_status_pending | btree | id | não | sim | `(images_status = 'pending'::supplier_raw_status)` |
 | public.supplier_products_raw | idx_spr_site_status_failed | btree | id | não | sim | `(site_status = 'failed'::supplier_raw_status)` |
 | public.supplier_products_raw | idx_spr_site_status_pending | btree | id | não | sim | `(site_status = 'pending'::supplier_raw_status)` |
@@ -1145,6 +1192,7 @@ Uso e tamanho em `stats.md`.
 | public.supplier_value_mappings | uq_value_mapping | btree | supplier_id, field_type, source_value | sim | sim |  |
 | public.supplier_video_requirements | supplier_video_requirements_pkey | btree | id | sim | sim |  |
 | public.supplier_video_requirements | supplier_video_requirements_supplier_code_key | btree | supplier_code | sim | sim |  |
+| public.suppliers | idx_fk_suppliers_organization_id | btree | organization_id | não | sim |  |
 | public.suppliers | idx_suppliers_priority | btree | priority, active | não | sim | `(active = true)` |
 | public.suppliers | suppliers_cnpj_org_uniq | btree | organization_id, cnpj | sim | sim | `(cnpj IS NOT NULL)` |
 | public.suppliers | suppliers_code_key | btree | code | sim | sim |  |
@@ -1154,6 +1202,7 @@ Uso e tamanho em `stats.md`.
 | public.system_kill_switches | idx_system_kill_switches_updated_by | btree | updated_by | não | sim |  |
 | public.system_kill_switches | system_kill_switches_pkey | btree | switch_name | sim | sim |  |
 | public.system_settings | system_settings_pkey | btree | key | sim | sim |  |
+| public.tabela_preco_gravacao_oficial | idx_fk_tabela_preco_gravacao_oficial_grupo_tecnica | btree | grupo_tecnica | não | sim |  |
 | public.tabela_preco_gravacao_oficial | idx_tabela_preco_ativo | btree | ativo | não | sim |  |
 | public.tabela_preco_gravacao_oficial | idx_tabela_preco_gravacao_grupo_tecnica | btree | grupo_tecnica | não | sim | `(grupo_tecnica IS NOT NULL)` |
 | public.tabela_preco_gravacao_oficial | idx_tpgo_ativo_grupo | btree | ativo, grupo_tecnica | não | sim | `(ativo = true)` |
@@ -1218,6 +1267,7 @@ Uso e tamanho em `stats.md`.
 | public.variant_commemorative_dates | idx_variant_commemorative_dates_variant_id | btree | variant_id | não | sim |  |
 | public.variant_commemorative_dates | variant_commemorative_dates_pkey | btree | id | sim | sim |  |
 | public.variant_commemorative_dates | variant_commemorative_dates_product_id_variant_id_commemora_key | btree | product_id, variant_id, commemorative_date_id | sim | sim |  |
+| public.variant_supplier_sources | idx_fk_variant_supplier_sources_supplier_branch_id | btree | supplier_branch_id | não | sim |  |
 | public.variant_supplier_sources | idx_variant_supplier_sources_supplier_id | btree | supplier_id | não | sim |  |
 | public.variant_supplier_sources | idx_vss_cost | btree | variant_id, cost_price | não | sim | `(is_active = true)` |
 | public.variant_supplier_sources | idx_vss_preferred | btree | variant_id | não | sim | `(is_preferred = true)` |
@@ -1247,6 +1297,7 @@ Uso e tamanho em `stats.md`.
 | public.webhook_delivery_locks | idx_webhook_delivery_locks_claimed_at | btree | claimed_at | não | sim |  |
 | public.webhook_delivery_locks | pk_webhook_delivery_locks | btree | webhook_id, payload_hash | sim | sim |  |
 | public.webhook_delivery_metrics | webhook_delivery_metrics_pkey | btree | id | sim | sim |  |
+| public.webhook_dispatcher_log | idx_fk_webhook_dispatcher_log_quote_id | btree | quote_id | não | sim |  |
 | public.webhook_dispatcher_log | idx_webhook_dispatcher_log_delivery_status | btree | delivery_status, fired_at | não | sim |  |
 | public.webhook_dispatcher_log | idx_webhook_dispatcher_log_fired_at | btree | fired_at | não | sim |  |
 | public.webhook_dispatcher_log | idx_webhook_dispatcher_log_http_status | btree | http_status, fired_at | não | sim |  |

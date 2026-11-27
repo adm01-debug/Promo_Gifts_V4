@@ -115,6 +115,8 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_kit_component_padronizacao_kit_product_id | btree | kit_product_id | não | sim |  | `CREATE INDEX idx_fk_kit_component_padronizacao_kit_product_id ON public.kit_component_padronizacao USING btree (kit_product_id)` |
+| idx_fk_kit_component_padronizacao_raw_id | btree | raw_id | não | sim |  | `CREATE INDEX idx_fk_kit_component_padronizacao_raw_id ON public.kit_component_padronizacao USING btree (raw_id)` |
 | idx_kcp_material_type_id | btree | material_type_id | não | sim |  | `CREATE INDEX idx_kcp_material_type_id ON public.kit_component_padronizacao USING btree (material_type_id)` |
 | idx_kcpad_approved | btree | padronizacao_status | não | sim | `((padronizacao_status)::text = 'approved'::text)` | `CREATE INDEX idx_kcpad_approved ON public.kit_component_padronizacao USING btree (padronizacao_status) WHERE ((padronizacao_status)::text = 'approved'::text)` |
 | idx_kcpad_component | btree | kit_component_id | não | sim |  | `CREATE INDEX idx_kcpad_component ON public.kit_component_padronizacao USING btree (kit_component_id)` |

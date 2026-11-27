@@ -53,6 +53,8 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_markup_configurations_category_id | btree | category_id | não | sim |  | `CREATE INDEX idx_fk_markup_configurations_category_id ON public.markup_configurations USING btree (category_id)` |
+| idx_fk_markup_configurations_variant_id | btree | variant_id | não | sim |  | `CREATE INDEX idx_fk_markup_configurations_variant_id ON public.markup_configurations USING btree (variant_id)` |
 | idx_markup_category | btree | category_id | não | sim | `(category_id IS NOT NULL)` | `CREATE INDEX idx_markup_category ON public.markup_configurations USING btree (category_id) WHERE (category_id IS NOT NULL)` |
 | idx_markup_configurations_created_by | btree | created_by | não | sim |  | `CREATE INDEX idx_markup_configurations_created_by ON public.markup_configurations USING btree (created_by)` |
 | idx_markup_configurations_organization_id | btree | organization_id | não | sim |  | `CREATE INDEX idx_markup_configurations_organization_id ON public.markup_configurations USING btree (organization_id)` |

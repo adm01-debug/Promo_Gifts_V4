@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_variant_sparkline(p_variant_id uuid, p_days
  RETURNS TABLE(day date, units_depleted integer, stock_close integer)
  LANGUAGE sql
  STABLE SECURITY DEFINER
- SET search_path TO 'public', 'pg_catalog', 'pg_temp'
+ SET search_path TO 'public', 'pg_catalog'
 AS $function$
   SELECT s.summary_date::date AS day,
          s.units_depleted,

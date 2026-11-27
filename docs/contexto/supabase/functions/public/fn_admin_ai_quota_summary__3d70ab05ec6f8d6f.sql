@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_admin_ai_quota_summary(_search text DEFAULT
  RETURNS TABLE(user_id uuid, email text, role text, monthly_limit integer, is_unlimited boolean, used_this_month integer, remaining integer, success_month integer, error_month integer, pending_count integer, last_activity timestamp with time zone)
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
- SET search_path TO 'public', 'pg_temp'
+ SET search_path TO 'public'
 AS $function$
 DECLARE
   v_limit integer := LEAST(GREATEST(COALESCE(_limit, 200), 1), 500);

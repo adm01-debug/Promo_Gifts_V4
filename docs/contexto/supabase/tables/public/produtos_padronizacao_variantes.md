@@ -97,6 +97,9 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_produtos_padronizacao_variantes_color_id_2 | btree | color_id_2 | não | sim |  | `CREATE INDEX idx_fk_produtos_padronizacao_variantes_color_id_2 ON public.produtos_padronizacao_variantes USING btree (color_id_2)` |
+| idx_fk_produtos_padronizacao_variantes_pad_id | btree | pad_id | não | sim |  | `CREATE INDEX idx_fk_produtos_padronizacao_variantes_pad_id ON public.produtos_padronizacao_variantes USING btree (pad_id)` |
+| idx_fk_produtos_padronizacao_variantes_raw_id | btree | raw_id | não | sim |  | `CREATE INDEX idx_fk_produtos_padronizacao_variantes_raw_id ON public.produtos_padronizacao_variantes USING btree (raw_id)` |
 | idx_padvar_color_id_2 | btree | color_id_2 | não | sim | `(color_id_2 IS NOT NULL)` | `CREATE INDEX idx_padvar_color_id_2 ON public.produtos_padronizacao_variantes USING btree (color_id_2) WHERE (color_id_2 IS NOT NULL)` |
 | idx_padvar_parent | btree | supplier_id, parent_reference | não | sim |  | `CREATE INDEX idx_padvar_parent ON public.produtos_padronizacao_variantes USING btree (supplier_id, parent_reference)` |
 | idx_padvar_raw_id | btree | raw_id | não | sim | `(raw_id IS NOT NULL)` | `CREATE INDEX idx_padvar_raw_id ON public.produtos_padronizacao_variantes USING btree (raw_id) WHERE (raw_id IS NOT NULL)` |

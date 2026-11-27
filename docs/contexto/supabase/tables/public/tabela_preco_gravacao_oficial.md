@@ -89,6 +89,7 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_tabela_preco_gravacao_oficial_grupo_tecnica | btree | grupo_tecnica | não | sim |  | `CREATE INDEX idx_fk_tabela_preco_gravacao_oficial_grupo_tecnica ON public.tabela_preco_gravacao_oficial USING btree (grupo_tecnica)` |
 | idx_tabela_preco_ativo | btree | ativo | não | sim |  | `CREATE INDEX idx_tabela_preco_ativo ON public.tabela_preco_gravacao_oficial USING btree (ativo)` |
 | idx_tabela_preco_gravacao_grupo_tecnica | btree | grupo_tecnica | não | sim | `(grupo_tecnica IS NOT NULL)` | `CREATE INDEX idx_tabela_preco_gravacao_grupo_tecnica ON public.tabela_preco_gravacao_oficial USING btree (grupo_tecnica) WHERE (grupo_tecnica IS NOT NULL)` |
 | idx_tpgo_ativo_grupo | btree | ativo, grupo_tecnica | não | sim | `(ativo = true)` | `CREATE INDEX idx_tpgo_ativo_grupo ON public.tabela_preco_gravacao_oficial USING btree (ativo, grupo_tecnica) WHERE (ativo = true)` |

@@ -50,6 +50,7 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_product_fiscal_ncm_id | btree | ncm_id | não | sim |  | `CREATE INDEX idx_fk_product_fiscal_ncm_id ON public.product_fiscal USING btree (ncm_id)` |
 | idx_product_fiscal_ean | btree | ean | sim | sim | `(ean IS NOT NULL)` | `CREATE UNIQUE INDEX idx_product_fiscal_ean ON public.product_fiscal USING btree (ean) WHERE (ean IS NOT NULL)` |
 | product_fiscal_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX product_fiscal_pkey ON public.product_fiscal USING btree (id)` |
 | product_fiscal_product_id_key | btree | product_id | sim | sim |  | `CREATE UNIQUE INDEX product_fiscal_product_id_key ON public.product_fiscal USING btree (product_id)` |

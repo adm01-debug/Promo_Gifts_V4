@@ -43,6 +43,7 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_quote_history_quote_id | btree | quote_id | não | sim |  | `CREATE INDEX idx_fk_quote_history_quote_id ON public.quote_history USING btree (quote_id)` |
 | idx_quote_history_quote_id_ts | btree | quote_id, created_at | não | sim | `(quote_id IS NOT NULL)` | `CREATE INDEX idx_quote_history_quote_id_ts ON public.quote_history USING btree (quote_id, created_at DESC) WHERE (quote_id IS NOT NULL)` |
 | idx_quote_history_user_id | btree | user_id | não | sim |  | `CREATE INDEX idx_quote_history_user_id ON public.quote_history USING btree (user_id)` |
 | quote_history_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX quote_history_pkey ON public.quote_history USING btree (id)` |

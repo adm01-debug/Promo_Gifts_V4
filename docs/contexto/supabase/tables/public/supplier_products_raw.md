@@ -90,6 +90,9 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_supplier_products_raw_import_batch_id | btree | import_batch_id | não | sim |  | `CREATE INDEX idx_fk_supplier_products_raw_import_batch_id ON public.supplier_products_raw USING btree (import_batch_id)` |
+| idx_fk_supplier_products_raw_product_id | btree | product_id | não | sim |  | `CREATE INDEX idx_fk_supplier_products_raw_product_id ON public.supplier_products_raw USING btree (product_id)` |
+| idx_fk_supplier_products_raw_variant_id | btree | variant_id | não | sim |  | `CREATE INDEX idx_fk_supplier_products_raw_variant_id ON public.supplier_products_raw USING btree (variant_id)` |
 | idx_spr_images_status_pending | btree | id | não | sim | `(images_status = 'pending'::supplier_raw_status)` | `CREATE INDEX idx_spr_images_status_pending ON public.supplier_products_raw USING btree (id) WHERE (images_status = 'pending'::supplier_raw_status)` |
 | idx_spr_site_status_failed | btree | id | não | sim | `(site_status = 'failed'::supplier_raw_status)` | `CREATE INDEX idx_spr_site_status_failed ON public.supplier_products_raw USING btree (id) WHERE (site_status = 'failed'::supplier_raw_status)` |
 | idx_spr_site_status_pending | btree | id | não | sim | `(site_status = 'pending'::supplier_raw_status)` | `CREATE INDEX idx_spr_site_status_pending ON public.supplier_products_raw USING btree (id) WHERE (site_status = 'pending'::supplier_raw_status)` |

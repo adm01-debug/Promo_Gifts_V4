@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_admin_sync_external_connections()
  RETURNS jsonb
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'pg_catalog', 'pg_temp'
+ SET search_path TO 'pg_catalog'
 AS $function$
 BEGIN
   IF NOT (public.is_dev((SELECT auth.uid()))

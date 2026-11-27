@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_verify_anon_catalog_grants()
  RETURNS TABLE(object_name text, object_kind text, issue text)
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public', 'pg_temp'
+ SET search_path TO 'public'
 AS $function$
 BEGIN
   -- (1) Views/tabelas que DEVEM ser legiveis por anon.

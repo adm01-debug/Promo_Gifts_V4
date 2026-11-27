@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_super_filtro(p_search_term text DEFAULT NUL
  RETURNS TABLE(id uuid, name text, sku text, slug text, short_description text, brand character varying, sale_price numeric, cost_price numeric, min_quantity integer, stock_quantity integer, is_stockout boolean, is_kit boolean, is_textil boolean, is_thermal boolean, is_featured boolean, is_bestseller boolean, is_new boolean, has_gift_box boolean, target_audience text[], primary_image_url text, og_image_url text, set_image_url text, category_id uuid, category_name text, category_slug text, total_count bigint)
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
+ SET search_path TO 'pg_catalog', 'public', 'extensions'
 AS $function$
 DECLARE
   v_search_normalized  text;

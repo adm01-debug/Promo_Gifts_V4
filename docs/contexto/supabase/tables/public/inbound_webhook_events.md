@@ -45,6 +45,7 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_inbound_webhook_events_endpoint_id | btree | endpoint_id | não | sim |  | `CREATE INDEX idx_fk_inbound_webhook_events_endpoint_id ON public.inbound_webhook_events USING btree (endpoint_id)` |
 | idx_webhook_idempotency | btree | endpoint_id, idempotency_key | sim | sim | `(idempotency_key IS NOT NULL)` | `CREATE UNIQUE INDEX idx_webhook_idempotency ON public.inbound_webhook_events USING btree (endpoint_id, idempotency_key) WHERE (idempotency_key IS NOT NULL)` |
 | inbound_webhook_events_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX inbound_webhook_events_pkey ON public.inbound_webhook_events USING btree (id)` |
 

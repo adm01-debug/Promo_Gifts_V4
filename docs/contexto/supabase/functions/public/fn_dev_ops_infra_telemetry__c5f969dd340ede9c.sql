@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_dev_ops_infra_telemetry(_days integer DEFAU
  RETURNS jsonb
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
- SET search_path TO 'public', 'pg_catalog', 'pg_temp'
+ SET search_path TO 'public', 'pg_catalog'
 AS $function$
 DECLARE
   v_uid uuid := (SELECT auth.uid());

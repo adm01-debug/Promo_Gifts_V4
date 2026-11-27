@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_admin_unlink_crm_seller(_auth_user_id uuid)
  RETURNS bigint
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public', 'pg_temp'
+ SET search_path TO 'public'
 AS $function$
 DECLARE
   v_previous bigint;

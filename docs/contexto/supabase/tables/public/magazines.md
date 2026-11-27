@@ -76,6 +76,7 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_magazines_owner_id | btree | owner_id | não | sim |  | `CREATE INDEX idx_fk_magazines_owner_id ON public.magazines USING btree (owner_id)` |
 | idx_magazines_not_deleted | btree | owner_id, updated_at | não | sim | `(deleted_at IS NULL)` | `CREATE INDEX idx_magazines_not_deleted ON public.magazines USING btree (owner_id, updated_at DESC) WHERE (deleted_at IS NULL)` |
 | idx_magazines_organization_id | btree | organization_id | não | sim |  | `CREATE INDEX idx_magazines_organization_id ON public.magazines USING btree (organization_id)` |
 | idx_magazines_published | btree | status, published_at | não | sim | `(status = 'published'::magazine_status)` | `CREATE INDEX idx_magazines_published ON public.magazines USING btree (status, published_at DESC) WHERE (status = 'published'::magazine_status)` |

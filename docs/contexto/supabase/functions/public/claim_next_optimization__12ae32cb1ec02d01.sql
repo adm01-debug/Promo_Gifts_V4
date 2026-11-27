@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.claim_next_optimization()
  RETURNS optimization_queue
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'pg_catalog', 'pg_temp'
+ SET search_path TO 'pg_catalog'
 AS $function$
 DECLARE
   claimed public.optimization_queue;

@@ -126,6 +126,7 @@
 | idx_categories_path_tpo | btree | path | não | sim |  | `CREATE INDEX idx_categories_path_tpo ON public.categories USING btree (path text_pattern_ops)` |
 | idx_categories_updated_by | btree | updated_by | não | sim |  | `CREATE INDEX idx_categories_updated_by ON public.categories USING btree (updated_by)` |
 | idx_fk_categories_created_by | btree | created_by | não | sim |  | `CREATE INDEX idx_fk_categories_created_by ON public.categories USING btree (created_by)` |
+| idx_fk_categories_parent_id | btree | parent_id | não | sim |  | `CREATE INDEX idx_fk_categories_parent_id ON public.categories USING btree (parent_id)` |
 | uq_categories_slug | btree | slug | sim | sim |  | `CREATE UNIQUE INDEX uq_categories_slug ON public.categories USING btree (slug)` |
 
 

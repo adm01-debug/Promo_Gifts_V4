@@ -42,6 +42,7 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_magazine_public_reactions_item_id | btree | item_id | não | sim |  | `CREATE INDEX idx_fk_magazine_public_reactions_item_id ON public.magazine_public_reactions USING btree (item_id)` |
 | idx_mag_reactions_item | btree | item_id | não | sim | `(item_id IS NOT NULL)` | `CREATE INDEX idx_mag_reactions_item ON public.magazine_public_reactions USING btree (item_id) WHERE (item_id IS NOT NULL)` |
 | idx_mag_reactions_mag | btree | magazine_id, kind, created_at | não | sim |  | `CREATE INDEX idx_mag_reactions_mag ON public.magazine_public_reactions USING btree (magazine_id, kind, created_at DESC)` |
 | magazine_public_reactions_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX magazine_public_reactions_pkey ON public.magazine_public_reactions USING btree (id)` |

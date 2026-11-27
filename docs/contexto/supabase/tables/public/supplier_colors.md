@@ -60,6 +60,7 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_supplier_colors_color_variation_id | btree | color_variation_id | não | sim |  | `CREATE INDEX idx_fk_supplier_colors_color_variation_id ON public.supplier_colors USING btree (color_variation_id)` |
 | idx_supplier_colors_api_color_id_unique | btree | organization_id, supplier_id, api_color_id | sim | sim | `(api_color_id IS NOT NULL)` | `CREATE UNIQUE INDEX idx_supplier_colors_api_color_id_unique ON public.supplier_colors USING btree (organization_id, supplier_id, api_color_id) WHERE (api_color_id IS NOT NULL)` |
 | idx_supplier_colors_color_variation_id | btree | color_variation_id | não | sim | `(color_variation_id IS NOT NULL)` | `CREATE INDEX idx_supplier_colors_color_variation_id ON public.supplier_colors USING btree (color_variation_id) WHERE (color_variation_id IS NOT NULL)` |
 | idx_supplier_colors_name_upper_active | btree |  | não | sim | `(is_active = true)` | `CREATE INDEX idx_supplier_colors_name_upper_active ON public.supplier_colors USING btree (upper(TRIM(BOTH FROM name))) WHERE (is_active = true)` |

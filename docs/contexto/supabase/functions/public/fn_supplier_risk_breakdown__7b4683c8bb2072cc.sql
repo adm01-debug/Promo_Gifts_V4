@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_supplier_risk_breakdown(p_preferred_only bo
  RETURNS TABLE(supplier_id uuid, supplier_name text, total bigint, ruptura bigint, critico bigint, alerta bigint, atencao bigint, sem_sinal bigint, ok bigint, pct_risco numeric, score_medio numeric, gap_total_un bigint, spikes bigint, valor_risco_reais numeric)
  LANGUAGE sql
  STABLE SECURITY DEFINER
- SET search_path TO 'public', 'pg_catalog', 'pg_temp'
+ SET search_path TO 'public', 'pg_catalog'
 AS $function$
   SELECT
     m.supplier_id,

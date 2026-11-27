@@ -85,6 +85,7 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_produtos_site_padronizacao_raw_id | btree | raw_id | não | sim |  | `CREATE INDEX idx_fk_produtos_site_padronizacao_raw_id ON public.produtos_site_padronizacao USING btree (raw_id)` |
 | ix_site_pad_product | btree | product_id | não | sim |  | `CREATE INDEX ix_site_pad_product ON public.produtos_site_padronizacao USING btree (product_id)` |
 | ix_site_pad_status | btree | status | não | sim |  | `CREATE INDEX ix_site_pad_status ON public.produtos_site_padronizacao USING btree (status)` |
 | produtos_site_padronizacao_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX produtos_site_padronizacao_pkey ON public.produtos_site_padronizacao USING btree (id)` |

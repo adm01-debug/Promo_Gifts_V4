@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.prevent_non_admin_quote_item_price_change()
  RETURNS trigger
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public', 'pg_temp'
+ SET search_path TO 'public'
 AS $function$
 DECLARE
   v_uid uuid := auth.uid();

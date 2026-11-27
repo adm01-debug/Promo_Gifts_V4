@@ -51,6 +51,8 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_product_novelties_product_id | btree | product_id | não | sim |  | `CREATE INDEX idx_fk_product_novelties_product_id ON public.product_novelties USING btree (product_id)` |
+| idx_fk_product_novelties_supplier_id | btree | supplier_id | não | sim |  | `CREATE INDEX idx_fk_product_novelties_supplier_id ON public.product_novelties USING btree (supplier_id)` |
 | idx_pn_expires | btree | expires_at | não | sim | `((is_active = true) AND (expires_at IS NOT NULL))` | `CREATE INDEX idx_pn_expires ON public.product_novelties USING btree (expires_at) WHERE ((is_active = true) AND (expires_at IS NOT NULL))` |
 | idx_pn_highlighted | btree | is_highlighted, detected_at | não | sim | `((is_active = true) AND (is_highlighted = true))` | `CREATE INDEX idx_pn_highlighted ON public.product_novelties USING btree (is_highlighted, detected_at DESC) WHERE ((is_active = true) AND (is_highlighted = true))` |
 | idx_pn_source | btree | source, is_active | não | sim |  | `CREATE INDEX idx_pn_source ON public.product_novelties USING btree (source, is_active)` |

@@ -62,6 +62,8 @@
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
 | idx_daily_product_date | btree | product_id, summary_date | não | sim |  | `CREATE INDEX idx_daily_product_date ON public.stock_daily_summary USING btree (product_id, summary_date DESC)` |
+| idx_fk_stock_daily_summary_supplier_branch_id | btree | supplier_branch_id | não | sim |  | `CREATE INDEX idx_fk_stock_daily_summary_supplier_branch_id ON public.stock_daily_summary USING btree (supplier_branch_id)` |
+| idx_fk_stock_daily_summary_supplier_id | btree | supplier_id | não | sim |  | `CREATE INDEX idx_fk_stock_daily_summary_supplier_id ON public.stock_daily_summary USING btree (supplier_id)` |
 | idx_sds_cenario_a | btree | summary_date, stock_open, stock_close | não | sim | `(restock_detected = true)` | `CREATE INDEX idx_sds_cenario_a ON public.stock_daily_summary USING btree (summary_date, stock_open, stock_close) WHERE (restock_detected = true)` |
 | idx_sds_restock_zero_to_pos_date | btree | summary_date, product_id | não | sim | `((restock_detected = true) AND (COALESCE(stock_open, 0) = 0) AND (COALESCE(stock_close, 0) > 0))` | `CREATE INDEX idx_sds_restock_zero_to_pos_date ON public.stock_daily_summary USING btree (summary_date) INCLUDE (product_id) WHERE ((restock_detected = true) AND (COALESCE(stock_open, 0) = 0) AND (COALESCE(stock_close, 0) > 0))` |
 | idx_sds_summary_date_supplier | btree | summary_date, supplier_id, stock_close, units_depleted, units_restocked | não | sim |  | `CREATE INDEX idx_sds_summary_date_supplier ON public.stock_daily_summary USING btree (summary_date, supplier_id) INCLUDE (stock_close, units_depleted, units_restocked)` |

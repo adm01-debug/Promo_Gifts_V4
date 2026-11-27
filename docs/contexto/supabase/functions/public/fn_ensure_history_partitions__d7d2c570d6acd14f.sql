@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_ensure_history_partitions(p_months_ahead in
  RETURNS integer
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public', 'pg_temp'
+ SET search_path TO 'public'
 AS $function$
 DECLARE
   v_created integer := 0;

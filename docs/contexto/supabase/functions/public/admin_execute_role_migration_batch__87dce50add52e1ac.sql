@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.admin_execute_role_migration_batch(_label text
  RETURNS uuid
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'pg_catalog', 'pg_temp'
+ SET search_path TO 'pg_catalog'
 AS $function$
 BEGIN
   IF NOT public.has_role(auth.uid(), 'dev'::public.app_role) THEN

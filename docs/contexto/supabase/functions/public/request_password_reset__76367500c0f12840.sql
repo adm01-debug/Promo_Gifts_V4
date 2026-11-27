@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.request_password_reset(p_email text)
  RETURNS void
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'pg_catalog', 'pg_temp'
+ SET search_path TO 'pg_catalog'
 AS $function$
 DECLARE
   v_email text := pg_catalog.lower(pg_catalog.btrim(COALESCE(p_email, '')));

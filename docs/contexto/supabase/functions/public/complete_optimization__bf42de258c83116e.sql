@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.complete_optimization(_id uuid, _status text, 
  RETURNS optimization_queue
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'pg_catalog', 'pg_temp'
+ SET search_path TO 'pg_catalog'
 AS $function$
 DECLARE
   updated public.optimization_queue;

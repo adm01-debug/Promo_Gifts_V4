@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_insights_cache_count(p_function_name text, 
  RETURNS bigint
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
- SET search_path TO 'pg_catalog', 'public', 'pg_temp'
+ SET search_path TO 'pg_catalog', 'public'
 AS $function$
 BEGIN
   IF NOT COALESCE(public.can_view_telemetry((SELECT auth.uid())), false) THEN

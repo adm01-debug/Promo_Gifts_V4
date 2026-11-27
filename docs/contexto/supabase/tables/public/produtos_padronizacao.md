@@ -128,6 +128,8 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_produtos_padronizacao_product_id | btree | product_id | não | sim |  | `CREATE INDEX idx_fk_produtos_padronizacao_product_id ON public.produtos_padronizacao USING btree (product_id)` |
+| idx_fk_produtos_padronizacao_sub_brand_id | btree | sub_brand_id | não | sim |  | `CREATE INDEX idx_fk_produtos_padronizacao_sub_brand_id ON public.produtos_padronizacao USING btree (sub_brand_id)` |
 | idx_pad_product | btree | product_id | não | sim | `(product_id IS NOT NULL)` | `CREATE INDEX idx_pad_product ON public.produtos_padronizacao USING btree (product_id) WHERE (product_id IS NOT NULL)` |
 | idx_pad_promovidos | btree | supplier_id | não | sim | `(product_id IS NOT NULL)` | `CREATE INDEX idx_pad_promovidos ON public.produtos_padronizacao USING btree (supplier_id) WHERE (product_id IS NOT NULL)` |
 | idx_pad_raw | btree | raw_id | não | sim |  | `CREATE INDEX idx_pad_raw ON public.produtos_padronizacao USING btree (raw_id)` |

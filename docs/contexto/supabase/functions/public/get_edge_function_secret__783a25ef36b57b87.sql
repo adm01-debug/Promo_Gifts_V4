@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.get_edge_function_secret(_name text)
  RETURNS text
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'vault', 'public', 'pg_temp'
+ SET search_path TO 'vault', 'public'
 AS $function$
 DECLARE
   _secret text;

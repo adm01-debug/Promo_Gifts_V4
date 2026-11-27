@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_admin_classification_summary()
  RETURNS TABLE(total_sugestoes bigint, nao_atribuidas bigint, kits_para_revisao bigint, conflitos bigint, alta_confianca bigint, ultima_analise timestamp with time zone)
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public', 'classification_audit', 'pg_temp'
+ SET search_path TO 'public', 'classification_audit'
 AS $function$
 BEGIN
   IF auth.uid() IS NULL THEN

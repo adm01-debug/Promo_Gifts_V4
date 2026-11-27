@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_ema_coverage_stats()
  RETURNS TABLE(metric text, valor numeric, unidade text, status text)
  LANGUAGE sql
  STABLE SECURITY DEFINER
- SET search_path TO 'public', 'pg_catalog', 'pg_temp'
+ SET search_path TO 'public', 'pg_catalog'
 AS $function$
   WITH base AS (
     SELECT a.ema_diaria, a.confidence_level, a.anomalia_spike

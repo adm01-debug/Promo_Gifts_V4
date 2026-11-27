@@ -44,6 +44,7 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_price_history_variant_id | btree | variant_id | não | sim |  | `CREATE INDEX idx_fk_price_history_variant_id ON public.price_history USING btree (variant_id)` |
 | idx_price_history_changed_by | btree | changed_by | não | sim |  | `CREATE INDEX idx_price_history_changed_by ON public.price_history USING btree (changed_by)` |
 | idx_price_history_variant_id | btree | variant_id | não | sim | `(variant_id IS NOT NULL)` | `CREATE INDEX idx_price_history_variant_id ON public.price_history USING btree (variant_id) WHERE (variant_id IS NOT NULL)` |
 | price_history_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX price_history_pkey ON public.price_history USING btree (id)` |

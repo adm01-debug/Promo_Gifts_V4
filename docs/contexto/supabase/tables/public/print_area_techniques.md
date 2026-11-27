@@ -53,6 +53,7 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_print_area_techniques_tabela_preco_id | btree | tabela_preco_id | não | sim |  | `CREATE INDEX idx_fk_print_area_techniques_tabela_preco_id ON public.print_area_techniques USING btree (tabela_preco_id)` |
 | idx_pat_product_active | btree | product_id, is_active | não | sim |  | `CREATE INDEX idx_pat_product_active ON public.print_area_techniques USING btree (product_id, is_active)` |
 | idx_pat_product_location_active | btree | product_id, location_code, is_active | não | sim | `(is_active = true)` | `CREATE INDEX idx_pat_product_location_active ON public.print_area_techniques USING btree (product_id, location_code, is_active) WHERE (is_active = true)` |
 | print_area_techniques_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX print_area_techniques_pkey ON public.print_area_techniques USING btree (id)` |

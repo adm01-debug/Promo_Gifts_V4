@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_whatif_scenario(p_delta_units_per_sku numer
  RETURNS TABLE(nivel_atual text, nivel_simulado text, variantes bigint, descricao text)
  LANGUAGE sql
  STABLE SECURITY DEFINER
- SET search_path TO 'public', 'pg_catalog', 'pg_temp'
+ SET search_path TO 'public', 'pg_catalog'
 AS $function$
   WITH sim AS (
     SELECT a.variant_id,

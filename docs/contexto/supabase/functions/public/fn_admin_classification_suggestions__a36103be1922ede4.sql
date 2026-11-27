@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_admin_classification_suggestions(_search te
  RETURNS TABLE(id bigint, product_id uuid, sku text, produto text, is_kit boolean, categoria_sugerida text, nivel integer, matches integer, score integer, tokens_matched text, already_assigned boolean, categorias_atuais text, material_conflict boolean, type_conflict boolean, approved_auto boolean, computed_at timestamp with time zone)
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public', 'classification_audit', 'pg_temp'
+ SET search_path TO 'public', 'classification_audit'
 AS $function$
 DECLARE
   v_search text := nullif(btrim(coalesce(_search, '')), '');

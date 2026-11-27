@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_admin_link_crm_seller(_crm_seller_id bigint
  RETURNS TABLE(action text, previous_crm_seller_id bigint, auth_user_id uuid, email text)
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public', 'pg_temp'
+ SET search_path TO 'public'
 AS $function$
 DECLARE
   v_previous bigint;

@@ -52,6 +52,7 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_quote_comments_parent_id_quote_id | btree | parent_id, quote_id | não | sim |  | `CREATE INDEX idx_fk_quote_comments_parent_id_quote_id ON public.quote_comments USING btree (parent_id, quote_id)` |
 | quote_comments_id_quote_id_key | btree | id, quote_id | sim | sim |  | `CREATE UNIQUE INDEX quote_comments_id_quote_id_key ON public.quote_comments USING btree (id, quote_id)` |
 | quote_comments_parent_quote_idx | btree | parent_id, quote_id | não | sim | `(parent_id IS NOT NULL)` | `CREATE INDEX quote_comments_parent_quote_idx ON public.quote_comments USING btree (parent_id, quote_id) WHERE (parent_id IS NOT NULL)` |
 | quote_comments_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX quote_comments_pkey ON public.quote_comments USING btree (id)` |

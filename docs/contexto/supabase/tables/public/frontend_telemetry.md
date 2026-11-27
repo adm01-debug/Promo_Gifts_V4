@@ -44,6 +44,7 @@
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
 | frontend_telemetry_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX frontend_telemetry_pkey ON public.frontend_telemetry USING btree (id)` |
+| idx_fk_frontend_telemetry_user_id | btree | user_id | não | sim |  | `CREATE INDEX idx_fk_frontend_telemetry_user_id ON public.frontend_telemetry USING btree (user_id)` |
 
 
 ## Policies (RLS)

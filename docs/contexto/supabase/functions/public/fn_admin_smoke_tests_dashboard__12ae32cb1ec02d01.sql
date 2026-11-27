@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_admin_smoke_tests_dashboard()
  RETURNS jsonb
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
- SET search_path TO 'pg_catalog', 'pg_temp'
+ SET search_path TO 'pg_catalog'
 AS $function$
 BEGIN
   IF NOT coalesce(public.is_admin_or_above((SELECT auth.uid())), false) THEN

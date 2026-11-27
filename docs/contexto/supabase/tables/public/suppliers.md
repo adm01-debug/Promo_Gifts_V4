@@ -117,6 +117,7 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_suppliers_organization_id | btree | organization_id | não | sim |  | `CREATE INDEX idx_fk_suppliers_organization_id ON public.suppliers USING btree (organization_id)` |
 | idx_suppliers_priority | btree | priority, active | não | sim | `(active = true)` | `CREATE INDEX idx_suppliers_priority ON public.suppliers USING btree (priority, active) WHERE (active = true)` |
 | suppliers_cnpj_org_uniq | btree | organization_id, cnpj | sim | sim | `(cnpj IS NOT NULL)` | `CREATE UNIQUE INDEX suppliers_cnpj_org_uniq ON public.suppliers USING btree (organization_id, cnpj) NULLS NOT DISTINCT WHERE (cnpj IS NOT NULL)` |
 | suppliers_code_key | btree | code | sim | sim |  | `CREATE UNIQUE INDEX suppliers_code_key ON public.suppliers USING btree (code)` |

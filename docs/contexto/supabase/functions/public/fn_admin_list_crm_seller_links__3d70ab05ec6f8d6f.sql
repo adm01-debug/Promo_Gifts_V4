@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_admin_list_crm_seller_links(_search text DE
  RETURNS TABLE(auth_user_id uuid, crm_seller_id bigint, link_source text, created_at timestamp with time zone, full_name text, email text)
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
- SET search_path TO 'public', 'pg_temp'
+ SET search_path TO 'public'
 AS $function$
 DECLARE
   v_limit integer := LEAST(GREATEST(COALESCE(_limit, 200), 1), 500);

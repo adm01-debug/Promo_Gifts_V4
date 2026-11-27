@@ -70,6 +70,10 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_kit_component_enrichment_raw_kit_component_id | btree | kit_component_id | não | sim |  | `CREATE INDEX idx_fk_kit_component_enrichment_raw_kit_component_id ON public.kit_component_enrichment_raw USING btree (kit_component_id)` |
+| idx_fk_kit_component_enrichment_raw_kit_product_id | btree | kit_product_id | não | sim |  | `CREATE INDEX idx_fk_kit_component_enrichment_raw_kit_product_id ON public.kit_component_enrichment_raw USING btree (kit_product_id)` |
+| idx_fk_kit_component_enrichment_raw_promoted_component_id | btree | promoted_component_id | não | sim |  | `CREATE INDEX idx_fk_kit_component_enrichment_raw_promoted_component_id ON public.kit_component_enrichment_raw USING btree (promoted_component_id)` |
+| idx_fk_kit_component_enrichment_raw_promoted_padronizacao_id | btree | promoted_padronizacao_id | não | sim |  | `CREATE INDEX idx_fk_kit_component_enrichment_raw_promoted_padronizacao_id ON public.kit_component_enrichment_raw USING btree (promoted_padronizacao_id)` |
 | idx_kit_component_enrichment_raw_imported_by | btree | imported_by | não | sim |  | `CREATE INDEX idx_kit_component_enrichment_raw_imported_by ON public.kit_component_enrichment_raw USING btree (imported_by)` |
 | kit_component_enrichment_raw_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX kit_component_enrichment_raw_pkey ON public.kit_component_enrichment_raw USING btree (id)` |
 | uq_kcer_hash | btree | raw_hash | sim | sim | `(raw_hash IS NOT NULL)` | `CREATE UNIQUE INDEX uq_kcer_hash ON public.kit_component_enrichment_raw USING btree (raw_hash) WHERE (raw_hash IS NOT NULL)` |

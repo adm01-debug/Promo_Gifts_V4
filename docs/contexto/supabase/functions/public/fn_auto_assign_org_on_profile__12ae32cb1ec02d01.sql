@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_auto_assign_org_on_profile()
  RETURNS trigger
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public', 'pg_temp'
+ SET search_path TO 'public'
 AS $function$
 DECLARE
   _org constant uuid := '5db5aee1-064b-4ef4-9193-345dcd8274ea'; -- unica org real (Promo Brindes)

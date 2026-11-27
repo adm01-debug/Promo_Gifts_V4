@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_admin_classification_apply(_dry_run boolean
  RETURNS TABLE(acao text, product_id uuid, sku text, produto text, categoria text, matches integer, score integer)
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public', 'classification_audit', 'pg_temp'
+ SET search_path TO 'public', 'classification_audit'
 AS $function$
 DECLARE
   v_dry boolean := coalesce(_dry_run, true);

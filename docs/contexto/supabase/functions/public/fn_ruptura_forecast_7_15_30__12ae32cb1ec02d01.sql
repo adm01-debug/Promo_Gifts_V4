@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_ruptura_forecast_7_15_30()
  RETURNS TABLE(horizonte_dias integer, novos_ruptura bigint, com_restock bigint, net_ruptura bigint, score_medio numeric, gap_total_un bigint)
  LANGUAGE sql
  STABLE SECURITY DEFINER
- SET search_path TO 'public', 'pg_catalog', 'pg_temp'
+ SET search_path TO 'public', 'pg_catalog'
 AS $function$
   WITH alert AS (
     SELECT a.vss_id, a.cobertura_dias, a.score_composto, a.gap_unidades

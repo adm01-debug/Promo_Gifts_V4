@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_qa_check_image_coverage()
  RETURNS jsonb
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'pg_catalog', 'public', 'pg_temp'
+ SET search_path TO 'pg_catalog', 'public'
 AS $function$
 DECLARE
   v_crit int;

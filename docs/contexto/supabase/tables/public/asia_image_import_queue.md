@@ -57,6 +57,7 @@
 | idx_aiq_variant_id | btree | variant_id | não | sim | `(variant_id IS NOT NULL)` | `CREATE INDEX idx_aiq_variant_id ON public.asia_image_import_queue USING btree (variant_id) WHERE (variant_id IS NOT NULL)` |
 | idx_asia_img_queue_product | btree | product_id | não | sim |  | `CREATE INDEX idx_asia_img_queue_product ON public.asia_image_import_queue USING btree (product_id)` |
 | idx_asia_img_queue_status | btree | status | não | sim |  | `CREATE INDEX idx_asia_img_queue_status ON public.asia_image_import_queue USING btree (status)` |
+| idx_fk_asia_image_import_queue_variant_id | btree | variant_id | não | sim |  | `CREATE INDEX idx_fk_asia_image_import_queue_variant_id ON public.asia_image_import_queue USING btree (variant_id)` |
 
 
 ## Policies (RLS)

@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_qa_scan_imageless_products()
  RETURNS TABLE(total_violacoes bigint, alertas_novos bigint, alertas_resolvidos bigint)
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'pg_catalog', 'public', 'pg_temp'
+ SET search_path TO 'pg_catalog', 'public'
 AS $function$
 DECLARE
   v_novos bigint := 0;

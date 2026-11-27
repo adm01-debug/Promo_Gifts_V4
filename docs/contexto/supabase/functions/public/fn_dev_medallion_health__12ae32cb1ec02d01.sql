@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_dev_medallion_health()
  RETURNS jsonb
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
- SET search_path TO 'public', 'pg_catalog', 'pg_temp'
+ SET search_path TO 'public', 'pg_catalog'
 AS $function$
 DECLARE
   v_uid uuid := (SELECT auth.uid());

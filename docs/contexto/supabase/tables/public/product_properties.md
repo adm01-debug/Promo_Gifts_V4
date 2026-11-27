@@ -45,6 +45,7 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_product_properties_property_definition_id | btree | property_definition_id | não | sim |  | `CREATE INDEX idx_fk_product_properties_property_definition_id ON public.product_properties USING btree (property_definition_id)` |
 | idx_product_properties_source | btree | source | não | sim |  | `CREATE INDEX idx_product_properties_source ON public.product_properties USING btree (source)` |
 | product_properties_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX product_properties_pkey ON public.product_properties USING btree (id)` |
 | product_properties_product_definition_unique | btree | product_id, property_definition_id | sim | sim |  | `CREATE UNIQUE INDEX product_properties_product_definition_unique ON public.product_properties USING btree (product_id, property_definition_id)` |

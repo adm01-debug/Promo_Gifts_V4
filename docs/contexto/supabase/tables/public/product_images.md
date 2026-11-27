@@ -146,6 +146,9 @@ Caso contrário fn_products_capture_manual_edits capturará as mudanças em lock
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_product_images_canonical_image_id | btree | canonical_image_id | não | sim |  | `CREATE INDEX idx_fk_product_images_canonical_image_id ON public.product_images USING btree (canonical_image_id)` |
+| idx_fk_product_images_color_id | btree | color_id | não | sim |  | `CREATE INDEX idx_fk_product_images_color_id ON public.product_images USING btree (color_id)` |
+| idx_fk_product_images_variant_id | btree | variant_id | não | sim |  | `CREATE INDEX idx_fk_product_images_variant_id ON public.product_images USING btree (variant_id)` |
 | idx_pi_canonical | btree | canonical_image_id | não | sim | `(canonical_image_id IS NOT NULL)` | `CREATE INDEX idx_pi_canonical ON public.product_images USING btree (canonical_image_id) WHERE (canonical_image_id IS NOT NULL)` |
 | idx_pi_cf_sync_status | btree | cf_sync_status | não | sim | `(cf_sync_status <> 'verified'::text)` | `CREATE INDEX idx_pi_cf_sync_status ON public.product_images USING btree (cf_sync_status) WHERE (cf_sync_status <> 'verified'::text)` |
 | idx_pi_content_hash | btree | content_hash | não | sim | `(content_hash IS NOT NULL)` | `CREATE INDEX idx_pi_content_hash ON public.product_images USING btree (content_hash) WHERE (content_hash IS NOT NULL)` |

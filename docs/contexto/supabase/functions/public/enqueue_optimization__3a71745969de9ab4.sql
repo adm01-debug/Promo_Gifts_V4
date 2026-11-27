@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.enqueue_optimization(_title text, _description
  RETURNS uuid
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'pg_catalog', 'pg_temp'
+ SET search_path TO 'pg_catalog'
 AS $function$
 DECLARE
   new_id uuid;

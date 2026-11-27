@@ -344,6 +344,9 @@ BACKLOG:
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_products_ncm_id | btree | ncm_id | não | sim |  | `CREATE INDEX idx_fk_products_ncm_id ON public.products USING btree (ncm_id)` |
+| idx_fk_products_padronizacao_id | btree | padronizacao_id | não | sim |  | `CREATE INDEX idx_fk_products_padronizacao_id ON public.products USING btree (padronizacao_id)` |
+| idx_fk_products_sub_brand_id | btree | sub_brand_id | não | sim |  | `CREATE INDEX idx_fk_products_sub_brand_id ON public.products USING btree (sub_brand_id)` |
 | idx_products_active | btree | is_active | não | sim | `(is_active = true)` | `CREATE INDEX idx_products_active ON public.products USING btree (is_active) WHERE (is_active = true)` |
 | idx_products_active_created_at_desc | btree | created_at, id | não | sim | `((is_active = true) AND (is_deleted IS NOT TRUE))` | `CREATE INDEX idx_products_active_created_at_desc ON public.products USING btree (created_at DESC, id) WHERE ((is_active = true) AND (is_deleted IS NOT TRUE))` |
 | idx_products_active_not_deleted | btree | id | não | sim | `((is_active = true) AND (is_deleted IS NOT TRUE))` | `CREATE INDEX idx_products_active_not_deleted ON public.products USING btree (id) WHERE ((is_active = true) AND (is_deleted IS NOT TRUE))` |

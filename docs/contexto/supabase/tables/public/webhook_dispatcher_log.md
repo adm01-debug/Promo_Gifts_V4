@@ -50,6 +50,7 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_fk_webhook_dispatcher_log_quote_id | btree | quote_id | não | sim |  | `CREATE INDEX idx_fk_webhook_dispatcher_log_quote_id ON public.webhook_dispatcher_log USING btree (quote_id)` |
 | idx_webhook_dispatcher_log_delivery_status | btree | delivery_status, fired_at | não | sim |  | `CREATE INDEX idx_webhook_dispatcher_log_delivery_status ON public.webhook_dispatcher_log USING btree (delivery_status, fired_at DESC)` |
 | idx_webhook_dispatcher_log_fired_at | btree | fired_at | não | sim |  | `CREATE INDEX idx_webhook_dispatcher_log_fired_at ON public.webhook_dispatcher_log USING btree (fired_at DESC)` |
 | idx_webhook_dispatcher_log_http_status | btree | http_status, fired_at | não | sim |  | `CREATE INDEX idx_webhook_dispatcher_log_http_status ON public.webhook_dispatcher_log USING btree (http_status, fired_at DESC)` |

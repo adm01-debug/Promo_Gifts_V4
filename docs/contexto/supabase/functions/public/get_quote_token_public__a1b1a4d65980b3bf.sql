@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.get_quote_token_public(_token text)
  RETURNS jsonb
  LANGUAGE sql
  STABLE SECURITY DEFINER
- SET search_path TO 'pg_catalog', 'pg_temp'
+ SET search_path TO 'pg_catalog'
 AS $function$
   SELECT jsonb_build_object(
     'id',             qat.id,

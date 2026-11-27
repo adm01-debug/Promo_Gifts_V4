@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_admin_anon_access_audit()
  RETURNS TABLE(categoria text, objeto text, anon_grant boolean, auth_grant boolean, severidade text, descricao text)
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public', 'pg_temp'
+ SET search_path TO 'public'
 AS $function$
 BEGIN
   IF auth.uid() IS NULL THEN
