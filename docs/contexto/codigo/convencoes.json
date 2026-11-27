@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: remove pg_temp do search_path das 44 funções SECURITY DEFINER (P03) (#4202)",
    "chore(schema-snapshot): snapshot semanal 2026-W48 (#4204)",
    "perf: cria os 51 indices de suporte das FKs sem indice (#4197)",
    "fix: preflight ignora CONCURRENTLY dentro de literal de string (#4200)",
-   "fix: corrige referencia a migration inexistente no doc de auditoria (#4201)",
-   "docs: auditoria das ~110 branches locais (30 arquivos triados) (#4199)"
+   "fix: corrige referencia a migration inexistente no doc de auditoria (#4201)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

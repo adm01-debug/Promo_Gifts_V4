@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3f21c013187fac10a95705f920c40abdb4526031",
+  "commit": "7102cae34090dc14dbf6b7545548105f1a88e5fe",
   "branch": "main",
-  "data_commit": "2026-11-27T17:35:48-03:00",
+  "data_commit": "2026-11-27T17:49:01-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7102cae",
+    "data": "2026-11-27",
+    "assunto": "fix: remove pg_temp do search_path das 44 funções SECURITY DEFINER (P03) (#4202)"
+   },
    {
     "sha": "3f21c01",
     "data": "2026-11-27",
@@ -126,14 +131,9 @@
     "sha": "aab21f0",
     "data": "2026-11-26",
     "assunto": "feat: tela de acessos bloqueados lendo access_blocked_log (#4179)"
-   },
-   {
-    "sha": "a1cece0",
-    "data": "2026-11-26",
-    "assunto": "feat: tela de giro por variante lendo v_stock_velocity_safe (#4177)"
    }
   ],
-  "arquivos_mudados_7d": 437,
+  "arquivos_mudados_7d": 439,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 118
+    "mudancas": 119
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 118
+    "mudancas": 119
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -310,7 +310,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11380,
+  "arquivos_total": 11382,
   "arquivos_codigo": 5744,
   "linhas_codigo": 1090352,
   "rotas": 143,
@@ -322,7 +322,7 @@
   "hooks": 655,
   "edge_functions": 112,
   "tabelas": 534,
-  "migrations": 3146,
+  "migrations": 3147,
   "cron_jobs": 122,
   "testes": 2744,
   "workflows": 89,
