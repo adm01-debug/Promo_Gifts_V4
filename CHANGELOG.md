@@ -5,6 +5,28 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.25.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.24.0...gifts-store-v1.25.0) (2026-11-27)
+
+
+### Features
+
+* aba de classificacao sugerida em cadastros ([#4188](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4188)) ([ff88d65](https://github.com/adm01-debug/Promo_Gifts_V4/commit/ff88d65a0dbd00e825f9669330e02f10ac069948))
+* aba Raio-x do acesso anon em seguranca e acesso ([#4186](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4186)) ([d15c74f](https://github.com/adm01-debug/Promo_Gifts_V4/commit/d15c74f976cd0d191d5cc682beeb263260628354))
+* tela de cota de IA por usuario no painel de consumo ([#4185](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4185)) ([99896cb](https://github.com/adm01-debug/Promo_Gifts_V4/commit/99896cb6c774dbf0aab49b4cfe55665ab050c743))
+
+
+### Bug Fixes
+
+* corrige referencia a migration inexistente no doc de auditoria ([#4201](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4201)) ([f3557da](https://github.com/adm01-debug/Promo_Gifts_V4/commit/f3557da29295941ef68441e97f72b52305636ef6))
+* preflight ignora CONCURRENTLY dentro de literal de string ([#4200](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4200)) ([dcd69be](https://github.com/adm01-debug/Promo_Gifts_V4/commit/dcd69bece163834135f8a00c453f9a3c25cb5e30))
+* remove pg_temp do search_path das 44 funções SECURITY DEFINER (P03) ([#4202](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4202)) ([7102cae](https://github.com/adm01-debug/Promo_Gifts_V4/commit/7102cae34090dc14dbf6b7545548105f1a88e5fe))
+* restaurar CONCURRENTLY no comentario de mv_product_compositions ([#4194](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4194)) ([e39d236](https://github.com/adm01-debug/Promo_Gifts_V4/commit/e39d2360a15463f45c5740cfd36494e33d3cb46d))
+
+
+### Performance Improvements
+
+* cria os 51 indices de suporte das FKs sem indice ([#4197](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4197)) ([2317a84](https://github.com/adm01-debug/Promo_Gifts_V4/commit/2317a849c5ffe1eedd0ebfbcb217f3910b2c8ad0))
+
 ## [1.24.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.23.0...gifts-store-v1.24.0) (2026-11-26)
 
 
