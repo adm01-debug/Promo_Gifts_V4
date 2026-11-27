@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "dcd69bece163834135f8a00c453f9a3c25cb5e30",
+  "commit": "2317a849c5ffe1eedd0ebfbcb217f3910b2c8ad0",
   "branch": "main",
-  "data_commit": "2026-11-27T12:48:15-03:00",
+  "data_commit": "2026-11-27T16:31:41-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "2317a84",
+    "data": "2026-11-27",
+    "assunto": "perf: cria os 51 indices de suporte das FKs sem indice (#4197)"
+   },
    {
     "sha": "dcd69be",
     "data": "2026-11-27",
@@ -126,18 +131,13 @@
     "sha": "0ffac8e",
     "data": "2026-11-26",
     "assunto": "feat: tela de vinculos de vendedor do CRM (/admin/vinculos-vendedor-crm) (#4165)"
-   },
-   {
-    "sha": "ca3aaaa",
-    "data": "2026-11-26",
-    "assunto": "fix: baseline de policies com as 4 RLS de saved_stock_views (#4175)"
    }
   ],
-  "arquivos_mudados_7d": 447,
+  "arquivos_mudados_7d": 444,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 409
+    "mudancas": 408
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 117
+    "mudancas": 118
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 117
+    "mudancas": 118
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -310,7 +310,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11376,
+  "arquivos_total": 11378,
   "arquivos_codigo": 5744,
   "linhas_codigo": 1090352,
   "rotas": 143,
@@ -321,8 +321,8 @@
   "componentes": 1298,
   "hooks": 655,
   "edge_functions": 112,
-  "tabelas": 533,
-  "migrations": 3145,
+  "tabelas": 534,
+  "migrations": 3146,
   "cron_jobs": 122,
   "testes": 2744,
   "workflows": 89,

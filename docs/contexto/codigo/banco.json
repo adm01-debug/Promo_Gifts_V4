@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3145,
+ "migrations": 3146,
  "seeds": [],
  "avisos": [
   "325 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -7979,7 +7979,13 @@
      "tipo": "permissive"
     }
    ],
-   "indices": [],
+   "indices": [
+    {
+     "nome": "idx_fk_asia_image_import_queue_variant_id",
+     "colunas": "variant_id",
+     "unico": false
+    }
+   ],
    "fks": [],
    "criada_em": null,
    "usada_no_front": 0,
@@ -10028,6 +10034,11 @@
     {
      "nome": "idx_categories_updated_by",
      "colunas": "updated_by",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_categories_parent_id",
+     "colunas": "parent_id",
      "unico": false
     }
    ],
@@ -17928,6 +17939,11 @@
    ],
    "indices": [
     {
+     "nome": "idx_fk_frontend_telemetry_user_id",
+     "colunas": "user_id",
+     "unico": false
+    },
+    {
      "nome": "idx_telemetry_created_at",
      "colunas": "created_at",
      "unico": false
@@ -19146,6 +19162,11 @@
    ],
    "indices": [
     {
+     "nome": "idx_fk_inbound_webhook_events_endpoint_id",
+     "colunas": "endpoint_id",
+     "unico": false
+    },
+    {
      "nome": "idx_inbound_events_endpoint_time",
      "colunas": "endpoint_id, received_at DESC",
      "unico": false
@@ -20117,6 +20138,26 @@
    ],
    "indices": [
     {
+     "nome": "idx_fk_kit_component_enrichment_raw_kit_component_id",
+     "colunas": "kit_component_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_kit_component_enrichment_raw_kit_product_id",
+     "colunas": "kit_product_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_kit_component_enrichment_raw_promoted_component_id",
+     "colunas": "promoted_component_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_kit_component_enrichment_raw_promoted_padronizacao_id",
+     "colunas": "promoted_padronizacao_id",
+     "unico": false
+    },
+    {
      "nome": "idx_kcer_promoted_component_id",
      "colunas": "promoted_component_id",
      "unico": false
@@ -20381,6 +20422,16 @@
     }
    ],
    "indices": [
+    {
+     "nome": "idx_fk_kit_component_padronizacao_kit_product_id",
+     "colunas": "kit_product_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_kit_component_padronizacao_raw_id",
+     "colunas": "raw_id",
+     "unico": false
+    },
     {
      "nome": "idx_kcp_material_type_id",
      "colunas": "material_type_id",
@@ -21501,6 +21552,11 @@
    ],
    "indices": [
     {
+     "nome": "idx_fk_magazine_public_reactions_item_id",
+     "colunas": "item_id",
+     "unico": false
+    },
+    {
      "nome": "idx_mag_reactions_item",
      "colunas": "item_id",
      "unico": false
@@ -21745,6 +21801,11 @@
     }
    ],
    "indices": [
+    {
+     "nome": "idx_fk_magazines_owner_id",
+     "colunas": "owner_id",
+     "unico": false
+    },
     {
      "nome": "idx_magazines_organization_id",
      "colunas": "organization_id",
@@ -22695,6 +22756,16 @@
     }
    ],
    "indices": [
+    {
+     "nome": "idx_fk_markup_configurations_category_id",
+     "colunas": "category_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_markup_configurations_variant_id",
+     "colunas": "variant_id",
+     "unico": false
+    },
     {
      "nome": "idx_markup_cfg_created_by",
      "colunas": "created_by",
@@ -29340,6 +29411,11 @@
    ],
    "indices": [
     {
+     "nome": "idx_fk_price_history_variant_id",
+     "colunas": "variant_id",
+     "unico": false
+    },
+    {
      "nome": "idx_price_history_changed_by",
      "colunas": "changed_by",
      "unico": false
@@ -29373,6 +29449,11 @@
    "rls": false,
    "policies": [],
    "indices": [
+    {
+     "nome": "idx_fk_print_area_techniques_tabela_preco_id",
+     "colunas": "tabela_preco_id",
+     "unico": false
+    },
     {
      "nome": "idx_pat_product_location_active",
      "colunas": "product_id, location_code, is_active",
@@ -30029,6 +30110,11 @@
     }
    ],
    "indices": [
+    {
+     "nome": "idx_fk_product_commemorative_dates_category_id",
+     "colunas": "category_id",
+     "unico": false
+    },
     {
      "nome": "idx_pcd_product_id_active",
      "colunas": "product_id",
@@ -30987,6 +31073,11 @@
    ],
    "indices": [
     {
+     "nome": "idx_fk_product_fiscal_ncm_id",
+     "colunas": "ncm_id",
+     "unico": false
+    },
+    {
      "nome": "idx_product_fiscal_ean",
      "colunas": "ean",
      "unico": true
@@ -31875,6 +31966,21 @@
    ],
    "indices": [
     {
+     "nome": "idx_fk_product_images_canonical_image_id",
+     "colunas": "canonical_image_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_product_images_color_id",
+     "colunas": "color_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_product_images_variant_id",
+     "colunas": "variant_id",
+     "unico": false
+    },
+    {
      "nome": "idx_pi_canonical",
      "colunas": "canonical_image_id",
      "unico": false
@@ -32142,6 +32248,26 @@
     }
    ],
    "indices": [
+    {
+     "nome": "idx_fk_product_kit_components_color_id",
+     "colunas": "color_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_product_kit_components_component_product_id",
+     "colunas": "component_product_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_product_kit_components_padronizacao_id",
+     "colunas": "padronizacao_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_product_kit_components_secondary_material_type_id",
+     "colunas": "secondary_material_type_id",
+     "unico": false
+    },
     {
      "nome": "idx_kit_components_kit",
      "colunas": "kit_product_id",
@@ -32651,6 +32777,16 @@
     }
    ],
    "indices": [
+    {
+     "nome": "idx_fk_product_novelties_product_id",
+     "colunas": "product_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_product_novelties_supplier_id",
+     "colunas": "supplier_id",
+     "unico": false
+    },
     {
      "nome": "idx_novelties_expires",
      "colunas": "expires_at",
@@ -33594,7 +33730,13 @@
      "tipo": "permissive"
     }
    ],
-   "indices": [],
+   "indices": [
+    {
+     "nome": "idx_fk_product_properties_property_definition_id",
+     "colunas": "property_definition_id",
+     "unico": false
+    }
+   ],
    "fks": [],
    "criada_em": null,
    "usada_no_front": 0,
@@ -35732,6 +35874,21 @@
    ],
    "indices": [
     {
+     "nome": "idx_fk_products_ncm_id",
+     "colunas": "ncm_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_products_padronizacao_id",
+     "colunas": "padronizacao_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_products_sub_brand_id",
+     "colunas": "sub_brand_id",
+     "unico": false
+    },
+    {
      "nome": "idx_products_active",
      "colunas": "is_active",
      "unico": false
@@ -35980,6 +36137,25 @@
    ],
    "sem_rls": false,
    "nao_usada": false
+  },
+  "produto_ramo_atividade": {
+   "colunas": {},
+   "rls": false,
+   "policies": [],
+   "indices": [
+    {
+     "nome": "idx_fk_produto_ramo_atividade_ramo_atividade_filho_id",
+     "colunas": "ramo_atividade_filho_id",
+     "unico": false
+    }
+   ],
+   "fks": [],
+   "criada_em": null,
+   "usada_no_front": 0,
+   "usada_em_edges": [],
+   "triggers": [],
+   "sem_rls": false,
+   "nao_usada": true
   },
   "produtos_padronizacao": {
    "colunas": {
@@ -36499,6 +36675,16 @@
    ],
    "indices": [
     {
+     "nome": "idx_fk_produtos_padronizacao_product_id",
+     "colunas": "product_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_produtos_padronizacao_sub_brand_id",
+     "colunas": "sub_brand_id",
+     "unico": false
+    },
+    {
      "nome": "idx_pad_product",
      "colunas": "product_id",
      "unico": false
@@ -36913,6 +37099,21 @@
    ],
    "indices": [
     {
+     "nome": "idx_fk_produtos_padronizacao_variantes_color_id_2",
+     "colunas": "color_id_2",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_produtos_padronizacao_variantes_pad_id",
+     "colunas": "pad_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_produtos_padronizacao_variantes_raw_id",
+     "colunas": "raw_id",
+     "unico": false
+    },
+    {
      "nome": "idx_padvar_color_id_2",
      "colunas": "color_id_2",
      "unico": false
@@ -37023,7 +37224,13 @@
      "tipo": "permissive"
     }
    ],
-   "indices": [],
+   "indices": [
+    {
+     "nome": "idx_fk_produtos_site_padronizacao_raw_id",
+     "colunas": "raw_id",
+     "unico": false
+    }
+   ],
    "fks": [],
    "criada_em": null,
    "usada_no_front": 0,
@@ -38016,6 +38223,11 @@
    ],
    "indices": [
     {
+     "nome": "idx_fk_quote_comments_parent_id_quote_id",
+     "colunas": "parent_id, quote_id",
+     "unico": false
+    },
+    {
      "nome": "quote_comments_parent_quote_idx",
      "colunas": "parent_id, quote_id",
      "unico": false
@@ -38164,6 +38376,11 @@
     }
    ],
    "indices": [
+    {
+     "nome": "idx_fk_quote_history_quote_id",
+     "colunas": "quote_id",
+     "unico": false
+    },
     {
      "nome": "idx_quote_history_created",
      "colunas": "created_at DESC",
@@ -44440,6 +44657,16 @@
    ],
    "indices": [
     {
+     "nome": "idx_fk_stock_daily_summary_supplier_branch_id",
+     "colunas": "supplier_branch_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_stock_daily_summary_supplier_id",
+     "colunas": "supplier_id",
+     "unico": false
+    },
+    {
      "nome": "idx_sds_restock_zero_to_pos_date",
      "colunas": "summary_date",
      "unico": false
@@ -45380,6 +45607,11 @@
    "policies": [],
    "indices": [
     {
+     "nome": "idx_fk_supplier_colors_color_variation_id",
+     "colunas": "color_variation_id",
+     "unico": false
+    },
+    {
      "nome": "idx_supplier_colors_name_upper_active",
      "colunas": "UPPER(TRIM(name",
      "unico": false
@@ -45720,7 +45952,13 @@
    "colunas": {},
    "rls": false,
    "policies": [],
-   "indices": [],
+   "indices": [
+    {
+     "nome": "idx_fk_supplier_import_batches_supplier_id",
+     "colunas": "supplier_id",
+     "unico": false
+    }
+   ],
    "fks": [],
    "criada_em": null,
    "usada_no_front": 0,
@@ -45852,6 +46090,21 @@
    "rls": false,
    "policies": [],
    "indices": [
+    {
+     "nome": "idx_fk_supplier_products_raw_import_batch_id",
+     "colunas": "import_batch_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_supplier_products_raw_product_id",
+     "colunas": "product_id",
+     "unico": false
+    },
+    {
+     "nome": "idx_fk_supplier_products_raw_variant_id",
+     "colunas": "variant_id",
+     "unico": false
+    },
     {
      "nome": "idx_spr_images_status_pending",
      "colunas": "id",
@@ -47056,6 +47309,11 @@
    ],
    "indices": [
     {
+     "nome": "idx_fk_suppliers_organization_id",
+     "colunas": "organization_id",
+     "unico": false
+    },
+    {
      "nome": "idx_suppliers_deleted_at",
      "colunas": "deleted_at",
      "unico": false
@@ -47789,6 +48047,11 @@
    "rls": false,
    "policies": [],
    "indices": [
+    {
+     "nome": "idx_fk_tabela_preco_gravacao_oficial_grupo_tecnica",
+     "colunas": "grupo_tecnica",
+     "unico": false
+    },
     {
      "nome": "idx_tpgo_ativo_grupo",
      "colunas": "ativo, grupo_tecnica",
@@ -49906,6 +50169,11 @@
    "policies": [],
    "indices": [
     {
+     "nome": "idx_fk_variant_supplier_sources_supplier_branch_id",
+     "colunas": "supplier_branch_id",
+     "unico": false
+    },
+    {
      "nome": "idx_variant_supplier_sources_keyset_active",
      "colunas": "id ASC",
      "unico": false
@@ -50756,7 +51024,13 @@
      "tipo": "permissive"
     }
    ],
-   "indices": [],
+   "indices": [
+    {
+     "nome": "idx_fk_webhook_dispatcher_log_quote_id",
+     "colunas": "quote_id",
+     "unico": false
+    }
+   ],
    "fks": [],
    "criada_em": null,
    "usada_no_front": 0,
