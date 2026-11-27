@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 285,
+ "total": 286,
  "scripts": [
   {
    "arquivo": ".github/scripts/e2e-relevance.mjs",
@@ -1512,6 +1512,17 @@
    ],
    "workflows": [
     "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-service-role-rpc-consumers.mjs",
+   "descricao": "* check-service-role-rpc-consumers.mjs",
+   "linhas": 261,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "ci.yml"
    ],
    "orfao": false
   },

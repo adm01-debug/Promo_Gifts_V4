@@ -1863,6 +1863,11 @@
   "scripts/check-select-columns.mjs": [
    "scripts/extract-types-inventory.mjs"
   ],
+  "scripts/check-service-role-rpc-consumers.mjs": [
+   "scripts/check-result-contract.mjs",
+   "scripts/check-supabase-reference-catalog.mjs",
+   "scripts/drift-baseline.mjs"
+  ],
   "scripts/check-soft-delete-policy.mjs": [
    "scripts/lib/baseline-gate.mjs"
   ],

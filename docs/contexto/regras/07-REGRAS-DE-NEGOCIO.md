@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0f3c644374` · branch `main` · 2026-11-27 00:27 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `f60668c992` · branch `main` · 2026-11-27 00:29 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6766,6 +6766,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | String não terminada | `scripts/check-package-duplicate-scripts.mjs` |
 | fixture precisa conter um array rows | `scripts/check-quote-rpc-canonical-readiness.mjs` |
 | Não consegui extrair ${label} | `scripts/check-schema-reference-drift.mjs` |
+| ${relative(process.cwd(), path)} ilegivel: ${error.message} | `scripts/check-service-role-rpc-consumers.mjs` |
+| baseline do schema nao encontrado (esperado supabase/baseline/<versao>_baseline_schema.sql) | `scripts/check-service-role-rpc-consumers.mjs` |
 | --summary exige um caminho de saída. | `scripts/check-supabase-migration-ledger.mjs` |
 | Argumento inválido: ${arg} | `scripts/check-supabase-migration-ledger.mjs` |
 | Uso: node scripts/check-supabase-migration-ledger.mjs <ledger.json> [--summary <saida.json>] | `scripts/check-supabase-migration-ledger.mjs` |
@@ -6774,9 +6776,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: project_ref=${document.project_ref ??  | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: schema_version deve ser 1 | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
-| allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
-| allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1406 linhas — lista completa em `context.json` | |
+| … +1408 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6902,7 +6902,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (24135 testes em 2410 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (24148 testes em 2411 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7206,7 +7206,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/lib/rbac-permissions.test.ts` | 20 | RBAC Permission Matrix · admin · has access to everything · manager … |
 | `tests/pages/QuoteBuilder.test.ts` | 20 | QuoteBuilder — Item Calculations · calculates single item total · calculates quote subtotal · handles empty items list … |
 | `tests/scripts/append-migration-receipt.test.mjs` | 20 | formatReceiptRow · formata todos os campos como células markdown · usa em-dash para campos ausentes · appendReceiptRow … |
-| … +2110 linhas — lista completa em `context.json` | | |
+| … +2111 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

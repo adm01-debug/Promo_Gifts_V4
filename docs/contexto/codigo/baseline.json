@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0f3c644374d680616735941ccf03ec0ef9a77595",
+  "commit": "f60668c9928297be10de91542182a88cdb50afc6",
   "branch": "main",
-  "data_commit": "2026-11-26T21:12:07-03:00",
+  "data_commit": "2026-11-26T21:15:04-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "f60668c",
+    "data": "2026-11-26",
+    "assunto": "chore: gate que cruza RPC service_role-only com consumidor em src/ (#4189)"
+   },
    {
     "sha": "0f3c644",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "0d772c1",
     "data": "2026-11-26",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261126130000 (#4172)"
-   },
-   {
-    "sha": "caba552",
-    "data": "2026-11-26",
-    "assunto": "feat: liga views salvas do painel de estoque a uma tela (#4169)"
    }
   ],
-  "arquivos_mudados_7d": 626,
+  "arquivos_mudados_7d": 630,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 27
+    "mudancas": 28
    },
    {
     "arquivo": "package-lock.json",
@@ -242,6 +242,10 @@
     "mudancas": 8
    },
    {
+    "arquivo": "scripts/automation.config.json",
+    "mudancas": 6
+   },
+   {
     "arquivo": "scripts/drift-baseline.mjs",
     "mudancas": 6
    },
@@ -260,10 +264,6 @@
    {
     "arquivo": "tests/scripts/drift-baseline.test.mjs",
     "mudancas": 6
-   },
-   {
-    "arquivo": "scripts/automation.config.json",
-    "mudancas": 5
    },
    {
     "arquivo": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
@@ -310,9 +310,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11373,
-  "arquivos_codigo": 5742,
-  "linhas_codigo": 1089830,
+  "arquivos_total": 11375,
+  "arquivos_codigo": 5744,
+  "linhas_codigo": 1090286,
   "rotas": 143,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -324,9 +324,9 @@
   "tabelas": 533,
   "migrations": 3145,
   "cron_jobs": 122,
-  "testes": 2743,
+  "testes": 2744,
   "workflows": 89,
-  "scripts": 285,
+  "scripts": 286,
   "docs_md": 1512
  },
  "por_pasta": {
@@ -1426,6 +1426,10 @@
    "arquivos": 1,
    "linhas": 165
   },
+  "scripts/check-service-role-rpc-consumers.mjs": {
+   "arquivos": 1,
+   "linhas": 261
+  },
   "scripts/check-smoke-tags.mjs": {
    "arquivos": 1,
    "linhas": 182
@@ -2191,8 +2195,8 @@
    "linhas": 89
   },
   "tests/scripts": {
-   "arquivos": 182,
-   "linhas": 29860
+   "arquivos": 183,
+   "linhas": 30055
   },
   "tests/search": {
    "arquivos": 1,
@@ -2415,7 +2419,7 @@
  ],
  "qualidade": {
   "any": 695,
-  "console_log": 1317,
+  "console_log": 1320,
   "ts_ignore": 0,
   "eslint_disable": 24,
   "todos": 116,

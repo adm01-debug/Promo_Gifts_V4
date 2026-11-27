@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2743,
+ "total": 2744,
  "por_tipo": {
   "contrato": 70,
   "e2e": 678,
   "pytest": 8,
   "qa": 17,
-  "unit": 1970
+  "unit": 1971
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1089
+   "arquivos": 1090
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -21645,6 +21645,15 @@
    "casos": 9
   },
   {
+   "arquivo": "tests/scripts/check-service-role-rpc-consumers.test.mjs",
+   "tipo": "unit",
+   "linhas": 195,
+   "testa": [
+    "scripts/check-service-role-rpc-consumers.mjs"
+   ],
+   "casos": 9
+  },
+  {
    "arquivo": "tests/scripts/check-smoke-tags.test.mjs",
    "tipo": "unit",
    "linhas": 189,
@@ -23553,6 +23562,7 @@
   "scripts/check-result-contract.mjs": 2,
   "scripts/check-runtime-contract.mjs": 1,
   "scripts/check-security-definer-audit.mjs": 1,
+  "scripts/check-service-role-rpc-consumers.mjs": 1,
   "scripts/check-summary-color-tokens.mjs": 1,
   "scripts/check-supabase-linter.mjs": 1,
   "scripts/check-supabase-migration-ledger.mjs": 1,

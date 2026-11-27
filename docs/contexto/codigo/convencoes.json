@@ -23,7 +23,7 @@
    "src/services (16)"
   ],
   "testes": [
-   "tests/ (1089)",
+   "tests/ (1090)",
    "co-localizado (__tests__) (812)",
    "e2e/ (636)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore: gate que cruza RPC service_role-only com consumidor em src/ (#4189)",
    "docs(migrations-log): recibo E15 — aplicação de 20261126230000 (#4198)",
    "chore: opt-out de transacao na migration 20261126230000 (#4196)",
    "fix: restaurar CONCURRENTLY no comentario de mv_product_compositions (#4194)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261126211200 (#4195)",
-   "feat: aba de classificacao sugerida em cadastros (#4188)"
+   "docs(migrations-log): recibo E15 — aplicação de 20261126211200 (#4195)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
