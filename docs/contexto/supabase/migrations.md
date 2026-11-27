@@ -3044,3 +3044,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261126211200 | [admin_classification_audit_rpc](migrations/20261126211200_admin_classification_audit_rpc.sql) | 21 |
 | 20261126230000 | [doc_mv_product_compositions_refresh_concurrently](migrations/20261126230000_doc_mv_product_compositions_refresh_concurrently.sql) | 1 |
 | 20261127010000 | [perf_fk_indexes_51](migrations/20261127010000_perf_fk_indexes_51.sql) | 52 |
+| 20261127170000 | [security_definer_remove_pg_temp](migrations/20261127170000_security_definer_remove_pg_temp.sql) | 52 |

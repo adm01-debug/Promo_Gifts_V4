@@ -243011,6 +243011,12 @@
         "statements": 52,
         "statements_sha": "4a3c5b3553611d6b",
         "version": "20261127010000"
+      },
+      {
+        "name": "security_definer_remove_pg_temp",
+        "statements": 52,
+        "statements_sha": "11172df924ade12b",
+        "version": "20261127170000"
       }
     ],
     "policies": [
@@ -256208,20 +256214,6 @@
       {
         "bypass_rls": false,
         "config": null,
-        "conn_limit": 6,
-        "create_db": false,
-        "create_role": false,
-        "inherit": true,
-        "login": true,
-        "member_of": [
-          "pg_read_all_data"
-        ],
-        "name": "backup_tmp_20261127",
-        "superuser": false
-      },
-      {
-        "bypass_rls": false,
-        "config": null,
         "conn_limit": -1,
         "create_db": false,
         "create_role": false,
@@ -256272,7 +256264,6 @@
           "anon",
           "authenticated",
           "authenticator",
-          "backup_tmp_20261127",
           "pg_create_subscription",
           "pg_monitor",
           "pg_read_all_data",
