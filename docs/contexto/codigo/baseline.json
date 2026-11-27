@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2317a849c5ffe1eedd0ebfbcb217f3910b2c8ad0",
+  "commit": "3f21c013187fac10a95705f920c40abdb4526031",
   "branch": "main",
-  "data_commit": "2026-11-27T16:31:41-03:00",
+  "data_commit": "2026-11-27T17:35:48-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3f21c01",
+    "data": "2026-11-27",
+    "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (#4204)"
+   },
    {
     "sha": "2317a84",
     "data": "2026-11-27",
@@ -126,14 +131,9 @@
     "sha": "a1cece0",
     "data": "2026-11-26",
     "assunto": "feat: tela de giro por variante lendo v_stock_velocity_safe (#4177)"
-   },
-   {
-    "sha": "0ffac8e",
-    "data": "2026-11-26",
-    "assunto": "feat: tela de vinculos de vendedor do CRM (/admin/vinculos-vendedor-crm) (#4165)"
    }
   ],
-  "arquivos_mudados_7d": 444,
+  "arquivos_mudados_7d": 437,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -172,12 +172,12 @@
     "mudancas": 92
    },
    {
-    "pasta": "src/pages/admin",
+    "pasta": "src/pages/magazine",
     "mudancas": 92
    },
    {
-    "pasta": "src/pages/magazine",
-    "mudancas": 92
+    "pasta": "src/pages/admin",
+    "mudancas": 91
    },
    {
     "pasta": "src/components/mockup",
@@ -222,19 +222,19 @@
     "mudancas": 14
    },
    {
-    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 10
-   },
-   {
     "arquivo": "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "supabase/migrations-snapshot/SNAPSHOT_META.json",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
     "mudancas": 10
    },
    {
@@ -282,10 +282,6 @@
     "mudancas": 5
    },
    {
-    "arquivo": "src/pages/admin/StockDashboardPage.tsx",
-    "mudancas": 5
-   },
-   {
     "arquivo": "src/routes/lazy-pages.ts",
     "mudancas": 5
    },
@@ -296,21 +292,25 @@
    {
     "arquivo": "docs/estado/07_EDGE_FUNCTIONS.md",
     "mudancas": 4
+   },
+   {
+    "arquivo": "src/components/kit-builder/KitSummary.tsx",
+    "mudancas": 4
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 220
+    "commits": 219
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 80
+    "commits": 81
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 11378,
+  "arquivos_total": 11380,
   "arquivos_codigo": 5744,
   "linhas_codigo": 1090352,
   "rotas": 143,
