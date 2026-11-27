@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a94a65055bcc098073bf920440d4d9ab1549c476",
+  "commit": "0f3c644374d680616735941ccf03ec0ef9a77595",
   "branch": "main",
-  "data_commit": "2026-11-26T20:53:46-03:00",
+  "data_commit": "2026-11-26T21:12:07-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "0f3c644",
+    "data": "2026-11-26",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261126230000 (#4198)"
+   },
    {
     "sha": "a94a650",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "caba552",
     "data": "2026-11-26",
     "assunto": "feat: liga views salvas do painel de estoque a uma tela (#4169)"
-   },
-   {
-    "sha": "c3f747f",
-    "data": "2026-11-26",
-    "assunto": "feat: tela Infra do Banco (/admin/infra-ops) para a telemetria ops.* sem consumidor (#4160)"
    }
   ],
   "arquivos_mudados_7d": 626,
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 116
+    "mudancas": 117
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -193,13 +193,13 @@
    },
    {
     "pasta": "src/hooks/quotes",
-    "mudancas": 72
+    "mudancas": 71
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 116
+    "mudancas": 117
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -286,26 +286,26 @@
     "mudancas": 5
    },
    {
-    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
-    "mudancas": 5
-   },
-   {
     "arquivo": "src/routes/lazy-pages.ts",
     "mudancas": 5
    },
    {
     "arquivo": "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
     "mudancas": 4
+   },
+   {
+    "arquivo": "docs/estado/07_EDGE_FUNCTIONS.md",
+    "mudancas": 4
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 221
+    "commits": 220
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 79
+    "commits": 80
    }
   ]
  },

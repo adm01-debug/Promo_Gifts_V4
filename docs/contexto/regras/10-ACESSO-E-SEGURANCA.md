@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a94a65055b` · branch `main` · 2026-11-27 00:04 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0f3c644374` · branch `main` · 2026-11-27 00:27 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados

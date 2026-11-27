@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "a94a65055bcc098073bf920440d4d9ab1549c476",
+  "sha": "0f3c644374d680616735941ccf03ec0ef9a77595",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-27 00:04 UTC",
+  "generated_at": "2026-11-27 00:27 UTC",
   "files_total": 11303,
   "code_files": 9281,
   "code_lines": 1322010
@@ -584756,10 +584756,19 @@
   }
  },
  "git": {
-  "sha": "a94a65055bcc098073bf920440d4d9ab1549c476",
+  "sha": "0f3c644374d680616735941ccf03ec0ef9a77595",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "0f3c644",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261126230000 (#4198)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "a94a650",
     "date": "2026-11-26",
@@ -585150,22 +585159,12 @@
     "files": [
      "docs/estado/07_EDGE_FUNCTIONS.md"
     ]
-   },
-   {
-    "sha": "2e0c748",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "docs: mede cron das edges e corrige status N01/N15/N21/I01 (#4164)",
-    "files": [
-     "docs/estado/07_EDGE_FUNCTIONS.md",
-     "docs/estado/12_PLANEJADO_E_SUGERIDO.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    12
+    13
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
@@ -585193,10 +585192,6 @@
    ],
    [
     "src/pages/admin/AdminSegurancaAcessoPage.tsx",
-    3
-   ],
-   [
-    "docs/estado/07_EDGE_FUNCTIONS.md",
     3
    ],
    [
@@ -585237,6 +585232,10 @@
    ],
    [
     "src/routes/lazy-pages.ts",
+    2
+   ],
+   [
+    "docs/estado/07_EDGE_FUNCTIONS.md",
     2
    ],
    [

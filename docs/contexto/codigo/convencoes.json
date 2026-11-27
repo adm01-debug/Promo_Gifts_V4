@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(migrations-log): recibo E15 — aplicação de 20261126230000 (#4198)",
    "chore: opt-out de transacao na migration 20261126230000 (#4196)",
    "fix: restaurar CONCURRENTLY no comentario de mv_product_compositions (#4194)",
    "docs(migrations-log): recibo E15 — aplicação de 20261126211200 (#4195)",
-   "feat: aba de classificacao sugerida em cadastros (#4188)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261126192900 (#4191)"
+   "feat: aba de classificacao sugerida em cadastros (#4188)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
