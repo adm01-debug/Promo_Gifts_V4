@@ -1,7 +1,7 @@
 -- ==============================================================
 -- ALL_IN_ONE.sql — snapshot concatenado de supabase/migrations/
--- Gerado em: 2026-11-26T16:41:20.836Z
--- Total de arquivos: 3141
+-- Gerado em: 2026-11-27T19:54:35.001Z
+-- Total de arquivos: 3146
 -- Ordem: alfabética (mesmo critério do Supabase CLI)
 -- Uso: APENAS auditoria/leitura. NÃO aplicar direto no banco.
 -- SSOT continua sendo os arquivos individuais em supabase/migrations/.
@@ -266850,10 +266850,18 @@ GRANT EXECUTE ON FUNCTION public.fn_dev_ops_infra_telemetry(integer, integer) TO
 -- <<< END 20261126052000_ops_infra_telemetry_dev_rpc.sql <<<
 
 -- >>> BEGIN 20261126060000_crm_seller_identity_admin_rpc.sql >>>
--- Tela /admin/vinculos-vendedor-crm: gestao do mapeamento 1:1 auth.users -> vendedor do CRM.
+-- 20261126060000 - RPCs admin da tela /admin/vinculos-vendedor-crm (mapeamento auth.users -> vendedor CRM).
+--
+-- Rollback: supabase/rollbacks/20261126060000_rollback.sql
+--
+-- approved-by: adm01-debug
+--
 -- A tabela public.crm_seller_identity_links permanece deny-all (sem policies, sem grant a
 -- anon/authenticated); todo acesso passa por estas RPCs SECURITY DEFINER com guard de role.
-BEGIN;
+--
+-- Causa: src/hooks/admin/useCrmSellerLinks.ts + src/lib/crm/seller-links.ts consomem as 3 RPCs e
+-- elas nao existiam no banco canonico (preflight db-apply-migration reprovou o arquivo original por
+-- (1) falta de cabecalho de rollback logico e (2) BEGIN/COMMIT de topo, que conflita com psql -1).
 
 CREATE OR REPLACE FUNCTION public.fn_admin_list_crm_seller_links(
   _search text DEFAULT NULL,
@@ -267054,7 +267062,7 @@ GRANT EXECUTE ON FUNCTION public.fn_admin_link_crm_seller(bigint, uuid, text) TO
 REVOKE ALL ON FUNCTION public.fn_admin_unlink_crm_seller(uuid) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.fn_admin_unlink_crm_seller(uuid) TO authenticated, service_role;
 
-COMMIT;
+
 -- <<< END 20261126060000_crm_seller_identity_admin_rpc.sql <<<
 
 -- >>> BEGIN 20261126130000_create_saved_stock_views.sql >>>
@@ -267145,3 +267153,559 @@ COMMENT ON COLUMN public.saved_stock_views.filters IS 'Filtros do painel /estoqu
 COMMENT ON COLUMN public.saved_stock_views.use_count IS 'Quantas vezes o operador aplicou a view; incrementado pela UI do menu de views salvas.';
 
 -- <<< END 20261126130000_create_saved_stock_views.sql <<<
+
+-- >>> BEGIN 20261126191200_admin_ai_quota_summary_rpc.sql >>>
+-- Tela /admin/consumo-ia — cota de IA por usuario (objetivo #16).
+-- Rollback: supabase/rollbacks/20261126191200_rollback.sql
+-- approved-by: adm01-debug
+--
+-- Causa: `public.fn_ai_quota_summary()` (baseline 20261126130000) devolve a cota
+-- efetiva de cada usuario — limite do papel, usado no mes, restante, sucesso,
+-- erro, pendentes e ultima atividade — mas o EXECUTE foi concedido SOMENTE a
+-- `service_role` (baseline :116233, com REVOKE PUBLIC em :116232). O painel
+-- /admin/consumo-ia roda como `authenticated`, entao essa visao nunca pode ser
+-- exibida: a tela so mostrava a quota por papel (`ai_usage_quotas`) e o consumo
+-- bruto por usuario (`ai_usage_logs`), sem cruzar os dois. Este wrapper entrega
+-- a mesma agregacao com guard de admin, sem afrouxar o grant da funcao original
+-- (que continua exclusiva de `service_role`).
+--
+-- A agregacao interna (user_roles x auth.users x ai_usage_quotas x ai_usage_logs)
+-- e identica a de fn_ai_quota_summary; mudam apenas o guard, a busca por
+-- e-mail/papel e o teto de linhas.
+
+CREATE OR REPLACE FUNCTION public.fn_admin_ai_quota_summary(
+  _search text DEFAULT NULL,
+  _limit integer DEFAULT 200
+)
+RETURNS TABLE (
+  user_id uuid,
+  email text,
+  role text,
+  monthly_limit integer,
+  is_unlimited boolean,
+  used_this_month integer,
+  remaining integer,
+  success_month integer,
+  error_month integer,
+  pending_count integer,
+  last_activity timestamptz
+)
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  v_limit integer := LEAST(GREATEST(COALESCE(_limit, 200), 1), 500);
+  v_search text := NULLIF(btrim(COALESCE(_search, '')), '');
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Autenticacao obrigatoria.' USING ERRCODE = '42501';
+  END IF;
+
+  IF NOT public.is_admin_or_above(auth.uid()) THEN
+    RAISE EXCEPTION 'Acesso restrito a administradores.' USING ERRCODE = '42501';
+  END IF;
+
+  RETURN QUERY
+  WITH resumo AS (
+    SELECT
+      ur.user_id,
+      u.email::text AS email,
+      ur.role::text AS role,
+      COALESCE(aq.monthly_limit, 0)              AS monthly_limit,
+      COALESCE(aq.is_unlimited, false)           AS is_unlimited,
+      COALESCE(SUM(
+        CASE WHEN al.status != 'error'
+                  AND al.created_at >= date_trunc('month', NOW())
+                  AND (al.status != 'pending' OR al.created_at >= NOW() - INTERVAL '5 minutes')
+             THEN 1 ELSE 0 END
+      ), 0)::int                                 AS used_this_month,
+      CASE
+        WHEN COALESCE(aq.is_unlimited, false) THEN -1
+        ELSE GREATEST(0, COALESCE(aq.monthly_limit, 0) -
+          COALESCE(SUM(
+            CASE WHEN al.status != 'error'
+                      AND al.created_at >= date_trunc('month', NOW())
+                      AND (al.status != 'pending' OR al.created_at >= NOW() - INTERVAL '5 minutes')
+                 THEN 1 ELSE 0 END
+          ), 0)::int)
+      END                                        AS remaining,
+      COALESCE(SUM(
+        CASE WHEN al.status = 'success'
+                  AND al.created_at >= date_trunc('month', NOW())
+             THEN 1 ELSE 0 END
+      ), 0)::int                                 AS success_month,
+      COALESCE(SUM(
+        CASE WHEN al.status = 'error'
+                  AND al.created_at >= date_trunc('month', NOW())
+             THEN 1 ELSE 0 END
+      ), 0)::int                                 AS error_month,
+      COALESCE(SUM(
+        CASE WHEN al.status = 'pending' THEN 1 ELSE 0 END
+      ), 0)::int                                 AS pending_count,
+      MAX(al.updated_at)                         AS last_activity
+    FROM public.user_roles ur
+    JOIN auth.users u ON u.id = ur.user_id AND u.deleted_at IS NULL
+    LEFT JOIN public.ai_usage_quotas aq ON aq.role = ur.role
+    LEFT JOIN public.ai_usage_logs al ON al.user_id = ur.user_id
+    GROUP BY ur.user_id, u.email, ur.role, aq.monthly_limit, aq.is_unlimited
+  )
+  SELECT
+    r.user_id, r.email, r.role, r.monthly_limit, r.is_unlimited, r.used_this_month,
+    r.remaining, r.success_month, r.error_month, r.pending_count, r.last_activity
+  FROM resumo r
+  WHERE v_search IS NULL
+     OR r.email ILIKE '%' || v_search || '%'
+     OR r.role ILIKE '%' || v_search || '%'
+  ORDER BY r.used_this_month DESC NULLS LAST, r.email
+  LIMIT v_limit;
+END;
+$$;
+
+COMMENT ON FUNCTION public.fn_admin_ai_quota_summary(text, integer) IS
+  'Cota de IA por usuario para o painel /admin/consumo-ia. Guard: auth.uid() + is_admin_or_above (SQLSTATE 42501). Mesma agregacao de fn_ai_quota_summary (user_roles x auth.users x ai_usage_quotas x ai_usage_logs). remaining = -1 significa cota ilimitada; _search filtra e-mail/papel; _limit e limitado a 500.';
+
+REVOKE ALL ON FUNCTION public.fn_admin_ai_quota_summary(text, integer) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.fn_admin_ai_quota_summary(text, integer) TO authenticated, service_role;
+-- <<< END 20261126191200_admin_ai_quota_summary_rpc.sql <<<
+
+-- >>> BEGIN 20261126192900_admin_anon_access_audit_rpc.sql >>>
+-- Rollback: supabase/rollbacks/20261126192900_rollback.sql
+-- approved-by: adm01-debug
+--
+-- Por que: `public.fn_anon_access_audit()` e o diagnostico estrutural do acesso
+-- `anon` (RLS ativa sem policy, funcao usada em policy sem EXECUTE para anon,
+-- view sensivel com SELECT para anon, tabela de badge sem grant para anon).
+-- Ele existe em producao desde 20260623190039, mas o EXECUTE de `authenticated`
+-- foi revogado em 20260716000029/20260716191641 — o baseline de 20261126130000
+-- registra `REVOKE ALL ... FROM PUBLIC` + `GRANT ... TO service_role`
+-- (:116258-116259), portanto o diagnostico nao tinha tela: nenhum usuario do
+-- painel conseguia le-lo. Este wrapper expoe o resultado apenas para admin.
+--
+-- Idempotente: CREATE OR REPLACE + REVOKE/GRANT.
+
+CREATE OR REPLACE FUNCTION public.fn_admin_anon_access_audit()
+RETURNS TABLE (
+  categoria text,
+  objeto text,
+  anon_grant boolean,
+  auth_grant boolean,
+  severidade text,
+  descricao text
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Autenticacao obrigatoria.' USING ERRCODE = '42501';
+  END IF;
+
+  IF NOT public.is_admin_or_above(auth.uid()) THEN
+    RAISE EXCEPTION 'Acesso restrito a administradores.' USING ERRCODE = '42501';
+  END IF;
+
+  -- O diagnostico de base e VOLATILE (le catalogos e privilegios do momento),
+  -- por isso o wrapper nao se declara STABLE.
+  RETURN QUERY
+  SELECT a.categoria, a.objeto, a.anon_grant, a.auth_grant, a.severidade, a.descricao
+  FROM public.fn_anon_access_audit() AS a;
+END;
+$$;
+
+COMMENT ON FUNCTION public.fn_admin_anon_access_audit() IS
+  'Wrapper admin (guard 42501) do diagnostico fn_anon_access_audit: RLS sem policy, funcao em policy sem EXECUTE para anon, view sensivel exposta a anon e tabela de badge sem grant. Alimenta a aba "Raio-x do acesso anon" em /admin/seguranca-acesso.';
+
+REVOKE ALL ON FUNCTION public.fn_admin_anon_access_audit() FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.fn_admin_anon_access_audit() FROM anon;
+GRANT EXECUTE ON FUNCTION public.fn_admin_anon_access_audit() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.fn_admin_anon_access_audit() TO service_role;
+
+-- <<< END 20261126192900_admin_anon_access_audit_rpc.sql <<<
+
+-- >>> BEGIN 20261126211200_admin_classification_audit_rpc.sql >>>
+-- Rollback: supabase/rollbacks/20261126211200_rollback.sql
+-- approved-by: adm01-debug
+--
+-- Da tela ao schema de auditoria de classificacao (classification_audit).
+--
+-- Causa medida: o schema `classification_audit` e a unica capacidade de
+-- negocio do banco sem nenhuma referencia em `src/` (varredura de
+-- 2026-11-26, docs/estado/15_VARREDURA_BACKEND_UI.md). Ele guarda a trilha de
+-- analise de categorizacao — `category_suggestions` (RLS habilitada e zero
+-- policies), as views `v_gaps_acionaveis` / `v_kits_para_revisao` — e a unica
+-- acao do conjunto, `apply_high_confidence_suggestions(p_dry_run, p_min_matches)`
+-- (SECURITY DEFINER, escreve em `public.product_category_assignments`).
+-- O EXECUTE para `anon` foi revogado em 20261125074200, mas o grant ficou so
+-- para `service_role`: sem RPC em `public` e sem tela, o negocio nao tinha como
+-- ver nem aplicar a classificacao proposta.
+--
+-- Esta migration NAO abre o schema interno: `classification_audit` continua
+-- deny-all (nenhum GRANT novo em tabela/view/sequencia). Todo acesso passa por
+-- tres RPCs `public` SECURITY DEFINER com guard `is_admin_or_above(auth.uid())`
+-- que devolvem dados ja projetados e com `search_path` fixo.
+
+CREATE OR REPLACE FUNCTION public.fn_admin_classification_summary()
+RETURNS TABLE (
+  total_sugestoes bigint,
+  nao_atribuidas bigint,
+  kits_para_revisao bigint,
+  conflitos bigint,
+  alta_confianca bigint,
+  ultima_analise timestamp with time zone
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, classification_audit, pg_temp
+AS $$
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Autenticacao obrigatoria.' USING ERRCODE = '42501';
+  END IF;
+
+  IF NOT public.is_admin_or_above(auth.uid()) THEN
+    RAISE EXCEPTION 'Acesso restrito a administradores.' USING ERRCODE = '42501';
+  END IF;
+
+  RETURN QUERY
+  SELECT
+    count(*)::bigint AS total_sugestoes,
+    count(*) FILTER (WHERE NOT s.already_assigned)::bigint AS nao_atribuidas,
+    count(*) FILTER (
+      WHERE NOT s.already_assigned
+        AND s.matches >= 3
+        AND (p.is_kit OR p.name ILIKE '%KIT%' OR p.name ILIKE '%CONJ%')
+    )::bigint AS kits_para_revisao,
+    count(*) FILTER (
+      WHERE coalesce(s.material_conflict, false) OR coalesce(s.type_conflict, false)
+    )::bigint AS conflitos,
+    count(*) FILTER (WHERE NOT s.already_assigned AND s.matches >= 4)::bigint AS alta_confianca,
+    max(s.computed_at) AS ultima_analise
+  FROM classification_audit.category_suggestions AS s
+  JOIN public.products AS p ON p.id = s.product_id AND p.is_active;
+END;
+$$;
+
+ALTER FUNCTION public.fn_admin_classification_summary() OWNER TO postgres;
+
+COMMENT ON FUNCTION public.fn_admin_classification_summary() IS
+  'KPIs da trilha de classificacao (classification_audit.category_suggestions) para administradores. Consumida pela aba Classificacao de /admin/cadastros.';
+
+
+CREATE OR REPLACE FUNCTION public.fn_admin_classification_suggestions(
+  _search text DEFAULT NULL,
+  _somente_gaps boolean DEFAULT false,
+  _min_matches integer DEFAULT 2,
+  _limit integer DEFAULT 200
+)
+RETURNS TABLE (
+  id bigint,
+  product_id uuid,
+  sku text,
+  produto text,
+  is_kit boolean,
+  categoria_sugerida text,
+  nivel integer,
+  matches integer,
+  score integer,
+  tokens_matched text,
+  already_assigned boolean,
+  categorias_atuais text,
+  material_conflict boolean,
+  type_conflict boolean,
+  approved_auto boolean,
+  computed_at timestamp with time zone
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, classification_audit, pg_temp
+AS $$
+DECLARE
+  v_search text := nullif(btrim(coalesce(_search, '')), '');
+  v_min integer := coalesce(_min_matches, 2);
+  v_limit integer := least(greatest(coalesce(_limit, 200), 1), 500);
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Autenticacao obrigatoria.' USING ERRCODE = '42501';
+  END IF;
+
+  IF NOT public.is_admin_or_above(auth.uid()) THEN
+    RAISE EXCEPTION 'Acesso restrito a administradores.' USING ERRCODE = '42501';
+  END IF;
+
+  IF v_min < 1 OR v_min > 20 THEN
+    RAISE EXCEPTION 'Parametro _min_matches fora da faixa 1..20 (recebido %).', v_min
+      USING ERRCODE = '22023';
+  END IF;
+
+  RETURN QUERY
+  SELECT
+    s.id,
+    s.product_id,
+    p.sku,
+    p.name AS produto,
+    p.is_kit,
+    c.full_path_readable AS categoria_sugerida,
+    s.category_level AS nivel,
+    s.matches,
+    s.score,
+    s.tokens_matched,
+    s.already_assigned,
+    (
+      SELECT string_agg(c2.name, ' + ' ORDER BY c2.level)
+      FROM public.product_category_assignments AS pca2
+      JOIN public.categories AS c2 ON c2.id = pca2.category_id
+      WHERE pca2.product_id = s.product_id AND c2.level >= 2
+    ) AS categorias_atuais,
+    coalesce(s.material_conflict, false),
+    coalesce(s.type_conflict, false),
+    coalesce(s.approved_auto, false),
+    s.computed_at
+  FROM classification_audit.category_suggestions AS s
+  JOIN public.products AS p ON p.id = s.product_id AND p.is_active
+  LEFT JOIN public.categories AS c ON c.id = s.category_id
+  WHERE s.matches >= v_min
+    AND (NOT _somente_gaps OR NOT s.already_assigned)
+    AND (
+      v_search IS NULL
+      OR p.sku ILIKE '%' || v_search || '%'
+      OR p.name ILIKE '%' || v_search || '%'
+      OR coalesce(c.full_path_readable, '') ILIKE '%' || v_search || '%'
+    )
+  ORDER BY s.matches DESC, s.score DESC, p.sku
+  LIMIT v_limit;
+END;
+$$;
+
+ALTER FUNCTION public.fn_admin_classification_suggestions(text, boolean, integer, integer) OWNER TO postgres;
+
+COMMENT ON FUNCTION public.fn_admin_classification_suggestions(text, boolean, integer, integer) IS
+  'Lista a trilha de classificacao (classification_audit.category_suggestions) com produto, categoria sugerida, categorias atuais e flags de conflito. Filtros: termo, somente gaps e minimo de matches. Consumida pela aba Classificacao de /admin/cadastros.';
+
+
+CREATE OR REPLACE FUNCTION public.fn_admin_classification_apply(
+  _dry_run boolean DEFAULT true,
+  _min_matches integer DEFAULT 4
+)
+RETURNS TABLE (
+  acao text,
+  product_id uuid,
+  sku text,
+  produto text,
+  categoria text,
+  matches integer,
+  score integer
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, classification_audit, pg_temp
+AS $$
+DECLARE
+  v_dry boolean := coalesce(_dry_run, true);
+  v_min integer := coalesce(_min_matches, 4);
+  v_candidatos integer := 0;
+  v_antes integer := 0;
+  v_depois integer := 0;
+  v_inseridas integer := 0;
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Autenticacao obrigatoria.' USING ERRCODE = '42501';
+  END IF;
+
+  IF NOT public.is_admin_or_above(auth.uid()) THEN
+    RAISE EXCEPTION 'Acesso restrito a administradores.' USING ERRCODE = '42501';
+  END IF;
+
+  IF v_min < 1 OR v_min > 20 THEN
+    RAISE EXCEPTION 'Parametro _min_matches fora da faixa 1..20 (recebido %).', v_min
+      USING ERRCODE = '22023';
+  END IF;
+
+  SELECT count(*)::integer
+    INTO v_candidatos
+    FROM classification_audit.category_suggestions AS s
+    JOIN public.products AS p ON p.id = s.product_id AND p.is_active
+    WHERE NOT s.already_assigned AND s.matches >= v_min;
+
+  IF NOT v_dry THEN
+    SELECT count(*)::integer
+      INTO v_antes
+      FROM public.product_category_assignments AS pca
+      WHERE (pca.product_id, pca.category_id) IN (
+        SELECT s.product_id, s.category_id
+        FROM classification_audit.category_suggestions AS s
+        JOIN public.products AS p ON p.id = s.product_id AND p.is_active
+        WHERE NOT s.already_assigned AND s.matches >= v_min
+      );
+
+    PERFORM 1 FROM classification_audit.apply_high_confidence_suggestions(false, v_min);
+
+    SELECT count(*)::integer
+      INTO v_depois
+      FROM public.product_category_assignments AS pca
+      WHERE (pca.product_id, pca.category_id) IN (
+        SELECT s.product_id, s.category_id
+        FROM classification_audit.category_suggestions AS s
+        JOIN public.products AS p ON p.id = s.product_id AND p.is_active
+        WHERE NOT s.already_assigned AND s.matches >= v_min
+      );
+
+    v_inseridas := v_depois - v_antes;
+  END IF;
+
+  RETURN QUERY
+  SELECT
+    CASE
+      WHEN v_dry THEN 'DRY-RUN'::text
+      WHEN v_inseridas > 0 THEN 'APLICADO'::text
+      ELSE 'SEM MUDANCA'::text
+    END AS acao,
+    a.product_id,
+    p.sku,
+    a.produto,
+    a.categoria,
+    a.matches,
+    a.score
+  FROM classification_audit.apply_high_confidence_suggestions(true, v_min) AS a
+  LEFT JOIN public.products AS p ON p.id = a.product_id;
+
+  IF NOT v_dry AND v_inseridas > 0 THEN
+    PERFORM public.log_audit(
+      'classification_suggestions_applied',
+      'classification_audit.category_suggestions',
+      v_min::text,
+      jsonb_build_object(
+        'min_matches', v_min,
+        'candidatos', v_candidatos,
+        'atribuicoes_criadas', v_inseridas
+      )
+    );
+  END IF;
+END;
+$$;
+
+ALTER FUNCTION public.fn_admin_classification_apply(boolean, integer) OWNER TO postgres;
+
+COMMENT ON FUNCTION public.fn_admin_classification_apply(boolean, integer) IS
+  'Executa classification_audit.apply_high_confidence_suggestions em nome de um administrador (dry-run ou aplicacao real). Retorna acao = DRY-RUN | APLICADO | SEM MUDANCA (SEM MUDANCA quando nenhuma atribuicao foi criada, caso em que nada e auditado). Registra em public.log_audit somente quando cria atribuicao. Consumida pela aba Classificacao de /admin/cadastros.';
+
+
+REVOKE ALL ON FUNCTION public.fn_admin_classification_summary() FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.fn_admin_classification_summary() FROM anon;
+GRANT EXECUTE ON FUNCTION public.fn_admin_classification_summary() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.fn_admin_classification_summary() TO service_role;
+
+REVOKE ALL ON FUNCTION public.fn_admin_classification_suggestions(text, boolean, integer, integer) FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.fn_admin_classification_suggestions(text, boolean, integer, integer) FROM anon;
+GRANT EXECUTE ON FUNCTION public.fn_admin_classification_suggestions(text, boolean, integer, integer) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.fn_admin_classification_suggestions(text, boolean, integer, integer) TO service_role;
+
+REVOKE ALL ON FUNCTION public.fn_admin_classification_apply(boolean, integer) FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.fn_admin_classification_apply(boolean, integer) FROM anon;
+GRANT EXECUTE ON FUNCTION public.fn_admin_classification_apply(boolean, integer) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.fn_admin_classification_apply(boolean, integer) TO service_role;
+-- <<< END 20261126211200_admin_classification_audit_rpc.sql <<<
+
+-- >>> BEGIN 20261126230000_doc_mv_product_compositions_refresh_concurrently.sql >>>
+-- Rollback: supabase/rollbacks/20261126230000_rollback.sql
+-- approved-by: adm01-debug
+-- transaction: none (so COMMENT; a palavra CONCURRENTLY aparece dentro da string documental, nao ha DDL fora de transacao)
+--
+-- Restaura no COMMENT de public.mv_product_compositions a informacao de que o
+-- refresh do cron 47 e CONCURRENTLY.
+--
+-- Causa medida (auditoria de branches 2026-11-26): o texto correto foi gravado
+-- pela 20260613181344_doc_public_mv_exposure_views_and_refresh_fns.sql
+-- ("refresh CONCURRENTLY via cron 47, hourly"), mas a
+-- 20261122200000_fix_cadeia_views_compras_e_compositions.sql reescreveu o mesmo
+-- COMMENT e perdeu a palavra CONCURRENTLY. A branch
+-- claude/fix-views-cadeia-invoker-261122-1450 tinha o texto correto e nao foi
+-- incorporada; esta migration recupera aquele trecho.
+--
+-- Efeito de negocio: o comentario e a unica documentacao lida por quem for
+-- mexer no refresh. "refresh" sem CONCURRENTLY induz a rodar REFRESH
+-- MATERIALIZED VIEW bloqueante, que trava a pagina publica de produto enquanto
+-- recalcula. O refresh real e CONCURRENTLY (20260602010000, cron 47).
+--
+-- Sem efeito estrutural: so COMMENT.
+
+COMMENT ON VIEW public.mv_product_compositions IS
+  'VIEW publica sobre a matview analytics.mv_product_compositions (refresh CONCURRENTLY pelo cron 47, horario). public.mv_* e VIEW, nao matview - nao rode REFRESH aqui. SECURITY DEFINER desde 20261122200000 porque a matview-base nao concede SELECT a anon nem suporta RLS. NAO religar security_invoker=true.';
+-- <<< END 20261126230000_doc_mv_product_compositions_refresh_concurrently.sql <<<
+
+-- >>> BEGIN 20261127010000_perf_fk_indexes_51.sql >>>
+-- Rollback: supabase/rollbacks/20261127010000_rollback.sql
+-- approved-by: adm01-debug
+-- transaction: none (CREATE INDEX CONCURRENTLY nao pode rodar dentro de transacao)
+--
+-- Causa medida: 51 foreign keys do schema public sem indice de suporte, medido
+-- no catalogo (pg_constraint x pg_index) em 2026-11-26. Sem indice, cada DELETE/
+-- UPDATE na tabela pai faz Seq Scan na tabela filha para checar a FK. Casos de
+-- maior volume: stock_daily_summary (41.531 linhas, 2 FKs), supplier_products_raw
+-- (20.947, 3 FKs), produtos_padronizacao_variantes (20.915, 3 FKs),
+-- variant_supplier_sources (20.947, 1 FK), products (8.402, 3 FKs),
+-- produtos_padronizacao (8.396, 2 FKs).
+--
+-- Origem: proposta P02_fk_indexes.sql da auditoria Supabase (ID-INT-001, nunca
+-- aplicada, listava 6 FKs). Reaproveitada e re-medida contra o estado atual do
+-- banco: hoje sao 51. Cada CREATE INDEX e independente e idempotente
+-- (IF NOT EXISTS). Nenhum indice e parcial e nenhum e unique: nao alteram
+-- nenhuma constraint, policy ou resultado de query - so plano de execucao.
+--
+-- Efeito de negocio: excluir/atualizar produto, variante, fornecedor, cor,
+-- categoria, padronizacao ou NCM deixa de varrer dezenas de milhares de linhas.
+
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_asia_image_import_queue_variant_id ON asia_image_import_queue USING btree (variant_id); -- asia_image_import_queue_variant_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_categories_parent_id ON categories USING btree (parent_id); -- categories_parent_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_frontend_telemetry_user_id ON frontend_telemetry USING btree (user_id); -- frontend_telemetry_user_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_inbound_webhook_events_endpoint_id ON inbound_webhook_events USING btree (endpoint_id); -- inbound_webhook_events_endpoint_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_kit_component_enrichment_raw_kit_component_id ON kit_component_enrichment_raw USING btree (kit_component_id); -- kit_component_enrichment_raw_kit_component_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_kit_component_enrichment_raw_kit_product_id ON kit_component_enrichment_raw USING btree (kit_product_id); -- kit_component_enrichment_raw_kit_product_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_kit_component_enrichment_raw_promoted_component_id ON kit_component_enrichment_raw USING btree (promoted_component_id); -- kit_component_enrichment_raw_promoted_component_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_kit_component_enrichment_raw_promoted_padronizacao_id ON kit_component_enrichment_raw USING btree (promoted_padronizacao_id); -- kit_component_enrichment_raw_promoted_padronizacao_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_kit_component_padronizacao_raw_id ON kit_component_padronizacao USING btree (raw_id); -- fk_kcpad_raw_id
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_kit_component_padronizacao_kit_product_id ON kit_component_padronizacao USING btree (kit_product_id); -- kit_component_padronizacao_kit_product_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_magazine_public_reactions_item_id ON magazine_public_reactions USING btree (item_id); -- magazine_public_reactions_item_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_magazines_owner_id ON magazines USING btree (owner_id); -- magazines_owner_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_markup_configurations_category_id ON markup_configurations USING btree (category_id); -- markup_configurations_category_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_markup_configurations_variant_id ON markup_configurations USING btree (variant_id); -- markup_configurations_variant_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_price_history_variant_id ON price_history USING btree (variant_id); -- price_history_variant_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_print_area_techniques_tabela_preco_id ON print_area_techniques USING btree (tabela_preco_id); -- print_area_techniques_tabela_preco_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_product_commemorative_dates_category_id ON product_commemorative_dates USING btree (category_id); -- product_commemorative_dates_category_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_product_fiscal_ncm_id ON product_fiscal USING btree (ncm_id); -- product_fiscal_ncm_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_product_images_canonical_image_id ON product_images USING btree (canonical_image_id); -- product_images_canonical_image_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_product_images_color_id ON product_images USING btree (color_id); -- product_images_color_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_product_images_variant_id ON product_images USING btree (variant_id); -- product_images_variant_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_product_kit_components_color_id ON product_kit_components USING btree (color_id); -- product_kit_components_color_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_product_kit_components_component_product_id ON product_kit_components USING btree (component_product_id); -- product_kit_components_component_product_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_product_kit_components_padronizacao_id ON product_kit_components USING btree (padronizacao_id); -- product_kit_components_padronizacao_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_product_kit_components_secondary_material_type_id ON product_kit_components USING btree (secondary_material_type_id); -- product_kit_components_secondary_material_type_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_product_novelties_product_id ON product_novelties USING btree (product_id); -- fk_pn_product
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_product_novelties_supplier_id ON product_novelties USING btree (supplier_id); -- fk_pn_supplier
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_product_properties_property_definition_id ON product_properties USING btree (property_definition_id); -- product_properties_property_definition_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_products_ncm_id ON products USING btree (ncm_id); -- products_ncm_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_products_padronizacao_id ON products USING btree (padronizacao_id); -- products_padronizacao_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_products_sub_brand_id ON products USING btree (sub_brand_id); -- products_sub_brand_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_produto_ramo_atividade_ramo_atividade_filho_id ON produto_ramo_atividade USING btree (ramo_atividade_filho_id); -- produto_ramo_atividade_ramo_atividade_filho_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_produtos_padronizacao_product_id ON produtos_padronizacao USING btree (product_id); -- produtos_padronizacao_product_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_produtos_padronizacao_sub_brand_id ON produtos_padronizacao USING btree (sub_brand_id); -- produtos_padronizacao_sub_brand_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_produtos_padronizacao_variantes_color_id_2 ON produtos_padronizacao_variantes USING btree (color_id_2); -- produtos_padronizacao_variantes_color_id_2_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_produtos_padronizacao_variantes_pad_id ON produtos_padronizacao_variantes USING btree (pad_id); -- produtos_padronizacao_variantes_pad_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_produtos_padronizacao_variantes_raw_id ON produtos_padronizacao_variantes USING btree (raw_id); -- produtos_padronizacao_variantes_raw_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_produtos_site_padronizacao_raw_id ON produtos_site_padronizacao USING btree (raw_id); -- produtos_site_padronizacao_raw_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_quote_comments_parent_id_quote_id ON quote_comments USING btree (parent_id, quote_id); -- quote_comments_parent_quote_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_quote_history_quote_id ON quote_history USING btree (quote_id); -- quote_history_quote_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_stock_daily_summary_supplier_branch_id ON stock_daily_summary USING btree (supplier_branch_id); -- stock_daily_summary_supplier_branch_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_stock_daily_summary_supplier_id ON stock_daily_summary USING btree (supplier_id); -- stock_daily_summary_supplier_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_supplier_colors_color_variation_id ON supplier_colors USING btree (color_variation_id); -- supplier_colors_color_variation_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_supplier_import_batches_supplier_id ON supplier_import_batches USING btree (supplier_id); -- supplier_import_batches_supplier_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_supplier_products_raw_import_batch_id ON supplier_products_raw USING btree (import_batch_id); -- supplier_products_raw_import_batch_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_supplier_products_raw_product_id ON supplier_products_raw USING btree (product_id); -- supplier_products_raw_product_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_supplier_products_raw_variant_id ON supplier_products_raw USING btree (variant_id); -- supplier_products_raw_variant_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_suppliers_organization_id ON suppliers USING btree (organization_id); -- suppliers_organization_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_tabela_preco_gravacao_oficial_grupo_tecnica ON tabela_preco_gravacao_oficial USING btree (grupo_tecnica); -- fk_oficial_grupo_tecnica
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_variant_supplier_sources_supplier_branch_id ON variant_supplier_sources USING btree (supplier_branch_id); -- variant_supplier_sources_supplier_branch_id_fkey
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_fk_webhook_dispatcher_log_quote_id ON webhook_dispatcher_log USING btree (quote_id); -- webhook_dispatcher_log_quote_id_fkey
+-- <<< END 20261127010000_perf_fk_indexes_51.sql <<<
