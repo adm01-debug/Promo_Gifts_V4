@@ -1690,6 +1690,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261126192900` | `995a5f761e2dd9a101c2ea0fa3ee80fe2c679eb300152a8b6cd8b2752143cd78` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-26 21:59:27 UTC | job post-check da run 45901119674 confirmou a version no ledger | aplicada |
 | `20261126211200` | `c7a198c7afec0fc19589d8ce70dc6fed5ce29a4543c877c9f36635a11061b87e` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-26 23:10:18 UTC | job post-check da run 45907883648 confirmou a version no ledger | aplicada |
 | `20261126230000` | `f79cab695dc73695e646573839e27876748981f77e2efb52662f00b7716fe8bf` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-27 00:02:49 UTC | job post-check da run 45913607959 confirmou a version no ledger | aplicada |
+| `20261127010000` | `34db43c6130039f49c6e5e9e81a3df0c2e3ea7bab5d49c136d9d4976f3fa183d` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-27 19:33:28 UTC | job post-check da run 46057424376 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -3086,4 +3087,10 @@ policies com aquelas definicoes via `db-apply-migration.yml` (regra 8).
 
 | version | arquivo | status |
 |---|---|---|
-| `20261127010000` | `perf_fk_indexes_51` | pendente — 51 CREATE INDEX CONCURRENTLY (IF NOT EXISTS), 	ransaction: none; aplicar via db-apply-migration.yml após merge da PR |
+| `20261127010000` | `perf_fk_indexes_51` | pendente — 51 CREATE INDEX CONCURRENTLY (IF NOT EXISTS), `transaction: none`; aplicar via db-apply-migration.yml após merge da PR |
+
+## 2026-11-27 — P03: remove `pg_temp` do search_path das SECURITY DEFINER
+
+| version | arquivo | status |
+|---|---|---|
+| `20261127170000` | `security_definer_remove_pg_temp` | pendente — 44 `ALTER FUNCTION ... SET search_path` sem `pg_temp`; aplicar via db-apply-migration.yml após merge da PR |
