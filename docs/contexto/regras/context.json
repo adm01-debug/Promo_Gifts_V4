@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "7102cae34090dc14dbf6b7545548105f1a88e5fe",
+  "sha": "26a31351838c8cb88241bb570f1006583f7cb60a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-27 20:50 UTC",
+  "generated_at": "2026-11-27 21:13 UTC",
   "files_total": 11313,
   "code_files": 9287,
   "code_lines": 1322798
@@ -585706,10 +585706,19 @@
   }
  },
  "git": {
-  "sha": "7102cae34090dc14dbf6b7545548105f1a88e5fe",
+  "sha": "26a31351838c8cb88241bb570f1006583f7cb60a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "26a3135",
+    "date": "2026-11-27",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261127170000 (#4205)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "7102cae",
     "date": "2026-11-27",
@@ -586087,15 +586096,6 @@
      "CHANGELOG.md",
      "package-lock.json",
      "package.json"
-    ]
-   },
-   {
-    "sha": "6d73c11",
-    "date": "2026-11-26",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261126052000 (#4171)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
    }
   ],

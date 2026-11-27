@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7102cae34090dc14dbf6b7545548105f1a88e5fe",
+  "commit": "26a31351838c8cb88241bb570f1006583f7cb60a",
   "branch": "main",
-  "data_commit": "2026-11-27T17:49:01-03:00",
+  "data_commit": "2026-11-27T18:12:20-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "26a3135",
+    "data": "2026-11-27",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261127170000 (#4205)"
+   },
    {
     "sha": "7102cae",
     "data": "2026-11-27",
@@ -126,11 +131,6 @@
     "sha": "9b092c3",
     "data": "2026-11-26",
     "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45859951403) (#4173)"
-   },
-   {
-    "sha": "aab21f0",
-    "data": "2026-11-26",
-    "assunto": "feat: tela de acessos bloqueados lendo access_blocked_log (#4179)"
    }
   ],
   "arquivos_mudados_7d": 439,
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 119
+    "mudancas": 120
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 119
+    "mudancas": 120
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 219
+    "commits": 218
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 81
+    "commits": 82
    }
   ]
  },
