@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f3557da29295941ef68441e97f72b52305636ef6",
+  "commit": "dcd69bece163834135f8a00c453f9a3c25cb5e30",
   "branch": "main",
-  "data_commit": "2026-11-26T22:19:19-03:00",
+  "data_commit": "2026-11-27T12:48:15-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "dcd69be",
+    "data": "2026-11-27",
+    "assunto": "fix: preflight ignora CONCURRENTLY dentro de literal de string (#4200)"
+   },
    {
     "sha": "f3557da",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "ca3aaaa",
     "data": "2026-11-26",
     "assunto": "fix: baseline de policies com as 4 RLS de saved_stock_views (#4175)"
-   },
-   {
-    "sha": "b23ed21",
-    "data": "2026-11-26",
-    "assunto": "chore(main): release gifts-store 1.21.0 (#4163)"
    }
   ],
-  "arquivos_mudados_7d": 613,
+  "arquivos_mudados_7d": 447,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -312,7 +312,7 @@
  "contagens": {
   "arquivos_total": 11376,
   "arquivos_codigo": 5744,
-  "linhas_codigo": 1090286,
+  "linhas_codigo": 1090352,
   "rotas": 143,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1716,7 +1716,7 @@
   },
   "scripts/preflight-migration-apply.mjs": {
    "arquivos": 1,
-   "linhas": 474
+   "linhas": 506
   },
   "scripts/probe-production-sitemap.py": {
    "arquivos": 1,
@@ -2196,7 +2196,7 @@
   },
   "tests/scripts": {
    "arquivos": 183,
-   "linhas": 30055
+   "linhas": 30089
   },
   "tests/search": {
    "arquivos": 1,
@@ -2423,7 +2423,7 @@
   "ts_ignore": 0,
   "eslint_disable": 24,
   "todos": 116,
-  "arquivos_acima_500_linhas": 187
+  "arquivos_acima_500_linhas": 188
  },
  "todos": [
   {
@@ -3082,13 +3082,13 @@
   },
   {
    "arquivo": "tests/scripts/preflight-migration-apply.test.mjs",
-   "linha": 398,
+   "linha": 432,
    "tipo": "TODO",
    "texto": ", xxx, nome) não valem; a primeira linha com nome real vale', () => {"
   },
   {
    "arquivo": "tests/scripts/preflight-migration-apply.test.mjs",
-   "linha": 399,
+   "linha": 433,
    "tipo": "TODO",
    "texto": "', 'xxx', 'nome', '...', '-']) expect(parseOptOut(`-- transaction: none\\n-- approved-by: ${v}\\n`).ap"
   },

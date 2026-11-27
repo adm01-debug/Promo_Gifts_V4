@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "f3557da29295941ef68441e97f72b52305636ef6",
+  "sha": "dcd69bece163834135f8a00c453f9a3c25cb5e30",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-27 02:22 UTC",
+  "generated_at": "2026-11-27 16:18 UTC",
   "files_total": 11307,
   "code_files": 9283,
-  "code_lines": 1322466
+  "code_lines": 1322532
  },
  "version": "1.3.2",
- "facts_hash": "98f268f733765128",
+ "facts_hash": "a5c4a0f400989f24",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -159939,7 +159939,7 @@
   {
    "module": "scripts",
    "files": 302,
-   "lines": 66275,
+   "lines": 66307,
    "tables": [
     "a",
     "b",
@@ -162325,7 +162325,7 @@
   {
    "module": "tests",
    "files": 1107,
-   "lines": 176940,
+   "lines": 176974,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -322772,6 +322772,26 @@
    },
    {
     "file": "tests/scripts/preflight-migration-apply.test.mjs",
+    "name": "nao bloqueia CONCURRENTLY dentro de literal de COMMENT"
+   },
+   {
+    "file": "tests/scripts/preflight-migration-apply.test.mjs",
+    "name": "nao bloqueia CONCURRENTLY dentro de corpo dollar-quoted"
+   },
+   {
+    "file": "tests/scripts/preflight-migration-apply.test.mjs",
+    "name": "continua bloqueando CONCURRENTLY real ao lado de um literal"
+   },
+   {
+    "file": "tests/scripts/preflight-migration-apply.test.mjs",
+    "name": "bloqueia CONCURRENTLY passado a EXECUTE dinamico"
+   },
+   {
+    "file": "tests/scripts/preflight-migration-apply.test.mjs",
+    "name": "bloqueia CONCURRENTLY dinamico via format()"
+   },
+   {
+    "file": "tests/scripts/preflight-migration-apply.test.mjs",
     "name": "bloqueia BEGIN de topo sem opt-out"
    },
    {
@@ -459440,10 +459460,11 @@
   },
   "scripts/preflight-migration-apply.mjs": {
    "path": "scripts/preflight-migration-apply.mjs",
-   "lines": 474,
+   "lines": 506,
    "exports": [
     "function detectCreateIndexWithoutConcurrently",
     "function parseOptOut",
+    "function stripSqlStringLiterals",
     "function detectBlockingDdl",
     "function findMigrationFiles",
     "function findRollbackFile",
@@ -580870,7 +580891,7 @@
   },
   "tests/scripts/preflight-migration-apply.test.mjs": {
    "path": "tests/scripts/preflight-migration-apply.test.mjs",
-   "lines": 406,
+   "lines": 440,
    "is_test": true,
    "params": [
     {
@@ -580915,6 +580936,11 @@
     "devolve [] para SQL transacional simples",
     "bloqueia CONCURRENTLY sem opt-out",
     "não bloqueia CONCURRENTLY com opt-out",
+    "nao bloqueia CONCURRENTLY dentro de literal de COMMENT",
+    "nao bloqueia CONCURRENTLY dentro de corpo dollar-quoted",
+    "continua bloqueando CONCURRENTLY real ao lado de um literal",
+    "bloqueia CONCURRENTLY passado a EXECUTE dinamico",
+    "bloqueia CONCURRENTLY dinamico via format()",
     "bloqueia BEGIN de topo sem opt-out",
     "bloqueia ALTER TYPE … ADD VALUE sem opt-out",
     "bloqueia DROP TABLE sem IF EXISTS mesmo com opt-out",
@@ -584882,10 +584908,20 @@
   }
  },
  "git": {
-  "sha": "f3557da29295941ef68441e97f72b52305636ef6",
+  "sha": "dcd69bece163834135f8a00c453f9a3c25cb5e30",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "dcd69be",
+    "date": "2026-11-27",
+    "author": "adm01-debug",
+    "subject": "fix: preflight ignora CONCURRENTLY dentro de literal de string (#4200)",
+    "files": [
+     "scripts/preflight-migration-apply.mjs",
+     "tests/scripts/preflight-migration-apply.test.mjs"
+    ]
+   },
    {
     "sha": "f3557da",
     "date": "2026-11-26",
@@ -585273,15 +585309,6 @@
      "supabase/migrations/20261126052000_ops_infra_telemetry_dev_rpc.sql",
      "supabase/rollbacks/20261126052000_rollback.sql"
     ]
-   },
-   {
-    "sha": "48dbd0b",
-    "date": "2026-11-26",
-    "author": "github-actions[bot]",
-    "subject": "docs(edge-deploy-log): recibo do deploy — run 45824995474 (#4170)",
-    "files": [
-     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
-    ]
    }
   ],
   "hot_files": [
@@ -585362,7 +585389,7 @@
     2
    ],
    [
-    ".github/workflows/ci.yml",
+    "scripts/preflight-migration-apply.mjs",
     1
    ]
   ]

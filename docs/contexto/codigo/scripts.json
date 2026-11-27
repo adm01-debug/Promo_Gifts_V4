@@ -2750,7 +2750,7 @@
   {
    "arquivo": "scripts/preflight-migration-apply.mjs",
    "descricao": "* preflight-migration-apply.mjs",
-   "linhas": 474,
+   "linhas": 506,
    "env": [],
    "npm_scripts": [],
    "workflows": [

@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: preflight ignora CONCURRENTLY dentro de literal de string (#4200)",
    "fix: corrige referencia a migration inexistente no doc de auditoria (#4201)",
    "docs: auditoria das ~110 branches locais (30 arquivos triados) (#4199)",
    "chore: gate que cruza RPC service_role-only com consumidor em src/ (#4189)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261126230000 (#4198)",
-   "chore: opt-out de transacao na migration 20261126230000 (#4196)"
+   "docs(migrations-log): recibo E15 — aplicação de 20261126230000 (#4198)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

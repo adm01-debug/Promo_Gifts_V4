@@ -22126,11 +22126,11 @@
   {
    "arquivo": "tests/scripts/preflight-migration-apply.test.mjs",
    "tipo": "unit",
-   "linhas": 406,
+   "linhas": 440,
    "testa": [
     "scripts/preflight-migration-apply.mjs"
    ],
-   "casos": 52
+   "casos": 57
   },
   {
    "arquivo": "tests/scripts/promote-draft-migration.test.mjs",

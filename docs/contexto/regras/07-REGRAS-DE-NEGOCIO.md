@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `f3557da292` · branch `main` · 2026-11-27 02:22 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `dcd69bece1` · branch `main` · 2026-11-27 16:18 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6902,7 +6902,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (24148 testes em 2411 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (24153 testes em 2411 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6930,13 +6930,13 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/contracts/webhook-contracts.test.ts` | 73 | contract registry · every contract has at least one version · every contract has an endpoint and description · unified validation error envelope (422) … |
 | `src/lib/security/__tests__/magazine-guard.test.ts` | 71 | validateBranding — clientLogoUrl · aceita https:// válida · aceita https:// com path e query · rejeita http:// (requer https) … |
 | `src/components/pdf/__tests__/PdfGenerationModule.test.ts` | 68 | formatPaymentMethod · mapeia boleto corretamente · mapeia pix_transferencia corretamente · retorna o valor raw se não reconhecido … |
+| `tests/scripts/preflight-migration-apply.test.mjs` | 68 | findMigrationFiles · devolve [] quando nenhum arquivo bate com o prefixo · encontra exatamente um arquivo quando o prefixo é único · encontra múltiplos arquivos em colisão de prefixo (caso E10) … |
 | `tests/hooks/useDiscountApproval.test.ts` | 67 | DiscountApprovalRequest interface · defines all required fields · supports all three statuses · Seller Discount Limit logic … |
 | `src/components/shared/__tests__/Clickable.test.tsx` | 66 | Clickable — comportamento core · renderiza como div com role=button e tabIndex=0 por padrão · click de mouse dispara onClick uma vez · Enter dispara onClick + preventDefault … |
 | `src/lib/products/__tests__/stock-status.test.ts` | 66 | isProductInStock · sem variações — stockStatus canônico (catálogo, hífen) · in-stock → true (even if stock=0) · low-stock → true … |
 | `tests/hooks/quotes/quoteHelpers.freight.test.ts` | 66 | round2 — arredondamento monetário · 1.005 → 1.01 (half-up) · 1.004 → 1.00 (trunca) · 0 → 0 … |
 | `tests/hooks/useProductMatch.test.ts` | 65 | normalizeText · lowercases text · removes accents · handles empty string … |
 | `tests/scripts/ci-local.test.mjs` | 65 | filtros de paths/branches (semântica do GitHub Actions) · ** atravessa diretórios e * não · negação  · paths: roda se ALGUM arquivo casa; sem arquivos não roda … |
-| `tests/scripts/preflight-migration-apply.test.mjs` | 63 | findMigrationFiles · devolve [] quando nenhum arquivo bate com o prefixo · encontra exatamente um arquivo quando o prefixo é único · encontra múltiplos arquivos em colisão de prefixo (caso E10) … |
 | `src/contexts/__tests__/SellerCartContext.restoreTelemetry.test.tsx` | 62 | SellerCartContext — telemetria do restoreCart (Undo) · restore_ok — desfechos success \| partial \| deduped · classifica  · classifica  … |
 | `tests/e2e/quotes-flow.test.ts` | 60 | E2E Quotes — Status Machine · has 6 statuses · draft → sent is valid · draft → pending is valid … |
 | `tests/unit/print-area-grouping.test.ts` | 58 | groupPrintAreasByComponent · returns empty array for empty input · groups area without component_name under  · uses location_name when provided … |
