@@ -1,0 +1,12 @@
+{
+  "description": "Allowlist do gate `scripts/check-service-role-rpc-consumers.mjs`. Cada entrada registra um consumo em `src/` de RPC que o baseline marca como EXECUTE somente para `service_role`. Vazio nao e o objetivo: e o objetivo e que cada entrada seja um consumo compreendido, com motivo e etapa de remocao. Qualquer consumo novo fora desta lista falha o gate.",
+  "entries": [
+    {
+      "name": "repair_ownership_orphans",
+      "file": "src/utils/security-audit.ts",
+      "occurrences": 1,
+      "stage": 109,
+      "reason": "Canario de negacao, nao consumo real: `checkSecurityDefinerAccess` chama a RPC para confirmar que `authenticated`/`anon` recebem `permission denied` (baseline marca EXECUTE so para service_role) e retorna `true` justamente quando o erro de permissao acontece. O caminho de sucesso (sem erro) e tratado como falha de seguranca. Manter enquanto o canario existir; remover a entrada se o teste for movido para o lado servidor."
+    }
+  ]
+}
