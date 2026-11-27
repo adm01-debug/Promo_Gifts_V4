@@ -975,7 +975,7 @@ SELECT id,
 | opções | security_invoker=false |
 | depende de | analytics.mv_product_compositions |
 | populada | n/a |
-| comentário | VIEW publica sobre a matview analytics.mv_product_compositions (refresh pelo cron 47, horario). public.mv_* e VIEW, nao matview - nao rode REFRESH aqui. SECURITY DEFINER desde 20261122200000 porque a matview-base nao concede SELECT a anon nem suporta RLS. NAO religar security_invoker=true. |
+| comentário | VIEW publica sobre a matview analytics.mv_product_compositions (refresh CONCURRENTLY pelo cron 47, horario). public.mv_* e VIEW, nao matview - nao rode REFRESH aqui. SECURITY DEFINER desde 20261122200000 porque a matview-base nao concede SELECT a anon nem suporta RLS. NAO religar security_invoker=true. |
 
 
 ```sql

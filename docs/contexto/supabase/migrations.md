@@ -3042,3 +3042,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261126191200 | [admin_ai_quota_summary_rpc](migrations/20261126191200_admin_ai_quota_summary_rpc.sql) | 4 |
 | 20261126192900 | [admin_anon_access_audit_rpc](migrations/20261126192900_admin_anon_access_audit_rpc.sql) | 6 |
 | 20261126211200 | [admin_classification_audit_rpc](migrations/20261126211200_admin_classification_audit_rpc.sql) | 21 |
+| 20261126230000 | [doc_mv_product_compositions_refresh_concurrently](migrations/20261126230000_doc_mv_product_compositions_refresh_concurrently.sql) | 1 |

@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-27 00:42 UTC
+
+- **migrations** adicionado (1): `20261126230000_doc_mv_product_compositions_refresh_concurrently`
+- **views** alterado (1): `public.mv_product_compositions`
+
 ## 2026-11-26 23:38 UTC
 
 - **functions** adicionado (3): `public.fn_admin_classification_apply(_dry_run boolean, _min_matches integer)`, `public.fn_admin_classification_suggestions(_search text, _somente_gaps boolean, _min_matches integer, _limit integer)`, `public.fn_admin_classification_summary()`

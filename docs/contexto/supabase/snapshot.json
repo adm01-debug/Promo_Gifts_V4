@@ -242452,6 +242452,12 @@
         "statements": 21,
         "statements_sha": "6d4f50de71733fa6",
         "version": "20261126211200"
+      },
+      {
+        "name": "doc_mv_product_compositions_refresh_concurrently",
+        "statements": 1,
+        "statements_sha": "fc0fe926ddfe0d82",
+        "version": "20261126230000"
       }
     ],
     "policies": [
@@ -268688,7 +268694,7 @@
         "security_invoker": false
       },
       {
-        "comment": "VIEW publica sobre a matview analytics.mv_product_compositions (refresh pelo cron 47, horario). public.mv_* e VIEW, nao matview - nao rode REFRESH aqui. SECURITY DEFINER desde 20261122200000 porque a matview-base nao concede SELECT a anon nem suporta RLS. NAO religar security_invoker=true.",
+        "comment": "VIEW publica sobre a matview analytics.mv_product_compositions (refresh CONCURRENTLY pelo cron 47, horario). public.mv_* e VIEW, nao matview - nao rode REFRESH aqui. SECURITY DEFINER desde 20261122200000 porque a matview-base nao concede SELECT a anon nem suporta RLS. NAO religar security_invoker=true.",
         "definition": " SELECT product_id,\n    organization_id,\n    product_name,\n    total_materials,\n    total_percentage,\n    materials_detail\n   FROM analytics.mv_product_compositions;",
         "depends_on": [
           "analytics.mv_product_compositions"
