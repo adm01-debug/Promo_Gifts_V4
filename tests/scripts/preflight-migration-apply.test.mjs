@@ -246,6 +246,40 @@ describe('detectBlockingDdl (E63)', () => {
     ).toEqual([]);
   });
 
+  it('nao bloqueia CONCURRENTLY dentro de literal de COMMENT', () => {
+    // Caso medido no run 45912213400: a migration 20261126230000 documenta no
+    // COMMENT que o cron 47 usa refresh CONCURRENTLY. Nao ha DDL aqui.
+    const sql = `COMMENT ON VIEW public.mv_product_compositions IS
+  'VIEW publica (refresh CONCURRENTLY pelo cron 47). NAO rode REFRESH aqui.';`;
+    expect(detectBlockingDdl(sql)).toEqual([]);
+  });
+
+  it('nao bloqueia CONCURRENTLY dentro de corpo dollar-quoted', () => {
+    const sql = `CREATE OR REPLACE FUNCTION public.f() RETURNS text
+LANGUAGE sql AS $fn$ SELECT 'CONCURRENTLY'::text $fn$;`;
+    expect(detectBlockingDdl(sql)).toEqual([]);
+  });
+
+  it('continua bloqueando CONCURRENTLY real ao lado de um literal', () => {
+    const sql = `COMMENT ON VIEW public.v IS 'refresh CONCURRENTLY';
+CREATE INDEX CONCURRENTLY idx ON public.t(a);`;
+    const r = detectBlockingDdl(sql);
+    expect(r.length).toBe(1);
+    expect(r[0].toLowerCase()).toContain('concurrently');
+  });
+
+  it('bloqueia CONCURRENTLY passado a EXECUTE dinamico', () => {
+    const sql = `DO $do$ BEGIN EXECUTE 'CREATE INDEX CONCURRENTLY idx ON public.t(a)'; END $do$;`;
+    const r = detectBlockingDdl(sql);
+    expect(r.length).toBeGreaterThan(0);
+    expect(r[0].toLowerCase()).toContain('concurrently');
+  });
+
+  it('bloqueia CONCURRENTLY dinamico via format()', () => {
+    const sql = `DO $do$ BEGIN EXECUTE format('CREATE INDEX CONCURRENTLY %I ON public.t(a)', 'idx'); END $do$;`;
+    expect(detectBlockingDdl(sql).length).toBeGreaterThan(0);
+  });
+
   it('bloqueia BEGIN de topo sem opt-out', () => {
     const r = detectBlockingDdl('BEGIN;\nSELECT 1;\nCOMMIT;');
     expect(r.some((m) => m.toLowerCase().includes('begin'))).toBe(true);

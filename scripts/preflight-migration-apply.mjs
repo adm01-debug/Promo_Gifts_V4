@@ -62,6 +62,12 @@ const NON_TX_DDL = [
 const CONCURRENTLY_PATTERNS = [
   /\bCONCURRENTLY\b/i,
 ];
+/**
+ * `CONCURRENTLY` dentro de um literal nao executa — EXCETO quando o literal e o
+ * comando passado a `EXECUTE` (plpgsql / `EXECUTE IMMEDIATE`, inclusive via
+ * `format(...)`). Nesses casos o DDL roda de verdade e continua reprovado.
+ */
+const DYNAMIC_CONCURRENTLY_PATTERNS = [/\bEXECUTE\b[^\n;]{0,200}?CONCURRENTLY/i];
 // `i`: `begin;`/`commit;` minúsculos também conflitam com psql -1. `END;` fica de fora de
 // propósito (fecha bloco PL/pgSQL em qualquer corpo de função).
 const TOP_LEVEL_TX_PATTERNS = [
@@ -134,6 +140,26 @@ export function parseOptOut(sqlContent, headLines = 40) {
 }
 
 /**
+ * Remove literais de string SQL (`'...'`, com escape `''`, e `$tag$...$tag$`)
+ * preservando o restante do texto.
+ *
+ * Motivo: o gate de CONCURRENTLY roda sobre o SQL com comentarios removidos,
+ * mas uma string literal continua visivel. Um `COMMENT ON VIEW ... IS
+ * '... refresh CONCURRENTLY ...'` documentando o comportamento real bloqueava
+ * a migration por engano — medido no run 45912213400 da
+ * `20261126230000_doc_mv_product_compositions_refresh_concurrently.sql`.
+ *
+ * `CONCURRENTLY` so executa como comando, nunca de dentro de um literal, entao
+ * remover literais nao abre buraco: `CREATE INDEX CONCURRENTLY` real continua
+ * sendo acusado (coberto por teste).
+ */
+export function stripSqlStringLiterals(sql) {
+  return String(sql)
+    .replace(/\$([A-Za-z_][A-Za-z0-9_]*)?\$[\s\S]*?\$\1\$/g, "''")
+    .replace(/'(?:[^']|'')*'/g, "''");
+}
+
+/**
  * Detecta DDL que bloqueia a aplicação (E63).
  * Retorna um array de strings descrevendo cada problema.
  *
@@ -149,9 +175,15 @@ export function detectBlockingDdl(sqlContent, { hasTransactionNoneOptOut = false
   // detectExtensionWithoutSchema), senão um `/* ... DROP TABLE x; ... */`
   // documentando histórico (sem IF EXISTS) bloqueia a migration por engano.
   const executable = sqlContent.replace(/--[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  // Literais de string nao executam nada: um CONCURRENTLY dentro de COMMENT
+  // documental nao e DDL nao-transacional (ver stripSqlStringLiterals).
+  const executableNoStrings = stripSqlStringLiterals(executable);
 
   if (!hasTransactionNoneOptOut) {
-    if (CONCURRENTLY_PATTERNS.some((re) => re.test(executable))) {
+    if (
+      CONCURRENTLY_PATTERNS.some((re) => re.test(executableNoStrings)) ||
+      DYNAMIC_CONCURRENTLY_PATTERNS.some((re) => re.test(executable))
+    ) {
       blocking.push(
         'CONCURRENTLY detectado: não é transacional e conflita com psql -1. ' +
         'Adicione "-- transaction: none" + "-- approved-by:" no cabeçalho para opt-out.',
