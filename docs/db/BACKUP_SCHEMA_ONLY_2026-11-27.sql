@@ -1,6 +1,6 @@
 -- =============================================================================
--- Baseline do schema de produção (doufsxqlfjyuvxuezpln) — versão 20261126130000
--- Gerado em 2026-11-26T16:48:06.081Z por scripts/export-schema-snapshot.mjs (supabase db dump --linked).
+-- Baseline do schema de produção (doufsxqlfjyuvxuezpln) — versão 20261127010000
+-- Gerado em 2026-11-27T20:01:05.127Z por scripts/export-schema-snapshot.mjs (supabase db dump --linked).
 -- Uso exclusivo: ponto de partida do replay do db-schema-drift-check.
 -- NÃO é migration: não aplicar em produção, não copiar para supabase/migrations/.
 -- Não contém: dados, jobs do pg_cron, storage, vault, schema auth, publications,
@@ -1081,7 +1081,7 @@ COMMENT ON FUNCTION "public"."admin_active_sessions"() IS 'Lista sessões ativas
 
 CREATE OR REPLACE FUNCTION "public"."admin_execute_role_migration_batch"("_label" "text", "_reason" "text", "_items" "jsonb", "_dry_run" boolean DEFAULT false) RETURNS "uuid"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'pg_catalog'
     AS $$
 BEGIN
   IF NOT public.has_role(auth.uid(), 'dev'::public.app_role) THEN
@@ -2717,7 +2717,7 @@ ALTER FUNCTION "public"."check_ip_access"("_ip" "text") OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."check_login_rate_limit"("_email" "text", "_ip" "text" DEFAULT NULL::"text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'pg_catalog', 'public', 'extensions'
     AS $$
 DECLARE
   _max_failures int := 5;
@@ -3153,7 +3153,7 @@ COMMENT ON TABLE "public"."optimization_queue" IS 'Fila de propostas de otimiza�
 
 CREATE OR REPLACE FUNCTION "public"."claim_next_optimization"() RETURNS "public"."optimization_queue"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'pg_catalog'
     AS $$
 DECLARE
   claimed public.optimization_queue;
@@ -8444,7 +8444,7 @@ ALTER FUNCTION "public"."compare_quote_versions"("_quote_id" "uuid", "_version_a
 
 CREATE OR REPLACE FUNCTION "public"."complete_optimization"("_id" "uuid", "_status" "text", "_notes" "text" DEFAULT NULL::"text", "_guardrail_status" "text" DEFAULT NULL::"text", "_result" "jsonb" DEFAULT NULL::"jsonb", "_error" "text" DEFAULT NULL::"text") RETURNS "public"."optimization_queue"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'pg_catalog'
     AS $$
 DECLARE
   updated public.optimization_queue;
@@ -10474,7 +10474,7 @@ ALTER FUNCTION "public"."enforce_user_id_owner"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."enqueue_optimization"("_title" "text", "_description" "text" DEFAULT NULL::"text", "_category" "text" DEFAULT 'performance'::"text", "_priority" integer DEFAULT 100) RETURNS "uuid"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'pg_catalog'
     AS $$
 DECLARE
   new_id uuid;
@@ -11958,9 +11958,323 @@ Uso: SELECT fn_adicionar_mapeamento_fornecedor(
 
 
 
+CREATE OR REPLACE FUNCTION "public"."fn_admin_ai_quota_summary"("_search" "text" DEFAULT NULL::"text", "_limit" integer DEFAULT 200) RETURNS TABLE("user_id" "uuid", "email" "text", "role" "text", "monthly_limit" integer, "is_unlimited" boolean, "used_this_month" integer, "remaining" integer, "success_month" integer, "error_month" integer, "pending_count" integer, "last_activity" timestamp with time zone)
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+  v_limit integer := LEAST(GREATEST(COALESCE(_limit, 200), 1), 500);
+  v_search text := NULLIF(btrim(COALESCE(_search, '')), '');
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Autenticacao obrigatoria.' USING ERRCODE = '42501';
+  END IF;
+
+  IF NOT public.is_admin_or_above(auth.uid()) THEN
+    RAISE EXCEPTION 'Acesso restrito a administradores.' USING ERRCODE = '42501';
+  END IF;
+
+  RETURN QUERY
+  WITH resumo AS (
+    SELECT
+      ur.user_id,
+      u.email::text AS email,
+      ur.role::text AS role,
+      COALESCE(aq.monthly_limit, 0)              AS monthly_limit,
+      COALESCE(aq.is_unlimited, false)           AS is_unlimited,
+      COALESCE(SUM(
+        CASE WHEN al.status != 'error'
+                  AND al.created_at >= date_trunc('month', NOW())
+                  AND (al.status != 'pending' OR al.created_at >= NOW() - INTERVAL '5 minutes')
+             THEN 1 ELSE 0 END
+      ), 0)::int                                 AS used_this_month,
+      CASE
+        WHEN COALESCE(aq.is_unlimited, false) THEN -1
+        ELSE GREATEST(0, COALESCE(aq.monthly_limit, 0) -
+          COALESCE(SUM(
+            CASE WHEN al.status != 'error'
+                      AND al.created_at >= date_trunc('month', NOW())
+                      AND (al.status != 'pending' OR al.created_at >= NOW() - INTERVAL '5 minutes')
+                 THEN 1 ELSE 0 END
+          ), 0)::int)
+      END                                        AS remaining,
+      COALESCE(SUM(
+        CASE WHEN al.status = 'success'
+                  AND al.created_at >= date_trunc('month', NOW())
+             THEN 1 ELSE 0 END
+      ), 0)::int                                 AS success_month,
+      COALESCE(SUM(
+        CASE WHEN al.status = 'error'
+                  AND al.created_at >= date_trunc('month', NOW())
+             THEN 1 ELSE 0 END
+      ), 0)::int                                 AS error_month,
+      COALESCE(SUM(
+        CASE WHEN al.status = 'pending' THEN 1 ELSE 0 END
+      ), 0)::int                                 AS pending_count,
+      MAX(al.updated_at)                         AS last_activity
+    FROM public.user_roles ur
+    JOIN auth.users u ON u.id = ur.user_id AND u.deleted_at IS NULL
+    LEFT JOIN public.ai_usage_quotas aq ON aq.role = ur.role
+    LEFT JOIN public.ai_usage_logs al ON al.user_id = ur.user_id
+    GROUP BY ur.user_id, u.email, ur.role, aq.monthly_limit, aq.is_unlimited
+  )
+  SELECT
+    r.user_id, r.email, r.role, r.monthly_limit, r.is_unlimited, r.used_this_month,
+    r.remaining, r.success_month, r.error_month, r.pending_count, r.last_activity
+  FROM resumo r
+  WHERE v_search IS NULL
+     OR r.email ILIKE '%' || v_search || '%'
+     OR r.role ILIKE '%' || v_search || '%'
+  ORDER BY r.used_this_month DESC NULLS LAST, r.email
+  LIMIT v_limit;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."fn_admin_ai_quota_summary"("_search" "text", "_limit" integer) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_admin_ai_quota_summary"("_search" "text", "_limit" integer) IS 'Cota de IA por usuario para o painel /admin/consumo-ia. Guard: auth.uid() + is_admin_or_above (SQLSTATE 42501). Mesma agregacao de fn_ai_quota_summary (user_roles x auth.users x ai_usage_quotas x ai_usage_logs). remaining = -1 significa cota ilimitada; _search filtra e-mail/papel; _limit e limitado a 500.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_admin_anon_access_audit"() RETURNS TABLE("categoria" "text", "objeto" "text", "anon_grant" boolean, "auth_grant" boolean, "severidade" "text", "descricao" "text")
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Autenticacao obrigatoria.' USING ERRCODE = '42501';
+  END IF;
+
+  IF NOT public.is_admin_or_above(auth.uid()) THEN
+    RAISE EXCEPTION 'Acesso restrito a administradores.' USING ERRCODE = '42501';
+  END IF;
+
+  -- O diagnostico de base e VOLATILE (le catalogos e privilegios do momento),
+  -- por isso o wrapper nao se declara STABLE.
+  RETURN QUERY
+  SELECT a.categoria, a.objeto, a.anon_grant, a.auth_grant, a.severidade, a.descricao
+  FROM public.fn_anon_access_audit() AS a;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."fn_admin_anon_access_audit"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_admin_anon_access_audit"() IS 'Wrapper admin (guard 42501) do diagnostico fn_anon_access_audit: RLS sem policy, funcao em policy sem EXECUTE para anon, view sensivel exposta a anon e tabela de badge sem grant. Alimenta a aba "Raio-x do acesso anon" em /admin/seguranca-acesso.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_admin_classification_apply"("_dry_run" boolean DEFAULT true, "_min_matches" integer DEFAULT 4) RETURNS TABLE("acao" "text", "product_id" "uuid", "sku" "text", "produto" "text", "categoria" "text", "matches" integer, "score" integer)
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'classification_audit'
+    AS $$
+DECLARE
+  v_dry boolean := coalesce(_dry_run, true);
+  v_min integer := coalesce(_min_matches, 4);
+  v_candidatos integer := 0;
+  v_antes integer := 0;
+  v_depois integer := 0;
+  v_inseridas integer := 0;
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Autenticacao obrigatoria.' USING ERRCODE = '42501';
+  END IF;
+
+  IF NOT public.is_admin_or_above(auth.uid()) THEN
+    RAISE EXCEPTION 'Acesso restrito a administradores.' USING ERRCODE = '42501';
+  END IF;
+
+  IF v_min < 1 OR v_min > 20 THEN
+    RAISE EXCEPTION 'Parametro _min_matches fora da faixa 1..20 (recebido %).', v_min
+      USING ERRCODE = '22023';
+  END IF;
+
+  SELECT count(*)::integer
+    INTO v_candidatos
+    FROM classification_audit.category_suggestions AS s
+    JOIN public.products AS p ON p.id = s.product_id AND p.is_active
+    WHERE NOT s.already_assigned AND s.matches >= v_min;
+
+  IF NOT v_dry THEN
+    SELECT count(*)::integer
+      INTO v_antes
+      FROM public.product_category_assignments AS pca
+      WHERE (pca.product_id, pca.category_id) IN (
+        SELECT s.product_id, s.category_id
+        FROM classification_audit.category_suggestions AS s
+        JOIN public.products AS p ON p.id = s.product_id AND p.is_active
+        WHERE NOT s.already_assigned AND s.matches >= v_min
+      );
+
+    PERFORM 1 FROM classification_audit.apply_high_confidence_suggestions(false, v_min);
+
+    SELECT count(*)::integer
+      INTO v_depois
+      FROM public.product_category_assignments AS pca
+      WHERE (pca.product_id, pca.category_id) IN (
+        SELECT s.product_id, s.category_id
+        FROM classification_audit.category_suggestions AS s
+        JOIN public.products AS p ON p.id = s.product_id AND p.is_active
+        WHERE NOT s.already_assigned AND s.matches >= v_min
+      );
+
+    v_inseridas := v_depois - v_antes;
+  END IF;
+
+  RETURN QUERY
+  SELECT
+    CASE
+      WHEN v_dry THEN 'DRY-RUN'::text
+      WHEN v_inseridas > 0 THEN 'APLICADO'::text
+      ELSE 'SEM MUDANCA'::text
+    END AS acao,
+    a.product_id,
+    p.sku,
+    a.produto,
+    a.categoria,
+    a.matches,
+    a.score
+  FROM classification_audit.apply_high_confidence_suggestions(true, v_min) AS a
+  LEFT JOIN public.products AS p ON p.id = a.product_id;
+
+  IF NOT v_dry AND v_inseridas > 0 THEN
+    PERFORM public.log_audit(
+      'classification_suggestions_applied',
+      'classification_audit.category_suggestions',
+      v_min::text,
+      jsonb_build_object(
+        'min_matches', v_min,
+        'candidatos', v_candidatos,
+        'atribuicoes_criadas', v_inseridas
+      )
+    );
+  END IF;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."fn_admin_classification_apply"("_dry_run" boolean, "_min_matches" integer) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_admin_classification_apply"("_dry_run" boolean, "_min_matches" integer) IS 'Executa classification_audit.apply_high_confidence_suggestions em nome de um administrador (dry-run ou aplicacao real). Retorna acao = DRY-RUN | APLICADO | SEM MUDANCA (SEM MUDANCA quando nenhuma atribuicao foi criada, caso em que nada e auditado). Registra em public.log_audit somente quando cria atribuicao. Consumida pela aba Classificacao de /admin/cadastros.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_admin_classification_suggestions"("_search" "text" DEFAULT NULL::"text", "_somente_gaps" boolean DEFAULT false, "_min_matches" integer DEFAULT 2, "_limit" integer DEFAULT 200) RETURNS TABLE("id" bigint, "product_id" "uuid", "sku" "text", "produto" "text", "is_kit" boolean, "categoria_sugerida" "text", "nivel" integer, "matches" integer, "score" integer, "tokens_matched" "text", "already_assigned" boolean, "categorias_atuais" "text", "material_conflict" boolean, "type_conflict" boolean, "approved_auto" boolean, "computed_at" timestamp with time zone)
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'classification_audit'
+    AS $$
+DECLARE
+  v_search text := nullif(btrim(coalesce(_search, '')), '');
+  v_min integer := coalesce(_min_matches, 2);
+  v_limit integer := least(greatest(coalesce(_limit, 200), 1), 500);
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Autenticacao obrigatoria.' USING ERRCODE = '42501';
+  END IF;
+
+  IF NOT public.is_admin_or_above(auth.uid()) THEN
+    RAISE EXCEPTION 'Acesso restrito a administradores.' USING ERRCODE = '42501';
+  END IF;
+
+  IF v_min < 1 OR v_min > 20 THEN
+    RAISE EXCEPTION 'Parametro _min_matches fora da faixa 1..20 (recebido %).', v_min
+      USING ERRCODE = '22023';
+  END IF;
+
+  RETURN QUERY
+  SELECT
+    s.id,
+    s.product_id,
+    p.sku,
+    p.name AS produto,
+    p.is_kit,
+    c.full_path_readable AS categoria_sugerida,
+    s.category_level AS nivel,
+    s.matches,
+    s.score,
+    s.tokens_matched,
+    s.already_assigned,
+    (
+      SELECT string_agg(c2.name, ' + ' ORDER BY c2.level)
+      FROM public.product_category_assignments AS pca2
+      JOIN public.categories AS c2 ON c2.id = pca2.category_id
+      WHERE pca2.product_id = s.product_id AND c2.level >= 2
+    ) AS categorias_atuais,
+    coalesce(s.material_conflict, false),
+    coalesce(s.type_conflict, false),
+    coalesce(s.approved_auto, false),
+    s.computed_at
+  FROM classification_audit.category_suggestions AS s
+  JOIN public.products AS p ON p.id = s.product_id AND p.is_active
+  LEFT JOIN public.categories AS c ON c.id = s.category_id
+  WHERE s.matches >= v_min
+    AND (NOT _somente_gaps OR NOT s.already_assigned)
+    AND (
+      v_search IS NULL
+      OR p.sku ILIKE '%' || v_search || '%'
+      OR p.name ILIKE '%' || v_search || '%'
+      OR coalesce(c.full_path_readable, '') ILIKE '%' || v_search || '%'
+    )
+  ORDER BY s.matches DESC, s.score DESC, p.sku
+  LIMIT v_limit;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."fn_admin_classification_suggestions"("_search" "text", "_somente_gaps" boolean, "_min_matches" integer, "_limit" integer) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_admin_classification_suggestions"("_search" "text", "_somente_gaps" boolean, "_min_matches" integer, "_limit" integer) IS 'Lista a trilha de classificacao (classification_audit.category_suggestions) com produto, categoria sugerida, categorias atuais e flags de conflito. Filtros: termo, somente gaps e minimo de matches. Consumida pela aba Classificacao de /admin/cadastros.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_admin_classification_summary"() RETURNS TABLE("total_sugestoes" bigint, "nao_atribuidas" bigint, "kits_para_revisao" bigint, "conflitos" bigint, "alta_confianca" bigint, "ultima_analise" timestamp with time zone)
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'classification_audit'
+    AS $$
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Autenticacao obrigatoria.' USING ERRCODE = '42501';
+  END IF;
+
+  IF NOT public.is_admin_or_above(auth.uid()) THEN
+    RAISE EXCEPTION 'Acesso restrito a administradores.' USING ERRCODE = '42501';
+  END IF;
+
+  RETURN QUERY
+  SELECT
+    count(*)::bigint AS total_sugestoes,
+    count(*) FILTER (WHERE NOT s.already_assigned)::bigint AS nao_atribuidas,
+    count(*) FILTER (
+      WHERE NOT s.already_assigned
+        AND s.matches >= 3
+        AND (p.is_kit OR p.name ILIKE '%KIT%' OR p.name ILIKE '%CONJ%')
+    )::bigint AS kits_para_revisao,
+    count(*) FILTER (
+      WHERE coalesce(s.material_conflict, false) OR coalesce(s.type_conflict, false)
+    )::bigint AS conflitos,
+    count(*) FILTER (WHERE NOT s.already_assigned AND s.matches >= 4)::bigint AS alta_confianca,
+    max(s.computed_at) AS ultima_analise
+  FROM classification_audit.category_suggestions AS s
+  JOIN public.products AS p ON p.id = s.product_id AND p.is_active;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."fn_admin_classification_summary"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_admin_classification_summary"() IS 'KPIs da trilha de classificacao (classification_audit.category_suggestions) para administradores. Consumida pela aba Classificacao de /admin/cadastros.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."fn_admin_link_crm_seller"("_crm_seller_id" bigint, "_auth_user_id" "uuid" DEFAULT NULL::"uuid", "_email" "text" DEFAULT NULL::"text") RETURNS TABLE("action" "text", "previous_crm_seller_id" bigint, "auth_user_id" "uuid", "email" "text")
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_previous bigint;
@@ -12054,7 +12368,7 @@ COMMENT ON FUNCTION "public"."fn_admin_link_crm_seller"("_crm_seller_id" bigint,
 
 CREATE OR REPLACE FUNCTION "public"."fn_admin_list_crm_seller_links"("_search" "text" DEFAULT NULL::"text", "_limit" integer DEFAULT 200) RETURNS TABLE("auth_user_id" "uuid", "crm_seller_id" bigint, "link_source" "text", "created_at" timestamp with time zone, "full_name" "text", "email" "text")
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_limit integer := LEAST(GREATEST(COALESCE(_limit, 200), 1), 500);
@@ -12095,7 +12409,7 @@ COMMENT ON FUNCTION "public"."fn_admin_list_crm_seller_links"("_search" "text", 
 
 CREATE OR REPLACE FUNCTION "public"."fn_admin_run_smoke_tests"() RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'pg_catalog'
     AS $$
 BEGIN
   IF NOT coalesce(public.is_admin_or_above((SELECT auth.uid())), false) THEN
@@ -12118,7 +12432,7 @@ COMMENT ON FUNCTION "public"."fn_admin_run_smoke_tests"() IS 'Execucao manual do
 
 CREATE OR REPLACE FUNCTION "public"."fn_admin_smoke_tests_dashboard"() RETURNS "jsonb"
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'pg_catalog'
     AS $$
 BEGIN
   IF NOT coalesce(public.is_admin_or_above((SELECT auth.uid())), false) THEN
@@ -12156,7 +12470,7 @@ COMMENT ON FUNCTION "public"."fn_admin_smoke_tests_dashboard"() IS 'Dashboard de
 
 CREATE OR REPLACE FUNCTION "public"."fn_admin_sync_external_connections"() RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'pg_catalog'
     AS $$
 BEGIN
   IF NOT (public.is_dev((SELECT auth.uid()))
@@ -12177,7 +12491,7 @@ COMMENT ON FUNCTION "public"."fn_admin_sync_external_connections"() IS 'Wrapper 
 
 CREATE OR REPLACE FUNCTION "public"."fn_admin_unlink_crm_seller"("_auth_user_id" "uuid") RETURNS bigint
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_previous bigint;
@@ -12630,7 +12944,7 @@ COMMENT ON FUNCTION "public"."fn_anon_access_audit"() IS 'Auditoria de acesso an
 
 CREATE OR REPLACE FUNCTION "public"."fn_anon_catalog_grant_audit_run"() RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'public', 'pg_temp'
+    SET "search_path" TO 'pg_catalog', 'public'
     AS $$
 DECLARE
   v jsonb;
@@ -15587,7 +15901,7 @@ COMMENT ON FUNCTION "public"."fn_audit_row_change"() IS 'Trigger genérica de au
 
 CREATE OR REPLACE FUNCTION "public"."fn_auto_assign_org_on_profile"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   _org constant uuid := '5db5aee1-064b-4ef4-9193-345dcd8274ea'; -- unica org real (Promo Brindes)
@@ -22457,7 +22771,7 @@ ALTER FUNCTION "public"."fn_detecta_familia_cor"("p_r" integer, "p_g" integer, "
 
 CREATE OR REPLACE FUNCTION "public"."fn_dev_medallion_health"() RETURNS "jsonb"
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'public', 'pg_catalog'
     AS $$
 DECLARE
   v_uid uuid := (SELECT auth.uid());
@@ -22493,7 +22807,7 @@ COMMENT ON FUNCTION "public"."fn_dev_medallion_health"() IS 'Saúde do pipeline 
 
 CREATE OR REPLACE FUNCTION "public"."fn_dev_ops_infra_telemetry"("_days" integer DEFAULT 30, "_top" integer DEFAULT 15) RETURNS "jsonb"
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'public', 'pg_catalog'
     AS $$
 DECLARE
   v_uid uuid := (SELECT auth.uid());
@@ -22804,7 +23118,7 @@ COMMENT ON FUNCTION "public"."fn_dryrun_standardize_supplier"("p_supplier_id" "u
 
 CREATE OR REPLACE FUNCTION "public"."fn_ema_coverage_stats"() RETURNS TABLE("metric" "text", "valor" numeric, "unidade" "text", "status" "text")
     LANGUAGE "sql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'public', 'pg_catalog'
     AS $$
   WITH base AS (
     SELECT a.ema_diaria, a.confidence_level, a.anomalia_spike
@@ -23713,7 +24027,7 @@ STRICKER usa Properties. XBZ usa Nome+Descricao. Filtra propriedades custom XBZ 
 
 CREATE OR REPLACE FUNCTION "public"."fn_ensure_history_partitions"("p_months_ahead" integer DEFAULT 3) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_created integer := 0;
@@ -29269,7 +29583,7 @@ ALTER MATERIALIZED VIEW "public"."mv_stock_rupture_alert" OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."fn_get_rupture_alerts"() RETURNS SETOF "public"."mv_stock_rupture_alert"
     LANGUAGE "sql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'public', 'pg_catalog'
     AS $$
   SELECT * FROM public.mv_stock_rupture_alert
   WHERE public.is_supervisor_or_above((SELECT auth.uid()))
@@ -29628,7 +29942,7 @@ COMMENT ON MATERIALIZED VIEW "public"."mv_supplier_reliability" IS 'Agregado de 
 
 CREATE OR REPLACE FUNCTION "public"."fn_get_supplier_reliability"() RETURNS SETOF "public"."mv_supplier_reliability"
     LANGUAGE "sql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'public', 'pg_catalog'
     AS $$
   SELECT * FROM public.mv_supplier_reliability
   WHERE public.is_supervisor_or_above((SELECT auth.uid()))
@@ -29644,7 +29958,7 @@ COMMENT ON FUNCTION "public"."fn_get_supplier_reliability"() IS 'Aba Confiabilid
 
 CREATE OR REPLACE FUNCTION "public"."fn_global_search"("p_term" "text", "p_limit" integer DEFAULT 12, "p_types" "text"[] DEFAULT ARRAY['product'::"text", 'quote'::"text"]) RETURNS TABLE("result_id" "text", "result_type" "text", "result_title" "text", "result_description" "text", "result_url" "text", "result_image_url" "text", "result_metadata" "jsonb", "result_relevance" numeric)
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'pg_catalog', 'public', 'extensions'
     AS $_$
 DECLARE
   v_term_norm text;
@@ -31596,7 +31910,7 @@ ALTER FUNCTION "public"."fn_inherit_techniques_from_material"() OWNER TO "postgr
 
 CREATE OR REPLACE FUNCTION "public"."fn_insights_cache_count"("p_function_name" "text", "p_since" timestamp with time zone) RETURNS bigint
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'public', 'pg_temp'
+    SET "search_path" TO 'pg_catalog', 'public'
     AS $$
 BEGIN
   IF NOT COALESCE(public.can_view_telemetry((SELECT auth.uid())), false) THEN
@@ -37175,7 +37489,7 @@ COMMENT ON FUNCTION "public"."fn_process_webhook_outbox_batch"("_batch_size" int
 
 CREATE OR REPLACE FUNCTION "public"."fn_product_active_for_rls"("p_id" "uuid") RETURNS boolean
     LANGUAGE "sql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'pg_catalog', 'public', 'extensions'
     AS $$
   SELECT EXISTS(
     SELECT 1 FROM products
@@ -39241,7 +39555,7 @@ ALTER FUNCTION "public"."fn_qa_alert_on_activate_without_image"() OWNER TO "post
 
 CREATE OR REPLACE FUNCTION "public"."fn_qa_check_image_coverage"() RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'public', 'pg_temp'
+    SET "search_path" TO 'pg_catalog', 'public'
     AS $$
 DECLARE
   v_crit int;
@@ -39280,7 +39594,7 @@ ALTER FUNCTION "public"."fn_qa_check_image_coverage"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."fn_qa_scan_imageless_products"() RETURNS TABLE("total_violacoes" bigint, "alertas_novos" bigint, "alertas_resolvidos" bigint)
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'public', 'pg_temp'
+    SET "search_path" TO 'pg_catalog', 'public'
     AS $$
 DECLARE
   v_novos bigint := 0;
@@ -42049,7 +42363,7 @@ ALTER FUNCTION "public"."fn_run_smoke_tests"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."fn_ruptura_forecast_7_15_30"() RETURNS TABLE("horizonte_dias" integer, "novos_ruptura" bigint, "com_restock" bigint, "net_ruptura" bigint, "score_medio" numeric, "gap_total_un" bigint)
     LANGUAGE "sql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'public', 'pg_catalog'
     AS $$
   WITH alert AS (
     SELECT a.vss_id, a.cobertura_dias, a.score_composto, a.gap_unidades
@@ -48608,7 +48922,7 @@ COMMENT ON FUNCTION "public"."fn_standardize_variant"("p_raw_id" "uuid") IS 'Bro
 
 CREATE OR REPLACE FUNCTION "public"."fn_super_filtro"("p_search_term" "text" DEFAULT NULL::"text", "p_category_slug" "text" DEFAULT NULL::"text", "p_category_id" "uuid" DEFAULT NULL::"uuid", "p_brands" "text"[] DEFAULT NULL::"text"[], "p_only_in_stock" boolean DEFAULT false, "p_min_price" numeric DEFAULT NULL::numeric, "p_max_price" numeric DEFAULT NULL::numeric, "p_target_audiences" "text"[] DEFAULT NULL::"text"[], "p_is_kit" boolean DEFAULT NULL::boolean, "p_is_textil" boolean DEFAULT NULL::boolean, "p_is_thermal" boolean DEFAULT NULL::boolean, "p_has_gift_box" boolean DEFAULT NULL::boolean, "p_material_groups" "text"[] DEFAULT NULL::"text"[], "p_technique_groups" "text"[] DEFAULT NULL::"text"[], "p_color_groups" "text"[] DEFAULT NULL::"text"[], "p_date_slugs" "text"[] DEFAULT NULL::"text"[], "p_endomarketing" boolean DEFAULT NULL::boolean, "p_limit" integer DEFAULT 50, "p_offset" integer DEFAULT 0, "p_sort" "text" DEFAULT 'name_asc'::"text") RETURNS TABLE("id" "uuid", "name" "text", "sku" "text", "slug" "text", "short_description" "text", "brand" character varying, "sale_price" numeric, "cost_price" numeric, "min_quantity" integer, "stock_quantity" integer, "is_stockout" boolean, "is_kit" boolean, "is_textil" boolean, "is_thermal" boolean, "is_featured" boolean, "is_bestseller" boolean, "is_new" boolean, "has_gift_box" boolean, "target_audience" "text"[], "primary_image_url" "text", "og_image_url" "text", "set_image_url" "text", "category_id" "uuid", "category_name" "text", "category_slug" "text", "total_count" bigint)
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'pg_catalog', 'public', 'extensions'
     AS $$
 DECLARE
   v_search_normalized  text;
@@ -48748,7 +49062,7 @@ COMMENT ON FUNCTION "public"."fn_super_filtro"("p_search_term" "text", "p_catego
 
 CREATE OR REPLACE FUNCTION "public"."fn_super_filtro_facets"("p_search_term" "text" DEFAULT NULL::"text", "p_category_slug" "text" DEFAULT NULL::"text", "p_category_id" "uuid" DEFAULT NULL::"uuid", "p_brands" "text"[] DEFAULT NULL::"text"[], "p_only_in_stock" boolean DEFAULT false, "p_min_price" numeric DEFAULT NULL::numeric, "p_max_price" numeric DEFAULT NULL::numeric, "p_target_audiences" "text"[] DEFAULT NULL::"text"[], "p_is_kit" boolean DEFAULT NULL::boolean, "p_is_textil" boolean DEFAULT NULL::boolean, "p_is_thermal" boolean DEFAULT NULL::boolean, "p_has_gift_box" boolean DEFAULT NULL::boolean, "p_material_groups" "text"[] DEFAULT NULL::"text"[], "p_technique_groups" "text"[] DEFAULT NULL::"text"[], "p_color_groups" "text"[] DEFAULT NULL::"text"[], "p_date_slugs" "text"[] DEFAULT NULL::"text"[], "p_endomarketing" boolean DEFAULT NULL::boolean) RETURNS TABLE("facet_type" "text", "facet_value" "text", "facet_slug" "text", "product_count" bigint)
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'pg_catalog', 'public', 'extensions'
     AS $$
 DECLARE
   v_search_normalized text;
@@ -48923,7 +49237,7 @@ ALTER FUNCTION "public"."fn_super_filtro_opcoes"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."fn_super_filtro_price_range"("p_brands" "text"[] DEFAULT NULL::"text"[], "p_category_slug" "text" DEFAULT NULL::"text", "p_target_audiences" "text"[] DEFAULT NULL::"text"[], "p_is_textil" boolean DEFAULT NULL::boolean, "p_is_thermal" boolean DEFAULT NULL::boolean, "p_only_in_stock" boolean DEFAULT false) RETURNS TABLE("price_min" numeric, "price_max" numeric, "price_p25" numeric, "price_p75" numeric, "price_median" numeric, "price_avg" numeric, "total_with_price" bigint)
     LANGUAGE "sql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'pg_catalog', 'public', 'extensions'
     AS $$
   SELECT
     MIN(p.sale_price) FILTER (WHERE p.sale_price >= 1)::numeric              AS price_min,
@@ -48999,7 +49313,7 @@ COMMENT ON FUNCTION "public"."fn_super_filtro_product_ids"("_datas" "text"[], "_
 
 CREATE OR REPLACE FUNCTION "public"."fn_supplier_risk_breakdown"("p_preferred_only" boolean DEFAULT true) RETURNS TABLE("supplier_id" "uuid", "supplier_name" "text", "total" bigint, "ruptura" bigint, "critico" bigint, "alerta" bigint, "atencao" bigint, "sem_sinal" bigint, "ok" bigint, "pct_risco" numeric, "score_medio" numeric, "gap_total_un" bigint, "spikes" bigint, "valor_risco_reais" numeric)
     LANGUAGE "sql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'public', 'pg_catalog'
     AS $$
   SELECT
     m.supplier_id,
@@ -54004,7 +54318,7 @@ ALTER FUNCTION "public"."fn_validate_video_on_change"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."fn_variant_sparkline"("p_variant_id" "uuid", "p_days" integer DEFAULT 7) RETURNS TABLE("day" "date", "units_depleted" integer, "stock_close" integer)
     LANGUAGE "sql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'public', 'pg_catalog'
     AS $$
   SELECT s.summary_date::date AS day,
          s.units_depleted,
@@ -54022,7 +54336,7 @@ ALTER FUNCTION "public"."fn_variant_sparkline"("p_variant_id" "uuid", "p_days" i
 
 CREATE OR REPLACE FUNCTION "public"."fn_verify_anon_catalog_grants"() RETURNS TABLE("object_name" "text", "object_kind" "text", "issue" "text")
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 BEGIN
   -- (1) Views/tabelas que DEVEM ser legiveis por anon.
@@ -54675,7 +54989,7 @@ ALTER FUNCTION "public"."fn_vss_sync_warehouse_from_qty"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."fn_whatif_scenario"("p_delta_units_per_sku" numeric DEFAULT 100, "p_nivel_filter" "text" DEFAULT 'RUPTURA'::"text", "p_supplier_id" "uuid" DEFAULT NULL::"uuid") RETURNS TABLE("nivel_atual" "text", "nivel_simulado" "text", "variantes" bigint, "descricao" "text")
     LANGUAGE "sql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'public', 'pg_catalog'
     AS $$
   WITH sim AS (
     SELECT a.variant_id,
@@ -59611,7 +59925,7 @@ COMMENT ON VIEW "public"."v_products_public" IS 'PUBLIC PRODUCT PROJECTION (SECU
 
 CREATE OR REPLACE FUNCTION "public"."get_catalog_bestseller_page"("p_sort" "text" DEFAULT 'best-seller-supplier'::"text", "p_limit" integer DEFAULT 500, "p_offset" integer DEFAULT 0) RETURNS SETOF "public"."v_products_public"
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'pg_catalog', 'public', 'extensions'
     AS $$
 DECLARE
   v_limit  integer := GREATEST(COALESCE(p_limit, 500), 0);
@@ -60521,7 +60835,7 @@ ALTER FUNCTION "public"."get_edge_anon_key"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."get_edge_function_secret"("_name" "text") RETURNS "text"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'vault', 'public', 'pg_temp'
+    SET "search_path" TO 'vault', 'public'
     AS $$
 DECLARE
   _secret text;
@@ -61945,7 +62259,7 @@ COMMENT ON FUNCTION "public"."get_quote_token_by_value"("_token" "text") IS 'Whi
 
 CREATE OR REPLACE FUNCTION "public"."get_quote_token_public"("_token" "text") RETURNS "jsonb"
     LANGUAGE "sql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'pg_catalog'
     AS $$
   SELECT jsonb_build_object(
     'id',             qat.id,
@@ -62114,7 +62428,7 @@ ALTER FUNCTION "public"."get_sale_price_for_quantity"("p_variant_id" "uuid", "p_
 
 CREATE OR REPLACE FUNCTION "public"."get_sitemap_public"("p_limit" integer DEFAULT 1000, "p_offset" integer DEFAULT 0) RETURNS TABLE("url_type" "text", "url_path" "text", "identifier" "text", "title" "text", "lastmod" timestamp with time zone, "priority" numeric, "changefreq" "text", "image_url" "text")
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'public', 'pg_catalog'
     AS $$
 BEGIN
   IF p_limit IS NULL OR p_limit NOT BETWEEN 1 AND 1000 THEN
@@ -67457,7 +67771,7 @@ Otimizado em: 2026-06-23.';
 
 CREATE OR REPLACE FUNCTION "public"."prevent_non_admin_quote_item_price_change"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_uid uuid := auth.uid();
@@ -69309,7 +69623,7 @@ ALTER FUNCTION "public"."request_discount_approval_transactional"("_quote_id" "u
 
 CREATE OR REPLACE FUNCTION "public"."request_password_reset"("p_email" "text") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'pg_catalog', 'pg_temp'
+    SET "search_path" TO 'pg_catalog'
     AS $_$
 DECLARE
   v_email text := pg_catalog.lower(pg_catalog.btrim(COALESCE(p_email, '')));
@@ -71076,7 +71390,7 @@ COMMENT ON FUNCTION "public"."set_product_defaults_from_supplier"() IS 'Trigger 
 
 CREATE OR REPLACE FUNCTION "public"."set_quote_sent_at"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 begin
   -- Stamp the first time a quote enters 'sent' (covers INSERT-as-sent and UPDATE-to-sent),
@@ -82680,7 +82994,7 @@ CREATE OR REPLACE VIEW "public"."mv_product_compositions" WITH ("security_invoke
 ALTER VIEW "public"."mv_product_compositions" OWNER TO "postgres";
 
 
-COMMENT ON VIEW "public"."mv_product_compositions" IS 'VIEW publica sobre a matview analytics.mv_product_compositions (refresh pelo cron 47, horario). public.mv_* e VIEW, nao matview - nao rode REFRESH aqui. SECURITY DEFINER desde 20261122200000 porque a matview-base nao concede SELECT a anon nem suporta RLS. NAO religar security_invoker=true.';
+COMMENT ON VIEW "public"."mv_product_compositions" IS 'VIEW publica sobre a matview analytics.mv_product_compositions (refresh CONCURRENTLY pelo cron 47, horario). public.mv_* e VIEW, nao matview - nao rode REFRESH aqui. SECURITY DEFINER desde 20261122200000 porque a matview-base nao concede SELECT a anon nem suporta RLS. NAO religar security_invoker=true.';
 
 
 
@@ -102134,11 +102448,215 @@ CREATE INDEX "idx_fit_user_deleted" ON "public"."favorite_items_trash" USING "bt
 
 
 
+CREATE INDEX "idx_fk_asia_image_import_queue_variant_id" ON "public"."asia_image_import_queue" USING "btree" ("variant_id");
+
+
+
 CREATE INDEX "idx_fk_categories_created_by" ON "public"."categories" USING "btree" ("created_by");
 
 
 
+CREATE INDEX "idx_fk_categories_parent_id" ON "public"."categories" USING "btree" ("parent_id");
+
+
+
+CREATE INDEX "idx_fk_frontend_telemetry_user_id" ON "public"."frontend_telemetry" USING "btree" ("user_id");
+
+
+
+CREATE INDEX "idx_fk_inbound_webhook_events_endpoint_id" ON "public"."inbound_webhook_events" USING "btree" ("endpoint_id");
+
+
+
+CREATE INDEX "idx_fk_kit_component_enrichment_raw_kit_component_id" ON "public"."kit_component_enrichment_raw" USING "btree" ("kit_component_id");
+
+
+
+CREATE INDEX "idx_fk_kit_component_enrichment_raw_kit_product_id" ON "public"."kit_component_enrichment_raw" USING "btree" ("kit_product_id");
+
+
+
+CREATE INDEX "idx_fk_kit_component_enrichment_raw_promoted_component_id" ON "public"."kit_component_enrichment_raw" USING "btree" ("promoted_component_id");
+
+
+
+CREATE INDEX "idx_fk_kit_component_enrichment_raw_promoted_padronizacao_id" ON "public"."kit_component_enrichment_raw" USING "btree" ("promoted_padronizacao_id");
+
+
+
+CREATE INDEX "idx_fk_kit_component_padronizacao_kit_product_id" ON "public"."kit_component_padronizacao" USING "btree" ("kit_product_id");
+
+
+
+CREATE INDEX "idx_fk_kit_component_padronizacao_raw_id" ON "public"."kit_component_padronizacao" USING "btree" ("raw_id");
+
+
+
+CREATE INDEX "idx_fk_magazine_public_reactions_item_id" ON "public"."magazine_public_reactions" USING "btree" ("item_id");
+
+
+
+CREATE INDEX "idx_fk_magazines_owner_id" ON "public"."magazines" USING "btree" ("owner_id");
+
+
+
+CREATE INDEX "idx_fk_markup_configurations_category_id" ON "public"."markup_configurations" USING "btree" ("category_id");
+
+
+
+CREATE INDEX "idx_fk_markup_configurations_variant_id" ON "public"."markup_configurations" USING "btree" ("variant_id");
+
+
+
+CREATE INDEX "idx_fk_price_history_variant_id" ON "public"."price_history" USING "btree" ("variant_id");
+
+
+
+CREATE INDEX "idx_fk_print_area_techniques_tabela_preco_id" ON "public"."print_area_techniques" USING "btree" ("tabela_preco_id");
+
+
+
+CREATE INDEX "idx_fk_product_commemorative_dates_category_id" ON "public"."product_commemorative_dates" USING "btree" ("category_id");
+
+
+
+CREATE INDEX "idx_fk_product_fiscal_ncm_id" ON "public"."product_fiscal" USING "btree" ("ncm_id");
+
+
+
+CREATE INDEX "idx_fk_product_images_canonical_image_id" ON "public"."product_images" USING "btree" ("canonical_image_id");
+
+
+
+CREATE INDEX "idx_fk_product_images_color_id" ON "public"."product_images" USING "btree" ("color_id");
+
+
+
+CREATE INDEX "idx_fk_product_images_variant_id" ON "public"."product_images" USING "btree" ("variant_id");
+
+
+
+CREATE INDEX "idx_fk_product_kit_components_color_id" ON "public"."product_kit_components" USING "btree" ("color_id");
+
+
+
+CREATE INDEX "idx_fk_product_kit_components_component_product_id" ON "public"."product_kit_components" USING "btree" ("component_product_id");
+
+
+
+CREATE INDEX "idx_fk_product_kit_components_padronizacao_id" ON "public"."product_kit_components" USING "btree" ("padronizacao_id");
+
+
+
+CREATE INDEX "idx_fk_product_kit_components_secondary_material_type_id" ON "public"."product_kit_components" USING "btree" ("secondary_material_type_id");
+
+
+
+CREATE INDEX "idx_fk_product_novelties_product_id" ON "public"."product_novelties" USING "btree" ("product_id");
+
+
+
+CREATE INDEX "idx_fk_product_novelties_supplier_id" ON "public"."product_novelties" USING "btree" ("supplier_id");
+
+
+
+CREATE INDEX "idx_fk_product_properties_property_definition_id" ON "public"."product_properties" USING "btree" ("property_definition_id");
+
+
+
+CREATE INDEX "idx_fk_products_ncm_id" ON "public"."products" USING "btree" ("ncm_id");
+
+
+
+CREATE INDEX "idx_fk_products_padronizacao_id" ON "public"."products" USING "btree" ("padronizacao_id");
+
+
+
+CREATE INDEX "idx_fk_products_sub_brand_id" ON "public"."products" USING "btree" ("sub_brand_id");
+
+
+
+CREATE INDEX "idx_fk_produto_ramo_atividade_ramo_atividade_filho_id" ON "public"."produto_ramo_atividade" USING "btree" ("ramo_atividade_filho_id");
+
+
+
+CREATE INDEX "idx_fk_produtos_padronizacao_product_id" ON "public"."produtos_padronizacao" USING "btree" ("product_id");
+
+
+
+CREATE INDEX "idx_fk_produtos_padronizacao_sub_brand_id" ON "public"."produtos_padronizacao" USING "btree" ("sub_brand_id");
+
+
+
+CREATE INDEX "idx_fk_produtos_padronizacao_variantes_color_id_2" ON "public"."produtos_padronizacao_variantes" USING "btree" ("color_id_2");
+
+
+
+CREATE INDEX "idx_fk_produtos_padronizacao_variantes_pad_id" ON "public"."produtos_padronizacao_variantes" USING "btree" ("pad_id");
+
+
+
+CREATE INDEX "idx_fk_produtos_padronizacao_variantes_raw_id" ON "public"."produtos_padronizacao_variantes" USING "btree" ("raw_id");
+
+
+
+CREATE INDEX "idx_fk_produtos_site_padronizacao_raw_id" ON "public"."produtos_site_padronizacao" USING "btree" ("raw_id");
+
+
+
+CREATE INDEX "idx_fk_quote_comments_parent_id_quote_id" ON "public"."quote_comments" USING "btree" ("parent_id", "quote_id");
+
+
+
+CREATE INDEX "idx_fk_quote_history_quote_id" ON "public"."quote_history" USING "btree" ("quote_id");
+
+
+
+CREATE INDEX "idx_fk_stock_daily_summary_supplier_branch_id" ON "public"."stock_daily_summary" USING "btree" ("supplier_branch_id");
+
+
+
+CREATE INDEX "idx_fk_stock_daily_summary_supplier_id" ON "public"."stock_daily_summary" USING "btree" ("supplier_id");
+
+
+
+CREATE INDEX "idx_fk_supplier_colors_color_variation_id" ON "public"."supplier_colors" USING "btree" ("color_variation_id");
+
+
+
+CREATE INDEX "idx_fk_supplier_import_batches_supplier_id" ON "public"."supplier_import_batches" USING "btree" ("supplier_id");
+
+
+
+CREATE INDEX "idx_fk_supplier_products_raw_import_batch_id" ON "public"."supplier_products_raw" USING "btree" ("import_batch_id");
+
+
+
+CREATE INDEX "idx_fk_supplier_products_raw_product_id" ON "public"."supplier_products_raw" USING "btree" ("product_id");
+
+
+
+CREATE INDEX "idx_fk_supplier_products_raw_variant_id" ON "public"."supplier_products_raw" USING "btree" ("variant_id");
+
+
+
 CREATE INDEX "idx_fk_supplier_subtype_category_map_category_id" ON "public"."supplier_subtype_category_map" USING "btree" ("category_id");
+
+
+
+CREATE INDEX "idx_fk_suppliers_organization_id" ON "public"."suppliers" USING "btree" ("organization_id");
+
+
+
+CREATE INDEX "idx_fk_tabela_preco_gravacao_oficial_grupo_tecnica" ON "public"."tabela_preco_gravacao_oficial" USING "btree" ("grupo_tecnica");
+
+
+
+CREATE INDEX "idx_fk_variant_supplier_sources_supplier_branch_id" ON "public"."variant_supplier_sources" USING "btree" ("supplier_branch_id");
+
+
+
+CREATE INDEX "idx_fk_webhook_dispatcher_log_quote_id" ON "public"."webhook_dispatcher_log" USING "btree" ("quote_id");
 
 
 
@@ -116188,6 +116706,36 @@ GRANT ALL ON FUNCTION "public"."fn_adicionar_mapeamento_fornecedor"("p_supplier_
 
 
 
+REVOKE ALL ON FUNCTION "public"."fn_admin_ai_quota_summary"("_search" "text", "_limit" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_admin_ai_quota_summary"("_search" "text", "_limit" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_admin_ai_quota_summary"("_search" "text", "_limit" integer) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."fn_admin_anon_access_audit"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_admin_anon_access_audit"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_admin_anon_access_audit"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."fn_admin_classification_apply"("_dry_run" boolean, "_min_matches" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_admin_classification_apply"("_dry_run" boolean, "_min_matches" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_admin_classification_apply"("_dry_run" boolean, "_min_matches" integer) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."fn_admin_classification_suggestions"("_search" "text", "_somente_gaps" boolean, "_min_matches" integer, "_limit" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_admin_classification_suggestions"("_search" "text", "_somente_gaps" boolean, "_min_matches" integer, "_limit" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_admin_classification_suggestions"("_search" "text", "_somente_gaps" boolean, "_min_matches" integer, "_limit" integer) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."fn_admin_classification_summary"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_admin_classification_summary"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_admin_classification_summary"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."fn_admin_link_crm_seller"("_crm_seller_id" bigint, "_auth_user_id" "uuid", "_email" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_admin_link_crm_seller"("_crm_seller_id" bigint, "_auth_user_id" "uuid", "_email" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_admin_link_crm_seller"("_crm_seller_id" bigint, "_auth_user_id" "uuid", "_email" "text") TO "service_role";
@@ -122321,8 +122869,8 @@ GRANT ALL ON FUNCTION "public"."request_discount_approval_transactional"("_quote
 
 REVOKE ALL ON FUNCTION "public"."request_password_reset"("p_email" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."request_password_reset"("p_email" "text") TO "service_role";
-GRANT ALL ON FUNCTION "public"."request_password_reset"("p_email" "text") TO "anon";
 GRANT ALL ON FUNCTION "public"."request_password_reset"("p_email" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."request_password_reset"("p_email" "text") TO "anon";
 
 
 
