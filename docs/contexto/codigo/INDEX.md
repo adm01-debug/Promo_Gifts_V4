@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `bccc6974cd7ad327148ae62f7857e5c906f10f3b` (2026-11-26T22:02:05-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f3557da29295941ef68441e97f72b52305636ef6` (2026-11-26T22:19:19-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -601,8 +601,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 51580 nós · 87503 arestas · 2884 comunidades · grafo do commit `bccc6974`
-- comunidades maiores: vitest (960), ref_components (777), ref_integrations (680), ref_node_child_process (499), @tanstack/react-query (442), ref_hooks (383), ref_node_fs (380), nav.ts (352), ref_types (347), react (333), react-router-dom (333), sonner (331)
+- 51584 nós · 87507 arestas · 2817 comunidades · grafo do commit `f3557da2`
+- comunidades maiores: vitest (949), ref_components (927), ref_integrations (598), ref_hooks (505), ref_node_child_process (501), react-router-dom (466), ref_types (399), @tanstack/react-query (397), react (370), ref_node_fs (349), test-base.ts (334), concludeCheck (327)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1200,6 +1200,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.24.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.23.0...gifts-store-v1.24.0) (2026-11-26)
 
 ## Últimos commits
+- 2026-11-26 `f3557da` fix: corrige referencia a migration inexistente no doc de auditoria (#4201)
 - 2026-11-26 `bccc697` docs: auditoria das ~110 branches locais (30 arquivos triados) (#4199)
 - 2026-11-26 `f60668c` chore: gate que cruza RPC service_role-only com consumidor em src/ (#4189)
 - 2026-11-26 `0f3c644` docs(migrations-log): recibo E15 — aplicação de 20261126230000 (#4198)
@@ -1214,7 +1215,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `25c4403` docs: varredura backend->UI medida (0 RPC de negocio sem consumidor) (#4184)
 - 2026-11-26 `cbe7b2d` chore(main): release gifts-store 1.24.0 (#4183)
 - 2026-11-26 `156532c` feat: tela de exposicao anon no painel de seguranca (#4182)
-- 2026-11-26 `29120bc` chore(main): release gifts-store 1.23.0 (#4181)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

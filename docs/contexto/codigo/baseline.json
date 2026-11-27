@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "bccc6974cd7ad327148ae62f7857e5c906f10f3b",
+  "commit": "f3557da29295941ef68441e97f72b52305636ef6",
   "branch": "main",
-  "data_commit": "2026-11-26T22:02:05-03:00",
+  "data_commit": "2026-11-26T22:19:19-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "f3557da",
+    "data": "2026-11-26",
+    "assunto": "fix: corrige referencia a migration inexistente no doc de auditoria (#4201)"
+   },
    {
     "sha": "bccc697",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "b23ed21",
     "data": "2026-11-26",
     "assunto": "chore(main): release gifts-store 1.21.0 (#4163)"
-   },
-   {
-    "sha": "6d73c11",
-    "data": "2026-11-26",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261126052000 (#4171)"
    }
   ],
-  "arquivos_mudados_7d": 620,
+  "arquivos_mudados_7d": 613,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",

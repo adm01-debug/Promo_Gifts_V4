@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "bccc6974cd7ad327148ae62f7857e5c906f10f3b",
+  "sha": "f3557da29295941ef68441e97f72b52305636ef6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-27 01:17 UTC",
+  "generated_at": "2026-11-27 02:22 UTC",
   "files_total": 11307,
   "code_files": 9283,
   "code_lines": 1322466
@@ -584882,10 +584882,19 @@
   }
  },
  "git": {
-  "sha": "bccc6974cd7ad327148ae62f7857e5c906f10f3b",
+  "sha": "f3557da29295941ef68441e97f72b52305636ef6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "f3557da",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix: corrige referencia a migration inexistente no doc de auditoria (#4201)",
+    "files": [
+     "docs/agentes/resgates/2026-11-27-auditoria-110-branches.md"
+    ]
+   },
    {
     "sha": "bccc697",
     "date": "2026-11-26",
@@ -585273,21 +585282,6 @@
     "files": [
      "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md"
     ]
-   },
-   {
-    "sha": "3a44413",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "feat: liga a tabela stock_notes a uma tela de notas por variacao (#4168)",
-    "files": [
-     "audit/supabase-reference-catalog.temporary.json",
-     "src/components/inventory/VariantStockNotesDialog.tsx",
-     "src/components/inventory/VariantStockRowActions.tsx",
-     "src/components/inventory/__tests__/VariantStockNotesDialog.test.tsx",
-     "src/hooks/stock/useStockNotes.ts",
-     "src/lib/stock/__tests__/stock-notes.test.ts",
-     "src/lib/stock/stock-notes.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -585297,7 +585291,7 @@
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
-    9
+    8
    ],
    [
     "package.json",
@@ -585322,6 +585316,10 @@
    [
     "src/pages/admin/AdminSegurancaAcessoPage.tsx",
     3
+   ],
+   [
+    "docs/agentes/resgates/2026-11-27-auditoria-110-branches.md",
+    2
    ],
    [
     "supabase/migrations/20261126230000_doc_mv_product_compositions_refresh_concurrently.sql",
@@ -585362,10 +585360,6 @@
    [
     "src/routes/lazy-pages.ts",
     2
-   ],
-   [
-    "docs/agentes/resgates/2026-11-27-auditoria-110-branches.md",
-    1
    ],
    [
     ".github/workflows/ci.yml",
