@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f60668c9928297be10de91542182a88cdb50afc6",
+  "commit": "bccc6974cd7ad327148ae62f7857e5c906f10f3b",
   "branch": "main",
-  "data_commit": "2026-11-26T21:15:04-03:00",
+  "data_commit": "2026-11-26T22:02:05-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "bccc697",
+    "data": "2026-11-26",
+    "assunto": "docs: auditoria das ~110 branches locais (30 arquivos triados) (#4199)"
+   },
    {
     "sha": "f60668c",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "6d73c11",
     "data": "2026-11-26",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261126052000 (#4171)"
-   },
-   {
-    "sha": "0d772c1",
-    "data": "2026-11-26",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261126130000 (#4172)"
    }
   ],
-  "arquivos_mudados_7d": 630,
+  "arquivos_mudados_7d": 620,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 155
+    "mudancas": 154
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -310,7 +310,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11375,
+  "arquivos_total": 11376,
   "arquivos_codigo": 5744,
   "linhas_codigo": 1090286,
   "rotas": 143,
@@ -327,7 +327,7 @@
   "testes": 2744,
   "workflows": 89,
   "scripts": 286,
-  "docs_md": 1512
+  "docs_md": 1513
  },
  "por_pasta": {
   ".github/scripts": {

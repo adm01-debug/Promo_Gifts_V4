@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "f60668c9928297be10de91542182a88cdb50afc6",
+  "sha": "bccc6974cd7ad327148ae62f7857e5c906f10f3b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-27 00:29 UTC",
-  "files_total": 11306,
+  "generated_at": "2026-11-27 01:17 UTC",
+  "files_total": 11307,
   "code_files": 9283,
   "code_lines": 1322466
  },
@@ -584882,10 +584882,19 @@
   }
  },
  "git": {
-  "sha": "f60668c9928297be10de91542182a88cdb50afc6",
+  "sha": "bccc6974cd7ad327148ae62f7857e5c906f10f3b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "bccc697",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "docs: auditoria das ~110 branches locais (30 arquivos triados) (#4199)",
+    "files": [
+     "docs/agentes/resgates/2026-11-27-auditoria-110-branches.md"
+    ]
+   },
    {
     "sha": "f60668c",
     "date": "2026-11-26",
@@ -585279,17 +585288,6 @@
      "src/lib/stock/__tests__/stock-notes.test.ts",
      "src/lib/stock/stock-notes.ts"
     ]
-   },
-   {
-    "sha": "b934d25",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "feat: JWT de agente na sugestao de identidade + botao montado no Kit Builder (#4167)",
-    "files": [
-     "docs/estado/07_EDGE_FUNCTIONS.md",
-     "src/components/kit-builder/KitBuilderHeader.tsx",
-     "supabase/functions/kit-identity-suggest/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -585366,11 +585364,11 @@
     2
    ],
    [
-    ".github/workflows/ci.yml",
+    "docs/agentes/resgates/2026-11-27-auditoria-110-branches.md",
     1
    ],
    [
-    ".security/service-role-rpc-consumers-allowlist.json",
+    ".github/workflows/ci.yml",
     1
    ]
   ]
